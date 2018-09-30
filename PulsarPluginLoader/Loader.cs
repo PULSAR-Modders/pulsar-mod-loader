@@ -9,7 +9,7 @@ namespace PulsarPluginLoader
 {
     public static class Loader
     {
-        public static void Patch(string targetAssemblyPath)
+        public static void Patch(string targetAssemblyPath, string targetClassName, string targetMethodName, Type sourceClassType, string sourceMethodName, bool useBackup=true)
         {
             Log(string.Format("Attempting to hook {0}", targetAssemblyPath));
 
@@ -26,7 +26,7 @@ namespace PulsarPluginLoader
                 Log(string.Format("Making backup as {0}", Path.GetFileName(backupPath)));
                 File.Copy(targetAssemblyPath, backupPath, overwrite: true);
             }
-            else
+            else if (File.Exists(backupPath) && useBackup)
             {
                 /* Restore the hopefully original Assembly for easier patching */
                 Log(string.Format("Restoring the hopefully clean backup before hooking.  If you have issues, try deleting {0} and verifying files on Steam, especially after an official patch.", Path.GetFileName(backupPath)));
@@ -41,8 +41,8 @@ namespace PulsarPluginLoader
             AssemblyDefinition targetAssembly = AssemblyDefinition.ReadAssembly(targetAssemblyPath, new ReaderParameters { AssemblyResolver = assemblyResolver, ReadWrite = true, InMemory = true });
 
             /* Find the methods involved */
-            MethodDefinition targetMethod = targetAssembly.MainModule.GetType("PLGlobal").Methods.First(m => m.Name == "Awake");
-            MethodReference sourceMethod = targetAssembly.MainModule.ImportReference(typeof(Loader).GetMethod("LoadPluginsDirectory"));
+            MethodDefinition targetMethod = targetAssembly.MainModule.GetType(targetClassName).Methods.First(m => m.Name == targetMethodName);
+            MethodReference sourceMethod = targetAssembly.MainModule.ImportReference(sourceClassType.GetMethod(sourceMethodName));
 
             if (targetMethod == null || sourceMethod == null)
             {
@@ -69,21 +69,22 @@ namespace PulsarPluginLoader
             {
                 Log("Failed to modify corrupted assembly.  Try again with a clean assembly (e.g., verify files on Steam)");
             }
+        }
 
+        public static void CopyAssemblies(string targetAssemblyDir)
+        {
             /* Copy important assemblies to target assembly's directory */
             string[] copyables = new string[] {
                 Assembly.GetExecutingAssembly().Location,
                 "0Harmony.dll"
             };
 
-            foreach(string sourcePath in copyables)
+            foreach (string sourcePath in copyables)
             {
                 string destPath = Path.Combine(targetAssemblyDir, Path.GetFileName(sourcePath));
                 Log(string.Format("Copying {0} to {1}", Path.GetFileName(destPath), Path.GetDirectoryName(destPath)));
                 File.Copy(sourcePath, destPath, overwrite: true);
             }
-
-            Log("Success!  You may now run the game normally.");
         }
 
         public static void LoadPluginsDirectory()
@@ -141,6 +142,11 @@ namespace PulsarPluginLoader
 
             Log(string.Format("Skipping {0}; couldn't find plugin entry point.", Path.GetFileName(assemblyPath)));
             return false;
+        }
+
+        public static void AppendGameVersionString()
+        {
+            PLNetworkManager.Instance.VersionString += "\n(PPL)";
         }
 
         public static void Log(string message)

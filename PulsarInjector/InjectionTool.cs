@@ -16,14 +16,18 @@ namespace PulsarInjector
             {
                 targetAssemblyPath = args[0];
             }
-            
+
             if (!File.Exists(targetAssemblyPath))
             {
                 Console.WriteLine("Please specify an assembly to inject (e.g., Assembly-CSharp.dll)");
                 return;
             }
 
-            Loader.Patch(targetAssemblyPath);
+            Loader.Patch(targetAssemblyPath, "PLGlobal", "Awake", typeof(Loader), "LoadPluginsDirectory");
+            Loader.Patch(targetAssemblyPath, "PLNetworkManager", "Start", typeof(Loader), "AppendGameVersionString", useBackup: false);
+            Loader.CopyAssemblies(Path.GetDirectoryName(targetAssemblyPath));
+
+            Loader.Log("Success!  You may now run the game normally.");
         }
     }
 }

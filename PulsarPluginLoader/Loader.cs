@@ -70,12 +70,18 @@ namespace PulsarPluginLoader
                 Log("Failed to modify corrupted assembly.  Try again with a clean assembly (e.g., verify files on Steam)");
             }
 
-            /* Copy Loader's assembly to target assembly's directory */
-            string sourcePath = Assembly.GetExecutingAssembly().Location;
-            string destPath = Path.Combine(targetAssemblyDir, Path.GetFileName(Assembly.GetExecutingAssembly().Location));
+            /* Copy important assemblies to target assembly's directory */
+            string[] copyables = new string[] {
+                Assembly.GetExecutingAssembly().Location,
+                "0Harmony.dll"
+            };
 
-            Log(string.Format("Copying {0} to {1}", Path.GetFileName(destPath), Path.GetDirectoryName(destPath)));
-            File.Copy(sourcePath, destPath, overwrite: true);
+            foreach(string sourcePath in copyables)
+            {
+                string destPath = Path.Combine(targetAssemblyDir, Path.GetFileName(sourcePath));
+                Log(string.Format("Copying {0} to {1}", Path.GetFileName(destPath), Path.GetDirectoryName(destPath)));
+                File.Copy(sourcePath, destPath, overwrite: true);
+            }
 
             Log("Success!  You may now run the game normally.");
         }

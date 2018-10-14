@@ -74,9 +74,10 @@ namespace PulsarPluginLoader
         public static void CopyAssemblies(string targetAssemblyDir)
         {
             /* Copy important assemblies to target assembly's directory */
+            string sourceDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             string[] copyables = new string[] {
                 Assembly.GetExecutingAssembly().Location,
-                "0Harmony.dll"
+                Path.Combine(sourceDir, "0Harmony.dll")
             };
 
             foreach (string sourcePath in copyables)

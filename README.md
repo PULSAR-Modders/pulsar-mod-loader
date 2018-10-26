@@ -60,7 +60,7 @@ using Harmony;
 namespace ExamplePlugin
 {
 	[HarmonyPatch(typeof(PLNetworkManager))]
-	[HarmonyPatch("Awake")]
+	[HarmonyPatch("Start")]
 	class VersionModifier
 	{
 		static void Postfix(PLNetworkManager __instance)

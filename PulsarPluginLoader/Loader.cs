@@ -75,8 +75,6 @@ namespace PulsarPluginLoader
 
         public static void InitializeHarmony()
         {
-            StackTrace st = new StackTrace();
-            Log(st.ToString());
             HarmonyInstance harmony = HarmonyInstance.Create("wiki.pulsar.ppl");
             harmony.PatchAll(Assembly.GetExecutingAssembly());
         }

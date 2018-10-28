@@ -4,7 +4,7 @@ namespace PulsarPluginLoader.hooks
 {
     [HarmonyPatch(typeof(PLVoiceChatManager))]
     [HarmonyPatch("GetVoiceChatChannelName")]
-    internal class TS3Fix
+    class TS3Fix
     {
         private static string Postfix(string __result)
         {

@@ -19,15 +19,17 @@ namespace PulsarInjector
 
             if (!File.Exists(targetAssemblyPath))
             {
-                Console.WriteLine("Please specify an assembly to inject (e.g., Assembly-CSharp.dll)");
+                Loader.Log("Please specify an assembly to inject (e.g., Assembly-CSharp.dll)");
                 return;
             }
 
-            Loader.Patch(targetAssemblyPath, "PLGlobal", "Awake", typeof(Loader), "LoadPluginsDirectory");
-            Loader.Patch(targetAssemblyPath, "PLNetworkManager", "Start", typeof(Loader), "AppendGameVersionString", useBackup: false);
+            Loader.Patch(targetAssemblyPath, "PLGlobal", ".ctor", typeof(Loader), "InitializeHarmony");
             Loader.CopyAssemblies(Path.GetDirectoryName(targetAssemblyPath));
 
             Loader.Log("Success!  You may now run the game normally.");
+
+            Loader.Log("Press any key to continue...");
+            Console.ReadKey();
         }
     }
 }

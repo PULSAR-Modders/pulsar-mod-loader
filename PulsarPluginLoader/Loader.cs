@@ -1,6 +1,8 @@
-﻿using Mono.Cecil;
+﻿using Harmony;
+using Mono.Cecil;
 using Mono.Cecil.Cil;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -71,6 +73,14 @@ namespace PulsarPluginLoader
             }
         }
 
+        public static void InitializeHarmony()
+        {
+            StackTrace st = new StackTrace();
+            Log(st.ToString());
+            HarmonyInstance harmony = HarmonyInstance.Create("wiki.pulsar.ppl");
+            harmony.PatchAll(Assembly.GetExecutingAssembly());
+        }
+
         public static void CopyAssemblies(string targetAssemblyDir)
         {
             /* Copy important assemblies to target assembly's directory */
@@ -86,68 +96,6 @@ namespace PulsarPluginLoader
                 Log(string.Format("Copying {0} to {1}", Path.GetFileName(destPath), Path.GetDirectoryName(destPath)));
                 File.Copy(sourcePath, destPath, overwrite: true);
             }
-        }
-
-        public static void LoadPluginsDirectory()
-        {
-            string pluginsDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Plugins");
-
-            Log(String.Format("Attempting to load plugins from {0}", pluginsDir));
-
-            if (!Directory.Exists(pluginsDir))
-            {
-                Directory.CreateDirectory(pluginsDir);
-            }
-
-            int LoadedPluginCounter = 0;
-            foreach (string assemblyPath in Directory.GetFiles(pluginsDir, "*.dll"))
-            {
-                if (Path.GetFileName(assemblyPath) != "0Harmony.dll")
-                {
-                    bool isLoaded = LoadPlugin(assemblyPath);
-
-                    if (isLoaded)
-                    {
-                        LoadedPluginCounter += 1;
-                    }
-                }
-            }
-
-            Log(string.Format("Finished loading {0} plugins!", LoadedPluginCounter));
-        }
-
-        public static bool LoadPlugin(string assemblyPath)
-        {
-            if (!File.Exists(assemblyPath))
-            {
-                throw new IOException(string.Format("Couldn't find file: {0}", assemblyPath));
-            }
-
-            /* Find methods labeled as the plugin's entry point */
-            Log(string.Format("Searching for plugin entry point in {0}", Path.GetFileName(assemblyPath)));
-
-            Assembly asm = Assembly.LoadFrom(assemblyPath);
-            foreach (Type t in asm.GetTypes())
-            {
-                foreach (MethodInfo m in t.GetMethods(BindingFlags.Public | BindingFlags.Static))
-                {
-                    object[] attrs = m.GetCustomAttributes(typeof(PluginEntryPoint), inherit: false);
-                    if (attrs != null && attrs.Length > 0)
-                    {
-                        Log(string.Format("Loading plugin via {0}", m.Name));
-                        m.Invoke(null, null);
-                        return true;
-                    }
-                }
-            }
-
-            Log(string.Format("Skipping {0}; couldn't find plugin entry point.", Path.GetFileName(assemblyPath)));
-            return false;
-        }
-
-        public static void AppendGameVersionString()
-        {
-            PLNetworkManager.Instance.VersionString += "\n(PPL)";
         }
 
         public static void Log(string message)

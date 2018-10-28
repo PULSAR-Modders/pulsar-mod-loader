@@ -1,17 +1,16 @@
 ﻿using Harmony;
+using System;
 
 namespace PulsarPluginLoader.hooks
 {
+    [HarmonyPatch(typeof(PLNetworkManager))]
+    [HarmonyPatch("Start")]
     class GameVersion
     {
-        [HarmonyPatch(typeof(PLNetworkManager))]
-        [HarmonyPatch("Start")]
-        class VersionModifier
+        static void Postfix(PLNetworkManager __instance)
         {
-            static void Postfix(PLNetworkManager __instance)
-            {
-                __instance.VersionString += "\n(PPL)";
-            }
+            __instance.VersionString += "\n(PPL)";
         }
+
     }
 }

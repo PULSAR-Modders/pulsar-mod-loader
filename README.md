@@ -1,4 +1,6 @@
-# PULSAR Plugin Loader
+[![Build status](https://ci.appveyor.com/api/projects/status/jkary3fagowm4adm/branch/master?svg=true)](https://ci.appveyor.com/project/TomRichter/pulsar-plugin-loader/branch/master)
+
+# [PULSAR Plugin Loader](https://github.com/TomRichter/pulsar-plugin-loader)
 
 Injects a basic plugin loader into [*PULSAR: Lost Colony*](http://www.pulsarthegame.com/).
 
@@ -24,31 +26,42 @@ Optionally remove `PulsarPluginLoader.dll`, `Assembly-CSharp.dll.bak`, and the `
 
 All plugins must be C# Class Libraries targeting .NET Framework 3.5 (to match Unity Engine).  See [this screenshot](https://i.imgur.com/X7bDnYr.png) for an example of project creation settings in Visual Studio Community 2017 ([free download](https://visualstudio.microsoft.com/vs/community/)).
 
-Additionally, reference the following assemblies:
+Additionally, reference the following assemblies in your plugin project:
 
  * `PulsarPluginLoader.dll` (PPL code)
  * `Assembly-CSharp.dll` (Game code)
- * `UnityEngine.CoreModule.dll` (optional; depends if using engine calls)
+ * `UnityEngine.CoreModule.dll` (Engine code)
+ * `UnityEngine.*.dll` (optional; specific DLL depends what changes are made)
 
-Plugins must also contain a class with a public static method decorated using `[PulsarPluginLoader.PluginEntryPoint]`.  Naming of class or method does not matter.  This method will be run when the plugin loads (currently before `PLGlobal.Awake()`), so do plugin setup here.
-
-Using [`Harmony`](https://github.com/pardeike/Harmony) to hook PULSAR methods is strongly recommended due to its simple API and tools that help multiple plugins play nicely when modifying the same methods (stacking hooks instead of overwriting each other, prioritization, etc).  Any class using Harmony decorators will magically hook their methods, so simply calling `HarmonyInstance.PatchAll()` in the plugin's entry point is sufficient.
-
-Basic example:
+Plugins must also contain a subclass of `[PulsarPluginLoader.PulsarPlugin]` for plugin initialization.  This class is instantiated once during game startup (currently before `PLGlobal.Awake()`), so do plugin setup its constructor.  The base constructor already loads Harmony, so only overriding `protected string HarmonyIdentifier()` may be enough for simple plugins.  To extend setup, override the constructor with a call to base:
 
 ```csharp
-using Harmony;
-using System.Reflection;
+class MyPlugin : PulsarPlugin
+{
+    public MyPlugin() : base()
+    {
+        // Do additional setup here
+    }
+    
+    [...]
+}
+```
+
+Using [`Harmony`](https://github.com/pardeike/Harmony) to hook PULSAR methods is strongly recommended due to its simple API and tools that help multiple plugins play nicely when modifying the same methods (stacking hooks instead of overwriting each other, prioritization, etc).  Any class using Harmony decorators will magically hook their methods.
+
+### Basic Plugin Example
+
+```csharp
+using PulsarPluginLoader;
 
 namespace ExamplePlugin
 {
-    class Plugin
+    class MyPlugin : PulsarPlugin
     {
-        [PulsarPluginLoader.PluginEntryPoint]
-        public static void StartPlugin()
+        protected override string HarmonyIdentifier()
         {
-            HarmonyInstance harmony = HarmonyInstance.Create("com.example.pulsar.plugins");
-            harmony.PatchAll(Assembly.GetExecutingAssembly());
+            // Make this unique to your plugin!
+            return "com.example.pulsar.plugins";
         }
     }
 }
@@ -65,10 +78,10 @@ namespace ExamplePlugin
 	{
 		static void Postfix(PLNetworkManager __instance)
 		{
-			__instance.VersionString += " (PPL)";
+			__instance.VersionString += "\nCool Kid Version";
 		}
 	}
 }
 ```
 
-Distribute plugins as `.dll` assemblies.  To install, simply drop the assembly into the `Plugins` folder; any `.dll` with a `[PulsarPluginLoader.PluginEntryPoint]`-decorated method will be automatically loaded.
+Distribute plugins as `.dll` assemblies.  To install, simply drop the assembly into the `Plugins` folder; any properly-defined `*.dll` plugin assemblies are automatically loaded.

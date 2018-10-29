@@ -24,10 +24,12 @@ namespace PulsarPluginLoader
             harmony.PatchAll(asm);
         }
 
-        protected virtual string HarmonyIdentifier()
-        {
-            return "com.example.project.me.change";
-        }
+        /// <summary>
+        /// Unique plugin identifier used by Harmony to differentiate between plugins.
+        /// Reverse domain notation recommended (e.g., com.example.pulsar.plugins)
+        /// </summary>
+        /// <returns></returns>
+        protected abstract string HarmonyIdentifier();
 
         /// <summary>
         /// Version of plugin.  Displayed in plugin list.

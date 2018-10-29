@@ -2,7 +2,6 @@
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -11,7 +10,7 @@ namespace PulsarPluginLoader
 {
     public static class Loader
     {
-        public static void Patch(string targetAssemblyPath, string targetClassName, string targetMethodName, Type sourceClassType, string sourceMethodName, bool useBackup=true)
+        public static void Patch(string targetAssemblyPath, string targetClassName, string targetMethodName, Type sourceClassType, string sourceMethodName, bool useBackup = true)
         {
             Log(string.Format("Attempting to hook {0}", targetAssemblyPath));
 
@@ -92,8 +91,16 @@ namespace PulsarPluginLoader
             {
                 string destPath = Path.Combine(targetAssemblyDir, Path.GetFileName(sourcePath));
                 Log(string.Format("Copying {0} to {1}", Path.GetFileName(destPath), Path.GetDirectoryName(destPath)));
-                File.Copy(sourcePath, destPath, overwrite: true);
-            }
+                try
+                {
+                    File.Copy(sourcePath, destPath, overwrite: true);
+                }
+                catch (IOException)
+                {
+                    Log("Copying failed!  Close the game and try again.");
+                    Environment.Exit(0);
+                }
+            };
         }
 
         public static void Log(string message)

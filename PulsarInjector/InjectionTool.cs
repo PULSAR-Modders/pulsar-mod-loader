@@ -1,6 +1,6 @@
-﻿using System;
+﻿using PulsarPluginLoader;
+using System;
 using System.IO;
-using PulsarPluginLoader;
 
 namespace PulsarInjector
 {

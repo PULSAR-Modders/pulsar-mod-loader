@@ -1,6 +1,7 @@
 ﻿using Harmony;
 using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 
 namespace PulsarPluginLoader.hooks
@@ -54,26 +55,24 @@ namespace PulsarPluginLoader.hooks
                 throw new IOException(string.Format("Couldn't find file: {0}", assemblyPath));
             }
 
-            /* Find methods labeled as the plugin's entry point */
-            Loader.Log(string.Format("Searching for plugin entry point in {0}", Path.GetFileName(assemblyPath)));
+            Loader.Log(string.Format("Scanning {0} for plugin entry point...", Path.GetFileName(assemblyPath)));
 
-            Assembly asm = Assembly.LoadFrom(assemblyPath);
-            foreach (Type t in asm.GetTypes())
+            Assembly asm = Assembly.LoadFile(assemblyPath);
+            Type pluginType = asm.GetTypes().FirstOrDefault(t => t.IsSubclassOf(typeof(PulsarPlugin)));
+
+            if (pluginType != null)
             {
-                foreach (MethodInfo m in t.GetMethods(BindingFlags.Public | BindingFlags.Static))
-                {
-                    object[] attrs = m.GetCustomAttributes(typeof(PluginEntryPoint), inherit: false);
-                    if (attrs != null && attrs.Length > 0)
-                    {
-                        Loader.Log(string.Format("Loading plugin via {0}", m.Name));
-                        m.Invoke(null, null);
-                        return true;
-                    }
-                }
-            }
+                Loader.Log(string.Format("Loading {0}", pluginType.AssemblyQualifiedName));
 
-            Loader.Log(string.Format("Skipping {0}; couldn't find plugin entry point.", Path.GetFileName(assemblyPath)));
-            return false;
+                PulsarPlugin plugin = Activator.CreateInstance(pluginType) as PulsarPlugin;
+
+                return true;
+            }
+            else
+            {
+                Loader.Log(string.Format("Skipping {0}; couldn't find plugin entry point.", Path.GetFileName(assemblyPath)));
+                return false;
+            }
         }
     }
 }

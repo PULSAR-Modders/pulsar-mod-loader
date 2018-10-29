@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following
@@ -8,7 +7,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Pulsar Plugin Bootstrapper")]
 [assembly: AssemblyDescription("https://github.com/TomRichter/pulsar-plugin-loader")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Tom Richter")]
 [assembly: AssemblyProduct("Pulsar Plugin Loader")]
 [assembly: AssemblyCopyright("Copyright © Tom Richter 2018")]
 [assembly: AssemblyTrademark("")]

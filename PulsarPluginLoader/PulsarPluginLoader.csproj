@@ -63,7 +63,7 @@
     <Compile Include="hooks\GameVersion.cs" />
     <Compile Include="hooks\LoadPlugins.cs" />
     <Compile Include="hooks\TS3Fix.cs" />
-    <Compile Include="PluginEntryPoint.cs" />
+    <Compile Include="PulsarPlugin.cs" />
     <Compile Include="Loader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

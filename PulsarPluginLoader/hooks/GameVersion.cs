@@ -11,6 +11,7 @@ namespace PulsarPluginLoader.hooks
     {
         static void Postfix(PLNetworkManager __instance)
         {
+            Loader.Log("b");
             Assembly asm = Assembly.GetExecutingAssembly();
             FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(asm.Location);
 

@@ -57,12 +57,31 @@ namespace PulsarPluginLoader.hooks
 
             Loader.Log(string.Format("Scanning {0} for plugin entry point...", Path.GetFileName(assemblyPath)));
 
+            bool pluginLoaded = LoadPluginBySubclass(assemblyPath);
+
+            // Couldn't detect plugin by subclass; old style plugin?
+            // TODO: Remove deprecated plugin style some day.
+            if(!pluginLoaded)
+            {
+                pluginLoaded = LoadPluginByAttribute(assemblyPath);
+            }
+
+            if(!pluginLoaded)
+            {
+                Loader.Log(string.Format("Skipping {0}; couldn't find plugin entry point.", Path.GetFileName(assemblyPath)));
+            }
+
+            return pluginLoaded;
+        }
+
+        private static bool LoadPluginBySubclass(string assemblyPath)
+        {
             Assembly asm = Assembly.LoadFile(assemblyPath);
             Type pluginType = asm.GetTypes().FirstOrDefault(t => t.IsSubclassOf(typeof(PulsarPlugin)));
 
             if (pluginType != null)
             {
-                Loader.Log(string.Format("Loading {0}", pluginType.AssemblyQualifiedName));
+                Loader.Log(string.Format("Loading plugin: {0}", pluginType.AssemblyQualifiedName));
 
                 PulsarPlugin plugin = Activator.CreateInstance(pluginType) as PulsarPlugin;
 
@@ -70,9 +89,29 @@ namespace PulsarPluginLoader.hooks
             }
             else
             {
-                Loader.Log(string.Format("Skipping {0}; couldn't find plugin entry point.", Path.GetFileName(assemblyPath)));
                 return false;
             }
+        }
+
+        private static bool LoadPluginByAttribute(string assemblyPath)
+        {
+            Assembly asm = Assembly.LoadFrom(assemblyPath);
+            foreach (Type t in asm.GetTypes())
+            {
+                foreach (MethodInfo m in t.GetMethods(BindingFlags.Public | BindingFlags.Static))
+                {
+                    object[] attrs = m.GetCustomAttributes(typeof(PluginEntryPoint), inherit: false);
+                    if (attrs != null && attrs.Length > 0)
+                    {
+                        Loader.Log(string.Format("Loading old-style plugin via {0}: via {1}", m.Name, t.AssemblyQualifiedName));
+                        Loader.Log("Warning!  Plugin uses old attribute-style initialization.  Please upgrade to subclass-style initialization ASAP.");
+                        m.Invoke(null, null);
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
     }
 }

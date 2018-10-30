@@ -25,6 +25,7 @@ namespace PulsarInjector
 
             Loader.Patch(targetAssemblyPath, "PLGlobal", ".ctor", typeof(Loader), "InitializeHarmony");
             Loader.CopyAssemblies(Path.GetDirectoryName(targetAssemblyPath));
+            Directory.CreateDirectory(Path.Combine(Path.GetDirectoryName(targetAssemblyPath), "Plugins"));
 
             Loader.Log("Success!  You may now run the game normally.");
 

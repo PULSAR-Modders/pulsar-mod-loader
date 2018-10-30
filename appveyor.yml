@@ -2,6 +2,9 @@ image: Visual Studio 2017
 configuration: Release
 platform: Any CPU
 
+# Don't build un-tagged commits
+skip_non_tags: true
+
 # Don't get the full project history to save time
 shallow_clone: true
 

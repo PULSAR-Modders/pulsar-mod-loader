@@ -61,12 +61,12 @@ namespace PulsarPluginLoader.hooks
 
             // Couldn't detect plugin by subclass; old style plugin?
             // TODO: Remove deprecated plugin style some day.
-            if(!pluginLoaded)
+            if (!pluginLoaded)
             {
                 pluginLoaded = LoadPluginByAttribute(assemblyPath);
             }
 
-            if(!pluginLoaded)
+            if (!pluginLoaded)
             {
                 Loader.Log(string.Format("Skipping {0}; couldn't find plugin entry point.", Path.GetFileName(assemblyPath)));
             }

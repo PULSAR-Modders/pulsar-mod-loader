@@ -25,7 +25,9 @@ assembly_info:
 
 before_build:
 # Manually set build version in a way that allows environment variables
-- ps: Update-AppveyorBuild -Version "$env:APPVEYOR_REPO_TAG_NAME.$env:APPVEYOR_BUILD_NUMBER"
+- ps: >-
+    if (-not (Test-Path env:APPVEYOR_REPO_TAG_NAME)) { $env:APPVEYOR_REPO_TAG_NAME = "0.0.0" }
+    Update-AppveyorBuild -Version "$env:APPVEYOR_REPO_TAG_NAME.$env:APPVEYOR_BUILD_NUMBER"
 
 # Generate a VERSION file to include in artifacts
 - ps: >-
@@ -43,6 +45,8 @@ before_build:
 build:
   project: PulsarPluginLoader.sln
   verbosity: minimal
+  publish_nuget: true             # package projects with .nuspec files and push to artifacts
+  publish_nuget_symbols: true     # generate and publish NuGet symbol packages
 
 after_build:
 # Create two .ZIP artifacts:
@@ -70,3 +74,9 @@ deploy:
     appveyor_repo_tag: true
   auth_token:
     secure: nJm0eDjrcfLhUCTsM7AiTp7GJi40mWXB8LPFRHek/uMqcvX2mdxxZ8cusuns5GAO
+
+- provider: NuGet
+  api_key:
+    secure: 0YXNLjpjRQ0+OADwFJWdyMFDN4tfOR0G4Kxzx3AE/UCLmkXbx+Z00pi1XhQqClRL
+  skip_symbols: false
+  artifact: /.*\.nupkg/

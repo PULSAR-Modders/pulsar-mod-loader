@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <licenseUrl>https://raw.githubusercontent.com/TomRichter/pulsar-plugin-loader/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/TomRichter/pulsar-plugin-loader</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <copyright>Copyright 2018</copyright>
+    <tags>pulsar-game unity3d modding-games</tags>
+  </metadata>
+</package>

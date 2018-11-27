@@ -11,6 +11,8 @@ namespace PulsarPluginLoader.hooks
     class LoadPlugins
     {
         private static bool pluginsLoaded = false;
+        private static readonly string pluginsDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Plugins");
+
         static void Prefix()
         {
             if (!pluginsLoaded)
@@ -22,14 +24,15 @@ namespace PulsarPluginLoader.hooks
 
         private static void LoadPluginsDirectory()
         {
-            string pluginsDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Plugins");
-
             Loader.Log(String.Format("Attempting to load plugins from {0}", pluginsDir));
 
             if (!Directory.Exists(pluginsDir))
             {
                 Directory.CreateDirectory(pluginsDir);
             }
+
+            // Add plugins folder to AppDomain so plugins referencing other as-yet-unloaded plugins don't fail to find assemblies
+            AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(ResolvePluginsDirectory);
 
             int LoadedPluginCounter = 0;
             foreach (string assemblyPath in Directory.GetFiles(pluginsDir, "*.dll"))
@@ -46,6 +49,20 @@ namespace PulsarPluginLoader.hooks
             }
 
             Loader.Log(string.Format("Finished loading {0} plugins!", LoadedPluginCounter));
+        }
+
+        private static Assembly ResolvePluginsDirectory(object sender, ResolveEventArgs args)
+        {
+            string assemblyPath = Path.Combine(pluginsDir, new AssemblyName(args.Name).Name + ".dll");
+            Loader.Log(assemblyPath);
+            if (!File.Exists(assemblyPath))
+            {
+                return null;
+            }
+            else
+            {
+                return Assembly.LoadFrom(assemblyPath);
+            }
         }
 
         private static bool LoadPlugin(string assemblyPath)
@@ -100,7 +117,9 @@ namespace PulsarPluginLoader.hooks
             {
                 foreach (MethodInfo m in t.GetMethods(BindingFlags.Public | BindingFlags.Static))
                 {
+#pragma warning disable 612, 618
                     object[] attrs = m.GetCustomAttributes(typeof(PluginEntryPoint), inherit: false);
+#pragma warning restore 612, 618
                     if (attrs != null && attrs.Length > 0)
                     {
                         Loader.Log(string.Format("Loading old-style plugin via {0}: via {1}", m.Name, t.AssemblyQualifiedName));

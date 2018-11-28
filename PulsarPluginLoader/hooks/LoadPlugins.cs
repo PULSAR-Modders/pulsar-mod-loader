@@ -1,5 +1,6 @@
 ﻿using Harmony;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -24,7 +25,11 @@ namespace PulsarPluginLoader.hooks
 
         private static void LoadPluginsDirectory()
         {
-            Loader.Log(String.Format("Attempting to load plugins from {0}", pluginsDir));
+            Assembly asm = Assembly.GetExecutingAssembly();
+            FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(asm.Location);
+            
+            Loader.Log($"Starting {fvi.ProductName} v{fvi.FileVersion}");
+            Loader.Log($"Attempting to load plugins from {pluginsDir}");
 
             if (!Directory.Exists(pluginsDir))
             {
@@ -48,7 +53,7 @@ namespace PulsarPluginLoader.hooks
                 }
             }
 
-            Loader.Log(string.Format("Finished loading {0} plugins!", LoadedPluginCounter));
+            Loader.Log($"Finished loading {LoadedPluginCounter} plugins!");
         }
 
         private static Assembly ResolvePluginsDirectory(object sender, ResolveEventArgs args)
@@ -69,10 +74,10 @@ namespace PulsarPluginLoader.hooks
         {
             if (!File.Exists(assemblyPath))
             {
-                throw new IOException(string.Format("Couldn't find file: {0}", assemblyPath));
+                throw new IOException($"Couldn't find file: {assemblyPath}");
             }
 
-            Loader.Log(string.Format("Scanning {0} for plugin entry point...", Path.GetFileName(assemblyPath)));
+            Loader.Log($"Scanning {Path.GetFileName(assemblyPath)} for plugin entry point...");
 
             bool pluginLoaded = LoadPluginBySubclass(assemblyPath);
 
@@ -85,7 +90,7 @@ namespace PulsarPluginLoader.hooks
 
             if (!pluginLoaded)
             {
-                Loader.Log(string.Format("Skipping {0}; couldn't find plugin entry point.", Path.GetFileName(assemblyPath)));
+                Loader.Log($"Skipping {Path.GetFileName(assemblyPath)}; couldn't find plugin entry point.");
             }
 
             return pluginLoaded;
@@ -98,7 +103,7 @@ namespace PulsarPluginLoader.hooks
 
             if (pluginType != null)
             {
-                Loader.Log(string.Format("Loading plugin: {0}", pluginType.AssemblyQualifiedName));
+                Loader.Log($"Loading plugin: {pluginType.AssemblyQualifiedName}");
 
                 PulsarPlugin plugin = Activator.CreateInstance(pluginType) as PulsarPlugin;
 
@@ -120,9 +125,10 @@ namespace PulsarPluginLoader.hooks
 #pragma warning disable 612, 618
                     object[] attrs = m.GetCustomAttributes(typeof(PluginEntryPoint), inherit: false);
 #pragma warning restore 612, 618
+
                     if (attrs != null && attrs.Length > 0)
                     {
-                        Loader.Log(string.Format("Loading old-style plugin via {0}: via {1}", m.Name, t.AssemblyQualifiedName));
+                        Loader.Log($"Loading old-style plugin via {m.Name}: via {t.AssemblyQualifiedName}");
                         Loader.Log("Warning!  Plugin uses old attribute-style initialization.  Please upgrade to subclass-style initialization ASAP.");
                         m.Invoke(null, null);
                         return true;

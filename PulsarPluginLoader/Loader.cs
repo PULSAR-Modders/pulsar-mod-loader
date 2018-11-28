@@ -12,25 +12,25 @@ namespace PulsarPluginLoader
     {
         public static void Patch(string targetAssemblyPath, string targetClassName, string targetMethodName, Type sourceClassType, string sourceMethodName, bool useBackup = true)
         {
-            Log(string.Format("Attempting to hook {0}", targetAssemblyPath));
+            Log($"Attempting to hook {targetAssemblyPath}");
 
             string targetAssemblyDir = Path.GetDirectoryName(targetAssemblyPath);
 
             if (!File.Exists(targetAssemblyPath))
             {
-                throw new IOException(string.Format("Couldn't find file: {0}", targetAssemblyPath));
+                throw new IOException($"Couldn't find file: {targetAssemblyPath}");
             }
 
             string backupPath = targetAssemblyPath + ".bak";
             if (!File.Exists(backupPath))
             {
-                Log(string.Format("Making backup as {0}", Path.GetFileName(backupPath)));
+                Log($"Making backup as {Path.GetFileName(backupPath)}");
                 File.Copy(targetAssemblyPath, backupPath, overwrite: true);
             }
             else if (File.Exists(backupPath) && useBackup)
             {
                 /* Restore the hopefully original Assembly for easier patching */
-                Log(string.Format("Restoring the hopefully clean backup before hooking.  If you have issues, try deleting {0} and verifying files on Steam, especially after an official patch.", Path.GetFileName(backupPath)));
+                Log($"Restoring the hopefully clean backup before hooking.  If you have issues, try deleting {Path.GetFileName(backupPath)} and verifying files on Steam, especially after an official patch.");
                 File.Copy(backupPath, targetAssemblyPath, overwrite: true);
             }
 
@@ -50,7 +50,7 @@ namespace PulsarPluginLoader
                 throw new ArgumentNullException("Couldn't find method in target assembly!");
             }
 
-            Log(string.Format("Loaded relevant assemblies.  Injecting hook...", targetAssemblyPath));
+            Log("Loaded relevant assemblies.  Injecting hook...");
 
             /* Inject source method into front of target method */
             ILProcessor targetProcessor = targetMethod.Body.GetILProcessor();
@@ -61,7 +61,7 @@ namespace PulsarPluginLoader
             targetProcessor.InsertBefore(oldFirstInstruction, callToLoadPlugins);
 
             /* Save target assembly to disk */
-            Log(string.Format("Writing hooked {0} to disk...", Path.GetFileName(targetAssemblyPath)));
+            Log($"Writing hooked {Path.GetFileName(targetAssemblyPath)} to disk...");
             try
             {
                 targetAssembly.Write(targetAssemblyPath);
@@ -90,7 +90,7 @@ namespace PulsarPluginLoader
             foreach (string sourcePath in copyables)
             {
                 string destPath = Path.Combine(targetAssemblyDir, Path.GetFileName(sourcePath));
-                Log(string.Format("Copying {0} to {1}", Path.GetFileName(destPath), Path.GetDirectoryName(destPath)));
+                Log($"Copying {Path.GetFileName(destPath)} to {Path.GetDirectoryName(destPath)}");
                 try
                 {
                     File.Copy(sourcePath, destPath, overwrite: true);
@@ -105,7 +105,7 @@ namespace PulsarPluginLoader
 
         public static void Log(string message)
         {
-            Console.WriteLine(string.Format("[PPL] {0}", message));
+            Console.WriteLine($"[PPL] {message}");
         }
     }
 }

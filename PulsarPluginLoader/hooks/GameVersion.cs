@@ -14,7 +14,7 @@ namespace PulsarPluginLoader.hooks
             Assembly asm = Assembly.GetExecutingAssembly();
             FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(asm.Location);
 
-            __instance.VersionString += String.Format("\nPPL {0}", fvi.FileVersion);
+            __instance.VersionString += $"\nPPL {fvi.FileVersion}";
         }
 
     }

@@ -4,11 +4,12 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace PulsarPluginLoader.hooks
 {
     [HarmonyPatch(typeof(PLGlobal))]
-    [HarmonyPatch("Awake")]
+    [HarmonyPatch("Start")]
     class LoadPlugins
     {
         private static bool pluginsLoaded = false;
@@ -38,6 +39,8 @@ namespace PulsarPluginLoader.hooks
 
             // Add plugins folder to AppDomain so plugins referencing other as-yet-unloaded plugins don't fail to find assemblies
             AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(ResolvePluginsDirectory);
+            // Force PhotonNetwork's static constructor to run so patches of its methods don't fail
+            RuntimeHelpers.RunClassConstructor(typeof(PhotonNetwork).TypeHandle);
 
             int LoadedPluginCounter = 0;
             foreach (string assemblyPath in Directory.GetFiles(pluginsDir, "*.dll"))

@@ -10,36 +10,35 @@ namespace PulsarPluginLoader
 {
     public static class Loader
     {
-        public static void Patch(string targetAssemblyPath, string targetClassName, string targetMethodName, Type sourceClassType, string sourceMethodName, bool useBackup = true)
+        public static void CreateMethod(string targetAssemblyPath, string className, string newMethodName, Type returnType, Type[] parameterTypes)
+        {
+            if (parameterTypes == null)
+            {
+                parameterTypes = new Type[0];
+            }
+
+            AssemblyDefinition targetAssembly = LoadAssembly(targetAssemblyPath, null);
+
+            MethodDefinition newMethod = new MethodDefinition(newMethodName, Mono.Cecil.MethodAttributes.Private, targetAssembly.MainModule.ImportReference(returnType));
+
+            foreach (Type parameter in parameterTypes)
+            {
+                newMethod.Parameters.Add(new ParameterDefinition(targetAssembly.MainModule.ImportReference(parameter)));
+            }
+
+            newMethod.Body.Instructions.Add(Instruction.Create(OpCodes.Ret));
+
+            targetAssembly.MainModule.GetType(className).Methods.Add(newMethod);
+
+            SaveAssembly(targetAssembly, targetAssemblyPath);
+        }
+
+        public static void PatchMethod(string targetAssemblyPath, string targetClassName, string targetMethodName, Type sourceClassType, string sourceMethodName, bool useBackup = true)
         {
             Log($"Attempting to hook {targetAssemblyPath}");
 
-            string targetAssemblyDir = Path.GetDirectoryName(targetAssemblyPath);
-
-            if (!File.Exists(targetAssemblyPath))
-            {
-                throw new IOException($"Couldn't find file: {targetAssemblyPath}");
-            }
-
-            string backupPath = targetAssemblyPath + ".bak";
-            if (!File.Exists(backupPath))
-            {
-                Log($"Making backup as {Path.GetFileName(backupPath)}");
-                File.Copy(targetAssemblyPath, backupPath, overwrite: true);
-            }
-            else if (File.Exists(backupPath) && useBackup)
-            {
-                /* Restore the hopefully original Assembly for easier patching */
-                Log($"Restoring the hopefully clean backup before hooking.  If you have issues, try deleting {Path.GetFileName(backupPath)} and verifying files on Steam, especially after an official patch.");
-                File.Copy(backupPath, targetAssemblyPath, overwrite: true);
-            }
-
-            /* Specify directories containing dependencies of the assemblies */
-            DefaultAssemblyResolver assemblyResolver = new DefaultAssemblyResolver();
-            assemblyResolver.AddSearchDirectory(targetAssemblyDir);
-
             /* Load the assemblies */
-            AssemblyDefinition targetAssembly = AssemblyDefinition.ReadAssembly(targetAssemblyPath, new ReaderParameters { AssemblyResolver = assemblyResolver, ReadWrite = true, InMemory = true });
+            AssemblyDefinition targetAssembly = LoadAssembly(targetAssemblyPath, null);
 
             /* Find the methods involved */
             MethodDefinition targetMethod = targetAssembly.MainModule.GetType(targetClassName).Methods.First(m => m.Name == targetMethodName);
@@ -60,22 +59,49 @@ namespace PulsarPluginLoader
 
             targetProcessor.InsertBefore(oldFirstInstruction, callToLoadPlugins);
 
-            /* Save target assembly to disk */
-            Log($"Writing hooked {Path.GetFileName(targetAssemblyPath)} to disk...");
-            try
-            {
-                targetAssembly.Write(targetAssemblyPath);
-            }
-            catch (Exception e) when (e is BadImageFormatException)
-            {
-                Log("Failed to modify corrupted assembly.  Try again with a clean assembly (e.g., verify files on Steam)");
-            }
+            SaveAssembly(targetAssembly, targetAssemblyPath);
         }
 
         public static void InitializeHarmony()
         {
             HarmonyInstance harmony = HarmonyInstance.Create("wiki.pulsar.ppl");
             harmony.PatchAll(Assembly.GetExecutingAssembly());
+        }
+
+        private static AssemblyDefinition LoadAssembly(string assemblyPath, string[] depencencyDirectories)
+        {
+            if (!File.Exists(assemblyPath))
+            {
+                throw new IOException($"Couldn't find file: {assemblyPath}");
+            }
+
+            /* Specify directories containing dependencies of the assemblies */
+            DefaultAssemblyResolver assemblyResolver = new DefaultAssemblyResolver();
+            assemblyResolver.AddSearchDirectory(Path.GetDirectoryName(assemblyPath));
+
+            if (depencencyDirectories != null)
+            {
+                foreach (string dir in depencencyDirectories)
+                {
+                    assemblyResolver.AddSearchDirectory(dir);
+                }
+            }
+
+            /* Load the assembly */
+            return AssemblyDefinition.ReadAssembly(assemblyPath, new ReaderParameters { AssemblyResolver = assemblyResolver, ReadWrite = true, InMemory = true });
+        }
+
+        private static void SaveAssembly(AssemblyDefinition assembly, string assemblyPath)
+        {
+            Log($"Writing hooked {Path.GetFileName(assemblyPath)} to disk...");
+            try
+            {
+                assembly.Write(assemblyPath);
+            }
+            catch (Exception e) when (e is BadImageFormatException)
+            {
+                Log("Failed to modify corrupted assembly.  Try again with a clean assembly (e.g., verify files on Steam)");
+            }
         }
 
         public static void CopyAssemblies(string targetAssemblyDir)

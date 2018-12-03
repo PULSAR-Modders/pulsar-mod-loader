@@ -1,12 +1,10 @@
 ﻿using Harmony;
-using System;
 using System.Diagnostics;
 using System.Reflection;
 
-namespace PulsarPluginLoader.hooks
+namespace PulsarPluginLoader.Patches
 {
-    [HarmonyPatch(typeof(PLNetworkManager))]
-    [HarmonyPatch("Start")]
+    [HarmonyPatch(typeof(PLNetworkManager), "Start")]
     class GameVersion
     {
         static void Postfix(PLNetworkManager __instance)

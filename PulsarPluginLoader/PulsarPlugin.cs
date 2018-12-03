@@ -73,5 +73,16 @@ namespace PulsarPluginLoader
                 return String.Empty;
             }
         }
+
+        /// <summary>
+        /// Name of plugin.
+        /// </summary>
+        public virtual string Name
+        {
+            get
+            {
+                return VersionInfo.ProductName;
+            }
+        }
     }
 }

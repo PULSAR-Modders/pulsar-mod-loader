@@ -3,7 +3,7 @@ using Harmony;
 using System;
 using System.Linq;
 
-namespace PulsarPluginLoader.hooks
+namespace PulsarPluginLoader.Patches
 {
     [HarmonyPatch(typeof(PhotonNetwork), "CreateRoom", new Type[] { typeof(string), typeof(RoomOptions), typeof(TypedLobby) })]
     class PhotonProperties

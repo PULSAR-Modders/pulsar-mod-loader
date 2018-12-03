@@ -1,14 +1,13 @@
-﻿using Harmony;
-using Mono.Cecil;
+﻿using Mono.Cecil;
 using Mono.Cecil.Cil;
+using PulsarPluginLoader.Utils;
 using System;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 
-namespace PulsarPluginLoader
+namespace PulsarPluginLoader.Injections
 {
-    public static class Loader
+    public static class InjectionTools
     {
         public static void CreateMethod(string targetAssemblyPath, string className, string newMethodName, Type returnType, Type[] parameterTypes)
         {
@@ -19,7 +18,7 @@ namespace PulsarPluginLoader
 
             AssemblyDefinition targetAssembly = LoadAssembly(targetAssemblyPath, null);
 
-            MethodDefinition newMethod = new MethodDefinition(newMethodName, Mono.Cecil.MethodAttributes.Private, targetAssembly.MainModule.ImportReference(returnType));
+            MethodDefinition newMethod = new MethodDefinition(newMethodName, MethodAttributes.Private, targetAssembly.MainModule.ImportReference(returnType));
 
             foreach (Type parameter in parameterTypes)
             {
@@ -33,9 +32,9 @@ namespace PulsarPluginLoader
             SaveAssembly(targetAssembly, targetAssemblyPath);
         }
 
-        public static void PatchMethod(string targetAssemblyPath, string targetClassName, string targetMethodName, Type sourceClassType, string sourceMethodName, bool useBackup = true)
+        public static void PatchMethod(string targetAssemblyPath, string targetClassName, string targetMethodName, Type sourceClassType, string sourceMethodName)
         {
-            Log($"Attempting to hook {targetAssemblyPath}");
+            Logger.Info($"Attempting to hook {targetAssemblyPath}");
 
             /* Load the assemblies */
             AssemblyDefinition targetAssembly = LoadAssembly(targetAssemblyPath, null);
@@ -49,7 +48,7 @@ namespace PulsarPluginLoader
                 throw new ArgumentNullException("Couldn't find method in target assembly!");
             }
 
-            Log("Loaded relevant assemblies.  Injecting hook...");
+            Logger.Info("Loaded relevant assemblies.  Injecting hook...");
 
             /* Inject source method into front of target method */
             ILProcessor targetProcessor = targetMethod.Body.GetILProcessor();
@@ -60,12 +59,6 @@ namespace PulsarPluginLoader
             targetProcessor.InsertBefore(oldFirstInstruction, callToLoadPlugins);
 
             SaveAssembly(targetAssembly, targetAssemblyPath);
-        }
-
-        public static void InitializeHarmony()
-        {
-            HarmonyInstance harmony = HarmonyInstance.Create("wiki.pulsar.ppl");
-            harmony.PatchAll(Assembly.GetExecutingAssembly());
         }
 
         private static AssemblyDefinition LoadAssembly(string assemblyPath, string[] depencencyDirectories)
@@ -93,45 +86,15 @@ namespace PulsarPluginLoader
 
         private static void SaveAssembly(AssemblyDefinition assembly, string assemblyPath)
         {
-            Log($"Writing hooked {Path.GetFileName(assemblyPath)} to disk...");
+            Logger.Info($"Writing hooked {Path.GetFileName(assemblyPath)} to disk...");
             try
             {
                 assembly.Write(assemblyPath);
             }
             catch (Exception e) when (e is BadImageFormatException)
             {
-                Log("Failed to modify corrupted assembly.  Try again with a clean assembly (e.g., verify files on Steam)");
+                Logger.Info("Failed to modify corrupted assembly.  Try again with a clean assembly (e.g., verify files on Steam)");
             }
-        }
-
-        public static void CopyAssemblies(string targetAssemblyDir)
-        {
-            /* Copy important assemblies to target assembly's directory */
-            string sourceDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string[] copyables = new string[] {
-                Assembly.GetExecutingAssembly().Location,
-                Path.Combine(sourceDir, "0Harmony.dll")
-            };
-
-            foreach (string sourcePath in copyables)
-            {
-                string destPath = Path.Combine(targetAssemblyDir, Path.GetFileName(sourcePath));
-                Log($"Copying {Path.GetFileName(destPath)} to {Path.GetDirectoryName(destPath)}");
-                try
-                {
-                    File.Copy(sourcePath, destPath, overwrite: true);
-                }
-                catch (IOException)
-                {
-                    Log("Copying failed!  Close the game and try again.");
-                    Environment.Exit(0);
-                }
-            };
-        }
-
-        public static void Log(string message)
-        {
-            Console.WriteLine($"[PPL] {message}");
         }
     }
 }

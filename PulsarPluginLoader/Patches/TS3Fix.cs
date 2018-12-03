@@ -1,9 +1,8 @@
 ﻿using Harmony;
 
-namespace PulsarPluginLoader.hooks
+namespace PulsarPluginLoader.Patches
 {
-    [HarmonyPatch(typeof(PLVoiceChatManager))]
-    [HarmonyPatch("GetVoiceChatChannelName")]
+    [HarmonyPatch(typeof(PLVoiceChatManager), "GetVoiceChatChannelName")]
     class TS3Fix
     {
         private static string Postfix(string __result)

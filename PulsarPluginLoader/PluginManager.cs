@@ -17,6 +17,21 @@ namespace PulsarPluginLoader
         private readonly Dictionary<string, PulsarPlugin> activePlugins;
         private readonly HashSet<string> pluginDirectories;
 
+        private static PluginManager _instance = null;
+
+        public static PluginManager Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new PluginManager();
+                }
+
+                return _instance;
+            }
+        }
+
         public PluginManager()
         {
             FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location);

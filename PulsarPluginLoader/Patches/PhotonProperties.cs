@@ -1,17 +1,19 @@
 ﻿using ExitGames.Client.Photon;
 using Harmony;
+using PPL.CommonExtensions.Patches;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 
 namespace PulsarPluginLoader.Patches
 {
     [HarmonyPatch(typeof(PhotonNetwork), "CreateRoom", new Type[] { typeof(string), typeof(RoomOptions), typeof(TypedLobby) })]
-    class PhotonProperties
+    public static class PhotonProperties
     {
 
         private static void Prefix(RoomOptions roomOptions)
         {
-            Console.WriteLine("aaaaa PhotonNetwork.CreateRoom()");
             // Key-Value pairs attached to room as metadata
             roomOptions.customRoomProperties.Merge(new Hashtable() {
                 { "isModded", true},
@@ -28,6 +30,7 @@ namespace PulsarPluginLoader.Patches
         {
             if (PhotonNetwork.isMasterClient && PhotonNetwork.inRoom && PLNetworkManager.Instance != null)
             {
+                Console.WriteLine("Update Player List");
                 Room room = PhotonNetwork.room;
                 Hashtable customProperties = room.customProperties;
 
@@ -47,9 +50,20 @@ namespace PulsarPluginLoader.Patches
     [HarmonyPatch(typeof(PLServer), "AddPlayer")]
     class PlayerJoined
     {
-        private static void Postfix()
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            PhotonProperties.UpdatePlayerList();
+            List<CodeInstruction> targetSequence = new List<CodeInstruction>()
+            {
+                new CodeInstruction(OpCodes.Ldarg_1),
+                new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(PLPlayer), "ResetTalentPoints")),
+            };
+
+            List<CodeInstruction> injectedSequence = new List<CodeInstruction>()
+            {
+                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(PhotonProperties), "UpdatePlayerList")),
+            };
+
+            return HarmonyHelpers.PatchBySequence(instructions, targetSequence, injectedSequence).ToList();
         }
     }
 

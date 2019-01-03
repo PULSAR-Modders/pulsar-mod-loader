@@ -26,8 +26,12 @@ namespace PulsarInjector
             }
 
             Directory.CreateDirectory(Path.Combine(Path.GetDirectoryName(targetAssemblyPath), "Plugins"));
+
             InjectionTools.CreateMethod(targetAssemblyPath, "PLGlobal", "Start", typeof(void), null);
+            InjectionTools.PatchMethod(targetAssemblyPath, "PLGlobal", "Start", typeof(LoggingInjections), "LoggingCleanup");
+
             InjectionTools.PatchMethod(targetAssemblyPath, "PLGlobal", "Awake", typeof(HarmonyInjector), "InitializeHarmony");
+
             CopyAssemblies(Path.GetDirectoryName(targetAssemblyPath));
 
             Logger.Info("Success!  You may now run the game normally.");

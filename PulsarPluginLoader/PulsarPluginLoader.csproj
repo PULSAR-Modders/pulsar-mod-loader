@@ -68,6 +68,7 @@
   <ItemGroup>
     <Compile Include="Injections\HarmonyInjector.cs" />
     <Compile Include="Injections\InjectionTools.cs" />
+    <Compile Include="Injections\LoggingInjections.cs" />
     <Compile Include="Patches\GameVersion.cs" />
     <Compile Include="Patches\LoadPlugins.cs" />
     <Compile Include="Patches\PhotonProperties.cs" />
@@ -87,5 +88,13 @@
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>SET PLUGIN_DIR="C:\Program Files (x86)\Steam\steamapps\common\PULSARLostColony\PULSAR_LostColony_Data\Managed\"
+
+IF EXIST %25PLUGIN_DIR%25 (
+    ECHO Copying DLLs to directory...
+    XCOPY /Y /F $(TargetPath) %25PLUGIN_DIR%25
+)</PostBuildEvent>
   </PropertyGroup>
 </Project>

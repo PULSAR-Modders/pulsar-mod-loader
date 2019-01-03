@@ -1,6 +1,5 @@
 ﻿using ExitGames.Client.Photon;
 using Harmony;
-using PPL.CommonExtensions.Patches;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,8 +15,8 @@ namespace PulsarPluginLoader.Patches
         {
             // Key-Value pairs attached to room as metadata
             roomOptions.customRoomProperties.Merge(new Hashtable() {
-                { "isModded", true},
-                { "playerList", ""} // "playerName\tclassName" -> "Test Name\tCaptain"
+                { "isModded", true },
+                { "playerList", "" }  // "playerName\tclassName" -> "Test Name\tCaptain"
             });
             // Keys of metadata exposed to public game list
             roomOptions.customRoomPropertiesForLobby = roomOptions.customRoomPropertiesForLobby.AddRangeToArray(new string[] {
@@ -30,7 +29,6 @@ namespace PulsarPluginLoader.Patches
         {
             if (PhotonNetwork.isMasterClient && PhotonNetwork.inRoom && PLNetworkManager.Instance != null)
             {
-                Console.WriteLine("Update Player List");
                 Room room = PhotonNetwork.room;
                 Hashtable customProperties = room.customProperties;
 

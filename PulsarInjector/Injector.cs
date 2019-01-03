@@ -27,6 +27,8 @@ namespace PulsarInjector
 
             Directory.CreateDirectory(Path.Combine(Path.GetDirectoryName(targetAssemblyPath), "Plugins"));
 
+            AntiCheatBypass.Inject(targetAssemblyPath);
+
             InjectionTools.CreateMethod(targetAssemblyPath, "PLGlobal", "Start", typeof(void), null);
             InjectionTools.PatchMethod(targetAssemblyPath, "PLGlobal", "Start", typeof(LoggingInjections), "LoggingCleanup");
 

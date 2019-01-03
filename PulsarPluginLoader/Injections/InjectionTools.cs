@@ -32,6 +32,30 @@ namespace PulsarPluginLoader.Injections
             SaveAssembly(targetAssembly, targetAssemblyPath);
         }
 
+        public static void ShortCircuitMethod(string targetAssemblyPath, string targetClassName, string targetMethodName)
+        {
+            Logger.Info($"Attempting to short circuit method in {targetAssemblyPath}@{targetClassName}::{targetMethodName}");
+
+            /* Load the assemblies */
+            AssemblyDefinition targetAssembly = LoadAssembly(targetAssemblyPath, null);
+
+            /* Find the methods involved */
+            MethodDefinition targetMethod = targetAssembly.MainModule.GetType(targetClassName).Methods.First(m => m.Name == targetMethodName);
+
+            if (targetMethod == null)
+            {
+                throw new ArgumentNullException("Couldn't find method in target assembly!");
+            }
+
+            Logger.Info("Loaded relevant assemblies.  Short circuiting method...");
+
+            /* Inject return at start of target method */
+            ILProcessor targetProcessor = targetMethod.Body.GetILProcessor();
+            targetProcessor.InsertBefore(targetMethod.Body.Instructions[0], targetProcessor.Create(OpCodes.Ret));
+
+            SaveAssembly(targetAssembly, targetAssemblyPath);
+        }
+
         public static void PatchMethod(string targetAssemblyPath, string targetClassName, string targetMethodName, Type sourceClassType, string sourceMethodName)
         {
             Logger.Info($"Attempting to hook {targetAssemblyPath}");
@@ -54,9 +78,9 @@ namespace PulsarPluginLoader.Injections
             ILProcessor targetProcessor = targetMethod.Body.GetILProcessor();
 
             Instruction oldFirstInstruction = targetMethod.Body.Instructions[0];
-            Instruction callToLoadPlugins = targetProcessor.Create(OpCodes.Call, sourceMethod);
+            Instruction callToInjectedMethod = targetProcessor.Create(OpCodes.Call, sourceMethod);
 
-            targetProcessor.InsertBefore(oldFirstInstruction, callToLoadPlugins);
+            targetProcessor.InsertBefore(oldFirstInstruction, callToInjectedMethod);
 
             SaveAssembly(targetAssembly, targetAssemblyPath);
         }

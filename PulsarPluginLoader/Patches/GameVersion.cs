@@ -12,7 +12,7 @@ namespace PulsarPluginLoader.Patches
             Assembly asm = Assembly.GetExecutingAssembly();
             FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(asm.Location);
 
-            __instance.VersionString += $"\nPPL {fvi.FileVersion}";
+            __instance.VersionString = $"{__instance.VersionString}\nPPL {fvi.FileVersion}i";
         }
 
     }

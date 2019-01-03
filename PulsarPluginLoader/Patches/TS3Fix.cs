@@ -7,11 +7,13 @@ namespace PulsarPluginLoader.Patches
     {
         private static string Postfix(string __result)
         {
+            string versionString = PLNetworkManager.Instance.VersionString.GetDecrypted();
+
             return string.Concat(new string[]
             {
                 "[",
                 PLXMLOptionsIO.Instance.CurrentOptions.GetStringValue("PhotonRegion") + " - ",
-                PLNetworkManager.Instance.VersionString.Substring(0, PLNetworkManager.Instance.VersionString.IndexOf('\n')),
+                versionString.Substring(0, versionString.IndexOf('\n')),
                 PhotonNetwork.room.name,
                 "]"
             }).Normalize();

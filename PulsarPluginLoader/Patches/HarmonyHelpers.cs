@@ -1,4 +1,5 @@
 ﻿using Harmony;
+using Harmony.ILCopying;
 using PulsarPluginLoader.Utils;
 using System;
 using System.Collections.Generic;
@@ -28,8 +29,8 @@ namespace PulsarPluginLoader.Patches
 
                     for (int x = 1; x < targetSize && foundTargetSequence; x++)
                     {
-                        foundTargetSequence = newInstructions[i + x].opcode == targetSequence.ElementAt(x).opcode
-                            && newInstructions[i + x].operand == targetSequence.ElementAt(x).operand;
+                        foundTargetSequence = newInstructions[i + x].opcode.Equals(targetSequence.ElementAt(x).opcode)
+                            && newInstructions[i + x].operand.Equals(targetSequence.ElementAt(x).operand);
                     }
 
                     if (foundTargetSequence)

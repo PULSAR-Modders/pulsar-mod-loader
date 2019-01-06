@@ -61,7 +61,7 @@ namespace PulsarPluginLoader.Patches
                 new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(PhotonProperties), "UpdatePlayerList")),
             };
 
-            return HarmonyHelpers.PatchBySequence(instructions, targetSequence, injectedSequence).ToList();
+            return HarmonyHelpers.PatchBySequence(instructions, targetSequence, injectedSequence);
         }
     }
 

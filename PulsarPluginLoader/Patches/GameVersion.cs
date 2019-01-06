@@ -14,6 +14,5 @@ namespace PulsarPluginLoader.Patches
 
             __instance.VersionString = $"{__instance.VersionString}\nPPL {fvi.FileVersion}i";
         }
-
     }
 }

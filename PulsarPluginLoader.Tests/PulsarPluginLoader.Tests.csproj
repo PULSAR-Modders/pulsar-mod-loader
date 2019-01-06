@@ -49,7 +49,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="PatchBySequenceTests.cs" />
+    <Compile Include="Patches\PatchBySequenceTests.cs" />
+    <Compile Include="Patches\SampleClass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

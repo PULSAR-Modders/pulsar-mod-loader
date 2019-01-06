@@ -11,7 +11,7 @@ namespace PulsarPluginLoader.Patches
 {
     public static class HarmonyHelpers
     {
-        public static IEnumerable<CodeInstruction> PatchBySequence(IEnumerable<CodeInstruction> instructions, IEnumerable<CodeInstruction> targetSequence, IEnumerable<CodeInstruction> patchSequence, PatchMode patchMode = PatchMode.AFTER)
+        public static IEnumerable<CodeInstruction> PatchBySequence(IEnumerable<CodeInstruction> instructions, IEnumerable<CodeInstruction> targetSequence, IEnumerable<CodeInstruction> patchSequence, PatchMode patchMode = PatchMode.AFTER, bool checkOperands = true)
         {
             List<CodeInstruction> newInstructions = instructions.ToList();
 
@@ -30,7 +30,7 @@ namespace PulsarPluginLoader.Patches
                     for (int x = 1; x < targetSize && foundTargetSequence; x++)
                     {
                         foundTargetSequence = newInstructions[i + x].opcode.Equals(targetSequence.ElementAt(x).opcode)
-                            && newInstructions[i + x].operand.Equals(targetSequence.ElementAt(x).operand);
+                            && (checkOperands || newInstructions[i + x].operand.Equals(targetSequence.ElementAt(x).operand));
                     }
 
                     if (foundTargetSequence)

@@ -25,6 +25,26 @@ namespace PulsarInjector
                 return;
             }
 
+            string backupPath = targetAssemblyPath.Substring(0, targetAssemblyPath.Length - 3) + "bak";
+            if (InjectionTools.IsModified(targetAssemblyPath))
+            {
+                if (File.Exists(backupPath))
+                {
+                    //Load from backup
+                    File.Copy(backupPath, targetAssemblyPath, true);
+                }
+                else
+                {
+                    Logger.Info("The assembly is already modified, and a backup could not be found.");
+                    return;
+                }
+            }
+            else
+            {
+                //Create backup
+                File.Copy(targetAssemblyPath, backupPath, true);
+            }
+
             Directory.CreateDirectory(Path.Combine(Path.GetDirectoryName(targetAssemblyPath), "Plugins"));
 
             AntiCheatBypass.Inject(targetAssemblyPath);

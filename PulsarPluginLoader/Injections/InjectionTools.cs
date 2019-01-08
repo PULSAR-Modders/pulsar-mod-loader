@@ -56,6 +56,29 @@ namespace PulsarPluginLoader.Injections
             SaveAssembly(targetAssembly, targetAssemblyPath);
         }
 
+        public static bool IsModified(string targetAssemblyPath)
+        {
+            string targetClassName = "PLGameStatic";
+            string targetMethodName = "OnInjectionCheatDetected";
+
+            /* Load the assemblies */
+            AssemblyDefinition targetAssembly = LoadAssembly(targetAssemblyPath, null);
+
+            /* Find the methods involved */
+            MethodDefinition targetMethod = targetAssembly.MainModule.GetType(targetClassName).Methods.First(m => m.Name == targetMethodName);
+
+            if (targetMethod == null)
+            {
+                throw new ArgumentNullException("Couldn't find method in target assembly!");
+            }
+
+            if (targetMethod.Body.Instructions[0].OpCode == OpCodes.Ret)
+            {
+                return true;
+            }
+            return false;
+        }
+
         public static void PatchMethod(string targetAssemblyPath, string targetClassName, string targetMethodName, Type sourceClassType, string sourceMethodName)
         {
             Logger.Info($"Attempting to hook {targetAssemblyPath}");

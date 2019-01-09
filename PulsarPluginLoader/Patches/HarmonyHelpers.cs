@@ -20,7 +20,7 @@ namespace PulsarPluginLoader.Patches
 
             for (int i = 0; i < newInstructions.Count; i++)
             {
-                bool startsWithTargetInstruction = newInstructions[i].opcode == targetStart.opcode;
+                bool startsWithTargetInstruction = newInstructions[i].opcode.Equals(targetStart.opcode);
                 bool targetSequenceStillFits = i + targetSize <= newInstructions.Count;
 
                 if (startsWithTargetInstruction && targetSequenceStillFits)
@@ -53,7 +53,7 @@ namespace PulsarPluginLoader.Patches
 
                         break;
                     }
-                    else
+                    else if(!targetSequenceStillFits)
                     {
                         StringBuilder sb = new StringBuilder();
 

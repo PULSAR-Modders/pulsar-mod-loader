@@ -22,7 +22,7 @@ namespace PulsarPluginLoader.Tests.Patches
                 CodeInstruction a = first.ElementAt(i);
                 CodeInstruction b = second.ElementAt(i);
 
-                if (!a.opcode.Equals(b.opcode) && a.operand.Equals(b.operand))
+                if (!a.opcode.Equals(b.opcode) || !a.operand.Equals(b.operand))
                 {
                     return false;
                 }
@@ -133,7 +133,6 @@ namespace PulsarPluginLoader.Tests.Patches
             List<CodeInstruction> expected = new List<CodeInstruction>()
             {
                 new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(SampleClass), "IntField")),
-                new CodeInstruction(OpCodes.Nop),
                 new CodeInstruction(OpCodes.Ldc_R4, 12),
                 new CodeInstruction(OpCodes.Ldc_R4, 18),
             };
@@ -167,7 +166,6 @@ namespace PulsarPluginLoader.Tests.Patches
             List<CodeInstruction> expected = new List<CodeInstruction>()
             {
                 new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(SampleClass), "IntField")),
-                new CodeInstruction(OpCodes.Nop),
                 new CodeInstruction(OpCodes.Ldc_R4, 12)
             };
 
@@ -202,7 +200,6 @@ namespace PulsarPluginLoader.Tests.Patches
             List<CodeInstruction> expected = new List<CodeInstruction>()
             {
                 new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(SampleClass), "IntField")),
-                new CodeInstruction(OpCodes.Nop),
                 new CodeInstruction(OpCodes.Ldc_R4, 12),
                 new CodeInstruction(OpCodes.Ldc_R4, 18),
                 new CodeInstruction(OpCodes.Ldc_R4, 24),

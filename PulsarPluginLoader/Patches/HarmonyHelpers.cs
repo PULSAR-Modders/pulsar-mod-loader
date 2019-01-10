@@ -1,5 +1,4 @@
 ﻿using Harmony;
-using Harmony.ILCopying;
 using PulsarPluginLoader.Utils;
 using System;
 using System.Collections.Generic;
@@ -29,8 +28,12 @@ namespace PulsarPluginLoader.Patches
 
                     for (int x = 1; x < targetSize && foundTargetSequence; x++)
                     {
-                        foundTargetSequence = newInstructions[i + x].opcode.Equals(targetSequence.ElementAt(x).opcode)
-                            && (checkOperands || newInstructions[i + x].operand.Equals(targetSequence.ElementAt(x).operand));
+                        foundTargetSequence = newInstructions[i + x].opcode.Equals(targetSequence.ElementAt(x).opcode);
+                        
+                        if(checkOperands)
+                        {
+                            foundTargetSequence = foundTargetSequence && newInstructions[i + x].operand.Equals(targetSequence.ElementAt(x).operand);
+        }
                     }
 
                     if (foundTargetSequence)
@@ -38,13 +41,13 @@ namespace PulsarPluginLoader.Patches
                         if (patchMode == PatchMode.BEFORE || patchMode == PatchMode.AFTER)
                         {
                             int indexToInsertAt = patchMode == PatchMode.AFTER ? i + targetSize : i;
-                            newInstructions.InsertRange(indexToInsertAt, patchSequence);
+                            newInstructions.InsertRange(indexToInsertAt, patchSequence.Select(c => c.Clone()));
                         }
                         else if (patchMode == PatchMode.REPLACE)
                         {
-                            newInstructions[i].opcode = OpCodes.Nop;
-                            newInstructions.RemoveRange(i + 1, targetSize - 1);
-                            newInstructions.InsertRange(i + 1, patchSequence);
+                            //newInstructions[i].opcode = OpCodes.Nop;
+                            newInstructions.RemoveRange(i, targetSize);
+                            newInstructions.InsertRange(i, patchSequence.Select(c => c.Clone()));
                         }
                         else
                         {
@@ -53,7 +56,7 @@ namespace PulsarPluginLoader.Patches
 
                         break;
                     }
-                    else if(!targetSequenceStillFits)
+                    else if (!targetSequenceStillFits)
                     {
                         StringBuilder sb = new StringBuilder();
 
@@ -72,6 +75,28 @@ namespace PulsarPluginLoader.Patches
                     }
                 }
             }
+
+            StringBuilder debug = new StringBuilder();
+
+            debug.AppendLine("Target Sequence:");
+            foreach (CodeInstruction c in targetSequence)
+            {
+                debug.AppendLine($"\t{c.ToString()}");
+            }
+
+            debug.AppendLine("Patch Sequence:");
+            foreach (CodeInstruction c in patchSequence)
+            {
+                debug.AppendLine($"\t{c.ToString()}");
+            }
+
+            debug.AppendLine("Original Instructions:");
+            for(int y = 0; y < instructions.Count(); y++)
+            {
+                debug.AppendLine($"\t{y} {instructions.ElementAt(y).ToString()}");
+            }
+
+            Logger.Info(debug.ToString());
 
             return newInstructions.AsEnumerable();
         }

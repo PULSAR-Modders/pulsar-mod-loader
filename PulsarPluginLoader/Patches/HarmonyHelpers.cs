@@ -1,9 +1,10 @@
 ﻿using Harmony;
+using Harmony.ILCopying;
 using PulsarPluginLoader.Utils;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Emit;
 using System.Text;
 
 namespace PulsarPluginLoader.Patches
@@ -28,12 +29,12 @@ namespace PulsarPluginLoader.Patches
 
                     for (int x = 1; x < targetSize && foundTargetSequence; x++)
                     {
-                        foundTargetSequence = newInstructions[i + x].opcode.Equals(targetSequence.ElementAt(x).opcode);
-                        
-                        if(checkOperands)
-                        {
-                            foundTargetSequence = foundTargetSequence && newInstructions[i + x].operand.Equals(targetSequence.ElementAt(x).operand);
-        }
+                        foundTargetSequence = newInstructions[i + x].opcode.Equals(targetSequence.ElementAt(x).opcode)
+                            && (!checkOperands || (
+                                    (newInstructions[i + x].operand == null && targetSequence.ElementAt(x).operand == null) 
+                                    || newInstructions[i + x].operand.Equals(targetSequence.ElementAt(x).operand)
+                                )
+                        );
                     }
 
                     if (foundTargetSequence)
@@ -41,13 +42,12 @@ namespace PulsarPluginLoader.Patches
                         if (patchMode == PatchMode.BEFORE || patchMode == PatchMode.AFTER)
                         {
                             int indexToInsertAt = patchMode == PatchMode.AFTER ? i + targetSize : i;
-                            newInstructions.InsertRange(indexToInsertAt, patchSequence.Select(c => c.Clone()));
+                            newInstructions.InsertRange(indexToInsertAt, patchSequence.Select(c => c.FullClone()));
                         }
                         else if (patchMode == PatchMode.REPLACE)
                         {
-                            //newInstructions[i].opcode = OpCodes.Nop;
                             newInstructions.RemoveRange(i, targetSize);
-                            newInstructions.InsertRange(i, patchSequence.Select(c => c.Clone()));
+                            newInstructions.InsertRange(i, patchSequence.Select(c => c.FullClone() ));
                         }
                         else
                         {
@@ -76,28 +76,6 @@ namespace PulsarPluginLoader.Patches
                 }
             }
 
-            StringBuilder debug = new StringBuilder();
-
-            debug.AppendLine("Target Sequence:");
-            foreach (CodeInstruction c in targetSequence)
-            {
-                debug.AppendLine($"\t{c.ToString()}");
-            }
-
-            debug.AppendLine("Patch Sequence:");
-            foreach (CodeInstruction c in patchSequence)
-            {
-                debug.AppendLine($"\t{c.ToString()}");
-            }
-
-            debug.AppendLine("Original Instructions:");
-            for(int y = 0; y < instructions.Count(); y++)
-            {
-                debug.AppendLine($"\t{y} {instructions.ElementAt(y).ToString()}");
-            }
-
-            Logger.Info(debug.ToString());
-
             return newInstructions.AsEnumerable();
         }
 
@@ -106,6 +84,48 @@ namespace PulsarPluginLoader.Patches
             BEFORE,
             AFTER,
             REPLACE
+        }
+
+        /// <summary>
+        /// Logs the string form of an IEnumerable sequence to ease debugging.
+        /// </summary>
+        /// <param name="label">Text to display before the sequence.</param>
+        /// <param name="sequence">Sequence to display, one element per line.</param>
+        public static void LogSequence(string label, IEnumerable sequence)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.AppendLine(label);
+            foreach (object c in sequence)
+            {
+                sb.AppendLine($"\t{c.ToString()}");
+            }
+
+            Logger.Info(sb.ToString());
+        }
+
+        /// <summary>
+        /// Deep-copies the instruction, including labels and exception blocks.
+        /// </summary>
+        /// <param name="instruction">The instruction to fully clone.</param>
+        /// <returns>Fully cloned instruction.</returns>
+        public static CodeInstruction FullClone(this CodeInstruction instruction)
+        {
+            CodeInstruction clone = instruction.Clone();
+            clone.labels = instruction.labels.ConvertAll(l => l); // TODO: Clone labels?
+            clone.blocks = instruction.blocks.ConvertAll(b => b.Clone());
+
+            return clone;
+        }
+
+        /// <summary>
+        /// Deep-copies the exception block.
+        /// </summary>
+        /// <param name="block">The exception block to clone.</param>
+        /// <returns>The cloned exception block.</returns>
+        public static ExceptionBlock Clone(this ExceptionBlock block)
+        {
+            return new ExceptionBlock(block.blockType, block.catchType);
         }
     }
 }

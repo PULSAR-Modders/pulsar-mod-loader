@@ -11,7 +11,7 @@ namespace PulsarPluginLoader.Patches
 {
     public static class HarmonyHelpers
     {
-        public static IEnumerable<CodeInstruction> PatchBySequence(IEnumerable<CodeInstruction> instructions, IEnumerable<CodeInstruction> targetSequence, IEnumerable<CodeInstruction> patchSequence, PatchMode patchMode = PatchMode.AFTER, bool checkOperands = true)
+        public static IEnumerable<CodeInstruction> PatchBySequence(IEnumerable<CodeInstruction> instructions, IEnumerable<CodeInstruction> targetSequence, IEnumerable<CodeInstruction> patchSequence, PatchMode patchMode = PatchMode.AFTER, CheckMode checkMode = CheckMode.ALWAYS, bool showDebugOutput = false)
         {
             List<CodeInstruction> newInstructions = instructions.ToList();
 
@@ -28,12 +28,19 @@ namespace PulsarPluginLoader.Patches
 
                     for (int x = 0; x < targetSize && foundTargetSequence; x++)
                     {
-                        foundTargetSequence = newInstructions[i + x].opcode.Equals(targetSequence.ElementAt(x).opcode)
-                            && (!checkOperands || (
-                                    (newInstructions[i + x].operand == null && targetSequence.ElementAt(x).operand == null) 
-                                    || newInstructions[i + x].operand.Equals(targetSequence.ElementAt(x).operand)
-                                )
-                        );
+                        foundTargetSequence = newInstructions[i + x].opcode.Equals(targetSequence.ElementAt(x).opcode);
+                        if (checkMode != CheckMode.NEVER)
+                        {
+                            foundTargetSequence = foundTargetSequence &&
+                                ((targetSequence.ElementAt(x).operand == null &&
+                                (newInstructions[i + x].operand == null || checkMode == CheckMode.NONNULL)) ||
+                                newInstructions[i + x].operand.Equals(targetSequence.ElementAt(x).operand));
+                        }
+
+                        if (showDebugOutput && foundTargetSequence)
+                        {
+                            Logger.Info($"Found {targetSequence.ElementAt(x).opcode} at {i + x}");
+                        }
                     }
 
                     if (foundTargetSequence)
@@ -77,6 +84,13 @@ namespace PulsarPluginLoader.Patches
             }
 
             return newInstructions.AsEnumerable();
+        }
+
+        public enum CheckMode
+        {
+            ALWAYS,
+            NONNULL,
+            NEVER
         }
 
         public enum PatchMode

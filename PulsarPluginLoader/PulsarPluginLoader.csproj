@@ -83,6 +83,7 @@
     <Compile Include="Patches\GameVersion.cs" />
     <Compile Include="Patches\LoadPlugins.cs" />
     <Compile Include="Patches\PhotonProperties.cs" />
+    <Compile Include="Patches\SoundFix.cs" />
     <Compile Include="PulsarPlugin.cs" />
     <Compile Include="PluginManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

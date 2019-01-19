@@ -9,6 +9,27 @@ namespace PulsarPluginLoader.Injections
 {
     public static class InjectionTools
     {
+        public static void CreateModMessage(string targetAssemblyPath)
+        {
+            //InjectionTools.CreateMethod(targetAssemblyPath, "PLServer", "ModMessage", typeof(void), new Type[] { typeof(string) });
+            //InjectionTools.PatchMethod(targetAssemblyPath, "PLServer", "ModMessage", typeof(PulsarPluginLoader.Patches.ModMessageHelper), "RelayMessage");
+            AssemblyDefinition targetAssembly = LoadAssembly(targetAssemblyPath, null);
+            MethodDefinition newMethod = new MethodDefinition("ModMessage", MethodAttributes.Private, targetAssembly.MainModule.ImportReference(typeof(void)));
+            newMethod.Parameters.Add(new ParameterDefinition("modID", ParameterAttributes.None, targetAssembly.MainModule.ImportReference(typeof(string))));
+            newMethod.Parameters.Add(new ParameterDefinition("arguments", ParameterAttributes.None, targetAssembly.MainModule.ImportReference(typeof(object[]))));
+
+            newMethod.Body.Instructions.Add(Instruction.Create(OpCodes.Ldarg_1));
+            newMethod.Body.Instructions.Add(Instruction.Create(OpCodes.Ldarg_2));
+            newMethod.Body.Instructions.Add(Instruction.Create(OpCodes.Call, targetAssembly.MainModule.ImportReference(typeof(ModMessageHelper).GetMethod("ReceiveMessage"))));
+            newMethod.Body.Instructions.Add(Instruction.Create(OpCodes.Ret));
+
+            newMethod.CustomAttributes.Add(new CustomAttribute(targetAssembly.MainModule.ImportReference(typeof(PunRPC).GetConstructor(Type.EmptyTypes))));
+
+            targetAssembly.MainModule.GetType("PLServer").Methods.Add(newMethod);
+
+            SaveAssembly(targetAssembly, targetAssemblyPath);
+        }
+
         public static void CreateMethod(string targetAssemblyPath, string className, string newMethodName, Type returnType, Type[] parameterTypes)
         {
             if (parameterTypes == null)

@@ -80,8 +80,10 @@
     <Compile Include="Injections\HarmonyInjector.cs" />
     <Compile Include="Injections\InjectionTools.cs" />
     <Compile Include="Injections\LoggingInjections.cs" />
+    <Compile Include="ModMessage.cs" />
     <Compile Include="Patches\GameVersion.cs" />
     <Compile Include="Patches\LoadPlugins.cs" />
+    <Compile Include="ModMessageHelper.cs" />
     <Compile Include="Patches\PhotonProperties.cs" />
     <Compile Include="Patches\SoundFix.cs" />
     <Compile Include="PulsarPlugin.cs" />

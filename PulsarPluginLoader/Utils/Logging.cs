@@ -6,14 +6,32 @@ namespace PulsarPluginLoader.Utils
 {
     public static class Logger
     {
-        private static string logPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Log.txt");
-        private static StreamWriter Stream = new StreamWriter(logPath, false);
+        private static readonly string LogPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Log.txt");
+        private static StreamWriter Stream;
+
+        static Logger()
+        {
+            try
+            {
+                Stream = new StreamWriter(LogPath);
+            }
+            catch(IOException)
+            {
+                Stream = null;
+            }
+        }
 
         public static void Info(string message)
         {
-            Console.WriteLine($"[PPL] {message}");
-            Stream.WriteLine($"{DateTime.Now.ToString("HH:mm:ss")} {message}");
-            Stream.Flush();
+            string line = $"[PPL] {message}";
+
+            Console.WriteLine(line);
+
+            if(Stream != null)
+            {
+                Stream.WriteLine($"{DateTime.Now.ToString("HH:mm:ss")} {line}");
+                Stream.Flush();
+            }
         }
     }
 }

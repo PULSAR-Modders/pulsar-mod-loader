@@ -56,6 +56,8 @@ namespace PulsarInjector
             
             InjectionTools.CreateModMessage(targetAssemblyPath);
 
+            EventInjector.InjectEvents(targetAssemblyPath);
+
             CopyAssemblies(Path.GetDirectoryName(targetAssemblyPath));
 
             Logger.Info("Success!  You may now run the game normally.");

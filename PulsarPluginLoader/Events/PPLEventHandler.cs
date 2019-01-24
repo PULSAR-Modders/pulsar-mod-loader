@@ -1,7 +1,8 @@
-﻿
+﻿using System;
+
 namespace PulsarPluginLoader.Events
 {
-    class PPLEventHandler
+    public class PPLEventHandler : Attribute
     {
     }
 }

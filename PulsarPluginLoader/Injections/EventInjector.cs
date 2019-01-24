@@ -24,7 +24,8 @@ namespace PulsarPluginLoader.Injections
         private static void PatchOnPlayerJoined(AssemblyDefinition assembly)
         {
             Logger.Info("Patching PLServer.AddPlayer");
-            MethodDefinition targetMethod = assembly.MainModule.GetType("PLServer").Methods.First(m => m.Name == "AddPlayer");
+            string variableRequiredOrHarmonyCrashes = "AddPlayer";
+            MethodDefinition targetMethod = assembly.MainModule.GetType("PLServer").Methods.First(m => m.Name == variableRequiredOrHarmonyCrashes);
             MethodReference patchMethod = assembly.MainModule.ImportReference(typeof(EventHelper).GetMethod("OnPlayerJoin"));
 
             ILProcessor processor = targetMethod.Body.GetILProcessor();

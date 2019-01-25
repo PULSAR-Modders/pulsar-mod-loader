@@ -1,16 +1,13 @@
 ﻿
 namespace PulsarPluginLoader.Events
 {
-    public abstract class Event
+    public class Event
     {
-        public class PlayerJoinEvent : Event
-        {
-            public PLPlayer Player;
+        public bool IsCanceled = false;
 
-            public PlayerJoinEvent(PLPlayer player)
-            {
-                Player = player;
-            }
+        public virtual bool IsCancelable()
+        {
+            return false;
         }
     }
 }

@@ -16,23 +16,40 @@ namespace PulsarPluginLoader.Injections
             Logger.Info("Injecting events");
             AssemblyDefinition targetAssembly = LoadAssembly(targetAssemblyPath, null);
 
-            PatchOnPlayerJoined(targetAssembly);
+            PatchPLServer_AddPlayer(targetAssembly);
+            PatchPLServer_RemovePlayer(targetAssembly);
 
             SaveAssembly(targetAssembly, targetAssemblyPath);
         }
 
-        private static void PatchOnPlayerJoined(AssemblyDefinition assembly)
+        private static void PatchPLServer_AddPlayer(AssemblyDefinition assembly)
         {
             Logger.Info("Patching PLServer.AddPlayer");
             string variableRequiredOrHarmonyCrashes = "AddPlayer";
             MethodDefinition targetMethod = assembly.MainModule.GetType("PLServer").Methods.First(m => m.Name == variableRequiredOrHarmonyCrashes);
-            MethodReference patchMethod = assembly.MainModule.ImportReference(typeof(EventHelper).GetMethod("OnPlayerJoin"));
+            MethodReference patchMethod = assembly.MainModule.ImportReference(typeof(EventHelper).GetMethod("OnPlayerAdded"));
 
             ILProcessor processor = targetMethod.Body.GetILProcessor();
             Collection<Instruction> instructions = targetMethod.Body.Instructions;
             Instruction insn = instructions.Last();
             //Find inPlayer.ResetTalentPoints();
             while (insn.OpCode != OpCodes.Ldarg_1) insn = insn.Previous;
+            processor.InsertBefore(insn, processor.Create(OpCodes.Ldarg_1));
+            processor.InsertBefore(insn, processor.Create(OpCodes.Call, patchMethod));
+        }
+
+        private static void PatchPLServer_RemovePlayer(AssemblyDefinition assembly)
+        {
+            Logger.Info("Patching PLServer.RemovePlayer");
+            string variableRequiredOrHarmonyCrashes = "RemovePlayer";
+            MethodDefinition targetMethod = assembly.MainModule.GetType("PLServer").Methods.First(m => m.Name == variableRequiredOrHarmonyCrashes);
+            MethodReference patchMethod = assembly.MainModule.ImportReference(typeof(EventHelper).GetMethod("OnPlayerRemoved"));
+
+            ILProcessor processor = targetMethod.Body.GetILProcessor();
+            Collection<Instruction> instructions = targetMethod.Body.Instructions;
+            Instruction insn = instructions.First();
+            //Find base.photonView.RPC("LogoutMessage",
+            while (insn.OpCode != OpCodes.Ldarg_0) insn = insn.Next;
             processor.InsertBefore(insn, processor.Create(OpCodes.Ldarg_1));
             processor.InsertBefore(insn, processor.Create(OpCodes.Call, patchMethod));
         }

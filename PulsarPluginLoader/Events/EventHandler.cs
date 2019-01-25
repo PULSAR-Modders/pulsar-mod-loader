@@ -2,7 +2,7 @@
 
 namespace PulsarPluginLoader.Events
 {
-    public class PPLEventHandler : Attribute
+    public class EventHandler : Attribute
     {
     }
 }

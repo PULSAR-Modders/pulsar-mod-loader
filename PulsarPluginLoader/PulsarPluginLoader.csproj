@@ -76,9 +76,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Events\PlayerAddedEvent.cs" />
     <Compile Include="Events\Event.cs" />
     <Compile Include="Events\EventHelper.cs" />
-    <Compile Include="Events\PPLEventHandler.cs" />
+    <Compile Include="Events\EventHandler.cs" />
+    <Compile Include="Events\PlayerEvent.cs" />
+    <Compile Include="Events\PlayerRemovedEvent.cs" />
     <Compile Include="Injections\AntiCheatBypass.cs" />
     <Compile Include="Injections\EventInjector.cs" />
     <Compile Include="Injections\HarmonyInjector.cs" />

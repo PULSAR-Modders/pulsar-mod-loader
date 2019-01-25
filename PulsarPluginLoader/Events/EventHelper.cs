@@ -19,7 +19,8 @@ namespace PulsarPluginLoader.Events
                 foreach (MethodInfo method in classType.GetMethods())
                 {
                     ParameterInfo[] param = method.GetParameters();
-                    if (method.GetCustomAttributes(typeof(PPLEventHandler), false).Any() && method.ReturnType == typeof(void) && param.Count() == 1 && param[0].ParameterType.IsSubclassOf(typeof(Event)))
+                    if (method.GetCustomAttributes(typeof(EventHandler), false).Any() && method.ReturnType == typeof(void) &&
+                        param.Count() == 1 && (param[0].ParameterType.IsSubclassOf(typeof(Event)) || param[0].ParameterType == typeof(Event)))
                     {
                         if (EventHandlers.TryGetValue(param[0].ParameterType, out List<MethodInfo> methods))
                         {
@@ -35,18 +36,32 @@ namespace PulsarPluginLoader.Events
             }
         }
 
+        public static void PostEvent(Type eventType, object[] eventObject)
+        {
+            //post events for this class and all base classes of this class
+            while (eventType != typeof(object))
+            {
+                if (EventHandlers.TryGetValue(eventType, out List<MethodInfo> methods))
+                {
+                    foreach (MethodInfo method in methods)
+                    {
+                        method.Invoke(null, eventObject);
+                    }
+                }
+                eventType = eventType.BaseType;
+            }
+        }
+
         //Everything beyond this point is called from Cecil modified code.
 
-        public static void OnPlayerJoin(PLPlayer player)
+        public static void OnPlayerAdded(PLPlayer player)
         {
-            if (EventHandlers.TryGetValue(typeof(PlayerJoinEvent), out List<MethodInfo> methods))
-            {
-                object[] o = new object[] { new PlayerJoinEvent(player) };
-                foreach (MethodInfo method in methods)
-                {
-                    method.Invoke(null, o);
-                }
-            }
+            PostEvent(typeof(PlayerAddedEvent), new object[] { new PlayerAddedEvent(player) });
+        }
+
+        public static void OnPlayerRemoved(PLPlayer player)
+        {
+            PostEvent(typeof(PlayerAddedEvent), new object[] { new PlayerRemovedEvent(player) });
         }
     }
 }

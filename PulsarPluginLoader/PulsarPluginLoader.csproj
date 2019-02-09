@@ -76,12 +76,21 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Events\PlayerAddedEvent.cs" />
+    <Compile Include="Events\Event.cs" />
+    <Compile Include="Events\EventHelper.cs" />
+    <Compile Include="Events\EventHandler.cs" />
+    <Compile Include="Events\PlayerEvent.cs" />
+    <Compile Include="Events\PlayerRemovedEvent.cs" />
     <Compile Include="Injections\AntiCheatBypass.cs" />
+    <Compile Include="Injections\EventInjector.cs" />
     <Compile Include="Injections\HarmonyInjector.cs" />
     <Compile Include="Injections\InjectionTools.cs" />
     <Compile Include="Injections\LoggingInjections.cs" />
+    <Compile Include="ModMessage.cs" />
     <Compile Include="Patches\GameVersion.cs" />
     <Compile Include="Patches\LoadPlugins.cs" />
+    <Compile Include="ModMessageHelper.cs" />
     <Compile Include="Patches\PhotonProperties.cs" />
     <Compile Include="Patches\SoundFix.cs" />
     <Compile Include="PulsarPlugin.cs" />

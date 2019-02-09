@@ -61,6 +61,10 @@ namespace PulsarInjector
             InjectionTools.PatchMethod(targetAssemblyPath, "PLGlobal", "Start", typeof(LoggingInjections), "LoggingCleanup");
 
             InjectionTools.PatchMethod(targetAssemblyPath, "PLGlobal", "Awake", typeof(HarmonyInjector), "InitializeHarmony");
+            
+            InjectionTools.CreateModMessage(targetAssemblyPath);
+
+            EventInjector.InjectEvents(targetAssemblyPath);
 
             CopyAssemblies(Path.GetDirectoryName(targetAssemblyPath));
 

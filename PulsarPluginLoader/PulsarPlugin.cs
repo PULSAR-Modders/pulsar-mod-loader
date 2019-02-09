@@ -28,7 +28,7 @@ namespace PulsarPluginLoader
         /// Reverse domain notation recommended (e.g., com.example.pulsar.plugins)
         /// </summary>
         /// <returns></returns>
-        protected abstract string HarmonyIdentifier();
+        public abstract string HarmonyIdentifier();
 
         /// <summary>
         /// Version of plugin.  Displayed in plugin list.

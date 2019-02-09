@@ -71,6 +71,7 @@ namespace PulsarPluginLoader
 
         public void LoadPluginsDirectory(string pluginsDir)
         {
+            OnPluginSuccessfullyLoaded += Events.EventHelper.RegisterEventHandlers;
             Logger.Info($"Attempting to load plugins from {pluginsDir}");
 
             // Manage directories

@@ -2,7 +2,7 @@
 using Mono.Cecil.Cil;
 using Mono.Collections.Generic;
 using PulsarPluginLoader.Events;
-using PulsarPluginLoader.Utils;
+using PulsarPluginLoader.Utilities;
 using System;
 using System.IO;
 using System.Linq;
@@ -33,7 +33,11 @@ namespace PulsarPluginLoader.Injections
             Collection<Instruction> instructions = targetMethod.Body.Instructions;
             Instruction insn = instructions.Last();
             //Find inPlayer.ResetTalentPoints();
-            while (insn.OpCode != OpCodes.Ldarg_1) insn = insn.Previous;
+            while (insn.OpCode != OpCodes.Ldarg_1)
+            {
+                insn = insn.Previous;
+            }
+
             processor.InsertBefore(insn, processor.Create(OpCodes.Ldarg_1));
             processor.InsertBefore(insn, processor.Create(OpCodes.Call, patchMethod));
         }
@@ -49,7 +53,11 @@ namespace PulsarPluginLoader.Injections
             Collection<Instruction> instructions = targetMethod.Body.Instructions;
             Instruction insn = instructions.First();
             //Find base.photonView.RPC("LogoutMessage",
-            while (insn.OpCode != OpCodes.Ldarg_0) insn = insn.Next;
+            while (insn.OpCode != OpCodes.Ldarg_0)
+            {
+                insn = insn.Next;
+            }
+
             processor.InsertBefore(insn, processor.Create(OpCodes.Ldarg_1));
             processor.InsertBefore(insn, processor.Create(OpCodes.Call, patchMethod));
         }

@@ -1,6 +1,6 @@
 ﻿using Harmony;
 using Harmony.ILCopying;
-using PulsarPluginLoader.Utils;
+using PulsarPluginLoader.Utilities;
 using System;
 using System.Collections;
 using System.Collections.Generic;

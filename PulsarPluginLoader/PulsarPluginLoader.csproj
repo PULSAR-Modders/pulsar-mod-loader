@@ -53,6 +53,9 @@
     <Reference Include="Mono.Cecil.Rocks, Version=0.10.1.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
       <HintPath>..\packages\Mono.Cecil.0.10.1\lib\net35\Mono.Cecil.Rocks.dll</HintPath>
     </Reference>
+    <Reference Include="Pathfinding.Ionic.Zip.Reduced">
+      <HintPath>..\lib\Pathfinding.Ionic.Zip.Reduced.dll</HintPath>
+    </Reference>
     <Reference Include="Photon3Unity3D, Version=4.0.0.9, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\Photon3Unity3D.dll</HintPath>
@@ -71,11 +74,43 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.IMGUIModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\UnityEngine.IMGUIModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ScreenCaptureModule">
+      <HintPath>..\lib\UnityEngine.ScreenCaptureModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>..\lib\UnityEngine.UI.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.UIElementsModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\UnityEngine.UIElementsModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UIModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\UnityEngine.UIModule.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Chat\Commands\BugReportCommand.cs" />
+    <Compile Include="Chat\Commands\ChatCommandRouter.cs" />
+    <Compile Include="Chat\Commands\ChatInputPatch.cs" />
+    <Compile Include="Chat\Commands\Devhax\ChaosUpCommand.cs" />
+    <Compile Include="Chat\Commands\Devhax\CreditsUpCommand.cs" />
+    <Compile Include="Chat\Commands\Devhax\DevhaxCommand.cs" />
+    <Compile Include="Chat\Commands\Devhax\DevhaxPatch.cs" />
+    <Compile Include="Chat\Commands\Devhax\DogMode\AddPlayerPatch.cs" />
+    <Compile Include="Chat\Commands\Devhax\DogMode\DogModeCommand.cs" />
+    <Compile Include="Chat\Commands\Devhax\GiveScrapCommand.cs" />
+    <Compile Include="Chat\Commands\Devhax\LevelUpCommand.cs" />
+    <Compile Include="Chat\Commands\Devhax\MaxOutCommand.cs" />
+    <Compile Include="Chat\Commands\Devhax\ToggleCam\DropCam.cs" />
+    <Compile Include="Chat\Commands\Devhax\ToggleCam\SpeedCam.cs" />
+    <Compile Include="Chat\Commands\EchoCommand.cs" />
+    <Compile Include="Chat\Commands\HelpCommand.cs" />
+    <Compile Include="Chat\Commands\IChatCommand.cs" />
     <Compile Include="Events\PlayerAddedEvent.cs" />
     <Compile Include="Events\Event.cs" />
     <Compile Include="Events\EventHelper.cs" />
@@ -97,7 +132,12 @@
     <Compile Include="PluginManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Patches\HarmonyHelpers.cs" />
-    <Compile Include="Utils\Logging.cs" />
+    <Compile Include="Utilities\Clipboard.cs" />
+    <Compile Include="Utilities\ExceptionWarningPatch.cs" />
+    <Compile Include="Utilities\Logging.cs" />
+    <Compile Include="Chat\Messaging.cs" />
+    <Compile Include="Utilities\Uploaders\IUploader.cs" />
+    <Compile Include="Utilities\Uploaders\TransferShUploader.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -1,6 +1,6 @@
 ﻿using Mono.Cecil;
 using Mono.Cecil.Cil;
-using PulsarPluginLoader.Utils;
+using PulsarPluginLoader.Utilities;
 using System;
 using System.IO;
 using System.Linq;

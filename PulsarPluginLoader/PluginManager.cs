@@ -1,4 +1,4 @@
-﻿using PulsarPluginLoader.Utils;
+﻿using PulsarPluginLoader.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -140,7 +140,7 @@ namespace PulsarPluginLoader
                     return null;
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Logger.Info($"Failed to load plugin: {Path.GetFileName(assemblyPath)}\n{e}");
 

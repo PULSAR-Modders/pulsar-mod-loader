@@ -1,5 +1,5 @@
 ﻿using PulsarPluginLoader.Injections;
-using PulsarPluginLoader.Utils;
+using PulsarPluginLoader.Utilities;
 using System;
 using System.IO;
 using System.Reflection;
@@ -29,7 +29,7 @@ namespace PulsarInjector
                 return;
             }
 
-            string backupPath = targetAssemblyPath.Substring(0, targetAssemblyPath.Length - 3) + "bak";
+            string backupPath = Path.ChangeExtension(targetAssemblyPath, "bak");
             if (InjectionTools.IsModified(targetAssemblyPath))
             {
                 if (File.Exists(backupPath))
@@ -50,6 +50,7 @@ namespace PulsarInjector
             else
             {
                 //Create backup
+                Logger.Info("Making backup of hopefully clean assembly.");
                 File.Copy(targetAssemblyPath, backupPath, true);
             }
 
@@ -61,7 +62,7 @@ namespace PulsarInjector
             InjectionTools.PatchMethod(targetAssemblyPath, "PLGlobal", "Start", typeof(LoggingInjections), "LoggingCleanup");
 
             InjectionTools.PatchMethod(targetAssemblyPath, "PLGlobal", "Awake", typeof(HarmonyInjector), "InitializeHarmony");
-            
+
             InjectionTools.CreateModMessage(targetAssemblyPath);
 
             EventInjector.InjectEvents(targetAssemblyPath);

@@ -2,7 +2,7 @@
 using System.IO;
 using System.Reflection;
 
-namespace PulsarPluginLoader.Utils
+namespace PulsarPluginLoader.Utilities
 {
     public static class Logger
     {
@@ -15,7 +15,7 @@ namespace PulsarPluginLoader.Utils
             {
                 Stream = new StreamWriter(LogPath);
             }
-            catch(IOException)
+            catch (IOException)
             {
                 Stream = null;
             }
@@ -27,7 +27,7 @@ namespace PulsarPluginLoader.Utils
 
             Console.WriteLine(line);
 
-            if(Stream != null)
+            if (Stream != null)
             {
                 Stream.WriteLine($"{DateTime.Now.ToString("HH:mm:ss")} {line}");
                 Stream.Flush();

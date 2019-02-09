@@ -22,6 +22,10 @@ namespace PulsarInjector
             if (!File.Exists(targetAssemblyPath))
             {
                 Logger.Info("Please specify an assembly to inject (e.g., PULSARLostColony\\PULSAR_LostColony_Data\\Managed\\Assembly-CSharp.dll)");
+
+                Logger.Info("Press any key to continue...");
+                Console.ReadKey();
+
                 return;
             }
 
@@ -36,6 +40,10 @@ namespace PulsarInjector
                 else
                 {
                     Logger.Info("The assembly is already modified, and a backup could not be found.");
+
+                    Logger.Info("Press any key to continue...");
+                    Console.ReadKey();
+
                     return;
                 }
             }

@@ -117,22 +117,31 @@ namespace PulsarPluginLoader
                 throw new IOException($"Couldn't find file: {assemblyPath}");
             }
 
-            Assembly asm = Assembly.LoadFile(assemblyPath);
-            Type pluginType = asm.GetTypes().FirstOrDefault(t => t.IsSubclassOf(typeof(PulsarPlugin)));
-
-            if (pluginType != null)
+            try
             {
-                Logger.Info($"Loading plugin: {pluginType.AssemblyQualifiedName}");
+                Assembly asm = Assembly.LoadFile(assemblyPath);
+                Type pluginType = asm.GetTypes().FirstOrDefault(t => t.IsSubclassOf(typeof(PulsarPlugin)));
 
-                PulsarPlugin plugin = Activator.CreateInstance(pluginType) as PulsarPlugin;
-                activePlugins.Add(plugin.Name, plugin);
-                OnPluginSuccessfullyLoaded?.Invoke(plugin.Name, plugin);
+                if (pluginType != null)
+                {
+                    Logger.Info($"Loading plugin: {pluginType.AssemblyQualifiedName}");
 
-                return plugin;
+                    PulsarPlugin plugin = Activator.CreateInstance(pluginType) as PulsarPlugin;
+                    activePlugins.Add(plugin.Name, plugin);
+                    OnPluginSuccessfullyLoaded?.Invoke(plugin.Name, plugin);
+
+                    return plugin;
+                }
+                else
+                {
+                    Logger.Info($"Skipping {Path.GetFileName(assemblyPath)}; couldn't find plugin entry point.");
+
+                    return null;
+                }
             }
-            else
+            catch(Exception e)
             {
-                Logger.Info($"Skipping {Path.GetFileName(assemblyPath)}; couldn't find plugin entry point.");
+                Logger.Info($"Failed to load plugin: {Path.GetFileName(assemblyPath)}\n{e}");
 
                 return null;
             }

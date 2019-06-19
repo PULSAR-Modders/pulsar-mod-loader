@@ -32,6 +32,7 @@ namespace PulsarPluginLoader.Chat.Commands.Devhax
                 MaxAllTalents();
                 MaxAllItems();
                 MaxAllComponents();
+                MaxCredits();
 
                 Messaging.Notification(PhotonTargets.All, $"Maxed out all levels.");
             }
@@ -147,6 +148,11 @@ namespace PulsarPluginLoader.Chat.Commands.Devhax
                     ship.ReactorCoolingEnabled = false;
                 }).Start();
             }
+        }
+
+        private void MaxCredits()
+        {
+            PLServer.Instance.CurrentCrewCredits = int.MaxValue / 2;
         }
     }
 }

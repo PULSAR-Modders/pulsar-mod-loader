@@ -53,7 +53,7 @@ after_build:
 #   PulsarPluginBootstrapper-*.zip for end users to enable plugins (recommended download)
 #   PulsarPluginLoader.dll-*.zip for developers to reference during plugin creation
 - cmd: >-
-    7z a PulsarPluginBootstrapper-%APPVEYOR_BUILD_VERSION%-%GIT_HASH%.zip README.md VERSION .\PulsarInjector\bin\Release\* -xr!*.pdb -xr!Assembly-CSharp.dll -mx=7
+    7z a PulsarPluginBootstrapper-%APPVEYOR_BUILD_VERSION%-%GIT_HASH%.zip README.md VERSION .\PulsarInjector\bin\Release\* -xr!*.pdb -mx=7
 
     7z a PulsarPluginLoader.dll-%APPVEYOR_BUILD_VERSION%-%GIT_HASH%.zip README.md VERSION .\PulsarPluginLoader\bin\Release\PulsarPluginLoader.dll -mx=7
 

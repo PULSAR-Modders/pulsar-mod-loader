@@ -29,6 +29,7 @@ namespace PulsarInjector
                 return;
             }
 
+            Logger.Info("=== Backups ===");
             string backupPath = Path.ChangeExtension(targetAssemblyPath, "bak");
             if (InjectionTools.IsModified(targetAssemblyPath))
             {
@@ -54,19 +55,26 @@ namespace PulsarInjector
                 File.Copy(targetAssemblyPath, backupPath, true);
             }
 
+            Logger.Info("=== Creating Plugins directory ===");
             Directory.CreateDirectory(Path.Combine(Path.GetDirectoryName(targetAssemblyPath), "Plugins"));
 
+            Logger.Info("=== Anti-Cheat ===");
             AntiCheatBypass.Inject(targetAssemblyPath);
 
+            Logger.Info("=== Logging Modifications ===");
             InjectionTools.CreateMethod(targetAssemblyPath, "PLGlobal", "Start", typeof(void), null);
             InjectionTools.PatchMethod(targetAssemblyPath, "PLGlobal", "Start", typeof(LoggingInjections), "LoggingCleanup");
 
+            Logger.Info("=== Injecting Harmony Initialization ===");
             InjectionTools.PatchMethod(targetAssemblyPath, "PLGlobal", "Awake", typeof(HarmonyInjector), "InitializeHarmony");
 
+            /*Logger.Info("=== Creating Mod Message RPC ===");
             InjectionTools.CreateModMessage(targetAssemblyPath);
 
-            EventInjector.InjectEvents(targetAssemblyPath);
+            Logger.Info("=== Injecting Events ===");
+            EventInjector.InjectEvents(targetAssemblyPath);*/
 
+            Logger.Info("=== Copying Assemblies ===");
             CopyAssemblies(Path.GetDirectoryName(targetAssemblyPath));
 
             Logger.Info("Success!  You may now run the game normally.");

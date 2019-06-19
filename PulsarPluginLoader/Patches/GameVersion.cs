@@ -8,12 +8,11 @@ namespace PulsarPluginLoader.Patches
     [HarmonyPatch(typeof(PLInGameUI), "Update")]
     class GameVersion
     {
+        static readonly string PPLVersion = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion;
+
         static void Postfix(PLNetworkManager __instance, Text ___CurrentVersionLabel)
         {
-            Assembly asm = Assembly.GetExecutingAssembly();
-            FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(asm.Location);
-
-            PLGlobal.SafeLabelSetText(___CurrentVersionLabel, $"{___CurrentVersionLabel.text}\nPPL {fvi.FileVersion}");
+            PLGlobal.SafeLabelSetText(___CurrentVersionLabel, $"{___CurrentVersionLabel.text}\nPPL {PPLVersion}");
         }
     }
 }

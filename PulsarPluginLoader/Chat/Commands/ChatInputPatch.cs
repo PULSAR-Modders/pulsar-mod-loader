@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
-using UnityEngine;
 
 namespace PulsarPluginLoader.Chat.Commands
 {
@@ -68,7 +67,7 @@ namespace PulsarPluginLoader.Chat.Commands
             }
             else
             {
-                Debug.Log("Warning: \"TeamMessage\" not found. All commands will be displayed in chat.");
+                Logger.Info("Warning: \"TeamMessage\" not found. All commands will be displayed in chat.");
             }
 
             return instructionList;

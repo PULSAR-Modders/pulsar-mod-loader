@@ -7,7 +7,10 @@ namespace PulsarPluginLoader.Chat.Commands.Devhax.DogMode
     {
         static void Postfix(PLPlayer inPlayer)
         {
-            inPlayer.IsGodModeActive = DogModeCommand.IsEnabled;
+            if (inPlayer != null && inPlayer.TeamID == 0)
+            {
+                inPlayer.IsGodModeActive = DogModeCommand.IsEnabled;
+            }
         }
     }
 }

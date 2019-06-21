@@ -2,7 +2,6 @@
 using PulsarPluginLoader.Chat.Commands.Devhax;
 using UnityEngine;
 using UnityEngine.UI;
-using Logger = PulsarPluginLoader.Utilities.Logger;
 
 namespace PulsarPluginLoader.Patches
 {

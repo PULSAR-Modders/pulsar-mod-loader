@@ -13,13 +13,14 @@ namespace PulsarPluginLoader.Patches
             if (DevhaxCommand.IsEnabled && PLServer.Instance != null && PLEncounterManager.Instance != null)
             {
                 PLPawn localPawn = PLNetworkManager.Instance.LocalPlayer.GetPawn();
-                Vector3 pos = localPawn ? localPawn.transform.position : Vector3.zero;
+                Vector3 pos = localPawn != null ? localPawn.transform.position : Vector3.zero;
 
-                int levelID = PLEncounterManager.Instance.GetCurrentPersistantEncounterInstance().LevelID;
+                PLPersistantEncounterInstance encounter = PLEncounterManager.Instance.GetCurrentPersistantEncounterInstance();
+                int levelID = encounter != null ? encounter.LevelID.GetDecrypted() : -1;
 
                 PLSectorInfo sectorInfo = PLServer.GetCurrentSector();
-                string visualType = sectorInfo.VisualIndication.ToString();
-                int sector = sectorInfo.ID;
+                string visualType = sectorInfo != null ? sectorInfo.VisualIndication.ToString() : "--";
+                int sector = sectorInfo != null ? sectorInfo.ID : -1;
 
                 PLGlobal.SafeLabelSetText(___CurrentVersionLabel, $"{___CurrentVersionLabel.text}\n\n\nPOS: {pos}, Level ID: {levelID}, Sector: {sector}, Visual: {visualType}");
             }

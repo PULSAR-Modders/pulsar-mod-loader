@@ -12,7 +12,8 @@ namespace PulsarPluginLoader.Patches
         {
             if (DevhaxCommand.IsEnabled && PLServer.Instance != null && PLEncounterManager.Instance != null)
             {
-                Vector3 pos = PLNetworkManager.Instance.LocalPlayer.GetPawn().transform.position;
+                PLPawn localPawn = PLNetworkManager.Instance.LocalPlayer.GetPawn();
+                Vector3 pos = localPawn ? localPawn.transform.position : Vector3.zero;
 
                 int levelID = PLEncounterManager.Instance.GetCurrentPersistantEncounterInstance().LevelID;
 

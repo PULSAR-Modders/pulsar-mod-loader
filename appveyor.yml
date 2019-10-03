@@ -47,6 +47,7 @@ build:
   verbosity: minimal
   publish_nuget: true             # package projects with .nuspec files and push to artifacts
   publish_nuget_symbols: true     # generate and publish NuGet symbol packages
+  use_snupkg_format: true
 
 after_build:
 # Create two .ZIP artifacts:

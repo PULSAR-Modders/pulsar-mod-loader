@@ -122,6 +122,7 @@
     <Compile Include="Chat\Commands\Devhax\MaxOutCommand.cs" />
     <Compile Include="Chat\Commands\Devhax\ToggleCam\DropCam.cs" />
     <Compile Include="Chat\Commands\Devhax\ToggleCam\SpeedCam.cs" />
+    <Compile Include="Chat\Commands\Devhax\FlagCommand.cs" />
     <Compile Include="Chat\Commands\EchoCommand.cs" />
     <Compile Include="Chat\Commands\HelpCommand.cs" />
     <Compile Include="Chat\Commands\IChatCommand.cs" />

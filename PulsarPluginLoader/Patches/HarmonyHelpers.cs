@@ -53,7 +53,7 @@ namespace PulsarPluginLoader.Patches
                         else if (patchMode == PatchMode.REPLACE)
                         {
                             newInstructions.RemoveRange(i, targetSize);
-                            newInstructions.InsertRange(i, patchSequence.Select(c => c.FullClone() ));
+                            newInstructions.InsertRange(i, patchSequence.Select(c => c.FullClone()));
                         }
                         else
                         {
@@ -85,6 +85,75 @@ namespace PulsarPluginLoader.Patches
 
             return newInstructions.AsEnumerable();
         }
+
+        /// <summary>
+        /// Returns the index of the last instruction in targetSquence, or -1 if not found
+        /// </summary>
+        /// <param name="instructions"></param>
+        /// <param name="targetSequence"></param>
+        /// <param name="checkMode"></param>
+        /// <param name="showDebugOutput"></param>
+        /// <returns></returns>
+        public static int FindSequence(IEnumerable<CodeInstruction> instructions, IEnumerable<CodeInstruction> targetSequence, CheckMode checkMode = CheckMode.ALWAYS, bool showDebugOutput = false)
+        {
+            List<CodeInstruction> newInstructions = instructions.ToList();
+
+            CodeInstruction targetStart = targetSequence.ElementAt(0);
+            int targetSize = targetSequence.Count();
+
+            for (int i = 0; i < newInstructions.Count; i++)
+            {
+                bool targetSequenceStillFits = i + targetSize <= newInstructions.Count;
+
+                if (targetSequenceStillFits)
+                {
+                    bool foundTargetSequence = true;
+
+                    for (int x = 0; x < targetSize && foundTargetSequence; x++)
+                    {
+                        foundTargetSequence = newInstructions[i + x].opcode.Equals(targetSequence.ElementAt(x).opcode);
+                        if (checkMode != CheckMode.NEVER)
+                        {
+                            foundTargetSequence = foundTargetSequence &&
+                                ((targetSequence.ElementAt(x).operand == null &&
+                                (newInstructions[i + x].operand == null || checkMode == CheckMode.NONNULL)) ||
+                                newInstructions[i + x].operand.Equals(targetSequence.ElementAt(x).operand));
+                        }
+
+                        if (showDebugOutput && foundTargetSequence)
+                        {
+                            Logger.Info($"Found {targetSequence.ElementAt(x).opcode} at {i + x}");
+                        }
+                    }
+
+                    if (foundTargetSequence)
+                    {
+                        return i + targetSize;
+                    }
+                }
+                else
+                {
+                    StringBuilder sb = new StringBuilder();
+
+                    sb.AppendLine($"Couldn't find target sequence.  This might be okay in certain cases.");
+
+                    // Cut down the stack trace because it's 20 lines of unhelpful reflection internals.
+                    // Show enough to figure out which plugin + transpiler method is causing this:
+                    sb.AppendLine($"Stack Trace:");
+                    string[] stackTrace = new System.Diagnostics.StackTrace().ToString().Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+                    for (int lineNumber = 0; lineNumber < 2; lineNumber++)
+                    {
+                        sb.AppendLine(stackTrace[lineNumber]);
+                    }
+
+                    Logger.Info(sb.ToString());
+                    break;
+                }
+            }
+
+            return -1;
+        }
+
 
         public enum CheckMode
         {

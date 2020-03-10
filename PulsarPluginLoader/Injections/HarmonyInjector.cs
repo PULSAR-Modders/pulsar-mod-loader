@@ -1,4 +1,4 @@
-﻿using Harmony;
+﻿using HarmonyLib;
 using System.Reflection;
 
 namespace PulsarPluginLoader.Injections
@@ -7,7 +7,7 @@ namespace PulsarPluginLoader.Injections
     {
         public static void InitializeHarmony()
         {
-            HarmonyInstance harmony = HarmonyInstance.Create("wiki.pulsar.ppl");
+            var harmony = new Harmony("wiki.pulsar.ppl");
             harmony.PatchAll(Assembly.GetExecutingAssembly());
         }
     }

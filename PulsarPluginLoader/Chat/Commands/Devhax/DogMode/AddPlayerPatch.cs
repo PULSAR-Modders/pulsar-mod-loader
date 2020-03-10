@@ -1,4 +1,4 @@
-﻿using Harmony;
+﻿using HarmonyLib;
 
 namespace PulsarPluginLoader.Chat.Commands.Devhax.DogMode
 {

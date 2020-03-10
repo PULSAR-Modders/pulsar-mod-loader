@@ -1,5 +1,5 @@
 ﻿using CodeStage.AntiCheat.ObscuredTypes;
-using Harmony;
+using HarmonyLib;
 using PulsarPluginLoader.Patches;
 using System;
 using System.Collections.Generic;

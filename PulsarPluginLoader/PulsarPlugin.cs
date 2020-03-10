@@ -1,4 +1,4 @@
-﻿using Harmony;
+﻿using HarmonyLib;
 using System;
 using System.Diagnostics;
 using System.Reflection;
@@ -19,7 +19,7 @@ namespace PulsarPluginLoader
             Assembly asm = this.GetType().Assembly;
             VersionInfo = FileVersionInfo.GetVersionInfo(asm.Location);
 
-            HarmonyInstance harmony = HarmonyInstance.Create(HarmonyIdentifier());
+            var harmony = new Harmony(HarmonyIdentifier());
             harmony.PatchAll(asm);
         }
 

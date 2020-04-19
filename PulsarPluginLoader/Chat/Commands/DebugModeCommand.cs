@@ -24,8 +24,13 @@ namespace PulsarPluginLoader.Chat.Commands
 
         public bool Execute(string arguments)
         {
+            //Toggle DebugMode value
             ExceptionWarningPatch.DebugMode = !ExceptionWarningPatch.DebugMode;
+
+            //Write new DebugMode value to settings xml file
             PLXMLOptionsIO.Instance.CurrentOptions.SetStringValue("PPLDebugMode", ExceptionWarningPatch.DebugMode.ToString());
+
+            //notify player of new DebugMode value
             Messaging.Notification(PLNetworkManager.Instance.LocalPlayer.GetPhotonPlayer(), $"PPLDebugMode is now {ExceptionWarningPatch.DebugMode}");
             return false;
         }

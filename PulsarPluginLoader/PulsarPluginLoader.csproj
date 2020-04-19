@@ -112,21 +112,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Chat\Commands\BugReportCommand.cs" />
     <Compile Include="Chat\Commands\ChatCommandRouter.cs" />
     <Compile Include="Chat\Commands\ChatInputPatch.cs" />
-    <Compile Include="Chat\Commands\Devhax\ChaosUpCommand.cs" />
-    <Compile Include="Chat\Commands\Devhax\CreditsUpCommand.cs" />
-    <Compile Include="Chat\Commands\Devhax\DevhaxCommand.cs" />
-    <Compile Include="Chat\Commands\Devhax\DevhaxPatch.cs" />
-    <Compile Include="Chat\Commands\Devhax\DogMode\AddPlayerPatch.cs" />
-    <Compile Include="Chat\Commands\Devhax\DogMode\DogModeCommand.cs" />
-    <Compile Include="Chat\Commands\Devhax\GiveScrapCommand.cs" />
-    <Compile Include="Chat\Commands\Devhax\LevelUpCommand.cs" />
-    <Compile Include="Chat\Commands\Devhax\MaxOutCommand.cs" />
-    <Compile Include="Chat\Commands\Devhax\ToggleCam\DropCam.cs" />
-    <Compile Include="Chat\Commands\Devhax\ToggleCam\SpeedCam.cs" />
-    <Compile Include="Chat\Commands\Devhax\FlagCommand.cs" />
     <Compile Include="Chat\Commands\EchoCommand.cs" />
     <Compile Include="Chat\Commands\HelpCommand.cs" />
     <Compile Include="Chat\Commands\IChatCommand.cs" />

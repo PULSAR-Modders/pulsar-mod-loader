@@ -12,7 +12,7 @@ namespace PulsarPluginLoader.Utilities
             Application.logMessageReceived += OnUnityLog;
         }
         public static bool DebugMode = false;
-        private static void OnUnityLog(string line, string stackTrace, LogType type)
+    private static void OnUnityLog(string line, string stackTrace, LogType type)
         {
             if (type.Equals(LogType.Exception))
             {

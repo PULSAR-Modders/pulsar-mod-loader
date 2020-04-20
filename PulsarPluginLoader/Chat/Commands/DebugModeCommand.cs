@@ -10,6 +10,7 @@ namespace PulsarPluginLoader.Chat.Commands
     {
         public string[] CommandAliases()
         {
+            //load DebugMoad from settings.xml
             if (bool.TryParse(PLXMLOptionsIO.Instance.CurrentOptions.GetStringValue("PPLDebugMode"), out bool result))
             {
                 ExceptionWarningPatch.DebugMode = result;

@@ -74,7 +74,7 @@ deploy:
   on:
     appveyor_repo_tag: true
   auth_token:
-    secure: nJm0eDjrcfLhUCTsM7AiTp7GJi40mWXB8LPFRHek/uMqcvX2mdxxZ8cusuns5GAO
+    secure: R60Z+ZKcJKFzjIvKXUSCLna1a89wR+L/KKObCR+MEiDa2NffiTH4VsgzDQSltKS2
 
 - provider: NuGet
   api_key:

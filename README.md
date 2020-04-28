@@ -24,7 +24,7 @@ Optionally remove `PulsarPluginLoader.dll`, `Assembly-CSharp.dll.bak`, and the `
 
 ## Creating Plugins
 
-All plugins must be C# Class Libraries targeting .NET Framework 3.5 (to match Unity Engine).  See [this screenshot](https://i.imgur.com/X7bDnYr.png) for an example of project creation settings in Visual Studio Community 2017 ([free download](https://visualstudio.microsoft.com/vs/community/)).
+All plugins must be C# Class Libraries targeting .NET Framework 4.0 or later (to work around some jankery).  See [this screenshot](https://i.imgur.com/X7bDnYr.png) for an example of project creation settings in Visual Studio Community 2019 ([free download](https://visualstudio.microsoft.com/vs/community/)).
 
 Additionally, reference the following assemblies in your plugin project:
 

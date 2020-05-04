@@ -77,7 +77,7 @@ namespace PulsarPluginLoader.Chat.Commands
         {
             if (message.StartsWith("/"))
             {
-                Messaging.Notification(PLNetworkManager.Instance.LocalPlayer.GetPhotonPlayer(), $"Command not found: {message.Split(' ')[0]}");
+                Messaging.Notification($"Command not found: {message.Split(' ')[0]}");
                 return true;
             }
             return false;

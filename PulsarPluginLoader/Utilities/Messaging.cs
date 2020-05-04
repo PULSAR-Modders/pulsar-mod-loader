@@ -43,7 +43,17 @@ namespace PulsarPluginLoader.Utilities
                 message
             });
         }
-
+        public static void Notification(string message, PLPlayer recipient = null, int subjectPlayerId = 0, int durationMs = 6000, bool addToShipLog = false)
+        {
+            if(recipient == null)
+            {
+                recipient = PLNetworkManager.Instance.LocalPlayer;
+            }
+            Notification(recipient.GetPhotonPlayer(), message, subjectPlayerId, durationMs, addToShipLog);
+        }
+        /// <summary>
+        /// Notification taking input (recipient, message) is deprecated. use Notification(message, recipient)
+        /// </summary>
         public static void Notification(PLPlayer recipient, string message, int subjectPlayerId = 0, int durationMs = 6000, bool addToShipLog = false)
         {
             Notification(recipient.GetPhotonPlayer(), message, subjectPlayerId, durationMs, addToShipLog);

@@ -143,7 +143,7 @@
     <Compile Include="Utilities\Clipboard.cs" />
     <Compile Include="Utilities\ExceptionWarningPatch.cs" />
     <Compile Include="Utilities\Logger.cs" />
-    <Compile Include="Chat\Messaging.cs" />
+    <Compile Include="Utilities\Messaging.cs" />
     <Compile Include="Utilities\Uploaders\IUploader.cs" />
     <Compile Include="Utilities\Uploaders\TransferShUploader.cs" />
   </ItemGroup>

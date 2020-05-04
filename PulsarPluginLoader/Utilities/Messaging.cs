@@ -45,21 +45,13 @@ namespace PulsarPluginLoader.Utilities
         }
         public static void Notification(string message, PLPlayer recipient = null, int subjectPlayerId = 0, int durationMs = 6000, bool addToShipLog = false)
         {
-            if(recipient == null)
+            if (recipient == null)
             {
                 recipient = PLNetworkManager.Instance.LocalPlayer;
             }
-            Notification(recipient.GetPhotonPlayer(), message, subjectPlayerId, durationMs, addToShipLog);
+            Notification(message, recipient.GetPhotonPlayer(), subjectPlayerId, durationMs, addToShipLog);
         }
-        /// <summary>
-        /// Notification taking input (recipient, message) is deprecated. use Notification(message, recipient)
-        /// </summary>
-        public static void Notification(PLPlayer recipient, string message, int subjectPlayerId = 0, int durationMs = 6000, bool addToShipLog = false)
-        {
-            Notification(recipient.GetPhotonPlayer(), message, subjectPlayerId, durationMs, addToShipLog);
-        }
-
-        public static void Notification(PhotonPlayer recipient, string message, int subjectPlayerId = 0, int durationMs = 6000, bool addToShipLog = false)
+        public static void Notification(string message, PhotonPlayer recipient, int subjectPlayerId = 0, int durationMs = 6000, bool addToShipLog = false)
         {
             PLServer.Instance.photonView.RPC("AddNotification", recipient, new object[] {
                 message,
@@ -69,7 +61,7 @@ namespace PulsarPluginLoader.Utilities
             });
         }
 
-        public static void Notification(PhotonTargets targets, string message, int subjectPlayerId = 0, int durationMs = 6000, bool addToShipLog = false)
+        public static void Notification(string message, PhotonTargets targets, int subjectPlayerId = 0, int durationMs = 6000, bool addToShipLog = false)
         {
             PLServer.Instance.photonView.RPC("AddNotification", targets, new object[] {
                 message,

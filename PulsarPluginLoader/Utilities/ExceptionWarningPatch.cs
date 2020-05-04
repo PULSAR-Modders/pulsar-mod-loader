@@ -20,7 +20,7 @@ namespace PulsarPluginLoader.Utilities
                 string msg = $"<color='#{ColorUtility.ToHtmlStringRGB(Color.red)}'>Exception!</color> {id}";
                 if (DebugMode)
                 {
-                    Messaging.Notification(PLNetworkManager.Instance.LocalPlayer.GetPhotonPlayer(), msg);
+                    Messaging.Notification(msg);
                 }
                 Logger.Info($"Exception ID: {id}");
             }

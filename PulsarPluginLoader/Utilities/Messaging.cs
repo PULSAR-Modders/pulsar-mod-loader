@@ -4,21 +4,33 @@ namespace PulsarPluginLoader.Utilities
 {
     public static class Messaging
     {
-        public static void ChatMessage(PLPlayer recipient, string message, int sendingPlayerId)
+        public static void ChatMessage(PLPlayer recipient, string message, int sendingPlayerId = -1)
         {
+            if(sendingPlayerId == -1)
+            {
+                sendingPlayerId = PLNetworkManager.Instance.LocalPlayerID;
+            }
             ChatMessage(recipient.GetPhotonPlayer(), message, sendingPlayerId);
         }
 
-        public static void ChatMessage(PhotonPlayer recipient, string message, int sendingPlayerId)
+        public static void ChatMessage(PhotonPlayer recipient, string message, int sendingPlayerId = -1)
         {
+            if (sendingPlayerId == -1)
+            {
+                sendingPlayerId = PLNetworkManager.Instance.LocalPlayerID;
+            }
             PLServer.Instance.photonView.RPC("TeamMessage", recipient, new object[] {
                 message,
                 sendingPlayerId
             });
         }
 
-        public static void ChatMessage(PhotonTargets targets, string message, int sendingPlayerId)
+        public static void ChatMessage(PhotonTargets targets, string message, int sendingPlayerId = -1)
         {
+            if (sendingPlayerId == -1)
+            {
+                sendingPlayerId = PLNetworkManager.Instance.LocalPlayerID;
+            }
             PLServer.Instance.photonView.RPC("TeamMessage", targets, new object[] {
                 message,
                 sendingPlayerId
@@ -71,12 +83,12 @@ namespace PulsarPluginLoader.Utilities
             });
         }
 
-        public static void Centerprint(PLPlayer recipient, string tag, string message, Color color, EWarningType type = EWarningType.E_NORMAL)
+        public static void Centerprint(string message, PLPlayer recipient, string tag = "msg", Color color = new Color(), EWarningType type = EWarningType.E_NORMAL)
         {
-            Centerprint(recipient.GetPhotonPlayer(), tag, message, color, type);
+            Centerprint(message, recipient.GetPhotonPlayer(), tag, color, type);
         }
 
-        public static void Centerprint(PhotonPlayer recipient, string tag, string message, Color color, EWarningType type = EWarningType.E_NORMAL)
+        public static void Centerprint(string message, PhotonPlayer recipient, string tag = "msg", Color color = new Color(), EWarningType type = EWarningType.E_NORMAL)
         {
             PLServer.Instance.photonView.RPC("AddCrewWarning", recipient, new object[] {
                 message,
@@ -86,7 +98,7 @@ namespace PulsarPluginLoader.Utilities
             });
         }
 
-        public static void Centerprint(PhotonTargets targets, string tag, string message, Color color, EWarningType type = EWarningType.E_NORMAL)
+        public static void Centerprint(string message, PhotonTargets targets, string tag = "msg", Color color = new Color(), EWarningType type = EWarningType.E_NORMAL)
         {
             PLServer.Instance.photonView.RPC("AddCrewWarning", targets, new object[] {
                 message,
@@ -96,7 +108,7 @@ namespace PulsarPluginLoader.Utilities
             });
         }
 
-        public static void ShipLog(string tag, string message, Color color, bool addOnlyLocally = false, PLShipInfoBase source = null, PLShipInfoBase destination = null, int turretID = -1, int damage = 0)
+        public static void ShipLog(string message, string tag = "msg", Color color = new Color(), bool addOnlyLocally = false, PLShipInfoBase source = null, PLShipInfoBase destination = null, int turretID = -1, int damage = 0)
         {
             if (PhotonNetwork.isMasterClient)
             {

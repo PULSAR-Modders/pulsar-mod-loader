@@ -9,6 +9,7 @@ namespace PulsarPluginLoader.Injections
 {
     public static class InjectionTools
     {
+        /* ModMessage Stuff...I think.
         public static void CreateModMessage(string targetAssemblyPath)
         {
             //InjectionTools.CreateMethod(targetAssemblyPath, "PLServer", "ModMessage", typeof(void), new Type[] { typeof(string) });
@@ -28,7 +29,7 @@ namespace PulsarPluginLoader.Injections
             targetAssembly.MainModule.GetType("PLServer").Methods.Add(newMethod);
 
             SaveAssembly(targetAssembly, targetAssemblyPath);
-        }
+        }*/
 
         public static void CreateMethod(string targetAssemblyPath, string className, string newMethodName, Type returnType, Type[] parameterTypes)
         {

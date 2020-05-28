@@ -16,13 +16,17 @@ namespace PulsarPluginLoader.Patches
             // Key-Value pairs attached to room as metadata
             roomOptions.customRoomProperties.Merge(new Hashtable() {
                 { "isModded", true },
-                { "playerList", "" }  // "playerName\tclassName" -> "Test Name\tCaptain"
+                { "playerList", "" }, // "playerName\tclassName" -> "Test Name\tCaptain"
+                { "modList", ""}
             });
             // Keys of metadata exposed to public game list
             roomOptions.customRoomPropertiesForLobby = roomOptions.customRoomPropertiesForLobby.AddRangeToArray(new string[] {
                 "isModded",
                 "playerList",
+                "modList",
             });
+            //Add multiplayer mods to modList
+            roomOptions.customRoomProperties["modList"] = MPModChecks.GetModList(); 
         }
 
         public static void UpdatePlayerList()

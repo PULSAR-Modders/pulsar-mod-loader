@@ -84,5 +84,21 @@ namespace PulsarPluginLoader
                 return VersionInfo.ProductName;
             }
         }
+
+        /// <summary>
+        /// Plugin's multiplayer requirements. use MPFunction.
+        /// None: No Functionality
+        /// HostOnly: Only the host is required to have it installed
+        /// HostApproved: Host must have the mod installed, works better when client has it installed.
+        /// All: All players must have the mod installed
+        /// </summary>
+        public virtual int MPFunctionality
+        {
+            get
+            {
+                return (int)MPFunction.None;
+            }
+        }
+             
     }
 }

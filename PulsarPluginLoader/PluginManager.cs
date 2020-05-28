@@ -125,12 +125,11 @@ namespace PulsarPluginLoader
 
                 if (pluginType != null)
                 {
-                    Logger.Info($"Loading plugin: {pluginType.AssemblyQualifiedName}");
-
                     PulsarPlugin plugin = Activator.CreateInstance(pluginType) as PulsarPlugin;
                     activePlugins.Add(plugin.Name, plugin);
                     OnPluginSuccessfullyLoaded?.Invoke(plugin.Name, plugin);
 
+                    Logger.Info($"Loaded Plugin: {plugin.Name} Version {plugin.Version} Author: {plugin.Author}");
                     return plugin;
                 }
                 else

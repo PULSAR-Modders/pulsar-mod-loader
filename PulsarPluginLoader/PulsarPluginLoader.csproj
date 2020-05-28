@@ -119,6 +119,8 @@
     <Compile Include="Chat\Commands\HelpCommand.cs" />
     <Compile Include="Chat\Commands\IChatCommand.cs" />
     <Compile Include="Chat\Commands\ScreenshotCommand.cs" />
+    <Compile Include="MPModChecks.cs" />
+    <Compile Include="MPFunction.cs" />
     <Compile Include="Events\PlayerAddedEvent.cs" />
     <Compile Include="Events\Event.cs" />
     <Compile Include="Events\EventHelper.cs" />
@@ -130,10 +132,8 @@
     <Compile Include="Injections\HarmonyInjector.cs" />
     <Compile Include="Injections\InjectionTools.cs" />
     <Compile Include="Injections\LoggingInjections.cs" />
-    <Compile Include="ModMessage.cs" />
     <Compile Include="Patches\GameVersion.cs" />
     <Compile Include="Patches\LoadPlugins.cs" />
-    <Compile Include="ModMessageHelper.cs" />
     <Compile Include="Patches\PhotonProperties.cs" />
     <Compile Include="Patches\SoundFix.cs" />
     <Compile Include="PulsarPlugin.cs" />
@@ -158,7 +158,7 @@
     </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>SET PLUGIN_DIR="C:\Program Files (x86)\Steam\steamapps\common\PULSARLostColony\PULSAR_LostColony_Data\Managed\"
+    <PostBuildEvent>SET PLUGIN_DIR="D:\Program Files (x86)\Steam\steamapps\common\PULSARLostColony\PULSAR_LostColony_Data\Managed\"
 
 IF EXIST %25PLUGIN_DIR%25 (
     ECHO Copying DLLs to directory...

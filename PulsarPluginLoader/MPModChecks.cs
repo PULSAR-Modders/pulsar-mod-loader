@@ -46,7 +46,7 @@ namespace PulsarPluginLoader
                         Logger.Info("Checking client mod " + plugin);
                         if (!string.IsNullOrEmpty(plugin) && !MPMods.Contains(plugin))
                         {
-                            missingmods += plugin + "; ";
+                            missingmods += plugin + "\n";
                         }
                     }
                     string[] MPmodlist = MPMods.Split('\n');
@@ -58,7 +58,7 @@ namespace PulsarPluginLoader
                             Logger.Info("Checking Server mod " + plugin);
                             if (!string.IsNullOrEmpty(plugin) && !LocalMods.Contains(plugin) && plugin.Contains("MPF3"))
                             {
-                                missingmods += plugin + "; ";
+                                missingmods += plugin + "\n";
                             }
                         }
                         if(missingmods != string.Empty)

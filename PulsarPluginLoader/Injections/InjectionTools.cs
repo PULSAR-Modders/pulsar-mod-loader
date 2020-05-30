@@ -9,7 +9,7 @@ namespace PulsarPluginLoader.Injections
 {
     public static class InjectionTools
     {
-        /* ModMessage Stuff...I think.
+        // ModMessage Stuff...I think.
         public static void CreateModMessage(string targetAssemblyPath)
         {
             //InjectionTools.CreateMethod(targetAssemblyPath, "PLServer", "ModMessage", typeof(void), new Type[] { typeof(string) });
@@ -23,13 +23,15 @@ namespace PulsarPluginLoader.Injections
             newMethod.Body.Instructions.Add(Instruction.Create(OpCodes.Ldarg_2));
             newMethod.Body.Instructions.Add(Instruction.Create(OpCodes.Call, targetAssembly.MainModule.ImportReference(typeof(ModMessageHelper).GetMethod("ReceiveMessage"))));
             newMethod.Body.Instructions.Add(Instruction.Create(OpCodes.Ret));
-
-            newMethod.CustomAttributes.Add(new CustomAttribute(targetAssembly.MainModule.ImportReference(typeof(PunRPC).GetConstructor(Type.EmptyTypes))));
-
+            newMethod.CustomAttributes.Add(new CustomAttribute(targetAssembly.MainModule.referenc));
+            //newMethod.CustomAttributes.Add(new CustomAttribute(targetAssembly.MainModule.ImportReference(typeof(PunRPC).GetConstructor(Type.EmptyTypes))));
+            //Below: tried isolating the problem
+            //targetAssembly.MainModule.ImportReference(typeof(PunRPC)/*GetConstructor(Type.EmptyTypes)*/);
+            
             targetAssembly.MainModule.GetType("PLServer").Methods.Add(newMethod);
-
+            Logger.Info("[MM] 9");
             SaveAssembly(targetAssembly, targetAssemblyPath);
-        }*/
+        }
 
         public static void CreateMethod(string targetAssemblyPath, string className, string newMethodName, Type returnType, Type[] parameterTypes)
         {

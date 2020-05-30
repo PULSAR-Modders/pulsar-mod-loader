@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PulsarPluginLoader.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -29,6 +30,7 @@ namespace PulsarPluginLoader
 
         public static void ReceiveMessage(string modID, object[] arguments)
         {
+            Logger.Info($"ModMessage received message for {modID}");
             if (modMessageHandlers.TryGetValue(modID, out ModMessage modMessage))
             {
                 modMessage.HandleRPC(arguments);

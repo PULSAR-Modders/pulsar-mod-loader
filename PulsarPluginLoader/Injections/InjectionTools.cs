@@ -1,7 +1,10 @@
-﻿using Mono.Cecil;
+﻿using Crosstales.BWF.Util;
+using Mono.Cecil;
 using Mono.Cecil.Cil;
+using Mono.Cecil.Rocks;
 using PulsarPluginLoader.Utilities;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -9,8 +12,8 @@ namespace PulsarPluginLoader.Injections
 {
     public static class InjectionTools
     {
-        // ModMessage Stuff...I think.
-        public static void CreateModMessage(string targetAssemblyPath)
+        // ModMessage Stuff
+        /*public static void CreateModMessage(string targetAssemblyPath)
         {
             //InjectionTools.CreateMethod(targetAssemblyPath, "PLServer", "ModMessage", typeof(void), new Type[] { typeof(string) });
             //InjectionTools.PatchMethod(targetAssemblyPath, "PLServer", "ModMessage", typeof(PulsarPluginLoader.Patches.ModMessageHelper), "RelayMessage");
@@ -23,15 +26,15 @@ namespace PulsarPluginLoader.Injections
             newMethod.Body.Instructions.Add(Instruction.Create(OpCodes.Ldarg_2));
             newMethod.Body.Instructions.Add(Instruction.Create(OpCodes.Call, targetAssembly.MainModule.ImportReference(typeof(ModMessageHelper).GetMethod("ReceiveMessage"))));
             newMethod.Body.Instructions.Add(Instruction.Create(OpCodes.Ret));
-            newMethod.CustomAttributes.Add(new CustomAttribute(targetAssembly.MainModule.referenc));
+            //newMethod.CustomAttributes.Add(new CustomAttribute(targetAssembly.MainModule.ImportReference(typeof(PunRPC).GetConstructor());
             //newMethod.CustomAttributes.Add(new CustomAttribute(targetAssembly.MainModule.ImportReference(typeof(PunRPC).GetConstructor(Type.EmptyTypes))));
             //Below: tried isolating the problem
-            //targetAssembly.MainModule.ImportReference(typeof(PunRPC)/*GetConstructor(Type.EmptyTypes)*/);
-            
-            targetAssembly.MainModule.GetType("PLServer").Methods.Add(newMethod);
+            //targetAssembly.MainModule.ImportReference(typeof(PunRPC)); //GetConstructor(Type.EmptyTypes)
+
+        targetAssembly.MainModule.GetType("PLServer").Methods.Add(newMethod);
             Logger.Info("[MM] 9");
             SaveAssembly(targetAssembly, targetAssemblyPath);
-        }
+        }*/
 
         public static void CreateMethod(string targetAssemblyPath, string className, string newMethodName, Type returnType, Type[] parameterTypes)
         {

@@ -1,5 +1,4 @@
-﻿
-namespace PulsarPluginLoader
+﻿namespace PulsarPluginLoader
 {
     public abstract class ModMessage
     {
@@ -10,7 +9,7 @@ namespace PulsarPluginLoader
 
         public static void SendRPC(string harmonyIdentifier, string handlerIdentifier, PhotonPlayer player, object[] arguments)
         {
-            PLServer.Instance.photonView.RPC("ModMessage", player, new object[]
+            ModMessageHelper.Instance.photonView.RPC("ReceiveMessage", player, new object[]
             {
                 harmonyIdentifier + "#" + handlerIdentifier,
                 arguments
@@ -19,7 +18,7 @@ namespace PulsarPluginLoader
 
         public static void SendRPC(string harmonyIdentifier, string handlerIdentifier, PhotonTargets targets, object[] arguments)
         {
-            PLServer.Instance.photonView.RPC("ModMessage", targets, new object[]
+            ModMessageHelper.Instance.photonView.RPC("ReceiveMessage", targets, new object[]
             {
                 harmonyIdentifier + "#" + handlerIdentifier,
                 arguments

@@ -1,15 +1,26 @@
-﻿using PulsarPluginLoader.Utilities;
+﻿using HarmonyLib;
+using PulsarPluginLoader.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using UnityEngine;
 
 namespace PulsarPluginLoader
 {
-    public class ModMessageHelper
+    [HarmonyPatch(typeof(PLServer), "Awake")]
+    static class MMHInstantiate
     {
+        static void Prefix(PLServer __instance)
+        {
+            __instance.gameObject.AddComponent(typeof(ModMessageHelper));
+        }
+    }
+    public class ModMessageHelper : PLMonoBehaviour
+    {
+        public static ModMessageHelper Instance;
         private static readonly Dictionary<string, ModMessage> modMessageHandlers = new Dictionary<string, ModMessage>();
 
-        static ModMessageHelper()
+        ModMessageHelper()
         {
             IEnumerable<PulsarPlugin> pluginList = PluginManager.Instance.GetAllPlugins();
             foreach (PulsarPlugin plugin in pluginList)
@@ -27,14 +38,19 @@ namespace PulsarPluginLoader
                 }
             }
         }
-
-        public static void ReceiveMessage(string modID, object[] arguments)
+        [PunRPC]
+        public void ReceiveMessage(string modID, object[] arguments)
         {
-            Logger.Info($"ModMessage received message for {modID}");
+            Utilities.Logger.Info($"ModMessage received message for {modID}");
             if (modMessageHandlers.TryGetValue(modID, out ModMessage modMessage))
             {
                 modMessage.HandleRPC(arguments);
             }
+        }
+        protected override void Awake()
+        {
+            base.Awake();
+            ModMessageHelper.Instance = this;
         }
     }
 }

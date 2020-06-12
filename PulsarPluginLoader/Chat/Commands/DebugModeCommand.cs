@@ -8,12 +8,13 @@ namespace PulsarPluginLoader.Chat.Commands
 {
     class DebugModeCommand : IChatCommand
     {
+        public static bool DebugMode = false;
         public string[] CommandAliases()
         {
             //load DebugMoad from settings.xml
             if (bool.TryParse(PLXMLOptionsIO.Instance.CurrentOptions.GetStringValue("PPLDebugMode"), out bool result))
             {
-                ExceptionWarningPatch.DebugMode = result;
+                DebugMode = result;
             }
             return new string[] { "debugmode", "dbm"};
         }
@@ -26,13 +27,13 @@ namespace PulsarPluginLoader.Chat.Commands
         public bool Execute(string arguments)
         {
             //Toggle DebugMode value
-            ExceptionWarningPatch.DebugMode = !ExceptionWarningPatch.DebugMode;
+            DebugMode = !DebugMode;
 
             //Write new DebugMode value to settings xml file
-            PLXMLOptionsIO.Instance.CurrentOptions.SetStringValue("PPLDebugMode", ExceptionWarningPatch.DebugMode.ToString());
+            PLXMLOptionsIO.Instance.CurrentOptions.SetStringValue("PPLDebugMode", DebugMode.ToString());
 
             //notify player of new DebugMode value
-            Messaging.Notification($"PPLDebugMode is now {ExceptionWarningPatch.DebugMode}");
+            Messaging.Notification($"PPLDebugMode is now {DebugMode}");
             return false;
         }
 

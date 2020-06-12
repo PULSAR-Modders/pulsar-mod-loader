@@ -19,9 +19,9 @@ namespace PulsarPluginLoader
         }
         public static string GetMPModList(RoomInfo room)
         {
-            if (room.customProperties.ContainsKey("modList"))
+            if (room.CustomProperties.ContainsKey("modList"))
             {
-                return room.customProperties["modList"].ToString();
+                return room.CustomProperties["modList"].ToString();
             }
             return string.Empty;
         }
@@ -33,7 +33,7 @@ namespace PulsarPluginLoader
         {
             string LocalMods = MPModChecks.GetModList();
             string MPMods = MPModChecks.GetMPModList(room);
-            Logger.Info($"Joining room: {room.name} MPmodlist: {room.customProperties["modList"]} Localmodlist: {LocalMods}");
+            Logger.Info($"Joining room: {room.Name} MPmodlist: {room.CustomProperties["modList"]} Localmodlist: {LocalMods}");
             if (!string.IsNullOrEmpty(LocalMods))
             {
                 Logger.Info("Modlist != NullOrEmpty");

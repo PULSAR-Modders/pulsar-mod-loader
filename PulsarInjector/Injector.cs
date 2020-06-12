@@ -68,7 +68,7 @@ namespace PulsarInjector
             Logger.Info("=== Injecting Harmony Initialization ===");
             InjectionTools.PatchMethod(targetAssemblyPath, "PLGlobal", "Awake", typeof(HarmonyInjector), "InitializeHarmony");
 
-            Logger.Info("=== Creating Mod Message RPC ===");
+            /*Logger.Info("=== Creating Mod Message RPC ===");
             try
             {
                 InjectionTools.CreateModMessage(targetAssemblyPath);
@@ -76,7 +76,7 @@ namespace PulsarInjector
             catch (Exception e)
             {
                 Logger.Info($"Failed to load do something while creating: \n{e}");
-            }
+            }*/
 
             /*Logger.Info("=== Injecting Events ===");
             EventInjector.InjectEvents(targetAssemblyPath);*/

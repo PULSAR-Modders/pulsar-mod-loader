@@ -2,31 +2,35 @@
 using HarmonyLib;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection.Emit;
 
 namespace PulsarPluginLoader.Patches
 {
-    [HarmonyPatch(typeof(PhotonNetwork), "CreateRoom", new Type[] { typeof(string), typeof(RoomOptions), typeof(TypedLobby) })]
+    [HarmonyPatch(typeof(PhotonNetwork), "CreateRoom", new Type[] { typeof(string), typeof(RoomOptions), typeof(TypedLobby), typeof(string[]) })]
     public static class PhotonProperties
     {
 
         private static void Prefix(RoomOptions roomOptions)
         {
+            Debug.Write("[dbg] 1");
             // Key-Value pairs attached to room as metadata
-            roomOptions.customRoomProperties.Merge(new Hashtable() {
+            roomOptions.CustomRoomProperties.Merge(new Hashtable() {
                 { "isModded", true },
                 { "playerList", "" }, // "playerName\tclassName" -> "Test Name\tCaptain"
                 { "modList", ""}
             });
             // Keys of metadata exposed to public game list
-            roomOptions.customRoomPropertiesForLobby = roomOptions.customRoomPropertiesForLobby.AddRangeToArray(new string[] {
+            roomOptions.CustomRoomPropertiesForLobby = roomOptions.CustomRoomPropertiesForLobby.AddRangeToArray(new string[] {
                 "isModded",
                 "playerList",
                 "modList",
             });
+            Debug.Write("[dbg] 3");
             //Add multiplayer mods to modList
-            roomOptions.customRoomProperties["modList"] = MPModChecks.GetModList(); 
+            roomOptions.CustomRoomProperties["modList"] = MPModChecks.GetModList();
+            Debug.Write("[dbg] 4");
         }
 
         public static void UpdatePlayerList()
@@ -34,7 +38,7 @@ namespace PulsarPluginLoader.Patches
             if (PhotonNetwork.isMasterClient && PhotonNetwork.inRoom && PLNetworkManager.Instance != null)
             {
                 Room room = PhotonNetwork.room;
-                Hashtable customProperties = room.customProperties;
+                Hashtable customProperties = room.CustomProperties;
 
                 customProperties["playerList"] = string.Join(
                     "\n",

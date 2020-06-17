@@ -29,13 +29,14 @@ namespace PulsarPluginLoader
 
         ModMessageHelper()
         {
+            modMessageHandlers = new Dictionary<string, ModMessage>();
             IEnumerable<PulsarPlugin> pluginList = PluginManager.Instance.GetAllPlugins();
             foreach (PulsarPlugin plugin in pluginList)
             {
                 string modID = plugin.HarmonyIdentifier();
                 Assembly asm = plugin.GetType().Assembly;
                 Type modMessage = typeof(ModMessage);
-                if(plugin.MPFunctionality > 1)
+                if(plugin.MPFunctionality > 2)
                 {
                     ServerHasMPMods = true;
                 }

@@ -20,7 +20,7 @@ namespace PulsarPluginLoader
         public static bool ServerHasMPMods = false;
         public static ModMessageHelper Instance;
         public Dictionary<PhotonPlayer, string> PlayersWithMods;
-        private Dictionary<string, ModMessage> modMessageHandlers = new Dictionary<string, ModMessage>();
+        private static Dictionary<string, ModMessage> modMessageHandlers = new Dictionary<string, ModMessage>();
 
         public string GetPlayerMods(PhotonPlayer inPlayer)
         {
@@ -53,7 +53,6 @@ namespace PulsarPluginLoader
         {
             base.Awake();
             ModMessageHelper.Instance = this;
-            modMessageHandlers = new Dictionary<string, ModMessage>();
             PlayersWithMods = new Dictionary<PhotonPlayer, string>();
         }
         [PunRPC]

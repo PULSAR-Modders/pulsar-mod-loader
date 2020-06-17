@@ -174,15 +174,18 @@ namespace PulsarPluginLoader
             }
             else //client wasn't found in mod list
             {
-                Utilities.Logger.Info("Didn't receive message or proper modlist. proceeding to kick PhotonPlayer");
-                string message = $"You have been disconnected for not having the mod loader installed";
-                ModMessageHelper.Instance.photonView.RPC("RecieveErrorMessage", pmi.sender, new object[] { message });
-                if (SteamManager.Initialized && pmi.sender.SteamID != CSteamID.Nil)
+                if (ModMessageHelper.ServerHasMPMods) //small vulnerability: if a client with mods disables the pong message, they can still connect with their multiplayer mods
                 {
-                    SteamUser.EndAuthSession(pmi.sender.SteamID);
+                    Utilities.Logger.Info("Didn't receive message or proper modlist. proceeding to kick PhotonPlayer");
+                    string message = $"You have been disconnected for not having the mod loader installed";
+                    ModMessageHelper.Instance.photonView.RPC("RecieveErrorMessage", pmi.sender, new object[] { message });
+                    if (SteamManager.Initialized && pmi.sender.SteamID != CSteamID.Nil)
+                    {
+                        SteamUser.EndAuthSession(pmi.sender.SteamID);
+                    }
+                    PhotonNetwork.CloseConnection(pmi.sender);
+                    return false;
                 }
-                PhotonNetwork.CloseConnection(pmi.sender);
-                return false;
             }
             return true;
         }

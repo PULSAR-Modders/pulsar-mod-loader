@@ -13,7 +13,6 @@ namespace PulsarPluginLoader.Tests.Chat.Commands
         public bool Execute(string arguments)
         {
             Console.WriteLine(arguments);
-
             return false;
         }
 

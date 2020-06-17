@@ -19,7 +19,7 @@ namespace PulsarPluginLoader
     {
         public static bool ServerHasMPMods = false;
         public static ModMessageHelper Instance;
-        private Dictionary<PhotonPlayer, string> PlayersWithMods;
+        public Dictionary<PhotonPlayer, string> PlayersWithMods;
         private static Dictionary<string, ModMessage> modMessageHandlers = new Dictionary<string, ModMessage>();
 
         public string GetPlayerMods(PhotonPlayer inPlayer) //if the player exists, return the modlist, otherwise return the string 'NoPlayer'

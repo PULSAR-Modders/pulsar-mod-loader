@@ -25,6 +25,6 @@
             });
         }
 
-        public abstract void HandleRPC(object[] arguments);
+        public abstract void HandleRPC(object[] arguments, PhotonMessageInfo sender);
     }
 }

@@ -2,7 +2,6 @@
 using HarmonyLib;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection.Emit;
 
@@ -14,7 +13,6 @@ namespace PulsarPluginLoader.Patches
 
         private static void Prefix(RoomOptions roomOptions)
         {
-            Debug.Write("[dbg] 1");
             // Key-Value pairs attached to room as metadata
             roomOptions.CustomRoomProperties.Merge(new Hashtable() {
                 { "isModded", true },
@@ -27,10 +25,8 @@ namespace PulsarPluginLoader.Patches
                 "playerList",
                 "modList",
             });
-            Debug.Write("[dbg] 3");
             //Add multiplayer mods to modList
-            roomOptions.CustomRoomProperties["modList"] = MPModChecks.GetModList();
-            Debug.Write("[dbg] 4");
+            roomOptions.CustomRoomProperties["modList"] = MPModChecks.GetMPModList();
         }
 
         public static void UpdatePlayerList()

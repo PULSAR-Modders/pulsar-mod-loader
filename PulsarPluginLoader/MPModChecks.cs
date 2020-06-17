@@ -109,7 +109,7 @@ namespace PulsarPluginLoader
         {
             Utilities.Logger.Info("About to check if containskey. isMasterClient: " + PhotonNetwork.isMasterClient.ToString());
             bool foundplayer = false;
-            if (ModMessageHelper.Instance.PlayersWithMods.ContainsKey(pmi.sender))
+            if (ModMessageHelper.Instance.GetPlayerMods(pmi.sender) != "NoPlayer")
             { //checks if server has received mod list from client. request for mod list is sent in the class 'PrefixServerOnClientJoin'
                 foundplayer = true;
             }
@@ -186,6 +186,7 @@ namespace PulsarPluginLoader
                     PhotonNetwork.CloseConnection(pmi.sender);
                     return false;
                 }
+                Utilities.Logger.Info("Didn't receive message or proper modlist, but the server doesn't have multiplayer explicit mods. Proceeding onwards");
             }
             return true;
         }

@@ -54,7 +54,7 @@ namespace PulsarPluginLoader
                     string[] localmodlist = LocalMods.Split('\n');
                     foreach (string plugin in localmodlist)
                     {
-                        Logger.Info("Checking client mod " + plugin);
+                        //Logger.Info("Checking client mod " + plugin);
                         if (!string.IsNullOrEmpty(plugin) && !MPMods.Contains(plugin))
                         {
                             missingmods += plugin + "\n";
@@ -66,7 +66,7 @@ namespace PulsarPluginLoader
                         Logger.Info("Client mods good, checking server mods");
                         foreach (string plugin in MPmodlist)
                         {
-                            Logger.Info("Checking Server mod " + plugin);
+                            //Logger.Info("Checking Server mod " + plugin);
                             if (!string.IsNullOrEmpty(plugin) && !LocalMods.Contains(plugin) && plugin.Contains("MPF3"))
                             {
                                 missingmods += plugin + "\n";
@@ -96,7 +96,7 @@ namespace PulsarPluginLoader
         {
             if (PhotonNetwork.isMasterClient)
             {
-                Logger.Info("Sending Connection Message (asking for mod list)");
+                Logger.Info("Sending Ping (asking for mod list/Pong)");
                 ModMessageHelper.Instance.photonView.RPC("SendConnectionMessage", connected, new object[0]);
             }
         }
@@ -107,7 +107,7 @@ namespace PulsarPluginLoader
     {
         static bool Prefix(ref PhotonMessageInfo pmi)
         {
-            Utilities.Logger.Info("About to check if containskey. isMasterClient: " + PhotonNetwork.isMasterClient.ToString());
+            //Utilities.Logger.Info("About to check if containskey. isMasterClient: " + PhotonNetwork.isMasterClient.ToString());
             bool foundplayer = false;
             if (ModMessageHelper.Instance.GetPlayerMods(pmi.sender) != "NoPlayer")
             { //checks if server has received mod list from client. request for mod list is sent in the class 'PrefixServerOnClientJoin'

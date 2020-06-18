@@ -71,7 +71,7 @@ namespace PulsarPluginLoader
         [PunRPC]
         public void ReceiveMessage(string modID, object[] arguments, PhotonMessageInfo pmi)
         {
-            Utilities.Logger.Info($"ModMessage received message for {modID}");
+            //Utilities.Logger.Info($"ModMessage received message for {modID}");
             if (modMessageHandlers.TryGetValue(modID, out ModMessage modMessage))
             {
                 modMessage.HandleRPC(arguments, pmi);
@@ -100,7 +100,7 @@ namespace PulsarPluginLoader
         [PunRPC]
         public void SendConnectionMessage(PhotonMessageInfo pmi) //Ping
         {
-            Logger.Info("Received Connection Message, Sending");
+            Logger.Info("Received ping, Sending pong");
             ModMessageHelper.Instance.photonView.RPC("ReceiveConnectionMessage", pmi.sender, new object[]
             {
                 MPModChecks.GetModList(),

@@ -63,6 +63,11 @@ namespace PulsarPluginLoader
             ModMessageHelper.Instance = this;
             PlayersWithMods = new Dictionary<PhotonPlayer, string>();
         }
+        public string GetModName(string pluginName)
+        {
+            PulsarPlugin plugin = PluginManager.Instance.GetPlugin(pluginName);
+            return $"{plugin.Name} {plugin.Version} MPF{plugin.MPFunctionality}";
+        }
         [PunRPC]
         public void ReceiveMessage(string modID, object[] arguments, PhotonMessageInfo pmi)
         {

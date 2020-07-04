@@ -40,7 +40,6 @@ namespace PulsarPluginLoader
             IEnumerable<PulsarPlugin> pluginList = PluginManager.Instance.GetAllPlugins();
             foreach (PulsarPlugin plugin in pluginList)
             {
-                string modID = plugin.HarmonyIdentifier();
                 Assembly asm = plugin.GetType().Assembly;
                 Type modMessage = typeof(ModMessage);
                 if(plugin.MPFunctionality > 2)

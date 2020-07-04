@@ -75,11 +75,11 @@ namespace PulsarPluginLoader
                         if (missingmods != string.Empty)
                         {
                             Logger.Info("Server plugin list is not equal to local plugin list");
-                            PLNetworkManager.Instance.MainMenu.AddActiveMenu(new PLErrorMessageMenu($"Failed to join crew! The Server is missing the following mods or is not up to date (try uninstalling/updating): {missingmods}"));
+                            PLNetworkManager.Instance.MainMenu.AddActiveMenu(new PLErrorMessageMenu($"Failed to join crew! The Server is missing the following mods or is not up to date (try uninstalling/updating):\n{missingmods}"));
                             return false;
                         }
                     }
-                    PLNetworkManager.Instance.MainMenu.AddActiveMenu(new PLErrorMessageMenu($"Failed to join crew! You are missing the following mods or the mods are not up to date: {missingmods}"));
+                    PLNetworkManager.Instance.MainMenu.AddActiveMenu(new PLErrorMessageMenu($"Failed to join crew! You are missing the following mods or the mods are not up to date:\n{missingmods}"));
 
                     Logger.Info("Local Plugin list is not equal to Server plugin list");
                     return false;
@@ -146,7 +146,7 @@ namespace PulsarPluginLoader
                         if (missingmods != string.Empty) //Client has non-server mods
                         {
                             Logger.Info("Client has non-server multiplayer mods");
-                            string message = $"You have been disconnected for having the following mods (try removing them): \n{missingmods}";
+                            string message = $"You have been disconnected for having the following mods (try removing them):\n{missingmods}";
                             ModMessageHelper.Instance.photonView.RPC("RecieveErrorMessage", pmi.sender, new object[] { message });
                             if (SteamManager.Initialized && pmi.sender.SteamID != CSteamID.Nil)
                             {
@@ -159,7 +159,7 @@ namespace PulsarPluginLoader
                     else //client is missing server mods
                     {
                         Logger.Info("client is missing server mods");
-                        string message = $"You have been disconnected for not having the following mods (try installing them): \n{missingmods}";
+                        string message = $"You have been disconnected for not having the following mods (try installing them):\n{missingmods}";
                         ModMessageHelper.Instance.photonView.RPC("RecieveErrorMessage", pmi.sender, new object[] { message });
                         if (SteamManager.Initialized && pmi.sender.SteamID != CSteamID.Nil)
                         {

@@ -8,7 +8,7 @@ using System.Reflection.Emit;
 
 namespace PulsarPluginLoader.Chat.Commands
 {
-    [HarmonyPatch(typeof(PLNetworkManager), "Update")]
+    [HarmonyPatch(typeof(PLNetworkManager), "ProcessCurrentChatText")]
     class ChatInputPatch
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)

@@ -26,10 +26,14 @@ Optionally remove `PulsarPluginLoader.dll`, `Assembly-CSharp.dll.bak`, and the `
 
 All plugins must be C# Class Libraries targeting .NET Framework 4.0 or later (to work around some jankery).  See [this screenshot](https://i.imgur.com/X7bDnYr.png) for an example of project creation settings in Visual Studio Community 2019 ([free download](https://visualstudio.microsoft.com/vs/community/)).
 
-Additionally, reference the following assemblies in your plugin project:
+You Should reference the following assemblies in your plugin project:
 
  * `PulsarPluginLoader.dll` (PPL code)
  * `Assembly-CSharp.dll` (Game code)
+
+Additionally, the following Assemblies might be needed.
+ * `0Harmony.dll` (Patch Code)
+ * `ACTk.Runtime.dll` (Obscured Object Code)
  * `UnityEngine.CoreModule.dll` (Engine code)
  * `UnityEngine.*.dll` (optional; specific DLL depends what changes are made)
 

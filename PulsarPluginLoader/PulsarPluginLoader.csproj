@@ -120,8 +120,8 @@
     <Compile Include="Chat\Commands\HelpCommand.cs" />
     <Compile Include="Chat\Commands\CommandRouter\IChatCommand.cs" />
     <Compile Include="Chat\Commands\ScreenshotCommand.cs" />
-    <Compile Include="ModMessage.cs" />
-    <Compile Include="ModMessageHelper.cs" />
+    <Compile Include="ModMessage\ModMessage.cs" />
+    <Compile Include="ModMessage\ModMessageHelper.cs" />
     <Compile Include="MPModChecks.cs" />
     <Compile Include="MPFunction.cs" />
     <Compile Include="Events\PlayerAddedEvent.cs" />

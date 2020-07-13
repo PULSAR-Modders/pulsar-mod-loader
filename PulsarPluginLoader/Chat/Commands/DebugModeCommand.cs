@@ -1,4 +1,5 @@
-﻿using PulsarPluginLoader.Utilities;
+﻿using PulsarPluginLoader.Chat.Commands;
+using PulsarPluginLoader.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +25,7 @@ namespace PulsarPluginLoader.Chat.Commands
             return "Toggles Exception notifications in-game";
         }
 
-        public bool Execute(string arguments)
+        public bool Execute(string arguments, int SenderID)
         {
             //Toggle DebugMode value
             DebugMode = !DebugMode;
@@ -34,6 +35,11 @@ namespace PulsarPluginLoader.Chat.Commands
 
             //notify player of new DebugMode value
             Messaging.Notification($"PPLDebugMode is now {DebugMode}");
+            return false;
+        }
+
+        public bool PublicCommand()
+        {
             return false;
         }
 

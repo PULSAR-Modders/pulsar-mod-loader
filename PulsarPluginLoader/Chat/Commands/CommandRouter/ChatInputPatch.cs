@@ -73,7 +73,7 @@ namespace PulsarPluginLoader.Chat.Commands
             return instructionList;
         }
 
-        public static bool MessageIsCommand(string message)
+        /*public static bool MessageIsCommand(string message)
         {
             if (message.StartsWith("/"))
             {
@@ -81,6 +81,6 @@ namespace PulsarPluginLoader.Chat.Commands
                 return true;
             }
             return false;
-        }
+        }*/
     }
 }

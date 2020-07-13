@@ -1,4 +1,5 @@
-﻿using PulsarPluginLoader.Utilities;
+﻿using PulsarPluginLoader.Chat.Commands;
+using PulsarPluginLoader.Utilities;
 using System;
 using System.Linq;
 
@@ -21,7 +22,7 @@ namespace PulsarPluginLoader.Chat.Commands
             return $"/{CommandAliases()[0]} [command]";
         }
 
-        public bool Execute(string arguments)
+        public bool Execute(string arguments, int SenderID)
         {
             if (arguments != string.Empty)
             {
@@ -31,7 +32,7 @@ namespace PulsarPluginLoader.Chat.Commands
                 if (cmd != null)
                 {
                     Messaging.Echo(PLNetworkManager.Instance.LocalPlayer.GetPhotonPlayer(), $"[&%~[C0 /{cmd.CommandAliases()[0]} ]&%~] - {cmd.Description()}");
-                    Messaging.Echo(PLNetworkManager.Instance.LocalPlayer.GetPhotonPlayer(), $"Aliases: /{String.Join(", /", cmd.CommandAliases())}");
+                    Messaging.Echo(PLNetworkManager.Instance.LocalPlayer.GetPhotonPlayer(), $"Aliases: /{string.Join(", /", cmd.CommandAliases())}");
                     Messaging.Echo(PLNetworkManager.Instance.LocalPlayer.GetPhotonPlayer(), $"Usage: {cmd.UsageExample()}");
                 }
                 else
@@ -41,12 +42,16 @@ namespace PulsarPluginLoader.Chat.Commands
             }
             else
             {
-                string commandList = String.Join(Environment.NewLine, ChatCommandRouter.Instance.GetCommands().Select(cmd => $"/{cmd.CommandAliases()[0]} - {cmd.Description()}").ToArray());
+                string commandList = string.Join(Environment.NewLine, ChatCommandRouter.Instance.GetCommands().Select(cmd => $"/{cmd.CommandAliases()[0]} - {cmd.Description()}").ToArray());
 
                 Messaging.Echo(PLNetworkManager.Instance.LocalPlayer.GetPhotonPlayer(), "[&%~[C0 Command List: ]&%~]");
                 Messaging.Echo(PLNetworkManager.Instance.LocalPlayer.GetPhotonPlayer(), commandList);
             }
 
+            return false;
+        }
+        public bool PublicCommand()
+        {
             return false;
         }
     }

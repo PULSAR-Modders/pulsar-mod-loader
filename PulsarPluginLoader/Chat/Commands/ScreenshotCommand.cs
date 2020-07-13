@@ -23,7 +23,7 @@ namespace PulsarPluginLoader.Chat.Commands
             return $"/{CommandAliases()[0]} [ui]";
         }
 
-        public bool Execute(string arg)
+        public bool Execute(string arg, int SenderID)
         {
             string baseDir = Environment.ExpandEnvironmentVariables(@"%localappdata%low\Leafy Games, LLC\PULSAR Lost Colony");
             Directory.CreateDirectory(baseDir);
@@ -82,6 +82,10 @@ namespace PulsarPluginLoader.Chat.Commands
             {
                 PLInGameUI.Instance.UIIsHidden = !PLInGameUI.Instance.UIIsHidden;
             }
+        }
+        public bool PublicCommand()
+        {
+            return false;
         }
     }
 }

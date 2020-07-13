@@ -113,12 +113,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Chat\Commands\ChatCommandRouter.cs" />
-    <Compile Include="Chat\Commands\ChatInputPatch.cs" />
+    <Compile Include="Chat\Commands\CommandRouter\ChatCommandRouter.cs" />
+    <Compile Include="Chat\Commands\CommandRouter\ChatInputPatch.cs" />
     <Compile Include="Chat\Commands\DebugModeCommand.cs" />
     <Compile Include="Chat\Commands\EchoCommand.cs" />
     <Compile Include="Chat\Commands\HelpCommand.cs" />
-    <Compile Include="Chat\Commands\IChatCommand.cs" />
+    <Compile Include="Chat\Commands\CommandRouter\IChatCommand.cs" />
     <Compile Include="Chat\Commands\ScreenshotCommand.cs" />
     <Compile Include="ModMessage.cs" />
     <Compile Include="ModMessageHelper.cs" />

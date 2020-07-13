@@ -19,10 +19,14 @@ namespace PulsarPluginLoader.Chat.Commands
             return $"/{CommandAliases()[0]} [text]";
         }
 
-        public bool Execute(string arguments)
+        public bool Execute(string arguments, int SenderID)
         {
             Messaging.Echo(PLNetworkManager.Instance.LocalPlayer.GetPhotonPlayer(), $"Echo: {arguments}");
 
+            return false;
+        }
+        public bool PublicCommand()
+        {
             return false;
         }
     }

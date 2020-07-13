@@ -1,4 +1,5 @@
-﻿using PulsarPluginLoader.Utilities;
+﻿using HarmonyLib;
+using PulsarPluginLoader.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,7 +36,7 @@ namespace PulsarPluginLoader.Chat.Commands
             }
         }
 
-        private readonly Dictionary<string, IChatCommand> commands;
+        public readonly Dictionary<string, IChatCommand> commands;
 
         public ChatCommandRouter()
         {
@@ -108,11 +109,11 @@ namespace PulsarPluginLoader.Chat.Commands
                 string alias = splitInput[0].ToLower();
                 string arguments = splitInput.Length > 1 ? splitInput[1] : String.Empty;
 
-                if (commands.TryGetValue(alias, out IChatCommand cmd))
+                if (commands.TryGetValue(alias, out IChatCommand cmd) && !cmd.PublicCommand())
                 {
                     try
                     {
-                        fallthroughToDevCommands = cmd.Execute(arguments.Trim());
+                        fallthroughToDevCommands = cmd.Execute(arguments.Trim(), PLNetworkManager.Instance.LocalPlayerID);
                     }
                     catch
                     {
@@ -140,6 +141,34 @@ namespace PulsarPluginLoader.Chat.Commands
                 if (iChatCmd.IsAssignableFrom(t) && !t.IsAbstract && !t.IsInterface)
                 {
                     Register((IChatCommand)Activator.CreateInstance(t));
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLServer), "TeamMessage")]
+    class ReceiveClientMessage //handles messages in global chat.
+    {
+        static void Postfix(string message, int playerID)
+        {
+            string text = message.Replace("[&%~[C", string.Empty).Replace(" ]&%~]", string.Empty);
+            if (text.StartsWith("!") && PhotonNetwork.isMasterClient)
+            {
+                // Strip surrounding whitespace, remove leading slash, and split command from arguments
+                string[] splitInput = text.Trim().Substring(1).Split(new char[] { ' ' }, 2);
+                string alias = splitInput[0].ToLower();
+                string arguments = splitInput.Length > 1 ? splitInput[1] : string.Empty;
+
+                if (ChatCommandRouter.Instance.commands.TryGetValue(alias, out IChatCommand cmd) && cmd.PublicCommand())
+                {
+                    try
+                    {
+                        cmd.Execute(arguments.Trim(), playerID);
+                    }
+                    catch
+                    {
+                        Logger.Info($"Chat Command Exception -- Input: {text}");
+                        throw;
+                    }
                 }
             }
         }

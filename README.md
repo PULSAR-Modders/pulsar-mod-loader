@@ -4,6 +4,8 @@
 
 Injects a basic plugin loader into [*PULSAR: Lost Colony*](http://www.pulsarthegame.com/).
 
+Contact us on our discord! [Pulsar Lost Colony: Crew Matchup Server](https://discord.gg/yBJGv4T)
+
 ## Usage
 
 ```

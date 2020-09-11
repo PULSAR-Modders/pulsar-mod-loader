@@ -12,28 +12,29 @@ namespace PulsarPluginLoader.Patches
     {
         public static IEnumerable<CodeInstruction> PatchBySequence(IEnumerable<CodeInstruction> instructions, IEnumerable<CodeInstruction> targetSequence, IEnumerable<CodeInstruction> patchSequence, PatchMode patchMode = PatchMode.AFTER, CheckMode checkMode = CheckMode.ALWAYS, bool showDebugOutput = false)
         {
-            List<CodeInstruction> newInstructions = instructions.ToList();
+            List<CodeInstruction> Instructions = instructions.ToList(); //create new list to be modified and returned.
 
             CodeInstruction targetStart = targetSequence.ElementAt(0);
             int targetSize = targetSequence.Count();
 
-            for (int i = 0; i < newInstructions.Count; i++)
+            for (int i = 0; i < Instructions.Count; i++) //Check every Instruction in the given list if it is the correct Instruction set
             {
-                bool targetSequenceStillFits = i + targetSize <= newInstructions.Count;
+                bool targetSequenceStillFits = i + targetSize <= Instructions.Count; //calculate if target sequence fits in Instructions.
 
-                if (targetSequenceStillFits)
+                if (targetSequenceStillFits) //stop if not enough lines capable of fitting target sequence
                 {
                     bool foundTargetSequence = true;
 
-                    for (int x = 0; x < targetSize && foundTargetSequence; x++)
+                    for (int x = 0; x < targetSize && foundTargetSequence; x++) //compare each element of the new sequence to the old to see if it is the same. stop for loop early if the targetsequence
                     {
-                        foundTargetSequence = newInstructions[i + x].opcode.Equals(targetSequence.ElementAt(x).opcode);
-                        if (checkMode != CheckMode.NEVER)
+                        foundTargetSequence = Instructions[i + x].opcode.Equals(targetSequence.ElementAt(x).opcode);
+                        if (checkMode != CheckMode.NEVER)//if specified checking params are set appropriately, check opperand. CheckMode enum comes into play here.
                         {
                             foundTargetSequence = foundTargetSequence &&
-                                ((targetSequence.ElementAt(x).operand == null &&
-                                (newInstructions[i + x].operand == null || checkMode == CheckMode.NONNULL)) ||
-                                newInstructions[i + x].operand.Equals(targetSequence.ElementAt(x).operand));
+                            (
+                                ((Instructions[i + x].operand == null || checkMode == CheckMode.NONNULL) && targetSequence.ElementAt(x).operand == null) ||
+                                Instructions[i + x].operand.Equals(targetSequence.ElementAt(x).operand)
+                            );
                         }
 
                         if (showDebugOutput && foundTargetSequence)
@@ -42,17 +43,17 @@ namespace PulsarPluginLoader.Patches
                         }
                     }
 
-                    if (foundTargetSequence)
+                    if (foundTargetSequence) //If the TargetSequence was found in the Instructions, Replace at the i index.
                     {
                         if (patchMode == PatchMode.BEFORE || patchMode == PatchMode.AFTER)
                         {
                             int indexToInsertAt = patchMode == PatchMode.AFTER ? i + targetSize : i;
-                            newInstructions.InsertRange(indexToInsertAt, patchSequence.Select(c => c.FullClone()));
+                            Instructions.InsertRange(indexToInsertAt, patchSequence.Select(c => c.FullClone()));
                         }
                         else if (patchMode == PatchMode.REPLACE)
                         {
-                            newInstructions.RemoveRange(i, targetSize);
-                            newInstructions.InsertRange(i, patchSequence.Select(c => c.FullClone()));
+                            Instructions.RemoveRange(i, targetSize);
+                            Instructions.InsertRange(i, patchSequence.Select(c => c.FullClone()));
                         }
                         else
                         {
@@ -62,7 +63,7 @@ namespace PulsarPluginLoader.Patches
                         break;
                     }
                 }
-                else
+                else //if targetsequence didn't fit in what was left of array (couldn't find target sequence)
                 {
                     StringBuilder sb = new StringBuilder();
 
@@ -82,7 +83,7 @@ namespace PulsarPluginLoader.Patches
                 }
             }
 
-            return newInstructions.AsEnumerable();
+            return Instructions.AsEnumerable();
         }
 
         /// <summary>
@@ -95,14 +96,14 @@ namespace PulsarPluginLoader.Patches
         /// <returns></returns>
         public static int FindSequence(IEnumerable<CodeInstruction> instructions, IEnumerable<CodeInstruction> targetSequence, CheckMode checkMode = CheckMode.ALWAYS, bool showDebugOutput = false)
         {
-            List<CodeInstruction> newInstructions = instructions.ToList();
+            List<CodeInstruction> Instructions = instructions.ToList();
 
             CodeInstruction targetStart = targetSequence.ElementAt(0);
             int targetSize = targetSequence.Count();
 
-            for (int i = 0; i < newInstructions.Count; i++)
+            for (int i = 0; i < Instructions.Count; i++)
             {
-                bool targetSequenceStillFits = i + targetSize <= newInstructions.Count;
+                bool targetSequenceStillFits = i + targetSize <= Instructions.Count;
 
                 if (targetSequenceStillFits)
                 {
@@ -110,13 +111,14 @@ namespace PulsarPluginLoader.Patches
 
                     for (int x = 0; x < targetSize && foundTargetSequence; x++)
                     {
-                        foundTargetSequence = newInstructions[i + x].opcode.Equals(targetSequence.ElementAt(x).opcode);
-                        if (checkMode != CheckMode.NEVER)
+                        foundTargetSequence = Instructions[i + x].opcode.Equals(targetSequence.ElementAt(x).opcode);
+                        if (checkMode != CheckMode.NEVER) //check that target sequence matches.
                         {
                             foundTargetSequence = foundTargetSequence &&
-                                ((targetSequence.ElementAt(x).operand == null &&
-                                (newInstructions[i + x].operand == null || checkMode == CheckMode.NONNULL)) ||
-                                newInstructions[i + x].operand.Equals(targetSequence.ElementAt(x).operand));
+                                (
+                                    (Instructions[i + x].operand == null || checkMode == CheckMode.NONNULL) && targetSequence.ElementAt(x).operand == null ||
+                                    Instructions[i + x].operand.Equals(targetSequence.ElementAt(x).operand)
+                                );
                         }
 
                         if (showDebugOutput && foundTargetSequence)
@@ -156,15 +158,67 @@ namespace PulsarPluginLoader.Patches
 
         public enum CheckMode
         {
+            /// <summary>
+            /// Target opperands ALWAYS need to match
+            /// </summary>
             ALWAYS,
+            /// <summary>
+            /// Target opperands can be NULL to match. This is good if you don't know what to put in for 1 of multiple instruction operands.
+            /// </summary>
+            /*
+            Match for NONNULL, ALWAYS, and NEVER
+            instructions:
+                stfld PLMouselook::minimumY
+                br 600
+                ldarg.0
+
+            target:
+                stfld PLMouselook::minimumY
+                br 600
+                ldarg.0
+
+            Match for NONNULL and NEVER
+            instructions:
+                stfld PLMouselook::minimumY
+                br 600
+                ldarg.0zzz
+
+            target:
+                stfld
+                br 600
+                ldarg.0
+
+            Match for NEVER
+            instructions:
+                stfld PLMouselook::minimumY
+                br 600
+                ldarg.0
+
+            target:
+                stfld Not-The-Same-instruction
+                br 600
+                ldarg.0
+            */
             NONNULL,
+            /// <summary>
+            /// Target opperands NEVER need to match
+            /// </summary>
             NEVER
         }
 
         public enum PatchMode
         {
+            /// <summary>
+            /// impliment new code BEFORE target code
+            /// </summary>
             BEFORE,
+            /// <summary>
+            /// impliment new code AFTER target code
+            /// </summary>
             AFTER,
+            /// <summary>
+            /// REPLACE target code with new code
+            /// </summary>
             REPLACE
         }
 

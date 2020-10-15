@@ -63,7 +63,7 @@ namespace PulsarPluginLoader.CustomGUI
         static float Width = .40f;
         Rect Window = new Rect((Screen.width * .5f - ((Screen.width * Width)/2)), Screen.height * .5f - ((Screen.height * Height)/2), Screen.width * Width, Screen.height * Height);
         int TabSelectedID = 0;
-        void Update()
+        protected override void Update()
         {
             if (Input.GetKeyDown(KeyCode.F5))
             {

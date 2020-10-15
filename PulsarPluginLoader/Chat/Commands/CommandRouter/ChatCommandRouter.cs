@@ -113,7 +113,7 @@ namespace PulsarPluginLoader.Chat.Commands
                 {
                     try
                     {
-                        fallthroughToDevCommands = cmd.Execute(arguments.Trim(), PLNetworkManager.Instance.LocalPlayerID);
+                        fallthroughToDevCommands = cmd.Execute(arguments.Trim(), PLNetworkManager.Instance?.LocalPlayerID ?? 0);
                     }
                     catch
                     {

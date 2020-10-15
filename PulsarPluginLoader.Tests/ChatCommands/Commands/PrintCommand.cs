@@ -10,7 +10,7 @@ namespace PulsarPluginLoader.Tests.Chat.Commands
             return new string[] { "print", "p" };
         }
 
-        public bool Execute(string arguments)
+        public bool Execute(string arguments, int SenderID)
         {
             Console.WriteLine(arguments);
             return false;
@@ -24,6 +24,11 @@ namespace PulsarPluginLoader.Tests.Chat.Commands
         public string UsageExample()
         {
             return $"/{CommandAliases()[0]} [text]";
+        }
+
+        public bool PublicCommand()
+        {
+            return false;
         }
     }
 }

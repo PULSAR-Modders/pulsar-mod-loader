@@ -1,4 +1,4 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/jkary3fagowm4adm/branch/master?svg=true)](https://ci.appveyor.com/project/TomRichter/pulsar-plugin-loader/branch/master)
+[![Build](https://github.com/TomRichter/pulsar-plugin-loader/workflows/Build/badge.svg)](#)
 
 # [PULSAR Plugin Loader](https://github.com/TomRichter/pulsar-plugin-loader)
 

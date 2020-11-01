@@ -19,8 +19,8 @@ Write-Host "Parsed version number: $VERSION_NUMBER"
 # Get friendly-length commit hash
 $COMMIT_HASH = $Env:GITHUB_SHA.Substring(0, 7)
 
-echo "VERSION_NUMBER=$VERSION_NUMBER" >> $GITHUB_ENV
-echo "COMMIT_HASH=$COMMIT_HASH" >> $GITHUB_ENV
+echo "VERSION_NUMBER=${VERSION_NUMBER}" >> $GITHUB_ENV
+echo "COMMIT_HASH=${COMMIT_HASH}" >> $GITHUB_ENV
 
 # Find every AssemblyInfo.cs
 $files = Get-ChildItem -Path "${Env:GITHUB_WORKSPACE}\**\Properties" -Recurse -include "AssemblyInfo.*"

@@ -69,7 +69,7 @@ jobs:
       shell: "powershell"
       run: |
         $COMMIT_HASH = $Env:GITHUB_SHA.Substring(0, 7)
-        7z a PulsarPluginBootstrapper-${Env:BUILD_VERSION}-${COMMIT_HASH}.zip README.md VERSION.md .\PulsarInjector\bin\Release\* -xr!*.pdb -mx=7
+        7z a PulsarPluginBootstrapper-${Env:BUILD_VERSION}-${COMMIT_HASH}.zip README.md VERSION.md .\PulsarInjector\bin\Release\* -xr!'*.pdb' -mx=7
         7z a PulsarPluginLoader.dll-${Env:BUILD_VERSION}-${COMMIT_HASH}.zip README.md VERSION.md .\PulsarPluginLoader\bin\Release\PulsarPluginLoader.dll -mx=7
     
     - name: "Publish to GitHub Releases"

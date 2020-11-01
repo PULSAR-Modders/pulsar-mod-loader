@@ -1,23 +1,26 @@
 # Parse version number from source control tags
 $VersionRegex = "\d+\.\d+\.\d+(\.\d+)?"
-$VersionNumber = [regex]::matches($Env:BUILD_VERSION, $VersionRegex)[0]
+$VERSION_NUMBER = [regex]::matches($Env:BUILD_VERSION, $VersionRegex)[0]
 
-if(!$VersionNumber.Success)
+if(!$VERSION_NUMBER.Success)
 {
     Write-Error "Couldn't parse semantic version from tag: $Env:BUILD_VERSION"
 }
 
-if(!$VersionNumber.Groups[1].Success)
+if(!$VERSION_NUMBER.Groups[1].Success)
 {
     # MSBuild expects 4 part version numbers; add build number from GitHub Actions
-    $VersionNumber = "$VersionNumber.${Env:GITHUB_RUN_NUMBER}"
+    $VERSION_NUMBER = "$VERSION_NUMBER.${Env:GITHUB_RUN_NUMBER}"
 }
 
 Write-Host "Source version number: $Env:BUILD_VERSION"
-Write-Host "Parsed version number: $VersionNumber"
+Write-Host "Parsed version number: $VERSION_NUMBER"
 
 # Get friendly-length commit hash
-$CommitHash = $Env:GITHUB_SHA.Substring(0, 7)
+$COMMIT_HASH = $Env:GITHUB_SHA.Substring(0, 7)
+
+echo "VERSION_NUMBER=$VERSION_NUMBER" >> $GITHUB_ENV
+echo "COMMIT_HASH=$COMMIT_HASH" >> $GITHUB_ENV
 
 # Find every AssemblyInfo.cs
 $files = Get-ChildItem -Path "${Env:GITHUB_WORKSPACE}\**\Properties" -Recurse -include "AssemblyInfo.*"
@@ -31,9 +34,9 @@ if($files)
         attrib $file -r
         # Find and Replace in AssemblyInfo.cs
         $content = Get-Content($file)
-        $content -replace $VersionRegex, $VersionNumber | Out-File $file
+        $content -replace $VersionRegex, $VERSION_NUMBER | Out-File $file
         # Append Informational Version with commit hash; appears as "Product Version"
-        "[assembly: AssemblyInformationalVersion(`"$VersionNumber-$CommitHash`")]" >> $file
+        "[assembly: AssemblyInformationalVersion(`"$VERSION_NUMBER-$COMMIT_HASH`")]" >> $file
     }
 }
 else

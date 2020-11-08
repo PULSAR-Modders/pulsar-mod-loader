@@ -139,6 +139,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Patches\HarmonyHelpers.cs" />
     <Compile Include="Utilities\Clipboard.cs" />
+    <Compile Include="Utilities\CommandHelpers.cs" />
     <Compile Include="Utilities\ExceptionWarningPatch.cs" />
     <Compile Include="Utilities\Logger.cs" />
     <Compile Include="Utilities\Messaging.cs" />

@@ -1,0 +1,100 @@
+name: "Build"
+on:
+  push:
+    tags: 
+      - "*"
+
+jobs:
+  tagged-release:
+    name: "Tagged Release"
+    runs-on: "windows-latest"
+    
+    steps:
+    - name: "Checkout"
+      uses: "actions/checkout@v2"
+      
+    - name: "Process Version from Tag"
+      id: "semver"
+      uses: "ncipollo/semantic-version-action@v1"
+    
+    - name: "Set Version with Build Number"
+      id: "version"
+      env:
+        BUILD_VERSION: "${{ steps.semver.outputs.tag }}"
+      shell: "powershell"
+      run: |
+        echo "::set-output name=number::${Env:BUILD_VERSION}.${Env:GITHUB_RUN_NUMBER}"
+        echo "::set-output name=hash::$($Env:GITHUB_SHA.Substring(0, 7))"
+    
+    - name: "Update Version in AssemblyInfo.cs"
+      env:
+        BUILD_VERSION: "${{ steps.version.outputs.number }}"
+      shell: "powershell"
+      run: |
+        .\.github\workflows\UpdateAssemblyInfo.ps1
+    
+    - name: "Write Version to Text File"
+      env:
+        BUILD_VERSION: "${{ steps.version.outputs.number }}"
+      shell: "powershell"
+      run: |
+        echo "source: ${Env:GITHUB_REPOSITORY}" > "${Env:GITHUB_WORKSPACE}\VERSION.md"
+        echo "version: ${Env:BUILD_VERSION}" >> "${Env:GITHUB_WORKSPACE}\VERSION.md"
+        echo "commit: ${Env:GITHUB_SHA}" >> "${Env:GITHUB_WORKSPACE}\VERSION.md"
+        echo "date: $((Get-Date -format r).ToString())" >> "${Env:GITHUB_WORKSPACE}\VERSION.md"
+    
+    - name: "Install NuGet"
+      uses: "nuget/setup-nuget@v1"
+    
+    - name: "Configure NuGet Sources"
+      env:
+        GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      shell: "powershell"
+      run: |
+        $GITHUB_OWNER = $Env:GITHUB_REPOSITORY.Split("/", 2)[0]
+        nuget sources add -Name "GitHub/${GITHUB_OWNER}" -Source "https://nuget.pkg.github.com/${GITHUB_OWNER}/index.json" -UserName "${Env:GITHUB_ACTOR}" -Password "${Env:GITHUB_TOKEN}"
+
+    - uses: "actions/cache@v1"
+      id: "cache"
+      with:
+        path: "${{ github.workspace }}/.nuget/packages"
+        key: "${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}"
+
+    - name: "Restore NuGet Packages"
+      if: steps.cache.outputs.cache-hit != 'true'
+      shell: "powershell"
+      run: |
+        nuget restore -LockedMode ${Env:GITHUB_WORKSPACE}
+
+    - name: "Build with .NET Framework 3.5"
+      shell: "powershell"
+      run: |
+        cd "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\"
+        .\MSBuild.exe "${Env:GITHUB_WORKSPACE}\" /p:RestoreLockedMode=true /p:Configuration=Release
+    
+    - name: "Package Artifacts"
+      env:
+        BUILD_VERSION: "${{ steps.version.outputs.number }}"
+        COMMIT_HASH: "${{ steps.version.outputs.hash }}"
+      shell: "powershell"
+      run: |
+        7z a PulsarPluginBootstrapper-${Env:BUILD_VERSION}-${Env:COMMIT_HASH}.zip README.md VERSION.md .\PulsarInjector\bin\Release\* -xr!'*.pdb' -mx=7
+        7z a PulsarPluginLoader.dll-${Env:BUILD_VERSION}-${Env:COMMIT_HASH}.zip README.md VERSION.md .\PulsarPluginLoader\bin\Release\PulsarPluginLoader.dll -mx=7
+    
+    - name: "Publish to GitHub Releases"
+      uses: "marvinpinto/action-automatic-releases@latest"
+      with:
+        repo_token: "${{ secrets.GITHUB_TOKEN }}"
+        prerelease: false
+        title: "PPL v${{ steps.version.outputs.number }}"
+        files: |
+          *.zip
+    
+    - name: "NuGet Pack and Push"
+      shell: "powershell"
+      run: |
+        cd PulsarPluginLoader
+        $GITHUB_OWNER = $Env:GITHUB_REPOSITORY.Split("/", 2)[0]
+        $version = [System.Reflection.Assembly]::LoadFrom("$(pwd)\bin\Release\PulsarPluginLoader.dll").GetName().Version.ToString()
+        nuget pack PulsarPluginLoader.csproj -Version $version -Prop Configuration=Release
+        nuget push **/*.nupkg -SkipDuplicate -NoSymbols -Source "GitHub/${GITHUB_OWNER}"

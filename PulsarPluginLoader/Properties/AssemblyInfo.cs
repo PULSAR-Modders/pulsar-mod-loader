@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("PulsarPluginLoader.dll")]
-[assembly: AssemblyDescription("https://github.com/TomRichter/pulsar-plugin-loader")]
+[assembly: AssemblyDescription("https://github.com/PULSAR-Modders/pulsar-plugin-loader")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Tom Richter")]
+[assembly: AssemblyCompany("Contributors")]
 [assembly: AssemblyProduct("Pulsar Plugin Loader")]
-[assembly: AssemblyCopyright("Copyright © Tom Richter 2018")]
+[assembly: AssemblyCopyright("Copyright © Contributors 2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

@@ -4,13 +4,19 @@
     <id>$id$</id>
     <version>$version$</version>
     <title>$title$</title>
-    <authors>$author$</authors>
-    <owners>$author$</owners>
-    <licenseUrl>https://raw.githubusercontent.com/TomRichter/pulsar-plugin-loader/master/LICENSE</licenseUrl>
-    <projectUrl>https://github.com/TomRichter/pulsar-plugin-loader</projectUrl>
+    <authors>Contributors</authors>
+    <description>Unofficial mod support for PULSAR: Lost Colony.</description>
+    <copyright>$copyright$</copyright>
+    <license type="expression">MIT</license>
+    <projectUrl>https://github.com/PULSAR-Modders/pulsar-plugin-loader</projectUrl>
+    <repository type="git" url="https://github.com/PULSAR-Modders/pulsar-plugin-loader" />
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>$description$</description>
-    <copyright>Copyright 2018</copyright>
     <tags>pulsar-game unity3d modding-games</tags>
+    <dependencies>
+      <group targetFramework=".NETFramework4.7.2" />
+    </dependencies>
   </metadata>
+  <files>
+    <file src="bin\$configuration$\$id$.dll" target="lib\net472" />
+  </files>
 </package>

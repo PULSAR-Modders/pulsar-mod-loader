@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28010.2026
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30523.141
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PulsarPluginLoader", "PulsarPluginLoader\PulsarPluginLoader.csproj", "{CF6CE9BA-9603-439D-9173-96C052C94417}"
 EndProject
@@ -9,9 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PulsarInjector", "PulsarInj
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6FA95747-6271-4991-96D0-73EDCA21D402}"
 	ProjectSection(SolutionItems) = preProject
-		appveyor.yml = appveyor.yml
+		.github\workflows\build.yml = .github\workflows\build.yml
 		LICENSE = LICENSE
 		README.md = README.md
+		.github\workflows\UpdateAssemblyInfo.ps1 = .github\workflows\UpdateAssemblyInfo.ps1
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PulsarPluginLoader.Tests", "PulsarPluginLoader.Tests\PulsarPluginLoader.Tests.csproj", "{9ACD22DC-0BEB-44AB-A012-D93E993D75F3}"

@@ -1,6 +1,4 @@
-﻿using System.CodeDom;
-
-namespace PulsarPluginLoader.Utilities
+﻿namespace PulsarPluginLoader.Utilities
 {
     class CommandHelpers
     {
@@ -13,7 +11,7 @@ namespace PulsarPluginLoader.Utilities
         {
             foreach (PLPlayer player in PLServer.Instance.AllPlayers)
             {
-                if(player.name.StartsWith(playerName))
+                if(player != null && player.name.StartsWith(playerName))
                 {
                     return player;
                 }

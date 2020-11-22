@@ -56,6 +56,9 @@ namespace PulsarInjector
             }
 
             Logger.Info("=== Creating Plugins directory ===");
+            var libdir = Directory.CreateDirectory(Path.Combine(Path.GetDirectoryName(targetAssemblyPath), "Libraries"));
+            Directory.CreateDirectory(Path.Combine(libdir.FullName, "Unmanaged"));
+            Directory.CreateDirectory(Path.Combine(libdir.FullName, "Managed"));
             Directory.CreateDirectory(Path.Combine(Path.GetDirectoryName(targetAssemblyPath), "Plugins"));
 
             Logger.Info("=== Anti-Cheat ===");

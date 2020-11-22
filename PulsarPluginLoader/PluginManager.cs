@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace PulsarPluginLoader
 {
@@ -16,6 +17,10 @@ namespace PulsarPluginLoader
 
         private readonly Dictionary<string, PulsarPlugin> activePlugins;
         private readonly HashSet<string> pluginDirectories;
+
+        public readonly Dictionary<string, Assembly> activeManagedLibs;
+        public readonly Dictionary<string, IntPtr> activeUnmanagedLibs;
+        private readonly HashSet<string> libDirectories;
 
         private static PluginManager _instance = null;
 
@@ -40,6 +45,9 @@ namespace PulsarPluginLoader
             activePlugins = new Dictionary<string, PulsarPlugin>();
             pluginDirectories = new HashSet<string>();
 
+            activeManagedLibs = new Dictionary<string, Assembly>();
+            activeUnmanagedLibs = new Dictionary<string, IntPtr>();
+            libDirectories = new HashSet<string>();
             // Add plugins directories to AppDomain so plugins referencing other as-yet-unloaded plugins don't fail to find assemblies
             AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(ResolvePluginsDirectory);
 
@@ -146,5 +154,99 @@ namespace PulsarPluginLoader
                 return null;
             }
         }
+
+        public void LoadLibrariesDirectory(string LibDir)
+        {
+            #region init...
+            System.Diagnostics.Stopwatch timer = new Stopwatch();
+            timer.Start();
+            int counter = 0;
+            Logger.Info($"Attempting to load libraries from {LibDir}");
+
+            if (!Directory.Exists(LibDir))
+            {
+                Logger.Info($"{LibDir} directory not found! Creating...");
+                Directory.CreateDirectory(LibDir);
+            }
+            libDirectories.Add(LibDir);
+
+            var unmanaged_directory = Path.Combine(LibDir, "Unmanaged");
+            if (!Directory.Exists(unmanaged_directory))
+            {
+                Logger.Info($"{unmanaged_directory} directory not found! Creating...");
+                Directory.CreateDirectory(unmanaged_directory);
+            }
+            var managed_directory = Path.Combine(LibDir, "Managed");
+            if (!Directory.Exists(managed_directory))
+            {
+                Logger.Info($"{managed_directory} directory not found! Creating...");
+                Directory.CreateDirectory(managed_directory);
+            }
+            #endregion
+
+            Logger.Info($"Loading unmanaged libs...");
+
+            foreach (string assemblyPath in Directory.GetFiles(unmanaged_directory, "*.dll"))
+            {
+                if (!activeUnmanagedLibs.ContainsKey(Path.GetFileName(assemblyPath)))
+                {
+                    if (LoadUnmanagedLib(assemblyPath) != IntPtr.Zero) counter += 1;
+                }
+            }
+
+            Logger.Info($"All unmanaged libs loaded!");
+            Logger.Info($"Loading managed libs...");
+
+            foreach (string assemblyPath in Directory.GetFiles(managed_directory, "*.dll"))
+            {
+                if (!activeUnmanagedLibs.ContainsKey(Path.GetFileName(assemblyPath)))
+                {
+                    if (LoadManagedLib(assemblyPath) != null) counter += 1;
+                }
+            }
+
+            Logger.Info($"All managed libs loaded!");
+            timer.Stop();
+            Logger.Info($"Loaded {counter} libs in {timer.Elapsed}!");
+        }
+
+        public Assembly LoadManagedLib(string dllpath)
+        {
+            Assembly assembly = null;
+            try
+            {
+                assembly = Assembly.LoadFrom(dllpath);
+            }
+            catch (Exception e)
+            {
+                Logger.Info($"Error loading library from {dllpath} !");
+            }
+            if(assembly != null)
+            {
+                Logger.Info($"Loaded managed (C#) lib - {assembly.FullName}!");
+
+                activeManagedLibs.Add(assembly.FullName, assembly);
+            }
+
+            return assembly;
+        }
+
+        public IntPtr LoadUnmanagedLib(string dllpath)
+        {
+            IntPtr lib = LoadLibrary(dllpath);
+
+            var dllname = Path.GetFileName(dllpath);
+
+            if (lib != IntPtr.Zero) // If lib == IntPtr.Zero, then lib wasnt loaded (lib 32bit or without Entry Point)
+            {
+                Logger.Info($"Loaded unmanaged (C/C++) lib - {dllname}!");
+                activeUnmanagedLibs.Add(dllname, lib);
+                return lib;
+            }
+            else { Logger.Info($"Error loading {dllname}!") ; return IntPtr.Zero; }
+        }
+
+        [DllImport("kernel32", SetLastError = true, CharSet = CharSet.Ansi)]
+        static extern IntPtr LoadLibrary([MarshalAs(UnmanagedType.LPStr)] string lpFileName);
     }
 }

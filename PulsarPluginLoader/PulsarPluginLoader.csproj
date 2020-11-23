@@ -34,9 +34,8 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="0Harmony, Version=2.0.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Lib.Harmony.2.0.2\lib\net472\0Harmony.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="0Harmony, Version=2.0.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Lib.Harmony.2.0.4\lib\net472\0Harmony.dll</HintPath>
     </Reference>
     <Reference Include="ACTk.Runtime, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -168,11 +167,11 @@
     <Copy SourceFiles="@(MarkdownFiles)" DestinationFiles="@(MarkdownFiles->'$(OutDir)\%(RecursiveDir)%(Filename)%(Extension)')" />
   </Target>
   <Target Name="DeployPlugin" AfterTargets="CopyMarkdownFiles" Condition="'$(PULSAR_PATH)' != '' AND Exists('$(PULSAR_PATH)')">
-    <CombinePath BasePath="$(PULSAR_PATH)" Paths="PULSAR_LostColony_Data\Managed" >
-      <Output TaskParameter="CombinedPaths" PropertyName="ManagedDir"/>
+    <CombinePath BasePath="$(PULSAR_PATH)" Paths="PULSAR_LostColony_Data\Managed">
+      <Output TaskParameter="CombinedPaths" PropertyName="ManagedDir" />
     </CombinePath>
-    <CombinePath BasePath="$(PULSAR_PATH)" Paths="PULSAR_LostColony_Data\Managed\Plugins" >
-      <Output TaskParameter="CombinedPaths" PropertyName="PluginsDir"/>
+    <CombinePath BasePath="$(PULSAR_PATH)" Paths="PULSAR_LostColony_Data\Managed\Plugins">
+      <Output TaskParameter="CombinedPaths" PropertyName="PluginsDir" />
     </CombinePath>
     <CreateItem Include="$(TargetDir)\*.md">
       <Output TaskParameter="Include" ItemName="MarkdownFiles" />

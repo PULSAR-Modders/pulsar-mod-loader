@@ -1,6 +1,6 @@
 ﻿namespace PulsarPluginLoader.Utilities
 {
-    class CommandHelpers
+    class HelperMethods
     {
         /// <summary>
         /// Returns first player found by the given player name. Returns null if not found.

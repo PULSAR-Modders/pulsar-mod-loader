@@ -112,6 +112,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Chat\Commands\ClearCommand.cs" />
     <Compile Include="Chat\Commands\CommandRouter\ChatCommandRouter.cs" />
     <Compile Include="Chat\Commands\CommandRouter\ChatInputPatch.cs" />
     <Compile Include="Chat\Commands\DebugModeCommand.cs" />

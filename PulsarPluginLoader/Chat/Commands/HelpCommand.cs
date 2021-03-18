@@ -19,7 +19,7 @@ namespace PulsarPluginLoader.Chat.Commands
 
         public string UsageExample()
         {
-            return $"/{CommandAliases()[0]} [command]";
+            return $"/{CommandAliases()[0]} [command], /{CommandAliases()[0]} [page number]";
         }
 
         public bool Execute(string arguments, int SenderID)

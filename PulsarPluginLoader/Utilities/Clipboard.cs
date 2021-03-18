@@ -1,15 +1,17 @@
-﻿namespace PulsarPluginLoader.Utilities
+﻿using UnityEngine;
+
+namespace PulsarPluginLoader.Utilities
 {
     public static class Clipboard
     {
         public static void Copy(string text)
         {
-            NGUITools.clipboard = text;
+            GUIUtility.systemCopyBuffer = text;
         }
 
         public static string Paste()
         {
-            return NGUITools.clipboard;
+            return GUIUtility.systemCopyBuffer;
         }
     }
 }

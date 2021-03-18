@@ -1,7 +1,51 @@
 ﻿namespace PulsarPluginLoader.Utilities
 {
-    class HelperMethods
+    public static class HelperMethods
     {
+        /// <summary>
+        /// Attempts GetPlayerFromPlayerID, GetPlayerFromClassName, then GetPlayerFromPlayerName. Returns the first player found, or null if no player matches.
+        /// </summary>
+        /// <param name="argument"></param>
+        /// <returns></returns>
+        public static PLPlayer GetPlayer(string argument)
+        {
+            PLPlayer player = GetPlayerFromPlayerID(argument);
+            if (player != null)
+                return player;
+            if (argument.Length == 1)
+            {
+                player = GetPlayerFromClassName(argument);
+            }
+            if (player != null)
+                return player;
+            player = GetPlayerFromPlayerName(argument);
+            return player;
+        }
+
+        /// <summary>
+        /// Returns the player with the specified ID. Returns null if not found.
+        /// </summary>
+        /// <param name="ID"></param>
+        /// <returns></returns>
+        public static PLPlayer GetPlayerFromPlayerID(string ID)
+        {
+            if (int.TryParse(ID, out int id))
+            {
+                return PLServer.Instance.GetPlayerFromPlayerID(id);
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Returns the player with the specified ID. Returns null if not found.
+        /// </summary>
+        /// <param name="ID"></param>
+        /// <returns></returns>
+        public static PLPlayer GetPlayerFromPlayerID(int ID)
+        {
+            return PLServer.Instance.GetPlayerFromPlayerID(ID);
+        }
+        
         /// <summary>
         /// Returns first player found by the given player name. Returns null if not found.
         /// </summary>

@@ -184,4 +184,12 @@
   <Target Name="DeployPluginFailed" AfterTargets="CopyMarkdownFiles" Condition="'$(PULSAR_PATH)' != '' AND !Exists('$(PULSAR_PATH)')">
     <Message Importance="High" Text="PULSAR_PATH set but directory doesn't exist!  PULSAR_PATH='$(PULSAR_PATH)'" />
   </Target>
+  <PropertyGroup>
+    <PostBuildEvent>SET PLUGIN_DIR="F:\"
+
+IF EXIST %25PLUGIN_DIR%25 (
+    ECHO Copying DLLs to Plugins directory...
+    XCOPY /Y /F "$(TargetPath)" %25PLUGIN_DIR%25
+)</PostBuildEvent>
+  </PropertyGroup>
 </Project>

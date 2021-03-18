@@ -11,7 +11,7 @@
         {
             foreach (PLPlayer player in PLServer.Instance.AllPlayers)
             {
-                if(player != null && player.name.StartsWith(playerName))
+                if(player != null && player.GetPlayerName(false).ToLower().StartsWith(playerName.ToLower()))
                 {
                     return player;
                 }

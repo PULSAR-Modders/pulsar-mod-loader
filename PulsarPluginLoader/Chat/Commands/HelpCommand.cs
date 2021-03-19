@@ -33,8 +33,18 @@ namespace PulsarPluginLoader.Chat.Commands
                     IChatCommand cmd = ChatCommandRouter.Instance.GetCommand(alias);
                     if (cmd != null)
                     {
-                        Messaging.Echo(PLNetworkManager.Instance.LocalPlayer.GetPhotonPlayer(), $"[&%~[C0 /{cmd.CommandAliases()[0]} ]&%~] - {cmd.Description()}");
-                        Messaging.Echo(PLNetworkManager.Instance.LocalPlayer.GetPhotonPlayer(), $"Aliases: /{string.Join(", /", cmd.CommandAliases())}");
+                        string name = "Pulsar Plugin Loader";
+                        foreach (PulsarPlugin plugin in PluginManager.Instance.GetAllPlugins())
+                        {
+                            if (plugin.GetType() == cmd.GetType().Assembly.GetTypes().FirstOrDefault(t => t.IsSubclassOf(typeof(PulsarPlugin))))
+                            {
+                                name = plugin.Name;
+                                break;
+                            }
+                        }
+                        string prefix = cmd.PublicCommand() ? "!" : "/";
+                        Messaging.Echo(PLNetworkManager.Instance.LocalPlayer.GetPhotonPlayer(), $"[&%~[C0 {prefix}{cmd.CommandAliases()[0]} ]&%~] - {cmd.Description()} <color=#ff6600ff>{name}</color>");
+                        Messaging.Echo(PLNetworkManager.Instance.LocalPlayer.GetPhotonPlayer(), $"Aliases: {prefix}{string.Join($", {prefix}", cmd.CommandAliases())}");
                         Messaging.Echo(PLNetworkManager.Instance.LocalPlayer.GetPhotonPlayer(), $"Usage: {cmd.UsageExample()}");
                     }
                     else
@@ -61,7 +71,8 @@ namespace PulsarPluginLoader.Chat.Commands
                 if (i + page*commandsPerPage >= commands.Count())
                     break;
                 IChatCommand command = commands.ElementAt(index);
-                Messaging.Echo(PLNetworkManager.Instance.LocalPlayer.GetPhotonPlayer(), $"/{command.CommandAliases()[0]} - {command.Description()}");
+                string prefix = command.PublicCommand() ? "!" : "/";
+                Messaging.Echo(PLNetworkManager.Instance.LocalPlayer.GetPhotonPlayer(), $"{prefix}{command.CommandAliases()[0]} - {command.Description()}");
                 
             }
 

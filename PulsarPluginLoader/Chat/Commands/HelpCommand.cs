@@ -43,7 +43,7 @@ namespace PulsarPluginLoader.Chat.Commands
                             }
                         }
                         string prefix = cmd.PublicCommand() ? "!" : "/";
-                        Messaging.Echo(PLNetworkManager.Instance.LocalPlayer.GetPhotonPlayer(), $"[&%~[C0 {prefix}{cmd.CommandAliases()[0]} ]&%~] - {cmd.Description()} <color=#ff6600ff>{name}</color>");
+                        Messaging.Echo(PLNetworkManager.Instance.LocalPlayer.GetPhotonPlayer(), $"[&%~[C0 {prefix}{cmd.CommandAliases()[0]} ]&%~] - {cmd.Description()} <color=#ff6600ff>[{name}]</color>");
                         Messaging.Echo(PLNetworkManager.Instance.LocalPlayer.GetPhotonPlayer(), $"Aliases: {prefix}{string.Join($", {prefix}", cmd.CommandAliases())}");
                         Messaging.Echo(PLNetworkManager.Instance.LocalPlayer.GetPhotonPlayer(), $"Usage: {cmd.UsageExample()}");
                     }

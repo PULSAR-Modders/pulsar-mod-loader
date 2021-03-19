@@ -1,9 +1,4 @@
-﻿using PulsarPluginLoader.Chat.Commands;
-using PulsarPluginLoader.Utilities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using PulsarPluginLoader.Utilities;
 
 namespace PulsarPluginLoader.Chat.Commands
 {
@@ -12,11 +7,6 @@ namespace PulsarPluginLoader.Chat.Commands
         public static bool DebugMode = false;
         public string[] CommandAliases()
         {
-            //load DebugMoad from settings.xml
-            if (bool.TryParse(PLXMLOptionsIO.Instance.CurrentOptions.GetStringValue("PPLDebugMode"), out bool result))
-            {
-                DebugMode = result;
-            }
             return new string[] { "debugmode", "dbm"};
         }
 
@@ -46,6 +36,17 @@ namespace PulsarPluginLoader.Chat.Commands
         public string UsageExample()
         {
             return $"{CommandAliases()[0]}";
+        }
+    }
+    [HarmonyLib.HarmonyPatch(typeof(PLServer), "Start")]
+    class LoadSetting
+    {
+        static void Postfix()
+        {//load DebugMoad from settings.xml
+            if (bool.TryParse(PLXMLOptionsIO.Instance.CurrentOptions.GetStringValue("PPLDebugMode"), out bool result))
+            {
+                DebugModeCommand.DebugMode = result;
+            }
         }
     }
 }

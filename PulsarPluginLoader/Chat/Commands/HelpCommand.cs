@@ -25,7 +25,7 @@ namespace PulsarPluginLoader.Chat.Commands
         public bool Execute(string arguments, int SenderID)
         {
             int page = 1;
-            if (arguments != string.Empty)
+            if (!string.IsNullOrWhiteSpace(arguments))
             {
                 string alias = arguments.Split(' ')[0];
                 if (!int.TryParse(alias, out page))

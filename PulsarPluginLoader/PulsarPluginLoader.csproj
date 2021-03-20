@@ -119,6 +119,7 @@
     <Compile Include="Chat\Commands\EchoCommand.cs" />
     <Compile Include="Chat\Commands\HelpCommand.cs" />
     <Compile Include="Chat\Commands\CommandRouter\IChatCommand.cs" />
+    <Compile Include="Chat\Commands\PublicHelpCommand.cs" />
     <Compile Include="Chat\Commands\ScreenshotCommand.cs" />
     <Compile Include="CustomGUI\GUIMain.cs" />
     <Compile Include="ModMessage\ModMessage.cs" />

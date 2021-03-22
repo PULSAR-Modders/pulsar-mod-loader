@@ -115,6 +115,8 @@
     <Compile Include="Chat\Commands\ClearCommand.cs" />
     <Compile Include="Chat\Commands\CommandRouter\ChatCommandRouter.cs" />
     <Compile Include="Chat\Commands\CommandRouter\ChatInputPatch.cs" />
+    <Compile Include="Chat\Commands\CommandRouter\ChatCommand.cs" />
+    <Compile Include="Chat\Commands\CommandRouter\PublicCommand.cs" />
     <Compile Include="Chat\Commands\DebugModeCommand.cs" />
     <Compile Include="Chat\Commands\EchoCommand.cs" />
     <Compile Include="Chat\Commands\HelpCommand.cs" />

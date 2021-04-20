@@ -65,6 +65,10 @@ namespace PulsarPluginLoader.Utilities
         }
         public static void Notification(string message, PhotonPlayer recipient, int subjectPlayerId = 0, int durationMs = 6000, bool addToShipLog = false)
         {
+            if(PLServer.Instance == null)
+            {
+                Logger.Info($"Notification attempted and PLServer was null. Message: {message}");
+            }
             PLServer.Instance.photonView.RPC("AddNotification", recipient, new object[] {
                 message,
                 subjectPlayerId,
@@ -75,6 +79,10 @@ namespace PulsarPluginLoader.Utilities
 
         public static void Notification(string message, PhotonTargets targets, int subjectPlayerId = 0, int durationMs = 6000, bool addToShipLog = false)
         {
+            if (PLServer.Instance == null)
+            {
+                Logger.Info($"Notification attempted and PLServer was null. Message: {message}");
+            }
             PLServer.Instance.photonView.RPC("AddNotification", targets, new object[] {
                 message,
                 subjectPlayerId,

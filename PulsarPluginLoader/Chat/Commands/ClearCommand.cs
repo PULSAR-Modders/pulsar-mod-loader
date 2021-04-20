@@ -1,31 +1,22 @@
-﻿namespace PulsarPluginLoader.Chat.Commands
+﻿using PulsarPluginLoader.Chat.Commands.CommandRouter;
+
+namespace PulsarPluginLoader.Chat.Commands
 {
-    class ClearCommand : IChatCommand
+    class ClearCommand : ChatCommand
     {
-        public string[] CommandAliases()
+        public override string[] CommandAliases()
         {
             return new string[] { "clear" };
         }
 
-        public string Description()
+        public override string Description()
         {
             return "Clears the chat window.";
         }
 
-        public bool Execute(string arguments, int SenderID)
+        public override void Execute(string arguments)
         {
             PLNetworkManager.Instance.ConsoleText.Clear();
-            return false;
-        }
-
-        public bool PublicCommand()
-        {
-            return false;
-        }
-
-        public string UsageExample()
-        {
-            return $"/{CommandAliases()[0]}";
         }
     }
 }

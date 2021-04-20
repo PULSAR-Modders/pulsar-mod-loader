@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using PulsarPluginLoader.Chat.Commands.CommandRouter;
 using PulsarPluginLoader.Utilities;
 using System;
 using System.Collections.Generic;
@@ -20,7 +21,7 @@ namespace PulsarPluginLoader.Chat.Commands
                     _instance = new ChatCommandRouter();
 
                     // Attach commands from PPL since it doesn't count as a plugin
-                    _instance.LoadCommandsFromAssembly(Assembly.GetExecutingAssembly());
+                    _instance.LoadCommandsFromAssembly(Assembly.GetExecutingAssembly(), null);
 
                     // Attach commands from plugins already loaded
                     foreach (PulsarPlugin p in PluginManager.Instance.GetAllPlugins())
@@ -36,66 +37,121 @@ namespace PulsarPluginLoader.Chat.Commands
             }
         }
 
-        public readonly Dictionary<string, IChatCommand> commands;
+        public readonly Dictionary<string, Tuple<ChatCommand, PulsarPlugin>> commands;
+        public readonly Dictionary<string, Tuple<PublicCommand, PulsarPlugin>> publicCommands;
+        public readonly Dictionary<string, PulsarPlugin> conflictingAliases;
+        public readonly Dictionary<string, PulsarPlugin> conflictingPublicAliases;
 
         public ChatCommandRouter()
         {
-            commands = new Dictionary<string, IChatCommand>();
+            commands = new Dictionary<string, Tuple<ChatCommand, PulsarPlugin>>();
+            publicCommands = new Dictionary<string, Tuple<PublicCommand, PulsarPlugin>>();
+            conflictingAliases = new Dictionary<string, PulsarPlugin>();
+            conflictingPublicAliases = new Dictionary<string, PulsarPlugin>();
         }
 
-        public void Register(IChatCommand cmd)
+        public void Register (ChatCommand cmd, PulsarPlugin plugin)
         {
             foreach (string alias in cmd.CommandAliases())
             {
                 string lowerAlias = alias.ToLower();
 
-                if (!commands.ContainsKey(lowerAlias))
+                if (conflictingAliases.TryGetValue(lowerAlias, out PulsarPlugin plugin2))
                 {
-                    commands.Add(lowerAlias, cmd);
+                    string name = plugin != null ? plugin.Name : "Pulsar Plugin Loader";
+                    string name2 = plugin2 != null ? plugin2.Name : "Pulsar Plugin Loader";
+                    Logger.Info($"Conflicting alias: {lowerAlias} from {name} and {name2}");
                 }
                 else
                 {
-                    throw new ArgumentException($"Failed to add chat command alias '{alias}'; alias already registered!");
-                }
-            }
-        }
-
-        public void Deregister(IChatCommand cmd)
-        {
-            if (cmd != null)
-            {
-                foreach (string alias in cmd.CommandAliases())
-                {
-                    string lowerAlias = alias.ToLower();
-
-                    if (commands.TryGetValue(lowerAlias, out IChatCommand tempCmd) && tempCmd == cmd)
+                    if (commands.TryGetValue(lowerAlias, out Tuple<ChatCommand, PulsarPlugin> t))
                     {
+                        conflictingAliases.Add(lowerAlias, plugin);
                         commands.Remove(lowerAlias);
+                        string name = plugin != null ? plugin.Name : "Pulsar Plugin Loader";
+                        string name2 = t.Item2 != null ? t.Item2.Name : "Pulsar Plugin Loader";
+                        Logger.Info($"Conflicting alias: {lowerAlias} from {name} and {name2}");
+                    }
+                    else
+                    {
+                        commands.Add(lowerAlias, new Tuple<ChatCommand, PulsarPlugin>(cmd, plugin));
                     }
                 }
             }
         }
 
-        public void Deregister(string alias)
+        public void Register (PublicCommand cmd, PulsarPlugin plugin)
         {
-            Deregister(GetCommand(alias));
+            foreach (string alias in cmd.CommandAliases())
+            {
+                string lowerAlias = alias.ToLower();
+
+                if (conflictingPublicAliases.TryGetValue(lowerAlias, out PulsarPlugin plugin2))
+                {
+                    string name = plugin != null ? plugin.Name : "Pulsar Plugin Loader";
+                    string name2 = plugin2 != null ? plugin2.Name : "Pulsar Plugin Loader";
+                    Logger.Info($"Conflicting public alias: {lowerAlias} from {name} and {name2}");
+                }
+                else
+                {
+                    if (publicCommands.TryGetValue(lowerAlias, out Tuple<PublicCommand, PulsarPlugin> t))
+                    {
+                        conflictingPublicAliases.Add(lowerAlias, plugin);
+                        publicCommands.Remove(lowerAlias);
+                        string name = plugin != null ? plugin.Name : "Pulsar Plugin Loader";
+                        string name2 = t.Item2 != null ? t.Item2.Name : "Pulsar Plugin Loader";
+                        Logger.Info($"Conflicting public alias: {lowerAlias} from {name} and {name2}");
+                    }
+                    else
+                    {
+                        publicCommands.Add(lowerAlias, new Tuple<PublicCommand, PulsarPlugin>(cmd, plugin));
+                    }
+                }
+            }
         }
 
-        public IChatCommand GetCommand(string alias)
+        public Tuple<ChatCommand, PulsarPlugin> GetCommand(string alias)
         {
             string lowerAlias = alias.ToLower();
 
-            if (commands.TryGetValue(lowerAlias, out IChatCommand cmd))
+            if (commands.TryGetValue(lowerAlias, out Tuple<ChatCommand, PulsarPlugin> t))
             {
-                return cmd;
+                return t;
             }
 
             return null;
         }
 
-        public IEnumerable<IChatCommand> GetCommands()
+        public Tuple<PublicCommand, PulsarPlugin> GetPublicCommand(string alias)
         {
-            return new HashSet<IChatCommand>(commands.Values).OrderBy(cmd => cmd.CommandAliases()[0]);
+            string lowerAlias = alias.ToLower();
+
+            if (publicCommands.TryGetValue(lowerAlias, out Tuple<PublicCommand, PulsarPlugin> t))
+            {
+                return t;
+            }
+
+            return null;
+        }
+
+        public IOrderedEnumerable<Tuple<ChatCommand, PulsarPlugin>> GetCommands()
+        {
+            return new HashSet<Tuple<ChatCommand, PulsarPlugin>>(commands.Values).OrderBy(t => t.Item1.CommandAliases()[0]);
+        }
+
+        public IOrderedEnumerable<Tuple<PublicCommand, PulsarPlugin>> GetPublicCommands()
+        {
+            return new HashSet<Tuple<PublicCommand, PulsarPlugin>>(publicCommands.Values).OrderBy(t => t.Item1.CommandAliases()[0]);
+        }
+
+        public string[] getCommandAliases()
+        {
+            return commands.Keys.ToArray();
+        }
+
+        public string[] getPublicCommandAliases()
+        {
+            return publicCommands.Keys.ToArray();
         }
 
         public bool FindAndExecute(string chatInput)
@@ -109,11 +165,12 @@ namespace PulsarPluginLoader.Chat.Commands
                 string alias = splitInput[0].ToLower();
                 string arguments = splitInput.Length > 1 ? splitInput[1] : String.Empty;
 
-                if (commands.TryGetValue(alias, out IChatCommand cmd) && !cmd.PublicCommand())
+                if (commands.TryGetValue(alias, out Tuple<ChatCommand, PulsarPlugin> t))
                 {
+                    fallthroughToDevCommands = false;
                     try
                     {
-                        fallthroughToDevCommands = cmd.Execute(arguments.Trim(), PLNetworkManager.Instance?.LocalPlayerID ?? 0);
+                        t.Item1.Execute(arguments.Trim());
                     }
                     catch
                     {
@@ -129,18 +186,23 @@ namespace PulsarPluginLoader.Chat.Commands
         public void OnPluginLoaded(string name, PulsarPlugin plugin)
         {
             Assembly asm = plugin.GetType().Assembly;
-            LoadCommandsFromAssembly(asm);
+            LoadCommandsFromAssembly(asm, plugin);
         }
 
-        private void LoadCommandsFromAssembly(Assembly asm)
+        private void LoadCommandsFromAssembly(Assembly asm, PulsarPlugin plugin)
         {
-            Type iChatCmd = typeof(IChatCommand);
+            Type ChatCmd = typeof(ChatCommand);
+            Type PublicCmd = typeof(PublicCommand);
 
             foreach (Type t in asm.GetTypes())
             {
-                if (iChatCmd.IsAssignableFrom(t) && !t.IsAbstract && !t.IsInterface)
+                if (ChatCmd.IsAssignableFrom(t) && !t.IsAbstract && !t.IsInterface)
                 {
-                    Register((IChatCommand)Activator.CreateInstance(t));
+                    Register((ChatCommand)Activator.CreateInstance(t), plugin);
+                }
+                else if (PublicCmd.IsAssignableFrom(t) && !t.IsAbstract && !t.IsInterface)
+                {
+                    Register((PublicCommand)Activator.CreateInstance(t), plugin);
                 }
             }
         }
@@ -158,11 +220,11 @@ namespace PulsarPluginLoader.Chat.Commands
                 string alias = splitInput[0].ToLower();
                 string arguments = splitInput.Length > 1 ? splitInput[1] : string.Empty;
 
-                if (ChatCommandRouter.Instance.commands.TryGetValue(alias, out IChatCommand cmd) && cmd.PublicCommand())
+                if (ChatCommandRouter.Instance.publicCommands.TryGetValue(alias, out Tuple<PublicCommand, PulsarPlugin> t))
                 {
                     try
                     {
-                        cmd.Execute(arguments.Trim(), playerID);
+                        t.Item1.Execute(arguments.Trim(), playerID);
                     }
                     catch
                     {

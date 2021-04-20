@@ -1,28 +1,29 @@
-﻿using PulsarPluginLoader.Utilities;
-using System.Collections.Generic;
+﻿using PulsarPluginLoader.Chat.Commands.CommandRouter;
+using PulsarPluginLoader.Utilities;
+using System;
 using System.Linq;
 using UnityEngine;
 
 namespace PulsarPluginLoader.Chat.Commands
 {
-    class HelpCommand : IChatCommand
+    class HelpCommand : ChatCommand
     {
-        public string[] CommandAliases()
+        public override string[] CommandAliases()
         {
             return new string[] { "help", "?" };
         }
 
-        public string Description()
+        public override string Description()
         {
             return "Displays help text for a command, or the list of commands if none specified.";
         }
 
-        public string UsageExample()
+        public override string[] UsageExamples()
         {
-            return $"/{CommandAliases()[0]} [command], /{CommandAliases()[0]} [page number]";
+            return new string[] { $"/{CommandAliases()[0]} [command]", $"/{CommandAliases()[0]} [page number]" };
         }
 
-        public bool Execute(string arguments, int SenderID)
+        public override void Execute(string arguments)
         {
             int page = 1;
             if (!string.IsNullOrWhiteSpace(arguments))
@@ -30,33 +31,30 @@ namespace PulsarPluginLoader.Chat.Commands
                 string alias = arguments.Split(' ')[0];
                 if (!int.TryParse(alias, out page))
                 {
-                    IChatCommand cmd = ChatCommandRouter.Instance.GetCommand(alias);
-                    if (cmd != null)
+                    Tuple<ChatCommand, PulsarPlugin> t = ChatCommandRouter.Instance.GetCommand(alias);
+                    if (t != null)
                     {
-                        string name = "Pulsar Plugin Loader";
-                        foreach (PulsarPlugin plugin in PluginManager.Instance.GetAllPlugins())
+                        ChatCommand cmd = t.Item1;
+                        string name = t.Item2 != null ? t.Item2.Name : "Pulsar Plugin Loader";
+
+                        Messaging.Echo(PLNetworkManager.Instance.LocalPlayer.GetPhotonPlayer(), $"[&%~[C0 /{cmd.CommandAliases()[0]} ]&%~] - {cmd.Description()} <color=#ff6600ff>[{name}]</color>");
+                        Messaging.Echo(PLNetworkManager.Instance.LocalPlayer.GetPhotonPlayer(), $"Aliases: /{string.Join($", /", cmd.CommandAliases())}");
+                        Messaging.Echo(PLNetworkManager.Instance.LocalPlayer.GetPhotonPlayer(), $"Usage: {cmd.UsageExamples()[0]}");
+                        for (int i = 1; i < cmd.UsageExamples().Length; i++)
                         {
-                            if (plugin.GetType() == cmd.GetType().Assembly.GetTypes().FirstOrDefault(t => t.IsSubclassOf(typeof(PulsarPlugin))))
-                            {
-                                name = plugin.Name;
-                                break;
-                            }
+                            Messaging.Echo(PLNetworkManager.Instance.LocalPlayer.GetPhotonPlayer(), $"       {cmd.UsageExamples()[i]}");
                         }
-                        string prefix = cmd.PublicCommand() ? "!" : "/";
-                        Messaging.Echo(PLNetworkManager.Instance.LocalPlayer.GetPhotonPlayer(), $"[&%~[C0 {prefix}{cmd.CommandAliases()[0]} ]&%~] - {cmd.Description()} <color=#ff6600ff>[{name}]</color>");
-                        Messaging.Echo(PLNetworkManager.Instance.LocalPlayer.GetPhotonPlayer(), $"Aliases: {prefix}{string.Join($", {prefix}", cmd.CommandAliases())}");
-                        Messaging.Echo(PLNetworkManager.Instance.LocalPlayer.GetPhotonPlayer(), $"Usage: {cmd.UsageExample()}");
                     }
                     else
                     {
                         Messaging.Echo(PLNetworkManager.Instance.LocalPlayer.GetPhotonPlayer(), $"Command /{alias} not found");
                     }
-                    return false;
+                    return;
                 }
             }
 
             int commandsPerPage = (PLXMLOptionsIO.Instance.CurrentOptions.GetStringValueAsInt("ChatNumLines") * 5 + 10) - 1;
-            IEnumerable<IChatCommand> commands = ChatCommandRouter.Instance.GetCommands();
+            IOrderedEnumerable<Tuple<ChatCommand, PulsarPlugin>> commands = ChatCommandRouter.Instance.GetCommands();
             int pages = Mathf.CeilToInt(commands.Count()/(float)commandsPerPage);
             page--; //Pages start from 1
             if (page < 0)
@@ -70,17 +68,10 @@ namespace PulsarPluginLoader.Chat.Commands
                 int index = i + page * commandsPerPage;
                 if (i + page*commandsPerPage >= commands.Count())
                     break;
-                IChatCommand command = commands.ElementAt(index);
-                string prefix = command.PublicCommand() ? "!" : "/";
-                Messaging.Echo(PLNetworkManager.Instance.LocalPlayer.GetPhotonPlayer(), $"{prefix}{command.CommandAliases()[0]} - {command.Description()}");
+                ChatCommand command = commands.ElementAt(index).Item1;
+                Messaging.Echo(PLNetworkManager.Instance.LocalPlayer.GetPhotonPlayer(), $"/{command.CommandAliases()[0]} - {command.Description()}");
                 
             }
-
-            return false;
-        }
-        public bool PublicCommand()
-        {
-            return false;
         }
     }
 }

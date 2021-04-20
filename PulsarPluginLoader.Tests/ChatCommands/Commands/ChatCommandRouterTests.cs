@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using PulsarPluginLoader.Chat.Commands;
+using PulsarPluginLoader.Chat.Commands.CommandRouter;
 using System;
 using System.IO;
 
@@ -12,45 +13,21 @@ namespace PulsarPluginLoader.Tests.Chat.Commands
         public void CanRegisterCommand()
         {
             ChatCommandRouter ccr = new ChatCommandRouter();
-            IChatCommand cmd = new PrintCommand();
+            ChatCommand cmd = new PrintCommand();
 
-            ccr.Register(cmd);
+            ccr.Register(cmd, null);
 
-            Assert.AreSame(cmd, ccr.GetCommand(cmd.CommandAliases()[0]));
-        }
-
-        [Test]
-        public void CanDeregisterCommand()
-        {
-            ChatCommandRouter ccr = new ChatCommandRouter();
-            IChatCommand cmd = new PrintCommand();
-
-            ccr.Register(cmd);
-            ccr.Deregister(cmd);
-
-            Assert.IsNull(ccr.GetCommand(cmd.CommandAliases()[0]));
-        }
-
-        [Test]
-        public void CantDeregisterWrongCommand()
-        {
-            ChatCommandRouter ccr = new ChatCommandRouter();
-            IChatCommand cmd = new PrintCommand();
-
-            ccr.Register(cmd);
-            ccr.Deregister("asd");
-
-            Assert.IsNotNull(ccr.GetCommand(cmd.CommandAliases()[0]));
+            Assert.AreSame(cmd, ccr.GetCommand(cmd.CommandAliases()[0]).Item1);
         }
 
         [Test]
         public void CanGetCommand()
         {
             ChatCommandRouter ccr = new ChatCommandRouter();
-            IChatCommand cmd = new PrintCommand();
+            ChatCommand cmd = new PrintCommand();
 
-            ccr.Register(cmd);
-            IChatCommand retrievedCmd = ccr.GetCommand(cmd.CommandAliases()[0]);
+            ccr.Register(cmd, null);
+            ChatCommand retrievedCmd = ccr.GetCommand(cmd.CommandAliases()[0]).Item1;
 
             Assert.AreSame(cmd, retrievedCmd);
         }
@@ -59,9 +36,9 @@ namespace PulsarPluginLoader.Tests.Chat.Commands
         public void CanExecuteCommand()
         {
             ChatCommandRouter ccr = new ChatCommandRouter();
-            IChatCommand cmd = new PrintCommand();
+            ChatCommand cmd = new PrintCommand();
 
-            ccr.Register(cmd);
+            ccr.Register(cmd, null);
 
             using (StringWriter sw = new StringWriter())
             {

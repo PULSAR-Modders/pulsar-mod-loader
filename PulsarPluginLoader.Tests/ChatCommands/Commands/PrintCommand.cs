@@ -1,34 +1,28 @@
-﻿using PulsarPluginLoader.Chat.Commands;
+﻿using PulsarPluginLoader.Chat.Commands.CommandRouter;
 using System;
 
 namespace PulsarPluginLoader.Tests.Chat.Commands
 {
-    class PrintCommand : IChatCommand
+    class PrintCommand : ChatCommand
     {
-        public string[] CommandAliases()
+        public override string[] CommandAliases()
         {
             return new string[] { "print", "p" };
         }
 
-        public bool Execute(string arguments, int SenderID)
+        public override void Execute(string arguments)
         {
             Console.WriteLine(arguments);
-            return false;
         }
 
-        public string Description()
+        public override string Description()
         {
             return "Repeats the input text by printing to console.";
         }
 
-        public string UsageExample()
+        public override string[] UsageExamples()
         {
-            return $"/{CommandAliases()[0]} [text]";
-        }
-
-        public bool PublicCommand()
-        {
-            return false;
+            return new string[] { $"/{CommandAliases()[0]} <text>" };
         }
     }
 }

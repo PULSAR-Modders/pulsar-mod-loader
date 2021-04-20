@@ -1,33 +1,28 @@
-﻿using PulsarPluginLoader.Utilities;
+﻿using PulsarPluginLoader.Chat.Commands.CommandRouter;
+using PulsarPluginLoader.Utilities;
 
 namespace PulsarPluginLoader.Chat.Commands
 {
-    public class EchoCommand : IChatCommand
+    public class EchoCommand : ChatCommand
     {
-        public string[] CommandAliases()
+        public override string[] CommandAliases()
         {
             return new string[] { "echo", "e" };
         }
 
-        public string Description()
+        public override string Description()
         {
             return "Repeats the input text back through the chat box.";
         }
 
-        public string UsageExample()
+        public override string[] UsageExamples()
         {
-            return $"/{CommandAliases()[0]} [text]";
+            return new string[] { $"/{CommandAliases()[0]} <text>" };
         }
 
-        public bool Execute(string arguments, int SenderID)
+        public override void Execute(string arguments)
         {
             Messaging.Echo(PLNetworkManager.Instance.LocalPlayer.GetPhotonPlayer(), $"Echo: {arguments}");
-
-            return false;
-        }
-        public bool PublicCommand()
-        {
-            return false;
         }
     }
 }

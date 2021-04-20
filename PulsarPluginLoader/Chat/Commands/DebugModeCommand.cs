@@ -1,21 +1,23 @@
-﻿using PulsarPluginLoader.Utilities;
+﻿using PulsarPluginLoader.Chat.Commands.CommandRouter;
+using PulsarPluginLoader.Utilities;
 
 namespace PulsarPluginLoader.Chat.Commands
 {
-    class DebugModeCommand : IChatCommand
+    class DebugModeCommand : ChatCommand
     {
         public static bool DebugMode = false;
-        public string[] CommandAliases()
+
+        public override string[] CommandAliases()
         {
             return new string[] { "debugmode", "dbm"};
         }
 
-        public string Description()
+        public override string Description()
         {
             return "Toggles Exception notifications in-game";
         }
 
-        public bool Execute(string arguments, int SenderID)
+        public override void Execute(string arguments)
         {
             //Toggle DebugMode value
             DebugMode = !DebugMode;
@@ -25,12 +27,6 @@ namespace PulsarPluginLoader.Chat.Commands
 
             //notify player of new DebugMode value
             Messaging.Notification($"PPLDebugMode is now {DebugMode}");
-            return false;
-        }
-
-        public bool PublicCommand()
-        {
-            return false;
         }
 
         public string UsageExample()

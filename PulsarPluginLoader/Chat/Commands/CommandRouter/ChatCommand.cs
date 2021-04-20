@@ -4,18 +4,10 @@ namespace PulsarPluginLoader.Chat.Commands.CommandRouter
     public abstract class ChatCommand
     {
         /// <summary>
-        /// This will throw an exception if the command name is not unique
-        /// </summary>
-        /// <returns>The command to be entered by the user</returns>
-        public abstract string CommandName();
-        /// <summary>
         /// Command aliases will fail silently if the alias is not unique
         /// </summary>
-        /// <returns>An array containing alternate names for the command that can be used by the player</returns>
-        public string[] CommandAliases()
-        {
-            return new string[] { };
-        }
+        /// <returns>An array containing names for the command that can be used by the player</returns>
+        public abstract string[] CommandAliases();
         /// <summary>
         /// 
         /// </summary>
@@ -25,9 +17,9 @@ namespace PulsarPluginLoader.Chat.Commands.CommandRouter
         /// 
         /// </summary>
         /// <returns>Examples of how to use the command including what arguments are valid</returns>
-        public string[] UsageExamples()
+        public virtual string[] UsageExamples()
         {
-            return new string[] { $"/{CommandName()}" };
+            return new string[] { $"/{CommandAliases()[0]}" };
         }
         /// <summary>
         /// Executes the command

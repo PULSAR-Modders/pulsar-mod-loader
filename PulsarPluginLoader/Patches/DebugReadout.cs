@@ -8,9 +8,9 @@ namespace PulsarPluginLoader.Patches
     [HarmonyPatch(typeof(PLInGameUI), "Update")]
     class DebugReadout
     {
-        static void Postfix(PLNetworkManager __instance, Text ___CurrentVersionLabel)
+        static void Postfix(Text ___CurrentVersionLabel)
         {
-            if (DebugModeCommand.DebugMode && PLServer.Instance != null && PLEncounterManager.Instance != null)
+            if (DebugModeCommand.DebugMode && PLServer.Instance != null && PLEncounterManager.Instance != null && PLNetworkManager.Instance != null)
             {
                 PLPawn localPawn = PLNetworkManager.Instance.LocalPlayer.GetPawn();
                 Vector3 pos = localPawn != null ? localPawn.transform.position : Vector3.zero;

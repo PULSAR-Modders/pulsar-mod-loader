@@ -10,7 +10,6 @@ namespace PulsarPluginLoader.Patches
     [HarmonyPatch(typeof(PhotonNetwork), "CreateRoom", new Type[] { typeof(string), typeof(RoomOptions), typeof(TypedLobby), typeof(string[]) })]
     public static class PhotonProperties
     {
-
         private static void Prefix(RoomOptions roomOptions)
         {
             // Key-Value pairs attached to room as metadata
@@ -19,14 +18,17 @@ namespace PulsarPluginLoader.Patches
                 { "playerList", "" }, // "playerName\tclassName" -> "Test Name\tCaptain"
                 { "modList", ""}
             });
+            PulsarPluginLoader.Utilities.Logger.Info("1");
             // Keys of metadata exposed to public game list
             roomOptions.CustomRoomPropertiesForLobby = roomOptions.CustomRoomPropertiesForLobby.AddRangeToArray(new string[] {
                 "isModded",
                 "playerList",
                 "modList",
             });
+            PulsarPluginLoader.Utilities.Logger.Info("2");
             //Add multiplayer mods to modList
             roomOptions.CustomRoomProperties["modList"] = MPModChecks.GetMPModList();
+            PulsarPluginLoader.Utilities.Logger.Info("3");
         }
 
         public static void UpdatePlayerList()

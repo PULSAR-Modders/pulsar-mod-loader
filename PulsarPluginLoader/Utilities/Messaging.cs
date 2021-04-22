@@ -57,7 +57,7 @@ namespace PulsarPluginLoader.Utilities
         }
         public static void Notification(string message, PLPlayer recipient = null, int subjectPlayerId = 0, int durationMs = 6000, bool addToShipLog = false)
         {
-            if (recipient == null)
+            if (recipient == null && PLNetworkManager.Instance != null)
             {
                 recipient = PLNetworkManager.Instance.LocalPlayer;
             }

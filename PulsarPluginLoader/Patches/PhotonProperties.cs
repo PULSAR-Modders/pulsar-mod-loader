@@ -18,17 +18,14 @@ namespace PulsarPluginLoader.Patches
                 { "playerList", "" }, // "playerName\tclassName" -> "Test Name\tCaptain"
                 { "modList", ""}
             });
-            PulsarPluginLoader.Utilities.Logger.Info("1");
             // Keys of metadata exposed to public game list
             roomOptions.CustomRoomPropertiesForLobby = roomOptions.CustomRoomPropertiesForLobby.AddRangeToArray(new string[] {
                 "isModded",
                 "playerList",
                 "modList",
             });
-            PulsarPluginLoader.Utilities.Logger.Info("2");
             //Add multiplayer mods to modList
             roomOptions.CustomRoomProperties["modList"] = MPModChecks.GetMPModList();
-            PulsarPluginLoader.Utilities.Logger.Info("3");
         }
 
         public static void UpdatePlayerList()
@@ -41,7 +38,7 @@ namespace PulsarPluginLoader.Patches
                 customProperties["playerList"] = string.Join(
                     "\n",
                     PLServer.Instance.AllPlayers
-                        .Where(player => player.TeamID == 0)
+                        .Where(player => player?.TeamID == 0)
                         .Select(player => $"{player.GetPlayerName()}\t{player.GetClassName()}")
                         .ToArray()
                 );

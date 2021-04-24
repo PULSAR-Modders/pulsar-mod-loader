@@ -1,6 +1,9 @@
 ﻿using HarmonyLib;
 using System;
+using System.Collections.Generic;
+using System.Reflection.Emit;
 using UnityEngine;
+using static PulsarPluginLoader.Patches.HarmonyHelpers;
 
 namespace PulsarPluginLoader.Chat.Extensions
 {
@@ -247,6 +250,29 @@ namespace PulsarPluginLoader.Chat.Extensions
             {
                 PLNetworkManager.Instance.CurrentChatText = __state;
             }
+        }
+
+        //Fixes shadow in currently typing
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            List<CodeInstruction> targetSequence = new List<CodeInstruction>()
+            {
+                new CodeInstruction(OpCodes.Brfalse_S),
+                new CodeInstruction(OpCodes.Ldloc_S),
+                new CodeInstruction(OpCodes.Ldstr),
+                new CodeInstruction(OpCodes.Callvirt),
+                new CodeInstruction(OpCodes.Pop),
+                new CodeInstruction(OpCodes.Ldloc_S),
+                new CodeInstruction(OpCodes.Ldsfld),
+                new CodeInstruction(OpCodes.Ldfld)
+            };
+
+            List<CodeInstruction> injectedSequence = new List<CodeInstruction>()
+            {
+                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(HarmonyColoredMessage), "RemoveColor"))
+            };
+
+            return PatchBySequence(instructions, targetSequence, injectedSequence, PatchMode.AFTER, CheckMode.NEVER);
         }
     }
 }

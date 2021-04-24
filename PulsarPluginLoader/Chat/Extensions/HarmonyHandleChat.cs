@@ -51,6 +51,120 @@ namespace PulsarPluginLoader.Chat.Extensions
             return tagFound;
         }
 
+        private static bool Test(string chatText, char[] match, int pos)
+        {
+            foreach (char c in match)
+            {
+                if (chatText[pos] == c)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private static int Search(string chatText, char[] match, bool left)
+        {
+            int pos = chatText.Length - cursorPos;
+            bool last;
+
+            if (left)
+            {
+                pos--;
+                bool current = Test(chatText, match, pos);
+                while (pos > 0)
+                {
+                    last = current;
+                    current = Test(chatText, match, pos);
+                    if (current && !last)
+                    {
+                        return chatText.Length - pos - 1;
+                    }
+                    pos--;
+                }
+                return chatText.Length;
+            }
+            else
+            {
+                bool current = Test(chatText, match, pos);
+                while (pos < chatText.Length)
+                {
+                    last = current;
+                    current = Test(chatText, match, pos);
+                    if (current && !last)
+                    {
+                        return chatText.Length - pos;
+                    }
+                    pos++;
+                }
+                return 0;
+            }
+        }
+
+        private static void HandleArrows(string chatText)
+        {
+            if (Input.GetKeyDown(KeyCode.LeftArrow))
+            {
+                lastTimeLeft = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond + /*(SystemInformation.KeyboardDelay + 1) **/ 250;
+                if (cursorPos < chatText.Length)
+                {
+                    if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
+                    {
+                        cursorPos = Search(chatText, new char[] { ' ', '>' }, true);
+                    }
+                    else
+                    {
+                        cursorPos++;
+                    }
+                }
+            }
+            if (Input.GetKeyDown(KeyCode.RightArrow))
+            {
+                lastTimeRight = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond + /*(SystemInformation.KeyboardDelay + 1) **/ 250;
+                if (cursorPos > 0)
+                {
+                    if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
+                    {
+                        cursorPos = Search(chatText, new char[] { ' ', '<' }, false);
+                    }
+                    else
+                    {
+                        cursorPos--;
+                    }
+                }
+            }
+            if (Input.GetKey(KeyCode.LeftArrow) && DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond > lastTimeLeft)
+            {
+                lastTimeLeft += 30 /*(long)(1 / ((SystemInformation.KeyboardSpeed + 1) * 0.859375))*/;
+                if (cursorPos < chatText.Length)
+                {
+                    if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
+                    {
+                        cursorPos = Search(chatText, new char[] { ' ', '>' }, true);
+                    }
+                    else
+                    {
+                        cursorPos++;
+                    }
+                }
+            }
+            if (Input.GetKey(KeyCode.RightArrow) && DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond > lastTimeRight)
+            {
+                lastTimeRight += 30 /*(long)(1 / ((SystemInformation.KeyboardSpeed + 1) * 0.859375))*/;
+                if (cursorPos > 0)
+                {
+                    if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
+                    {
+                        cursorPos = Search(chatText, new char[] { ' ', '<' }, false);
+                    }
+                    else
+                    {
+                        cursorPos--;
+                    }
+                }
+            }
+        }
+
         static void Prefix(PLInGameUI __instance, ref bool ___evenChatString, ref string __state)
         {
             PLNetworkManager networkManager = PLNetworkManager.Instance;
@@ -65,22 +179,7 @@ namespace PulsarPluginLoader.Chat.Extensions
                     {
                         cursorPos2 = cursorPos;
                     }
-                    if (Input.GetKeyDown(KeyCode.LeftArrow))
-                    {
-                        lastTimeLeft = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond + /*(SystemInformation.KeyboardDelay + 1) **/ 250;
-                        if (cursorPos < __state.Length)
-                        {
-                            cursorPos++;
-                        }
-                    }
-                    if (Input.GetKeyDown(KeyCode.RightArrow))
-                    {
-                        lastTimeRight = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond + /*(SystemInformation.KeyboardDelay + 1) **/ 250;
-                        if (cursorPos > 0)
-                        {
-                            cursorPos--;
-                        }
-                    }
+                    HandleArrows(__state);
                     if (Input.GetKeyDown(KeyCode.Home))
                     {
                         cursorPos = __state.Length;
@@ -88,43 +187,16 @@ namespace PulsarPluginLoader.Chat.Extensions
                     if (Input.GetKeyDown(KeyCode.End))
                     {
                         cursorPos = 0;
-                    }
-                    if (Input.GetKey(KeyCode.LeftArrow) && DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond > lastTimeLeft)
-                    {
-                        lastTimeLeft += 30 /*(long)(1 / ((SystemInformation.KeyboardSpeed + 1) * 0.859375))*/;
-                        if (cursorPos < __state.Length)
-                        {
-                            cursorPos++;
-                        }
-                    }
-                    if (Input.GetKey(KeyCode.RightArrow) && DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond > lastTimeRight)
-                    {
-                        lastTimeRight += 30 /*(long)(1 / ((SystemInformation.KeyboardSpeed + 1) * 0.859375))*/;
-                        if (cursorPos > 0)
-                        {
-                            cursorPos--;
-                        }
                     }
                 }
                 else
                 {
-                    if (Input.GetKeyDown(KeyCode.LeftArrow))
+                    if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.RightArrow) ||
+                        (Input.GetKey(KeyCode.LeftArrow) && DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond > lastTimeLeft) ||
+                        (Input.GetKey(KeyCode.RightArrow) && DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond > lastTimeRight))
                     {
                         cursorPos2 = -1;
-                        lastTimeLeft = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond + 500 /*(SystemInformation.KeyboardDelay + 1) * 250*/;
-                        if (cursorPos < __state.Length)
-                        {
-                            cursorPos++;
-                        }
-                    }
-                    if (Input.GetKeyDown(KeyCode.RightArrow))
-                    {
-                        cursorPos2 = -1;
-                        lastTimeRight = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond + 500 /*(SystemInformation.KeyboardDelay + 1) * 250*/;
-                        if (cursorPos > 0)
-                        {
-                            cursorPos--;
-                        }
+                        HandleArrows(__state);
                     }
                     if (Input.GetKeyDown(KeyCode.Home))
                     {
@@ -135,24 +207,6 @@ namespace PulsarPluginLoader.Chat.Extensions
                     {
                         cursorPos2 = -1;
                         cursorPos = 0;
-                    }
-                    if (Input.GetKey(KeyCode.LeftArrow) && DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond > lastTimeLeft)
-                    {
-                        cursorPos2 = -1;
-                        lastTimeLeft += 30 /*(long)(1 / ((SystemInformation.KeyboardSpeed + 1) * 0.859375))*/;
-                        if (cursorPos < __state.Length)
-                        {
-                            cursorPos++;
-                        }
-                    }
-                    if (Input.GetKey(KeyCode.RightArrow) && DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond > lastTimeRight)
-                    {
-                        cursorPos2 = -1;
-                        lastTimeRight += 30 /*(long)(1 / ((SystemInformation.KeyboardSpeed + 1) * 0.859375))*/;
-                        if (cursorPos > 0)
-                        {
-                            cursorPos--;
-                        }
                     }
                 }
 

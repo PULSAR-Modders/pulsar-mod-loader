@@ -1,6 +1,7 @@
 ﻿using PulsarPluginLoader.Chat.Commands.CommandRouter;
 using PulsarPluginLoader.Utilities;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -20,7 +21,14 @@ namespace PulsarPluginLoader.Chat.Commands
 
         public override string[] UsageExamples()
         {
-            return new string[] { $"/{CommandAliases()[0]} [command]", $"/{CommandAliases()[0]} [page number]" };
+            return new List<string>(base.UsageExamples()).Concat(
+                new string[] { $"/{CommandAliases()[0]} clear", $"/{CommandAliases()[0]} 3" }
+                ).ToArray();
+        }
+
+        public override string[][] Arguments()
+        {
+            return new string[][] { new string[] { "%command", "page number" } };
         }
 
         public override void Execute(string arguments)

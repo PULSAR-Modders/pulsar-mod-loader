@@ -35,7 +35,12 @@ namespace PulsarPluginLoader.Chat.Extensions
                     HarmonyNetworkUpdate.publicCached = true;
                     if (PLNetworkManager.Instance.IsTyping && PLNetworkManager.Instance.CurrentChatText.StartsWith("!"))
                     {
-                        PLNetworkManager.Instance.CurrentChatText = HarmonyNetworkUpdate.AutoComplete(PLNetworkManager.Instance.CurrentChatText, (string[])arguments[1]);
+                        string chatText = AutoComplete.Complete(PLNetworkManager.Instance.CurrentChatText, HarmonyHandleChat.cursorPos);
+                        if (chatText != PLNetworkManager.Instance.CurrentChatText)
+                        {
+                            PLNetworkManager.Instance.CurrentChatText = chatText;
+                            HarmonyHandleChat.cursorPos2 = -1;
+                        }
                     }
                 }
             }

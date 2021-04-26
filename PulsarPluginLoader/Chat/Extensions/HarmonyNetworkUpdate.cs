@@ -21,9 +21,6 @@ namespace PulsarPluginLoader.Chat.Extensions
         private static long lastTimePaste = long.MaxValue;
         private static long lastTimeDelete = long.MaxValue;
 
-        private static bool commandsCached = false;
-        private static string[] aliases = null;
-
         public static bool publicCached = false;
         public static string[] publicCommands = null;
 
@@ -56,58 +53,6 @@ namespace PulsarPluginLoader.Chat.Extensions
             }
             HarmonyHandleChat.cursorPos2 = -1;
             currentChatText = currentChatText.Remove(pos, length);
-        }
-
-        private static string[] GetCommands()
-        {
-            if (!commandsCached)
-            {
-                aliases = ChatCommandRouter.Instance.getCommandAliases();
-                commandsCached = true;
-            }
-            return aliases;
-        }
-
-        public static string AutoComplete(string text, string[] aliases)
-        {
-            string chat = text.Substring(1);
-            List<string> matchingCommands = new List<string>();
-            int matchCount = 0;
-            foreach (string alias in aliases)
-            {
-                if (alias.ToLower().StartsWith(chat.ToLower()))
-                {
-                    matchCount++;
-                    matchingCommands.Add(alias);
-                }
-            }
-            if (matchCount == 1)
-            {
-                text = text[0] + matchingCommands[0];
-            }
-            else if (matchCount > 1)
-            {
-                string match = matchingCommands[0];
-                foreach (string alias in matchingCommands)
-                {
-                    Messaging.Notification(text[0] + alias);
-                    for (int i = chat.Length; i < match.Length; i++)
-                    {
-                        if (i >= alias.Length)
-                        {
-                            match = alias;
-                            break;
-                        }
-                        if (match[i] != alias[i])
-                        {
-                            match = alias.Substring(0, i);
-                            break;
-                        }
-                    }
-                }
-                text = text[0] + match;
-            }
-            return text;
         }
 
         static void Prefix(PLNetworkManager __instance)
@@ -168,21 +113,31 @@ namespace PulsarPluginLoader.Chat.Extensions
                     textModified = true;
                 }
             }
-            else if (__instance.IsTyping)
+            if (__instance.IsTyping)
             {
                 if (Input.GetKeyDown(KeyCode.Tab))
                 {
                     if (currentChatText.StartsWith("/"))
                     {
-                        currentChatText = AutoComplete(currentChatText, GetCommands());
-                        textModified = true;
+                        string chatText = AutoComplete.Complete(currentChatText, HarmonyHandleChat.cursorPos);
+                        if (chatText != currentChatText)
+                        {
+                            textModified = true;
+                            currentChatText = chatText;
+                            HarmonyHandleChat.cursorPos2 = -1;
+                        }
                     }
                     else if (currentChatText.StartsWith("!"))
                     {
                         if (publicCached)
                         {
-                            currentChatText = AutoComplete(currentChatText, publicCommands);
-                            textModified = true;
+                            string chatText = AutoComplete.Complete(currentChatText, HarmonyHandleChat.cursorPos);
+                            if (chatText != currentChatText)
+                            {
+                                textModified = true;
+                                currentChatText = chatText;
+                                HarmonyHandleChat.cursorPos2 = -1;
+                            }
                         }
                         else
                         {

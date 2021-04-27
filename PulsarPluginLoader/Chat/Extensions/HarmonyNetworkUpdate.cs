@@ -1,17 +1,14 @@
 ﻿using HarmonyLib;
-using PulsarPluginLoader.Chat.Commands;
-using PulsarPluginLoader.Utilities;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using static PulsarPluginLoader.Chat.Extensions.ChatHelper;
 
 namespace PulsarPluginLoader.Chat.Extensions
 {
     [HarmonyPatch(typeof(PLNetworkManager), "Update")]
     class HarmonyNetworkUpdate
     {
-        public static LinkedList<string> chatHistory = new LinkedList<string>();
-
         private static LinkedListNode<string> curentHistory = null;
 
         private static string currentChatText;
@@ -20,9 +17,6 @@ namespace PulsarPluginLoader.Chat.Extensions
 
         private static long lastTimePaste = long.MaxValue;
         private static long lastTimeDelete = long.MaxValue;
-
-        public static bool publicCached = false;
-        public static string[] publicCommands = null;
 
         private static void SetChat(PLNetworkManager instance)
         {
@@ -40,39 +34,39 @@ namespace PulsarPluginLoader.Chat.Extensions
         {
             int pos;
             int length;
-            if (HarmonyHandleChat.cursorPos < HarmonyHandleChat.cursorPos2)
+            if (cursorPos < cursorPos2)
             {
-                pos = currentChatText.Length - HarmonyHandleChat.cursorPos2;
-                length = HarmonyHandleChat.cursorPos2 - HarmonyHandleChat.cursorPos;
+                pos = currentChatText.Length - cursorPos2;
+                length = cursorPos2 - cursorPos;
             }
             else
             {
-                pos = currentChatText.Length - HarmonyHandleChat.cursorPos;
-                length = HarmonyHandleChat.cursorPos - HarmonyHandleChat.cursorPos2;
-                HarmonyHandleChat.cursorPos = HarmonyHandleChat.cursorPos2;
+                pos = currentChatText.Length - cursorPos;
+                length = cursorPos - cursorPos2;
+                cursorPos = cursorPos2;
             }
-            HarmonyHandleChat.cursorPos2 = -1;
+            cursorPos2 = -1;
             currentChatText = currentChatText.Remove(pos, length);
         }
 
         static void Prefix(PLNetworkManager __instance)
         {
             currentChatText = __instance.CurrentChatText;
-            if (__instance.IsTyping && (HarmonyHandleChat.cursorPos > 0 || HarmonyHandleChat.cursorPos2 > 0))
+            if (__instance.IsTyping && (cursorPos > 0 || cursorPos2 > 0))
             {
                 foreach (char c in Input.inputString)
                 {
                     if (c == "\b"[0])
                     {
-                        if (HarmonyHandleChat.cursorPos2 != -1 && HarmonyHandleChat.cursorPos2 != HarmonyHandleChat.cursorPos)
+                        if (cursorPos2 != -1 && cursorPos2 != cursorPos)
                         {
                             DeleteSelected();
                         }
                         else
                         {
-                            if (HarmonyHandleChat.cursorPos != currentChatText.Length)
+                            if (cursorPos != currentChatText.Length)
                             {
-                                currentChatText = currentChatText.Remove(currentChatText.Length - HarmonyHandleChat.cursorPos - 1, 1);
+                                currentChatText = currentChatText.Remove(currentChatText.Length - cursorPos - 1, 1);
                             }
                         }
                         textModified = true;
@@ -83,33 +77,33 @@ namespace PulsarPluginLoader.Chat.Extensions
                     }
                     else
                     {
-                        if (HarmonyHandleChat.cursorPos2 != -1 && HarmonyHandleChat.cursorPos2 != HarmonyHandleChat.cursorPos)
+                        if (cursorPos2 != -1 && cursorPos2 != cursorPos)
                         {
                             DeleteSelected();
                         }
-                        currentChatText = currentChatText.Insert(currentChatText.Length - HarmonyHandleChat.cursorPos, c.ToString());
+                        currentChatText = currentChatText.Insert(currentChatText.Length - cursorPos, c.ToString());
                         textModified = true;
                     }
                 }
                 if (Input.GetKeyDown(KeyCode.Delete))
                 {
                     lastTimeDelete = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond + /*(SystemInformation.KeyboardDelay + 1) **/ 250;
-                    if (HarmonyHandleChat.cursorPos2 != -1 && HarmonyHandleChat.cursorPos2 != HarmonyHandleChat.cursorPos)
+                    if (cursorPos2 != -1 && cursorPos2 != cursorPos)
                     {
                         DeleteSelected();
                     }
                     else
                     {
-                        currentChatText = currentChatText.Remove(currentChatText.Length - HarmonyHandleChat.cursorPos, 1);
-                        HarmonyHandleChat.cursorPos--;
+                        currentChatText = currentChatText.Remove(currentChatText.Length - cursorPos, 1);
+                        cursorPos--;
                     }
                     textModified = true;
                 }
                 if (Input.GetKey(KeyCode.Delete) && DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond > lastTimeDelete)
                 {
                     lastTimeDelete += 30 /*(long)(1 / ((SystemInformation.KeyboardSpeed + 1) * 0.859375))*/;
-                    currentChatText = currentChatText.Remove(currentChatText.Length - HarmonyHandleChat.cursorPos, 1);
-                    HarmonyHandleChat.cursorPos--;
+                    currentChatText = currentChatText.Remove(currentChatText.Length - cursorPos, 1);
+                    cursorPos--;
                     textModified = true;
                 }
             }
@@ -119,24 +113,24 @@ namespace PulsarPluginLoader.Chat.Extensions
                 {
                     if (currentChatText.StartsWith("/"))
                     {
-                        string chatText = AutoComplete.Complete(currentChatText, HarmonyHandleChat.cursorPos);
+                        string chatText = AutoComplete(currentChatText, cursorPos);
                         if (chatText != currentChatText)
                         {
                             textModified = true;
                             currentChatText = chatText;
-                            HarmonyHandleChat.cursorPos2 = -1;
+                            cursorPos2 = -1;
                         }
                     }
                     else if (currentChatText.StartsWith("!"))
                     {
                         if (publicCached)
                         {
-                            string chatText = AutoComplete.Complete(currentChatText, HarmonyHandleChat.cursorPos);
+                            string chatText = AutoComplete(currentChatText, cursorPos);
                             if (chatText != currentChatText)
                             {
                                 textModified = true;
                                 currentChatText = chatText;
-                                HarmonyHandleChat.cursorPos2 = -1;
+                                cursorPos2 = -1;
                             }
                         }
                         else
@@ -161,48 +155,48 @@ namespace PulsarPluginLoader.Chat.Extensions
                 if (Input.GetKeyDown(KeyCode.V))
                 {
                     lastTimePaste = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond + /*(SystemInformation.KeyboardDelay + 1) **/ 250;
-                    if (HarmonyHandleChat.cursorPos2 != -1 && HarmonyHandleChat.cursorPos2 != HarmonyHandleChat.cursorPos)
+                    if (cursorPos2 != -1 && cursorPos2 != cursorPos)
                     {
                         DeleteSelected();
                     }
-                    currentChatText = currentChatText.Insert(currentChatText.Length - HarmonyHandleChat.cursorPos, GUIUtility.systemCopyBuffer);
+                    currentChatText = currentChatText.Insert(currentChatText.Length - cursorPos, GUIUtility.systemCopyBuffer);
                     textModified = true;
                 }
                 if (Input.GetKey(KeyCode.V) && DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond > lastTimePaste)
                 {
                     lastTimePaste += 30 /*(long)(1 / ((SystemInformation.KeyboardSpeed + 1) * 0.859375))*/;
-                    currentChatText = currentChatText.Insert(currentChatText.Length - HarmonyHandleChat.cursorPos, GUIUtility.systemCopyBuffer);
+                    currentChatText = currentChatText.Insert(currentChatText.Length - cursorPos, GUIUtility.systemCopyBuffer);
                     textModified = true;
                 }
-                if (Input.GetKeyDown(KeyCode.C) && HarmonyHandleChat.cursorPos2 != -1 && HarmonyHandleChat.cursorPos2 != HarmonyHandleChat.cursorPos)
+                if (Input.GetKeyDown(KeyCode.C) && cursorPos2 != -1 && cursorPos2 != cursorPos)
                 {
                     int pos;
                     int length;
-                    if (HarmonyHandleChat.cursorPos < HarmonyHandleChat.cursorPos2)
+                    if (cursorPos < cursorPos2)
                     {
-                        pos = currentChatText.Length - HarmonyHandleChat.cursorPos2;
-                        length = HarmonyHandleChat.cursorPos2 - HarmonyHandleChat.cursorPos;
+                        pos = currentChatText.Length - cursorPos2;
+                        length = cursorPos2 - cursorPos;
                     }
                     else
                     {
-                        pos = currentChatText.Length - HarmonyHandleChat.cursorPos;
-                        length = HarmonyHandleChat.cursorPos - HarmonyHandleChat.cursorPos2;
+                        pos = currentChatText.Length - cursorPos;
+                        length = cursorPos - cursorPos2;
                     }
                     GUIUtility.systemCopyBuffer = currentChatText.Substring(pos, length);
                 }
-                if (Input.GetKeyDown(KeyCode.X) && HarmonyHandleChat.cursorPos2 != -1 && HarmonyHandleChat.cursorPos2 != HarmonyHandleChat.cursorPos)
+                if (Input.GetKeyDown(KeyCode.X) && cursorPos2 != -1 && cursorPos2 != cursorPos)
                 {
                     int pos;
                     int length;
-                    if (HarmonyHandleChat.cursorPos < HarmonyHandleChat.cursorPos2)
+                    if (cursorPos < cursorPos2)
                     {
-                        pos = currentChatText.Length - HarmonyHandleChat.cursorPos2;
-                        length = HarmonyHandleChat.cursorPos2 - HarmonyHandleChat.cursorPos;
+                        pos = currentChatText.Length - cursorPos2;
+                        length = cursorPos2 - cursorPos;
                     }
                     else
                     {
-                        pos = currentChatText.Length - HarmonyHandleChat.cursorPos;
-                        length = HarmonyHandleChat.cursorPos - HarmonyHandleChat.cursorPos2;
+                        pos = currentChatText.Length - cursorPos;
+                        length = cursorPos - cursorPos2;
                     }
                     GUIUtility.systemCopyBuffer = currentChatText.Substring(pos, length);
                     DeleteSelected();
@@ -210,8 +204,8 @@ namespace PulsarPluginLoader.Chat.Extensions
                 }
                 if (Input.GetKeyDown(KeyCode.A))
                 {
-                    HarmonyHandleChat.cursorPos = 0;
-                    HarmonyHandleChat.cursorPos2 = currentChatText.Length;
+                    cursorPos = 0;
+                    cursorPos2 = currentChatText.Length;
                 }
             }
 
@@ -223,8 +217,8 @@ namespace PulsarPluginLoader.Chat.Extensions
 
             if (Input.GetKeyDown(KeyCode.UpArrow))
             {
-                HarmonyHandleChat.cursorPos = 0;
-                HarmonyHandleChat.cursorPos2 = -1;
+                cursorPos = 0;
+                cursorPos2 = -1;
                 if (curentHistory == null)
                 {
                     curentHistory = chatHistory.Last;
@@ -237,8 +231,8 @@ namespace PulsarPluginLoader.Chat.Extensions
             }
             if (Input.GetKeyDown(KeyCode.DownArrow))
             {
-                HarmonyHandleChat.cursorPos = 0;
-                HarmonyHandleChat.cursorPos2 = -1;
+                cursorPos = 0;
+                cursorPos2 = -1;
                 if (curentHistory == null)
                 {
                     curentHistory = chatHistory.First;

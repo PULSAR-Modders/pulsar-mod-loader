@@ -7,7 +7,7 @@ namespace PulsarPluginLoader.Chat.Extensions
     {
         static void Postfix()
         {
-            HarmonyNetworkUpdate.publicCached = false;
+            ChatHelper.publicCached = false;
             HandlePublicCommands.RequestPublicCommands();
         }
     }

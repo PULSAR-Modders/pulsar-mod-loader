@@ -14,15 +14,15 @@ namespace PulsarPluginLoader.Chat.Extensions
                 return;
             }
 
-            LinkedListNode<string> lastMessage = HarmonyNetworkUpdate.chatHistory.FindLast(__instance.CurrentChatText.TrimEnd(newline));
+            LinkedListNode<string> lastMessage = ChatHelper.chatHistory.FindLast(__instance.CurrentChatText.TrimEnd(newline));
             if (lastMessage != null)
             {
-                HarmonyNetworkUpdate.chatHistory.Remove(lastMessage);
+                ChatHelper.chatHistory.Remove(lastMessage);
             }
-            HarmonyNetworkUpdate.chatHistory.AddLast(__instance.CurrentChatText.TrimEnd(newline));
-            if (HarmonyNetworkUpdate.chatHistory.Count > 100)
+            ChatHelper.chatHistory.AddLast(__instance.CurrentChatText.TrimEnd(newline));
+            if (ChatHelper.chatHistory.Count > 100)
             {
-                HarmonyNetworkUpdate.chatHistory.RemoveFirst();
+                ChatHelper.chatHistory.RemoveFirst();
             }
         }
     }

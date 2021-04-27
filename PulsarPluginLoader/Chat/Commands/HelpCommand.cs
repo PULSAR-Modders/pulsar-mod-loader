@@ -28,7 +28,7 @@ namespace PulsarPluginLoader.Chat.Commands
 
         public override string[][] Arguments()
         {
-            return new string[][] { new string[] { "%command", "page number" } };
+            return new string[][] { new string[] { "%command", "%page_number" } };
         }
 
         public override void Execute(string arguments)

@@ -4,15 +4,13 @@ using System.Collections.Generic;
 using System.Reflection.Emit;
 using UnityEngine;
 using static PulsarPluginLoader.Patches.HarmonyHelpers;
+using static PulsarPluginLoader.Chat.Extensions.ChatHelper;
 
 namespace PulsarPluginLoader.Chat.Extensions
 {
     [HarmonyPatch(typeof(PLInGameUI), "HandleChat")]
     class HarmonyHandleChat
     {
-        public static int cursorPos = 0;
-        public static int cursorPos2 = -1;
-
         private static long lastTimeLeft = long.MaxValue;
         private static long lastTimeRight = long.MaxValue;
 

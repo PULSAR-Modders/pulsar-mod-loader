@@ -1,19 +1,62 @@
 ﻿using PulsarPluginLoader.Chat.Commands;
 using PulsarPluginLoader.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace PulsarPluginLoader.Chat.Extensions
 {
-    class AutoComplete
+    public class ChatHelper
     {
-        public static string Complete(string text, int cursorPos)
+        public static int cursorPos = 0;
+        public static int cursorPos2 = -1;
+
+        public static bool publicCached = false;
+        public static Tuple<string, string[][]>[] publicCommands = null;
+
+        public static bool commandsCached = false;
+        public static Tuple<string, string[][]>[] chatCommands = null;
+
+        public static LinkedList<string> chatHistory = new LinkedList<string>();
+        public static List<Tuple<string, int>> typingHistory = null;
+
+        public static Tuple<string, string[][]>[] getCommands()
+        {
+            if (!commandsCached)
+            {
+                string[] aliases = ChatCommandRouter.Instance.getCommandAliases();
+                chatCommands = new Tuple<string, string[][]>[aliases.Length];
+
+                for (int i = 0; i < aliases.Length; i++)
+                {
+                    chatCommands[i] = new Tuple<string, string[][]>(aliases[i], ChatCommandRouter.Instance.GetCommand(aliases[i]).Item1.Arguments());
+                }
+            }
+            return chatCommands;
+        }
+
+        public static Tuple<string, string[][]>[] getPublicCommands()
+        {
+            if (!publicCached)
+            {
+                HandlePublicCommands.RequestPublicCommands();
+                return new Tuple<string, string[][]>[0];
+            }
+            return publicCommands;
+        }
+
+        public static string AutoComplete(string text, int cursorPos)
         {
             if (text[0] != '!' && text[0] != '/')
             {
                 return text;
             }
             bool publicCommand = text[0] == '!';
+            if (publicCommand && !publicCached)
+            {
+                HandlePublicCommands.RequestPublicCommands();
+                return text;
+            }
             string[] split = text.Substring(1).Split(' ');
 
             //Autocomplete command
@@ -43,7 +86,21 @@ namespace PulsarPluginLoader.Chat.Extensions
             //Autocomplete argument
             else if (split.Length > 1)
             {
-                string[][] arguments = publicCommand ? ChatCommandRouter.Instance.GetPublicCommand(split[0]).Item1.Arguments() : ChatCommandRouter.Instance.GetCommand(split[0]).Item1.Arguments();
+                int commandIndex = -1;
+                Tuple<string, string[][]>[] t = publicCommand ? getPublicCommands() : getCommands();
+                for (int i = 0; i < t.Length; i++)
+                {
+                    if (t[i].Item1.ToLower() == split[0].ToLower())
+                    {
+                        commandIndex = i;
+                        break;
+                    }
+                }
+                if (commandIndex == -1)
+                {
+                    return text;
+                }
+                string[][] arguments = t[commandIndex].Item2;
                 if (arguments == null)
                 {
                     return text;
@@ -109,9 +166,9 @@ namespace PulsarPluginLoader.Chat.Extensions
                     switch (argument.Substring(1).ToLower())
                     {
                         case "command":
-                            foreach (string command in publicCommand ? ChatCommandRouter.Instance.getPublicCommandAliases() : ChatCommandRouter.Instance.getCommandAliases())
+                            foreach (Tuple<string, string[][]> command in publicCommand ? getPublicCommands() : getCommands())
                             {
-                                fixedArguments.Add(command);
+                                fixedArguments.Add(command.Item1);
                             }
                             break;
                         case "player_name":
@@ -129,9 +186,6 @@ namespace PulsarPluginLoader.Chat.Extensions
                             fixedArguments.Add("scientist");
                             fixedArguments.Add("weapon_specialist");
                             fixedArguments.Add("engineer");
-                            break;
-                        default:
-                            fixedArguments.Add(argument);
                             break;
                     }
                 }
@@ -165,7 +219,7 @@ namespace PulsarPluginLoader.Chat.Extensions
                     }
                     for (int i = 0; i < match.Length && i < partialMatch.Length; i++)
                     {
-                        if (match[i] != partialMatch[i])
+                        if (match.ToLower()[i] != partialMatch.ToLower()[i])
                         {
                             partialMatch = partialMatch.Substring(0, i);
                         }

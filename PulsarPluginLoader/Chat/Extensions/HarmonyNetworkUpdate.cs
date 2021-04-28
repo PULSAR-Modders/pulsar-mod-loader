@@ -16,18 +16,6 @@ namespace PulsarPluginLoader.Chat.Extensions
         private static long lastTimeUndo = long.MaxValue;
         private static long lastTimeRedo = long.MaxValue;
 
-        private static void SetChat(PLNetworkManager instance)
-        {
-            if (currentHistory == null)
-            {
-                instance.CurrentChatText = "";
-            }
-            else
-            {
-                instance.CurrentChatText = currentHistory.Value;
-            }
-        }
-
         private static void DeleteSelected()
         {
             ChatHelper.UpdateTypingHistory(currentChatText, false, true);

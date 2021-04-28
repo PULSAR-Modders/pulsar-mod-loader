@@ -320,5 +320,25 @@ namespace PulsarPluginLoader.Chat.Extensions
             }
             return text;
         }
+
+        public static void SetChat(PLNetworkManager instance)
+        {
+            if (currentHistory == null)
+            {
+                if (node != null)
+                {
+                    instance.CurrentChatText = node.Value.Item1;
+                    cursorPos = node.Value.Item2;
+                }
+                else
+                {
+                    instance.CurrentChatText = "";
+                }
+            }
+            else
+            {
+                instance.CurrentChatText = currentHistory.Value;
+            }
+        }
     }
 }

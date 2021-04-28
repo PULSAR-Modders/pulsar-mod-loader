@@ -1,6 +1,7 @@
 ﻿using PulsarPluginLoader.Chat.Commands;
 using PulsarPluginLoader.Utilities;
 using System;
+using System.Collections.Generic;
 
 namespace PulsarPluginLoader.Chat.Extensions
 {
@@ -32,19 +33,36 @@ namespace PulsarPluginLoader.Chat.Extensions
                 if (PLNetworkManager.Instance.LocalPlayer.GetPhotonPlayer().IsMasterClient)
                 {
                     string[] aliases = GetPublicCommands();
-                    Tuple<string, string[][]>[] t = new Tuple<string, string[][]>[aliases.Length];
+                    if (aliases.Length <= 1)
+                    {
+                        return;
+                    }
+                    string[][][] commandArguments = new string[aliases.Length][][];
                     for (int i = 0; i < aliases.Length; i++)
                     {
-                        t[i] = new Tuple<string, string[][]>(aliases[i], ChatCommandRouter.Instance.GetPublicCommand(aliases[i]).Item1.Arguments());
+                        commandArguments[i] = ChatCommandRouter.Instance.GetPublicCommand(aliases[i]).Item1.Arguments();
                     }
-                    SendRPC(harmonyIdentifier, handlerIdentifier, sender.sender, new object[] { false, version, t });
+                    List<object> o = new List<object>();
+                    o.Add(false);
+                    o.Add(version);
+                    o.Add(aliases);
+                    for (int i = 0; i < aliases.Length; i++)
+                    {
+                        o.Add(commandArguments[i]);
+                    }
+                    SendRPC(harmonyIdentifier, handlerIdentifier, sender.sender, o.ToArray());
                 }
             }
             else
             {
-                if (((Tuple<string, string[][]>[])arguments[2]).Length > 0)
+                if (((string[])arguments[2]).Length > 0)
                 {
-                    ChatHelper.publicCommands = (Tuple<string, string[][]>[])arguments[2];
+                    string[] aliases = (string[])arguments[2];
+                    ChatHelper.publicCommands = new Tuple<string, string[][]>[aliases.Length];
+                    for (int i = 0; i < aliases.Length; i++)
+                    {
+                        ChatHelper.publicCommands[i] = new Tuple<string, string[][]>(aliases[i], (string[][])arguments[i + 3]);
+                    }
                     ChatHelper.publicCached = true;
                     if (PLNetworkManager.Instance.IsTyping && PLNetworkManager.Instance.CurrentChatText.StartsWith("!"))
                     {

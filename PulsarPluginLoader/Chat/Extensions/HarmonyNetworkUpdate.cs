@@ -84,16 +84,22 @@ namespace PulsarPluginLoader.Chat.Extensions
                     else
                     {
                         ChatHelper.UpdateTypingHistory(currentChatText, false);
-                        currentChatText = currentChatText.Remove(currentChatText.Length - cursorPos, 1);
-                        cursorPos--;
+                        if (cursorPos > 0)
+                        {
+                            currentChatText = currentChatText.Remove(currentChatText.Length - cursorPos, 1);
+                            cursorPos--;
+                        }
                     }
                 }
                 if (Input.GetKey(KeyCode.Delete) && DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond > lastTimeDelete)
                 {
                     ChatHelper.UpdateTypingHistory(currentChatText, false);
                     lastTimeDelete += 30 /*(long)(1 / ((SystemInformation.KeyboardSpeed + 1) * 0.859375))*/;
-                    currentChatText = currentChatText.Remove(currentChatText.Length - cursorPos, 1);
-                    cursorPos--;
+                    if (cursorPos > 0)
+                    {
+                        currentChatText = currentChatText.Remove(currentChatText.Length - cursorPos, 1);
+                        cursorPos--;
+                    }
                 }
 
                 if (Input.GetKeyDown(KeyCode.Tab))

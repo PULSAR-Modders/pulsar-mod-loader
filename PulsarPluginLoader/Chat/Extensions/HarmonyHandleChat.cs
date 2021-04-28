@@ -225,10 +225,10 @@ namespace PulsarPluginLoader.Chat.Extensions
                         __instance.ChatShadowLabel.supportRichText = true;
                         __instance.ChatShadow2Label.supportRichText = true;
                     }
-                    networkManager.CurrentChatText = networkManager.CurrentChatText.Insert(__state.Length - cursorPos, DateTime.Now.Millisecond >= 500 ? "|" : " ");
+                    networkManager.CurrentChatText = networkManager.CurrentChatText.Insert(__state.Length - cursorPos, DateTime.Now.Millisecond >= 500 ? "|" : "'");
                     if (cursorPos2 != -1 && cursorPos2 != cursorPos)
                     {
-                        networkManager.CurrentChatText = networkManager.CurrentChatText.Insert(__state.Length - cursorPos2 + (cursorPos > cursorPos2 ? 1 : 0), DateTime.Now.Millisecond >= 500 ? "¦" : " ");
+                        networkManager.CurrentChatText = networkManager.CurrentChatText.Insert(__state.Length - cursorPos2 + (cursorPos > cursorPos2 ? 1 : 0), DateTime.Now.Millisecond >= 500 ? "¦" : "'");
                     }
                 }
             }

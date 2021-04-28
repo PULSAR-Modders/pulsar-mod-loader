@@ -11,8 +11,6 @@ namespace PulsarPluginLoader.Chat.Extensions
     {
         private static string currentChatText;
 
-        private static bool textModified = false;
-
         private static long lastTimePaste = long.MaxValue;
         private static long lastTimeDelete = long.MaxValue;
         private static long lastTimeUndo = long.MaxValue;
@@ -72,7 +70,6 @@ namespace PulsarPluginLoader.Chat.Extensions
                                 currentChatText = currentChatText.Remove(currentChatText.Length - cursorPos - 1, 1);
                             }
                         }
-                        textModified = true;
                     }
                     else if (c == Environment.NewLine[0] || c == "\r"[0])
                     {
@@ -86,7 +83,6 @@ namespace PulsarPluginLoader.Chat.Extensions
                         }
                         ChatHelper.UpdateTypingHistory(currentChatText, true);
                         currentChatText = currentChatText.Insert(currentChatText.Length - cursorPos, c.ToString());
-                        textModified = true;
                     }
                 }
                 if (Input.GetKeyDown(KeyCode.Delete))
@@ -103,7 +99,6 @@ namespace PulsarPluginLoader.Chat.Extensions
                         currentChatText = currentChatText.Remove(currentChatText.Length - cursorPos, 1);
                         cursorPos--;
                     }
-                    textModified = true;
                 }
                 if (Input.GetKey(KeyCode.Delete) && DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond > lastTimeDelete)
                 {
@@ -111,7 +106,6 @@ namespace PulsarPluginLoader.Chat.Extensions
                     lastTimeDelete += 30 /*(long)(1 / ((SystemInformation.KeyboardSpeed + 1) * 0.859375))*/;
                     currentChatText = currentChatText.Remove(currentChatText.Length - cursorPos, 1);
                     cursorPos--;
-                    textModified = true;
                 }
 
                 if (Input.GetKeyDown(KeyCode.Tab))
@@ -122,7 +116,6 @@ namespace PulsarPluginLoader.Chat.Extensions
                         if (chatText != currentChatText)
                         {
                             ChatHelper.UpdateTypingHistory(currentChatText, true, true);
-                            textModified = true;
                             currentChatText = chatText;
                             cursorPos2 = -1;
                         }
@@ -135,7 +128,6 @@ namespace PulsarPluginLoader.Chat.Extensions
                             if (chatText != currentChatText)
                             {
                                 ChatHelper.UpdateTypingHistory(currentChatText, true, true);
-                                textModified = true;
                                 currentChatText = chatText;
                                 cursorPos2 = -1;
                             }
@@ -165,13 +157,11 @@ namespace PulsarPluginLoader.Chat.Extensions
                     {
                         lastTimeRedo = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond + /*(SystemInformation.KeyboardDelay + 1) **/ 250;
                         ChatHelper.Redo(ref currentChatText);
-                        textModified = true;
                     }
                     if (Input.GetKey(KeyCode.Z) && DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond > lastTimeRedo)
                     {
                         lastTimeRedo += 30 /*(long)(1 / ((SystemInformation.KeyboardSpeed + 1) * 0.859375))*/;
                         ChatHelper.Redo(ref currentChatText);
-                        textModified = true;
                     }
                 }
                 else
@@ -180,26 +170,22 @@ namespace PulsarPluginLoader.Chat.Extensions
                     {
                         lastTimeUndo = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond + /*(SystemInformation.KeyboardDelay + 1) **/ 250;
                         ChatHelper.Undo(ref currentChatText);
-                        textModified = true;
                     }
                     if (Input.GetKey(KeyCode.Z) && DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond > lastTimeUndo)
                     {
                         lastTimeUndo += 30 /*(long)(1 / ((SystemInformation.KeyboardSpeed + 1) * 0.859375))*/;
                         ChatHelper.Undo(ref currentChatText);
-                        textModified = true;
                     }
                 }
                 if (Input.GetKeyDown(KeyCode.Y))
                 {
                     lastTimeRedo = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond + /*(SystemInformation.KeyboardDelay + 1) **/ 250;
                     ChatHelper.Redo(ref currentChatText);
-                    textModified = true;
                 }
                 if (Input.GetKey(KeyCode.Y) && DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond > lastTimeRedo)
                 {
                     lastTimeRedo += 30 /*(long)(1 / ((SystemInformation.KeyboardSpeed + 1) * 0.859375))*/;
                     ChatHelper.Redo(ref currentChatText);
-                    textModified = true;
                 }
 
                 if (Input.GetKeyDown(KeyCode.V))
@@ -211,7 +197,6 @@ namespace PulsarPluginLoader.Chat.Extensions
                         DeleteSelected();
                     }
                     currentChatText = currentChatText.Insert(currentChatText.Length - cursorPos, GUIUtility.systemCopyBuffer);
-                    textModified = true;
                     ChatHelper.UpdateTypingHistory(currentChatText, true, true);
                 }
                 if (Input.GetKey(KeyCode.V) && DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond > lastTimePaste)
@@ -219,7 +204,6 @@ namespace PulsarPluginLoader.Chat.Extensions
                     ChatHelper.UpdateTypingHistory(currentChatText, true, true);
                     lastTimePaste += 30 /*(long)(1 / ((SystemInformation.KeyboardSpeed + 1) * 0.859375))*/;
                     currentChatText = currentChatText.Insert(currentChatText.Length - cursorPos, GUIUtility.systemCopyBuffer);
-                    textModified = true;
                     ChatHelper.UpdateTypingHistory(currentChatText, true, true);
                 }
                 if (Input.GetKeyDown(KeyCode.C) && cursorPos2 != -1 && cursorPos2 != cursorPos)
@@ -255,7 +239,6 @@ namespace PulsarPluginLoader.Chat.Extensions
                     }
                     GUIUtility.systemCopyBuffer = currentChatText.Substring(pos, length);
                     DeleteSelected();
-                    textModified = true;
                     ChatHelper.UpdateTypingHistory(currentChatText, false, true);
                 }
                 if (Input.GetKeyDown(KeyCode.A))
@@ -265,11 +248,7 @@ namespace PulsarPluginLoader.Chat.Extensions
                 }
             }
 
-            if (textModified)
-            {
-                textModified = false;
-                __instance.CurrentChatText = currentChatText;
-            }
+            __instance.CurrentChatText = currentChatText;
 
             if (Input.GetKeyDown(KeyCode.UpArrow))
             {

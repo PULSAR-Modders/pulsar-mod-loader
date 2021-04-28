@@ -33,6 +33,7 @@ namespace PulsarPluginLoader.Chat.Commands
 
         public override void Execute(string arguments)
         {
+            PhotonPlayer player = PLNetworkManager.Instance.LocalPlayer.GetPhotonPlayer();
             int page = 1;
             if (!string.IsNullOrWhiteSpace(arguments))
             {
@@ -45,23 +46,23 @@ namespace PulsarPluginLoader.Chat.Commands
                         ChatCommand cmd = t.Item1;
                         string name = t.Item2 != null ? t.Item2.Name : "Pulsar Plugin Loader";
 
-                        Messaging.Echo(PLNetworkManager.Instance.LocalPlayer.GetPhotonPlayer(), $"[&%~[C0 /{cmd.CommandAliases()[0]} ]&%~] - {cmd.Description()} <color=#ff6600ff>[{name}]</color>");
-                        Messaging.Echo(PLNetworkManager.Instance.LocalPlayer.GetPhotonPlayer(), $"Aliases: /{string.Join($", /", cmd.CommandAliases())}");
-                        Messaging.Echo(PLNetworkManager.Instance.LocalPlayer.GetPhotonPlayer(), $"Usage: {cmd.UsageExamples()[0]}");
+                        Messaging.Echo(player, $"[&%~[C0 /{cmd.CommandAliases()[0]} ]&%~] - {cmd.Description()} <color=#ff6600ff>[{name}]</color>");
+                        Messaging.Echo(player, $"Aliases: /{string.Join($", /", cmd.CommandAliases())}");
+                        Messaging.Echo(player, $"Usage: {cmd.UsageExamples()[0]}");
                         for (int i = 1; i < cmd.UsageExamples().Length; i++)
                         {
-                            Messaging.Echo(PLNetworkManager.Instance.LocalPlayer.GetPhotonPlayer(), $"       {cmd.UsageExamples()[i]}");
+                            Messaging.Echo(player, $"       {cmd.UsageExamples()[i]}");
                         }
                     }
                     else
                     {
-                        Messaging.Echo(PLNetworkManager.Instance.LocalPlayer.GetPhotonPlayer(), $"Command /{alias} not found");
+                        Messaging.Echo(player, $"Command /{alias} not found");
                     }
                     return;
                 }
             }
 
-            int commandsPerPage = (PLXMLOptionsIO.Instance.CurrentOptions.GetStringValueAsInt("ChatNumLines") * 5 + 10) - 1;
+            int commandsPerPage = (PLXMLOptionsIO.Instance.CurrentOptions.GetStringValueAsInt("ChatNumLines") * 5 + 10) - 2;
             IOrderedEnumerable<Tuple<ChatCommand, PulsarPlugin>> commands = ChatCommandRouter.Instance.GetCommands();
             int pages = Mathf.CeilToInt(commands.Count()/(float)commandsPerPage);
             page--; //Pages start from 1
@@ -70,16 +71,17 @@ namespace PulsarPluginLoader.Chat.Commands
                 page = 0;
             }
 
-            Messaging.Echo(PLNetworkManager.Instance.LocalPlayer.GetPhotonPlayer(), $"[&%~[C0 Command List: ]&%~] Page {page + 1} : {pages}");
+            Messaging.Echo(player, pages == 1 && page == 0 ? "[&%~[C0 Command List: ]&%~] :" : $"[&%~[C0 Command List: ]&%~] Page {page + 1} : {pages}");
             for (int i = 0; i < commandsPerPage; i++)
             {
                 int index = i + page * commandsPerPage;
                 if (i + page*commandsPerPage >= commands.Count())
                     break;
                 ChatCommand command = commands.ElementAt(index).Item1;
-                Messaging.Echo(PLNetworkManager.Instance.LocalPlayer.GetPhotonPlayer(), $"/{command.CommandAliases()[0]} - {command.Description()}");
+                Messaging.Echo(player, $"/{command.CommandAliases()[0]} - {command.Description()}");
                 
             }
+            Messaging.Echo(player, "Use [&%~[C2 !help <command> ]&%~] for details about a specific command");
         }
     }
 }

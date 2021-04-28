@@ -74,7 +74,7 @@ namespace PulsarPluginLoader.Chat.Commands
                     }
                 }
 
-                int commandsPerPage = 14 /*(PLXMLOptionsIO.Instance.CurrentOptions.GetStringValueAsInt("ChatNumLines") * 5 + 10) - 1*/; //Minimum value
+                int commandsPerPage = 13 /*(PLXMLOptionsIO.Instance.CurrentOptions.GetStringValueAsInt("ChatNumLines") * 5 + 10) - 2*/; //Minimum value
                 int pages = Mathf.CeilToInt(publicCommands.Count() / (float)commandsPerPage);
                 
                 page--; //Pages start from 1
@@ -83,7 +83,7 @@ namespace PulsarPluginLoader.Chat.Commands
                     page = 0;
                 }
 
-                string header = pages == 1 ? $"[&%~[C3 Available Commands: ]&%~]" : $"[&%~[C3 Available Commands: ]&%~] Page {page + 1} : {pages}";
+                string header = pages == 1 && page == 0 ? $"[&%~[C3 Available Commands: ]&%~]" : $"[&%~[C3 Available Commands: ]&%~] Page {page + 1} : {pages}";
                 Messaging.Echo(sender, header);
                 for (int i = 0; i < commandsPerPage; i++)
                 {
@@ -94,6 +94,7 @@ namespace PulsarPluginLoader.Chat.Commands
                     Messaging.Echo(sender, $"!{command.CommandAliases()[0]} - {command.Description()}");
 
                 }
+                Messaging.Echo(sender, "Use [&%~[C2 !help <command> ]&%~] for details about a specific command");
             }
         }
     }

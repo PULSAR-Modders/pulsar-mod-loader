@@ -18,7 +18,13 @@ namespace PulsarPluginLoader.Chat.Extensions
         public static Tuple<string, string[][]>[] chatCommands = null;
 
         public static LinkedList<string> chatHistory = new LinkedList<string>();
-        public static List<Tuple<string, int>> typingHistory = null;
+        public static LinkedListNode<string> currentHistory = null;
+
+        public static LinkedList<Tuple<string, int>> typingHistory = null;
+        private static LinkedListNode<Tuple<string, int>> node = null;
+
+        public static bool isTyping = false;
+        public static bool adding = false;
 
         public static Tuple<string, string[][]>[] getCommands()
         {
@@ -43,6 +49,88 @@ namespace PulsarPluginLoader.Chat.Extensions
                 return new Tuple<string, string[][]>[0];
             }
             return publicCommands;
+        }
+
+        public static void Undo(ref string chat)
+        {
+            if (node == null || typingHistory == null)
+            {
+                return;
+            }
+
+            if (currentHistory != null)
+            {
+                currentHistory = null;
+                chat = node.Value.Item1;
+                cursorPos = node.Value.Item2;
+                cursorPos2 = -1;
+                return;
+            }
+
+            if (node == typingHistory.Last && node.Value.Item1 != chat)
+            {
+                typingHistory.AddLast(new Tuple<string, int>(chat, cursorPos));
+                chat = node.Value.Item1;
+                cursorPos = node.Value.Item2;
+                cursorPos2 = -1;
+            }
+            else
+            {
+                if (node.Previous != null)
+                {
+                    node = node.Previous;
+                    chat = node.Value.Item1;
+                    cursorPos = node.Value.Item2;
+                    cursorPos2 = -1;
+                }
+            }
+        }
+
+        public static void Redo(ref string chat)
+        {
+            if (node == null)
+            {
+                return;
+            }
+
+            if (node.Next != null)
+            {
+                node = node.Next;
+                chat = node.Value.Item1;
+                cursorPos = node.Value.Item2;
+                cursorPos2 = -1;
+            }
+        }
+
+        public static void UpdateTypingHistory(string chat, bool add, bool forceUpdate = false)
+        {
+            if (!isTyping)
+            {
+                isTyping = true;
+                adding = false;
+                node = null;
+                typingHistory = new LinkedList<Tuple<string, int>>();
+            }
+            
+            if (node != null)
+            {
+                while (node.Next != null)
+                {
+                    typingHistory.Remove(node.Next);
+                }
+            }
+
+            if (add != adding || forceUpdate)
+            {
+                adding = add;
+                if (typingHistory.Last?.Value?.Item1 != chat)
+                {
+                    typingHistory.AddLast(new Tuple<string, int>(chat, cursorPos));
+                }
+                node = typingHistory.Last;
+            }
+
+            currentHistory = null;
         }
 
         public static string AutoComplete(string text, int cursorPos)

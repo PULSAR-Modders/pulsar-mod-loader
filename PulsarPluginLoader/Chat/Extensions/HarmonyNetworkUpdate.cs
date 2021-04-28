@@ -9,29 +9,30 @@ namespace PulsarPluginLoader.Chat.Extensions
     [HarmonyPatch(typeof(PLNetworkManager), "Update")]
     class HarmonyNetworkUpdate
     {
-        private static LinkedListNode<string> curentHistory = null;
-
         private static string currentChatText;
 
         private static bool textModified = false;
 
         private static long lastTimePaste = long.MaxValue;
         private static long lastTimeDelete = long.MaxValue;
+        private static long lastTimeUndo = long.MaxValue;
+        private static long lastTimeRedo = long.MaxValue;
 
         private static void SetChat(PLNetworkManager instance)
         {
-            if (curentHistory == null)
+            if (currentHistory == null)
             {
                 instance.CurrentChatText = "";
             }
             else
             {
-                instance.CurrentChatText = curentHistory.Value;
+                instance.CurrentChatText = currentHistory.Value;
             }
         }
 
         private static void DeleteSelected()
         {
+            ChatHelper.UpdateTypingHistory(currentChatText, false, true);
             int pos;
             int length;
             if (cursorPos < cursorPos2)
@@ -52,7 +53,7 @@ namespace PulsarPluginLoader.Chat.Extensions
         static void Prefix(PLNetworkManager __instance)
         {
             currentChatText = __instance.CurrentChatText;
-            if (__instance.IsTyping && (cursorPos > 0 || cursorPos2 > 0))
+            if (__instance.IsTyping)
             {
                 foreach (char c in Input.inputString)
                 {
@@ -61,11 +62,13 @@ namespace PulsarPluginLoader.Chat.Extensions
                         if (cursorPos2 != -1 && cursorPos2 != cursorPos)
                         {
                             DeleteSelected();
+                            ChatHelper.UpdateTypingHistory(currentChatText, false, true);
                         }
                         else
                         {
                             if (cursorPos != currentChatText.Length)
                             {
+                                ChatHelper.UpdateTypingHistory(currentChatText, false);
                                 currentChatText = currentChatText.Remove(currentChatText.Length - cursorPos - 1, 1);
                             }
                         }
@@ -81,6 +84,7 @@ namespace PulsarPluginLoader.Chat.Extensions
                         {
                             DeleteSelected();
                         }
+                        ChatHelper.UpdateTypingHistory(currentChatText, true);
                         currentChatText = currentChatText.Insert(currentChatText.Length - cursorPos, c.ToString());
                         textModified = true;
                     }
@@ -91,9 +95,11 @@ namespace PulsarPluginLoader.Chat.Extensions
                     if (cursorPos2 != -1 && cursorPos2 != cursorPos)
                     {
                         DeleteSelected();
+                        ChatHelper.UpdateTypingHistory(currentChatText, false, true);
                     }
                     else
                     {
+                        ChatHelper.UpdateTypingHistory(currentChatText, false);
                         currentChatText = currentChatText.Remove(currentChatText.Length - cursorPos, 1);
                         cursorPos--;
                     }
@@ -101,14 +107,13 @@ namespace PulsarPluginLoader.Chat.Extensions
                 }
                 if (Input.GetKey(KeyCode.Delete) && DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond > lastTimeDelete)
                 {
+                    ChatHelper.UpdateTypingHistory(currentChatText, false);
                     lastTimeDelete += 30 /*(long)(1 / ((SystemInformation.KeyboardSpeed + 1) * 0.859375))*/;
                     currentChatText = currentChatText.Remove(currentChatText.Length - cursorPos, 1);
                     cursorPos--;
                     textModified = true;
                 }
-            }
-            if (__instance.IsTyping)
-            {
+
                 if (Input.GetKeyDown(KeyCode.Tab))
                 {
                     if (currentChatText.StartsWith("/"))
@@ -116,6 +121,7 @@ namespace PulsarPluginLoader.Chat.Extensions
                         string chatText = AutoComplete(currentChatText, cursorPos);
                         if (chatText != currentChatText)
                         {
+                            ChatHelper.UpdateTypingHistory(currentChatText, true, true);
                             textModified = true;
                             currentChatText = chatText;
                             cursorPos2 = -1;
@@ -128,6 +134,7 @@ namespace PulsarPluginLoader.Chat.Extensions
                             string chatText = AutoComplete(currentChatText, cursorPos);
                             if (chatText != currentChatText)
                             {
+                                ChatHelper.UpdateTypingHistory(currentChatText, true, true);
                                 textModified = true;
                                 currentChatText = chatText;
                                 cursorPos2 = -1;
@@ -146,14 +153,58 @@ namespace PulsarPluginLoader.Chat.Extensions
         {
             if (!__instance.IsTyping)
             {
-                curentHistory = null;
+                currentHistory = null;
                 return;
             }
 
             if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
             {
+                if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
+                {
+                    if (Input.GetKeyDown(KeyCode.Z))
+                    {
+                        lastTimeRedo = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond + /*(SystemInformation.KeyboardDelay + 1) **/ 250;
+                        ChatHelper.Redo(ref currentChatText);
+                        textModified = true;
+                    }
+                    if (Input.GetKey(KeyCode.Z) && DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond > lastTimeRedo)
+                    {
+                        lastTimeRedo += 30 /*(long)(1 / ((SystemInformation.KeyboardSpeed + 1) * 0.859375))*/;
+                        ChatHelper.Redo(ref currentChatText);
+                        textModified = true;
+                    }
+                }
+                else
+                {
+                    if (Input.GetKeyDown(KeyCode.Z))
+                    {
+                        lastTimeUndo = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond + /*(SystemInformation.KeyboardDelay + 1) **/ 250;
+                        ChatHelper.Undo(ref currentChatText);
+                        textModified = true;
+                    }
+                    if (Input.GetKey(KeyCode.Z) && DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond > lastTimeUndo)
+                    {
+                        lastTimeUndo += 30 /*(long)(1 / ((SystemInformation.KeyboardSpeed + 1) * 0.859375))*/;
+                        ChatHelper.Undo(ref currentChatText);
+                        textModified = true;
+                    }
+                }
+                if (Input.GetKeyDown(KeyCode.Y))
+                {
+                    lastTimeRedo = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond + /*(SystemInformation.KeyboardDelay + 1) **/ 250;
+                    ChatHelper.Redo(ref currentChatText);
+                    textModified = true;
+                }
+                if (Input.GetKey(KeyCode.Y) && DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond > lastTimeRedo)
+                {
+                    lastTimeRedo += 30 /*(long)(1 / ((SystemInformation.KeyboardSpeed + 1) * 0.859375))*/;
+                    ChatHelper.Redo(ref currentChatText);
+                    textModified = true;
+                }
+
                 if (Input.GetKeyDown(KeyCode.V))
                 {
+                    ChatHelper.UpdateTypingHistory(currentChatText, true, true);
                     lastTimePaste = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond + /*(SystemInformation.KeyboardDelay + 1) **/ 250;
                     if (cursorPos2 != -1 && cursorPos2 != cursorPos)
                     {
@@ -161,12 +212,15 @@ namespace PulsarPluginLoader.Chat.Extensions
                     }
                     currentChatText = currentChatText.Insert(currentChatText.Length - cursorPos, GUIUtility.systemCopyBuffer);
                     textModified = true;
+                    ChatHelper.UpdateTypingHistory(currentChatText, true, true);
                 }
                 if (Input.GetKey(KeyCode.V) && DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond > lastTimePaste)
                 {
+                    ChatHelper.UpdateTypingHistory(currentChatText, true, true);
                     lastTimePaste += 30 /*(long)(1 / ((SystemInformation.KeyboardSpeed + 1) * 0.859375))*/;
                     currentChatText = currentChatText.Insert(currentChatText.Length - cursorPos, GUIUtility.systemCopyBuffer);
                     textModified = true;
+                    ChatHelper.UpdateTypingHistory(currentChatText, true, true);
                 }
                 if (Input.GetKeyDown(KeyCode.C) && cursorPos2 != -1 && cursorPos2 != cursorPos)
                 {
@@ -186,6 +240,7 @@ namespace PulsarPluginLoader.Chat.Extensions
                 }
                 if (Input.GetKeyDown(KeyCode.X) && cursorPos2 != -1 && cursorPos2 != cursorPos)
                 {
+                    ChatHelper.UpdateTypingHistory(currentChatText, false, true);
                     int pos;
                     int length;
                     if (cursorPos < cursorPos2)
@@ -201,6 +256,7 @@ namespace PulsarPluginLoader.Chat.Extensions
                     GUIUtility.systemCopyBuffer = currentChatText.Substring(pos, length);
                     DeleteSelected();
                     textModified = true;
+                    ChatHelper.UpdateTypingHistory(currentChatText, false, true);
                 }
                 if (Input.GetKeyDown(KeyCode.A))
                 {
@@ -219,13 +275,14 @@ namespace PulsarPluginLoader.Chat.Extensions
             {
                 cursorPos = 0;
                 cursorPos2 = -1;
-                if (curentHistory == null)
+                if (currentHistory == null)
                 {
-                    curentHistory = chatHistory.Last;
+                    ChatHelper.UpdateTypingHistory(currentChatText, true, true);
+                    currentHistory = chatHistory.Last;
                 }
                 else
                 {
-                    curentHistory = curentHistory.Previous;
+                    currentHistory = currentHistory.Previous;
                 }
                 SetChat(__instance);
             }
@@ -233,13 +290,13 @@ namespace PulsarPluginLoader.Chat.Extensions
             {
                 cursorPos = 0;
                 cursorPos2 = -1;
-                if (curentHistory == null)
+                if (currentHistory == null)
                 {
-                    curentHistory = chatHistory.First;
+                    currentHistory = chatHistory.First;
                 }
                 else
                 {
-                    curentHistory = curentHistory.Next;
+                    currentHistory = currentHistory.Next;
                 }
                 SetChat(__instance);
             }

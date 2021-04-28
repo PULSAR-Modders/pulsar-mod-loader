@@ -234,6 +234,12 @@ namespace PulsarPluginLoader.Chat.Extensions
             }
             else
             {
+                if (ChatHelper.isTyping)
+                {
+                    ChatHelper.isTyping = false;
+                    ChatHelper.typingHistory = null;
+                }
+
                 cursorPos = 0;
                 cursorPos2 = -1;
                 __instance.ChatLabel.supportRichText = true;

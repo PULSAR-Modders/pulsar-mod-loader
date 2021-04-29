@@ -59,7 +59,7 @@ namespace PulsarPluginLoader.Chat.Extensions
                             }
                         }
                     }
-                    else if (c == Environment.NewLine[0] || c == "\r"[0])
+                    else if (c == '\n' || c == '\r')
                     {
                         //Do nothing
                     }

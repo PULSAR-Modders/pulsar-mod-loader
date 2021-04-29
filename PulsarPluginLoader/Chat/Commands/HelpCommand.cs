@@ -81,7 +81,7 @@ namespace PulsarPluginLoader.Chat.Commands
                 Messaging.Echo(player, $"/{command.CommandAliases()[0]} - {command.Description()}");
                 
             }
-            Messaging.Echo(player, "Use [&%~[C2 !help <command> ]&%~] for details about a specific command");
+            Messaging.Echo(player, "Use [&%~[C2 /help <command> ]&%~] for details about a specific command");
         }
     }
 }

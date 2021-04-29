@@ -126,6 +126,7 @@
     <Compile Include="Chat\Extensions\HarmonyHandleChat.cs" />
     <Compile Include="Chat\Extensions\HarmonyNetworkUpdate.cs" />
     <Compile Include="Chat\Extensions\HarmonyProcessCurrentChatText.cs" />
+    <Compile Include="Chat\Extensions\HarmonyServerLogin.cs" />
     <Compile Include="Chat\Extensions\HarmonyServerStart.cs" />
     <Compile Include="Chat\Extensions\HarmonyColoredMessage.cs" />
     <Compile Include="CustomGUI\GUIMain.cs" />

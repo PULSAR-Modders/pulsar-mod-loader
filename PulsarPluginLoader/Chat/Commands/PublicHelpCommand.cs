@@ -16,7 +16,7 @@ namespace PulsarPluginLoader.Chat.Commands
 
         public override string Description()
         {
-            return "Send a list of available public commands to everyone";
+            return "Displays a list of available public commands";
         }
 
         public override string[] UsageExamples()

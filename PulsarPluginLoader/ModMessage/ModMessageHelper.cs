@@ -55,6 +55,8 @@ namespace PulsarPluginLoader
                     }
                 }
             }
+            ModMessage publicCommands = new Chat.Extensions.HandlePublicCommands();
+            modMessageHandlers.Add("#" + publicCommands.GetIdentifier(), publicCommands);
         }
         protected override void Awake() //gameobject startup script
         {

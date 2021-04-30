@@ -120,6 +120,7 @@
     <Compile Include="Chat\Commands\DebugModeCommand.cs" />
     <Compile Include="Chat\Commands\EchoCommand.cs" />
     <Compile Include="Chat\Commands\HelpCommand.cs" />
+    <Compile Include="Chat\Commands\ListPlugins.cs" />
     <Compile Include="Chat\Commands\PublicHelpCommand.cs" />
     <Compile Include="Chat\Extensions\ChatHelper.cs" />
     <Compile Include="Chat\Extensions\HandlePublicCommands.cs" />

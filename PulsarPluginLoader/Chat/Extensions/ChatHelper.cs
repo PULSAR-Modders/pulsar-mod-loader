@@ -275,6 +275,18 @@ namespace PulsarPluginLoader.Chat.Extensions
                             fixedArguments.Add("weapon_specialist");
                             fixedArguments.Add("engineer");
                             break;
+                        case "plugin_name":
+                            foreach (PulsarPlugin plugin in PluginManager.Instance.GetAllPlugins())
+                            {
+                                fixedArguments.Add(plugin.Name);
+                            }
+                            break;
+                        case "plugin_identifier":
+                            foreach (PulsarPlugin plugin in PluginManager.Instance.GetAllPlugins())
+                            {
+                                fixedArguments.Add(plugin.HarmonyIdentifier());
+                            }
+                            break;
                     }
                 }
                 else

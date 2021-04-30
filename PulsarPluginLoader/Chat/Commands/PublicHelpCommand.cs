@@ -48,7 +48,7 @@ namespace PulsarPluginLoader.Chat.Commands
                 {
                     if (!int.TryParse(arguments, out page))
                     {
-                        if (arguments.StartsWith("!"))
+                        if (arguments[0] == '!')
                         {
                             arguments = arguments.Substring(1);
                         }

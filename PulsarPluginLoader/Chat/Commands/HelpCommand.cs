@@ -37,10 +37,13 @@ namespace PulsarPluginLoader.Chat.Commands
             int page = 1;
             if (!string.IsNullOrWhiteSpace(arguments))
             {
-                string alias = arguments.Split(' ')[0];
-                if (!int.TryParse(alias, out page))
+                if (!int.TryParse(arguments, out page))
                 {
-                    Tuple<ChatCommand, PulsarPlugin> t = ChatCommandRouter.Instance.GetCommand(alias);
+                    if (arguments[0] == '/')
+                    {
+                        arguments = arguments.Substring(1);
+                    }
+                    Tuple<ChatCommand, PulsarPlugin> t = ChatCommandRouter.Instance.GetCommand(arguments);
                     if (t != null)
                     {
                         ChatCommand cmd = t.Item1;
@@ -56,7 +59,7 @@ namespace PulsarPluginLoader.Chat.Commands
                     }
                     else
                     {
-                        Messaging.Echo(player, $"Command /{alias} not found");
+                        Messaging.Echo(player, $"Command /{arguments} not found");
                     }
                     return;
                 }

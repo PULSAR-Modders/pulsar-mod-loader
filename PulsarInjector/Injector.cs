@@ -55,11 +55,22 @@ namespace PulsarInjector
                 File.Copy(targetAssemblyPath, backupPath, true);
             }
 
-            Logger.Info("=== Creating Plugins directory ===");
+            Logger.Info("=== Creating Mods directory ===");
             var libdir = Directory.CreateDirectory(Path.Combine(Path.GetDirectoryName(targetAssemblyPath), "Libraries"));
             Directory.CreateDirectory(Path.Combine(libdir.FullName, "Unmanaged"));
             Directory.CreateDirectory(Path.Combine(libdir.FullName, "Managed"));
-            Directory.CreateDirectory(Path.Combine(Path.GetDirectoryName(targetAssemblyPath), "Mods"));
+            string pluginsdir = Path.Combine(Path.GetDirectoryName(targetAssemblyPath), "Plugins");
+            var modsdir = Directory.CreateDirectory(Path.Combine(Path.GetDirectoryName(targetAssemblyPath), "Mods"));
+            if (Directory.Exists(pluginsdir))
+            {
+                Logger.Info("Replacing Old Plugins Directory");
+                string[] OldPlugins = Directory.GetFiles(pluginsdir);
+                foreach(string Plugin in OldPlugins)
+                {
+                    Directory.Move(Plugin, modsdir.FullName);
+                }
+                Directory.Delete(pluginsdir);
+            }
 
             Logger.Info("=== Anti-Cheat ===");
             AntiCheatBypass.Inject(targetAssemblyPath);

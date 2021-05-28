@@ -13,7 +13,7 @@
         /// <summary>
         /// Host must have installed for clients to use
         /// </summary>
-        HostApproved,  //2 Host must have installed for clients to use
+        HostRequired,  //2 Host must have installed for clients to use
         /// <summary>
         /// All clients must have installed
         /// </summary>

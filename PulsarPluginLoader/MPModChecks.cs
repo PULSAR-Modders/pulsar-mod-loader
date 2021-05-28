@@ -11,7 +11,7 @@ namespace PulsarPluginLoader
             string modlist = string.Empty;
             foreach (PulsarPlugin plugin in PluginManager.Instance.GetAllPlugins())
             {
-                if (plugin.MPFunctionality == (int)MPFunction.All || plugin.MPFunctionality == (int)MPFunction.HostApproved)
+                if (plugin.MPFunctionality == (int)MPFunction.All || plugin.MPFunctionality == (int)MPFunction.HostRequired)
                 {
                     modlist += $"{plugin.Name} {plugin.Version} MPF{plugin.MPFunctionality}\n";
                 }

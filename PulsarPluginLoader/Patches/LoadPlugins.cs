@@ -16,7 +16,7 @@ namespace PulsarPluginLoader.Patches
                 string LibsDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Libraries");
                 PluginManager.Instance.LoadLibrariesDirectory(LibsDir);
 
-                string pluginsDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Plugins");
+                string pluginsDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Mods");
                 PluginManager.Instance.LoadPluginsDirectory(pluginsDir);
                 pluginsLoaded = true;
             }

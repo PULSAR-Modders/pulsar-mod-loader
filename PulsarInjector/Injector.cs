@@ -59,7 +59,7 @@ namespace PulsarInjector
             var libdir = Directory.CreateDirectory(Path.Combine(Path.GetDirectoryName(targetAssemblyPath), "Libraries"));
             Directory.CreateDirectory(Path.Combine(libdir.FullName, "Unmanaged"));
             Directory.CreateDirectory(Path.Combine(libdir.FullName, "Managed"));
-            Directory.CreateDirectory(Path.Combine(Path.GetDirectoryName(targetAssemblyPath), "Plugins"));
+            Directory.CreateDirectory(Path.Combine(Path.GetDirectoryName(targetAssemblyPath), "Mods"));
 
             Logger.Info("=== Anti-Cheat ===");
             AntiCheatBypass.Inject(targetAssemblyPath);

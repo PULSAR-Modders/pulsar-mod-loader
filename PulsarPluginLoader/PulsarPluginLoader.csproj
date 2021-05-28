@@ -120,7 +120,16 @@
     <Compile Include="Chat\Commands\DebugModeCommand.cs" />
     <Compile Include="Chat\Commands\EchoCommand.cs" />
     <Compile Include="Chat\Commands\HelpCommand.cs" />
+    <Compile Include="Chat\Commands\ListPlugins.cs" />
     <Compile Include="Chat\Commands\PublicHelpCommand.cs" />
+    <Compile Include="Chat\Extensions\ChatHelper.cs" />
+    <Compile Include="Chat\Extensions\HandlePublicCommands.cs" />
+    <Compile Include="Chat\Extensions\HarmonyHandleChat.cs" />
+    <Compile Include="Chat\Extensions\HarmonyNetworkUpdate.cs" />
+    <Compile Include="Chat\Extensions\HarmonyProcessCurrentChatText.cs" />
+    <Compile Include="Chat\Extensions\HarmonyServerLogin.cs" />
+    <Compile Include="Chat\Extensions\HarmonyServerStart.cs" />
+    <Compile Include="Chat\Extensions\HarmonyColoredMessage.cs" />
     <Compile Include="CustomGUI\GUIMain.cs" />
     <Compile Include="ModMessage\ModMessage.cs" />
     <Compile Include="ModMessage\ModMessageHelper.cs" />

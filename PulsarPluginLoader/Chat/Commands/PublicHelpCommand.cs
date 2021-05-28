@@ -1,6 +1,7 @@
 ﻿using PulsarPluginLoader.Chat.Commands.CommandRouter;
 using PulsarPluginLoader.Utilities;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -15,7 +16,19 @@ namespace PulsarPluginLoader.Chat.Commands
 
         public override string Description()
         {
-            return "Send a list of available public commands to everyone";
+            return "Displays a list of available public commands";
+        }
+
+        public override string[] UsageExamples()
+        {
+            return new List<string>(base.UsageExamples()).Concat(
+                new string[] { $"!{CommandAliases()[0]} help", $"!{CommandAliases()[0]} 2" }
+                ).ToArray();
+        }
+
+        public override string[][] Arguments()
+        {
+            return new string[][] { new string[] { "%command", "%page_number" } };
         }
 
         public override void Execute(string arguments, int SenderID)
@@ -35,7 +48,7 @@ namespace PulsarPluginLoader.Chat.Commands
                 {
                     if (!int.TryParse(arguments, out page))
                     {
-                        if (arguments.StartsWith("!"))
+                        if (arguments[0] == '!')
                         {
                             arguments = arguments.Substring(1);
                         }
@@ -61,7 +74,7 @@ namespace PulsarPluginLoader.Chat.Commands
                     }
                 }
 
-                int commandsPerPage = 14 /*(PLXMLOptionsIO.Instance.CurrentOptions.GetStringValueAsInt("ChatNumLines") * 5 + 10) - 1*/; //Minimum value
+                int commandsPerPage = 13 /*(PLXMLOptionsIO.Instance.CurrentOptions.GetStringValueAsInt("ChatNumLines") * 5 + 10) - 2*/; //Minimum value
                 int pages = Mathf.CeilToInt(publicCommands.Count() / (float)commandsPerPage);
                 
                 page--; //Pages start from 1
@@ -70,7 +83,7 @@ namespace PulsarPluginLoader.Chat.Commands
                     page = 0;
                 }
 
-                string header = pages == 1 ? $"[&%~[C3 Available Commands: ]&%~]" : $"[&%~[C3 Available Commands: ]&%~] Page {page + 1} : {pages}";
+                string header = pages == 1 && page == 0 ? $"[&%~[C3 Available Commands: ]&%~]" : $"[&%~[C3 Available Commands: ]&%~] Page {page + 1} : {pages}";
                 Messaging.Echo(sender, header);
                 for (int i = 0; i < commandsPerPage; i++)
                 {
@@ -81,12 +94,8 @@ namespace PulsarPluginLoader.Chat.Commands
                     Messaging.Echo(sender, $"!{command.CommandAliases()[0]} - {command.Description()}");
 
                 }
+                Messaging.Echo(sender, "Use [&%~[C2 !help <command> ]&%~] for details about a specific command");
             }
-        }
-
-        public override string[] UsageExamples()
-        {
-            return new string[] { $"!{CommandAliases()[0]} [command]", $"!{CommandAliases()[0]} [page number]" };
         }
     }
 }

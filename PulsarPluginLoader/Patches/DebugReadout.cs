@@ -10,7 +10,7 @@ namespace PulsarPluginLoader.Patches
     {
         static void Postfix(Text ___CurrentVersionLabel)
         {
-            if (DebugModeCommand.DebugMode && PLServer.Instance != null && PLEncounterManager.Instance != null && PLNetworkManager.Instance != null)
+            if (DebugModeCommand.DebugMode && PLServer.Instance != null && PLEncounterManager.Instance != null && PLNetworkManager.Instance != null && ___CurrentVersionLabel != null)
             {
                 PLPawn localPawn = PLNetworkManager.Instance.LocalPlayer.GetPawn();
                 Vector3 pos = localPawn != null ? localPawn.transform.position : Vector3.zero;

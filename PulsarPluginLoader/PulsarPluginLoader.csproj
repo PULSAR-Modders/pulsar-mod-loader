@@ -195,7 +195,7 @@
     <Message Importance="High" Text="PULSAR_PATH set but directory doesn't exist!  PULSAR_PATH='$(PULSAR_PATH)'" />
   </Target>
   <PropertyGroup>
-    <PostBuildEvent>SET PLUGIN_DIR="F:\"
+    <PostBuildEvent>SET PLUGIN_DIR="D:\Program Files (x86)\Steam\steamapps\common\PULSARLostColony\PULSAR_LostColony_Data\Managed"
 
 IF EXIST %25PLUGIN_DIR%25 (
     ECHO Copying DLLs to Plugins directory...

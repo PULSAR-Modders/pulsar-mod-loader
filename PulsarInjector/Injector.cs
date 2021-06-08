@@ -55,12 +55,12 @@ namespace PulsarInjector
                 File.Copy(targetAssemblyPath, backupPath, true);
             }
 
-            Logger.Info("=== Creating Mods directory ===");
-            var libdir = Directory.CreateDirectory(Path.Combine(Path.GetDirectoryName(targetAssemblyPath), "Libraries"));
+            Logger.Info("=== Creating directories ===");
+            DirectoryInfo libdir = Directory.CreateDirectory(Path.Combine(Path.GetDirectoryName(targetAssemblyPath), "Libraries"));
             Directory.CreateDirectory(Path.Combine(libdir.FullName, "Unmanaged"));
             Directory.CreateDirectory(Path.Combine(libdir.FullName, "Managed"));
             string pluginsdir = Path.Combine(Path.GetDirectoryName(targetAssemblyPath), "Plugins");
-            var modsdir = Directory.CreateDirectory(Path.Combine(Path.GetDirectoryName(targetAssemblyPath), "Mods"));
+            DirectoryInfo modsdir = Directory.CreateDirectory(Path.Combine(Path.GetDirectoryName(targetAssemblyPath), "Mods"));
             if (Directory.Exists(pluginsdir))
             {
                 Logger.Info("Replacing Old Plugins Directory");

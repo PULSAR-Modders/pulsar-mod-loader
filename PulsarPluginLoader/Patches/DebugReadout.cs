@@ -12,8 +12,13 @@ namespace PulsarPluginLoader.Patches
         {
             if (DebugModeCommand.DebugMode && PLServer.Instance != null && PLEncounterManager.Instance != null && PLNetworkManager.Instance != null && ___CurrentVersionLabel != null)
             {
-                PLPawn localPawn = PLNetworkManager.Instance.LocalPlayer.GetPawn();
-                Vector3 pos = localPawn != null ? localPawn.transform.position : Vector3.zero;
+                Vector3 pos;
+                if (PLNetworkManager.Instance.LocalPlayer != null)
+                {
+                    PLPawn localPawn = PLNetworkManager.Instance.LocalPlayer.GetPawn();
+                    pos = localPawn != null ? localPawn.transform.position : Vector3.zero;
+                }
+                else pos = Vector3.zero;
 
                 PLPersistantEncounterInstance encounter = PLEncounterManager.Instance.GetCurrentPersistantEncounterInstance();
                 int levelID = encounter != null ? encounter.LevelID.GetDecrypted() : -1;

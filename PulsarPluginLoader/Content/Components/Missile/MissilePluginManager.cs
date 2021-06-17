@@ -102,7 +102,7 @@ namespace PulsarPluginLoader.Content.Components.Missile
                     InMissile.Experimental = MissileType.Experimental;
                     InMissile.Unstable = MissileType.Unstable;
                     InMissile.Contraband = MissileType.Contraband;
-                    InMissile.GetType().GetField("Price_LevelMultiplierExponent", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InMissile, (ObscuredFloat)MissileType.Price_LevelMultiplierExponent);
+                    InMissile.GetType().GetField("Price_LevelMultiplierExponent", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InMissile, MissileType.Price_LevelMultiplierExponent);
                     if (PhotonNetwork.isMasterClient)
                     {
                         InMissile.SubTypeData = (short)InMissile.AmmoCapacity;

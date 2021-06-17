@@ -96,7 +96,7 @@ namespace PulsarPluginLoader.Content.Components.MissionShipComponent
                     InMissionShipComponent.Experimental = MissionShipComponentType.Experimental;
                     InMissionShipComponent.Unstable = MissionShipComponentType.Unstable;
                     InMissionShipComponent.Contraband = MissionShipComponentType.Contraband;
-                    InMissionShipComponent.GetType().GetField("Price_LevelMultiplierExponent", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InMissionShipComponent, (ObscuredFloat)MissionShipComponentType.Price_LevelMultiplierExponent);
+                    InMissionShipComponent.GetType().GetField("Price_LevelMultiplierExponent", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InMissionShipComponent, MissionShipComponentType.Price_LevelMultiplierExponent);
                 }
             }
             else

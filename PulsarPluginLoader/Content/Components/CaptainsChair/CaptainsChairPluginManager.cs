@@ -96,7 +96,7 @@ namespace PulsarPluginLoader.Content.Components.CaptainsChair
                     InCaptainsChair.Experimental = CaptainsChairType.Experimental;
                     InCaptainsChair.Unstable = CaptainsChairType.Unstable;
                     InCaptainsChair.Contraband = CaptainsChairType.Contraband;
-                    InCaptainsChair.GetType().GetField("Price_LevelMultiplierExponent", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InCaptainsChair, (ObscuredFloat)CaptainsChairType.Price_LevelMultiplierExponent);
+                    InCaptainsChair.GetType().GetField("Price_LevelMultiplierExponent", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InCaptainsChair, CaptainsChairType.Price_LevelMultiplierExponent);
                 }
             }
             else

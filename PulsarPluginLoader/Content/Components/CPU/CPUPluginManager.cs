@@ -101,7 +101,7 @@ namespace PulsarPluginLoader.Content.Components.CPU
                     InCPU.GetType().GetField("m_Defense", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InCPU, CPUType.Defense);
                     InCPU.GetType().GetField("m_MaxCompUpgradeLevelBoost", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InCPU, CPUType.MaxCompUpgradeLevelBoost);
                     InCPU.GetType().GetField("m_MaxPawnItemUpgradeLevelBoost", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InCPU, CPUType.MaxItemUpgradeLevelBoost);
-                    InCPU.GetType().GetField("Price_LevelMultiplierExponent", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InCPU, (ObscuredFloat)CPUType.Price_LevelMultiplierExponent);
+                    InCPU.GetType().GetField("Price_LevelMultiplierExponent", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InCPU, CPUType.Price_LevelMultiplierExponent);
                 }
             }
             else

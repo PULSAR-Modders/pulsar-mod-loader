@@ -104,7 +104,7 @@ namespace PulsarPluginLoader.Content.Components.Shield
                     InShield.Experimental = ShieldType.Experimental;
                     InShield.Unstable = ShieldType.Unstable;
                     InShield.Contraband = ShieldType.Contraband;
-                    InShield.GetType().GetField("Price_LevelMultiplierExponent", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InShield, (ObscuredFloat)ShieldType.Price_LevelMultiplierExponent);
+                    InShield.GetType().GetField("Price_LevelMultiplierExponent", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InShield, ShieldType.Price_LevelMultiplierExponent);
                     if (InShield.MinIntegrityAfterDamage == -1)
                     {
                         InShield.MinIntegrityAfterDamage = Mathf.RoundToInt(InShield.Max * 0.15f);

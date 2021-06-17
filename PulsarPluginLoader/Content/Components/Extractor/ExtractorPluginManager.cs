@@ -97,7 +97,7 @@ namespace PulsarPluginLoader.Content.Components.Extractor
                     InExtractor.Experimental = ExtractorType.Experimental;
                     InExtractor.Unstable = ExtractorType.Unstable;
                     InExtractor.Contraband = ExtractorType.Contraband;
-                    InExtractor.GetType().GetField("Price_LevelMultiplierExponent", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InExtractor, (ObscuredFloat)ExtractorType.Price_LevelMultiplierExponent);
+                    InExtractor.GetType().GetField("Price_LevelMultiplierExponent", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InExtractor, ExtractorType.Price_LevelMultiplierExponent);
                 }
             }
             else

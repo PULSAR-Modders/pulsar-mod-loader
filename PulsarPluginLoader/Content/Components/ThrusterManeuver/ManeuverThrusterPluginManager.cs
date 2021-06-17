@@ -99,7 +99,7 @@ namespace PulsarPluginLoader.Content.Components.ManeuverThruster
                     InManeuverThruster.Unstable = ManeuverThrusterType.Unstable;
                     InManeuverThruster.Contraband = ManeuverThrusterType.Contraband;
                     InManeuverThruster.GetType().GetMethod("UpdateMaxPowerWatts", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(InManeuverThruster, new object[0]);
-                    InManeuverThruster.GetType().GetField("Price_LevelMultiplierExponent", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InManeuverThruster, (ObscuredFloat)ManeuverThrusterType.Price_LevelMultiplierExponent);
+                    InManeuverThruster.GetType().GetField("Price_LevelMultiplierExponent", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InManeuverThruster, ManeuverThrusterType.Price_LevelMultiplierExponent);
                 }
             }
             else

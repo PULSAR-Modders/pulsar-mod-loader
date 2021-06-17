@@ -103,7 +103,7 @@ namespace PulsarPluginLoader.Content.Components.NuclearDevice
                     InNuclearDevice.Experimental = NuclearDeviceType.Experimental;
                     InNuclearDevice.Unstable = NuclearDeviceType.Unstable;
                     InNuclearDevice.Contraband = NuclearDeviceType.Contraband;
-                    InNuclearDevice.GetType().GetField("Price_LevelMultiplierExponent", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InNuclearDevice, (ObscuredFloat)NuclearDeviceType.Price_LevelMultiplierExponent);
+                    InNuclearDevice.GetType().GetField("Price_LevelMultiplierExponent", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InNuclearDevice, NuclearDeviceType.Price_LevelMultiplierExponent);
                 }
             }
             else

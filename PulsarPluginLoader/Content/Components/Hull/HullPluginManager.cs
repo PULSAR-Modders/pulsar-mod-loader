@@ -99,7 +99,7 @@ namespace PulsarPluginLoader.Content.Components.Hull
                     InHull.Experimental = HullType.Experimental;
                     InHull.Unstable = HullType.Unstable;
                     InHull.Contraband = HullType.Contraband;
-                    InHull.GetType().GetField("Price_LevelMultiplierExponent", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InHull, (ObscuredFloat)HullType.Price_LevelMultiplierExponent);
+                    InHull.GetType().GetField("Price_LevelMultiplierExponent", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InHull, HullType.Price_LevelMultiplierExponent);
                     InHull.Max *= 2f;
                     InHull.Current = InHull.Max;
                 }

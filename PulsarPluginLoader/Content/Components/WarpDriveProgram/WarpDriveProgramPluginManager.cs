@@ -100,7 +100,7 @@ namespace PulsarPluginLoader.Content.Components.WarpDriveProgram
                     InWarpDriveProgram.Experimental = WarpDriveProgramType.Experimental;
                     InWarpDriveProgram.Unstable = WarpDriveProgramType.Unstable;
                     InWarpDriveProgram.Contraband = WarpDriveProgramType.Contraband;
-                    InWarpDriveProgram.GetType().GetField("Price_LevelMultiplierExponent", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InWarpDriveProgram, (ObscuredFloat)WarpDriveProgramType.Price_LevelMultiplierExponent);
+                    InWarpDriveProgram.GetType().GetField("Price_LevelMultiplierExponent", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InWarpDriveProgram, WarpDriveProgramType.Price_LevelMultiplierExponent);
                     if (PhotonNetwork.isMasterClient)
                     {
                         InWarpDriveProgram.Level = InWarpDriveProgram.MaxLevelCharges;

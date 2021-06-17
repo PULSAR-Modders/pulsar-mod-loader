@@ -99,7 +99,7 @@ namespace PulsarPluginLoader.Content.Components.WarpDrive
                     InWarpDrive.Experimental = WarpDriveType.Experimental;
                     InWarpDrive.Unstable = WarpDriveType.Unstable;
                     InWarpDrive.Contraband = WarpDriveType.Contraband;
-                    InWarpDrive.GetType().GetField("Price_LevelMultiplierExponent", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InWarpDrive, (ObscuredFloat)WarpDriveType.Price_LevelMultiplierExponent);
+                    InWarpDrive.GetType().GetField("Price_LevelMultiplierExponent", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InWarpDrive, WarpDriveType.Price_LevelMultiplierExponent);
                 }
             }
             else

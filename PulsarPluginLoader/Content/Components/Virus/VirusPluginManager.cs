@@ -95,7 +95,7 @@ namespace PulsarPluginLoader.Content.Components.Virus
                     InVirus.Experimental = VirusType.Experimental;
                     InVirus.Unstable = VirusType.Unstable;
                     InVirus.Contraband = VirusType.Contraband;
-                    InVirus.GetType().GetField("Price_LevelMultiplierExponent", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InVirus, (ObscuredFloat)VirusType.Price_LevelMultiplierExponent);
+                    InVirus.GetType().GetField("Price_LevelMultiplierExponent", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InVirus, VirusType.Price_LevelMultiplierExponent);
                 }
             }
             else

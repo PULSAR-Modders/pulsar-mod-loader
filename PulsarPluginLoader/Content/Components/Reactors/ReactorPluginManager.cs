@@ -102,7 +102,7 @@ namespace PulsarPluginLoader.Content.Components.Reactor
                     InReactor.Unstable = ReactorType.Unstable;
                     InReactor.Contraband = ReactorType.Contraband;
                     InReactor.GetType().GetField("OriginalEnergyOutputMax", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InReactor, InReactor.EnergyOutputMax);
-                    InReactor.GetType().GetField("Price_LevelMultiplierExponent", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InReactor, (ObscuredFloat)ReactorType.Price_LevelMultiplierExponent);
+                    InReactor.GetType().GetField("Price_LevelMultiplierExponent", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InReactor, ReactorType.Price_LevelMultiplierExponent);
                 }
             }
             else

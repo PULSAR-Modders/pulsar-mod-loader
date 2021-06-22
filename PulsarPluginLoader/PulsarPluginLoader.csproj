@@ -139,6 +139,8 @@
     <Compile Include="Content\Components\CPU\CPUPluginManager.cs" />
     <Compile Include="Content\Components\Extractor\ExtractorPlugin.cs" />
     <Compile Include="Content\Components\Extractor\ExtractorPluginManager.cs" />
+    <Compile Include="Content\Components\FBRecipeModule\FBRecipeModulePlugin.cs" />
+    <Compile Include="Content\Components\FBRecipeModule\FBRecipeModulePluginManager.cs" />
     <Compile Include="Content\Components\HullPlating\HullPlatingPlugin.cs" />
     <Compile Include="Content\Components\HullPlating\HullPlatingPluginManager.cs" />
     <Compile Include="Content\Components\Hull\HullPlugin.cs" />

@@ -105,7 +105,7 @@ namespace PulsarPluginLoader
             ModMessageHelper.Instance.photonView.RPC("ReceiveConnectionMessage", pmi.sender, new object[]
             {
                 MPModChecks.GetModList(),
-                FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion
+                PluginManager.VERSION
             });
         }
         [PunRPC]

@@ -31,6 +31,7 @@ namespace PulsarPluginLoader.Chat.Commands
 
                     // Subscribe to plugins loading in the future
                     PluginManager.Instance.OnPluginSuccessfullyLoaded += _instance.OnPluginLoaded;
+                    PluginManager.Instance.OnPluginUnloaded += _instance.Unregister;
                 }
 
                 return _instance;
@@ -132,6 +133,25 @@ namespace PulsarPluginLoader.Chat.Commands
             }
 
             return null;
+        }
+
+        public void Unregister(PulsarPlugin plugin)
+        {
+            List<string> commandsToRemove = new List<string>();
+            
+            foreach (var command in commands)
+                if(command.Value.Item2 == plugin) 
+                    commandsToRemove.Add(command.Key);
+            foreach (var command in commandsToRemove)
+                commands.Remove(command);
+            
+            commandsToRemove.Clear();
+            
+            foreach (var command in publicCommands)
+                if(command.Value.Item2 == plugin) 
+                    commandsToRemove.Add(command.Key);
+            foreach (var command in commandsToRemove)
+                publicCommands.Remove(command);
         }
 
         public IOrderedEnumerable<Tuple<ChatCommand, PulsarPlugin>> GetCommands()

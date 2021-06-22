@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.30523.141
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PulsarPluginLoader", "PulsarPluginLoader\PulsarPluginLoader.csproj", "{CF6CE9BA-9603-439D-9173-96C052C94417}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PulsarInjector", "PulsarInjector\PulsarInjector.csproj", "{F15E6EFA-3584-4503-98E0-17D3E87900F5}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6FA95747-6271-4991-96D0-73EDCA21D402}"
 	ProjectSection(SolutionItems) = preProject
 		.github\workflows\build.yml = .github\workflows\build.yml
@@ -27,10 +25,6 @@ Global
 		{CF6CE9BA-9603-439D-9173-96C052C94417}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CF6CE9BA-9603-439D-9173-96C052C94417}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CF6CE9BA-9603-439D-9173-96C052C94417}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F15E6EFA-3584-4503-98E0-17D3E87900F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F15E6EFA-3584-4503-98E0-17D3E87900F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F15E6EFA-3584-4503-98E0-17D3E87900F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F15E6EFA-3584-4503-98E0-17D3E87900F5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9ACD22DC-0BEB-44AB-A012-D93E993D75F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9ACD22DC-0BEB-44AB-A012-D93E993D75F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9ACD22DC-0BEB-44AB-A012-D93E993D75F3}.Release|Any CPU.ActiveCfg = Release|Any CPU

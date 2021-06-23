@@ -161,9 +161,9 @@ namespace PulsarPluginLoader.Content.Components.FBRecipeModule
         }
     }
     [HarmonyPatch(typeof(PLFluffyOven), "ServerTakeBiscuit")]
-   public class ServerTakeBiscuitPatch
+    public class ServerTakeBiscuitPatch
     {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> targetSequence = new List<CodeInstruction>()
             {
@@ -176,24 +176,22 @@ namespace PulsarPluginLoader.Content.Components.FBRecipeModule
                 new CodeInstruction(OpCodes.Ldc_I4_M1), // -1
 
             };
+            int arrayindex = generator.DeclareLocal(typeof(int[])).LocalIndex;
             List<CodeInstruction> injectedSequence = new List<CodeInstruction>()
             {
                 //grab current CurrentProducingModule, grab item type to produce, feed type and subtype to UpdateItem
                 new CodeInstruction(OpCodes.Ldarg_0),
-                new CodeInstruction(OpCodes.Call, AccessTools.Field(typeof(ServerTakeBiscuitPatch), "PatchMethod")),
-                new CodeInstruction(OpCodes.Stloc_1),   //stores value to local var 1
-                new CodeInstruction(OpCodes.Ldloc_0),   //-PawnInvIDCounter
-                new CodeInstruction(OpCodes.Ldloc_1),   //load array
-                new CodeInstruction(OpCodes.Ldc_I4_0),  //index of element in array
-                new CodeInstruction(OpCodes.Ldelema, typeof(int)), //-load element from array 
-                new CodeInstruction(OpCodes.Ldloc_1),   //load array
-                new CodeInstruction(OpCodes.Ldc_I4_1),  //index of element in array
-                new CodeInstruction(OpCodes.Ldelema, typeof(int)), //-load element from array
-                /*new CodeInstruction(OpCodes.Ldarg_0), //this
-                new CodeInstruction(OpCodes.Ldfld),     //currentproducingmodule
-                new CodeInstruction(OpCodes.Callvirt),  //-getbiscuittypetoproduce */
-                new CodeInstruction(OpCodes.Ldarg_2),   //-biscuitlevel
-                new CodeInstruction(OpCodes.Ldc_I4_M1), //-1
+                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(ServerTakeBiscuitPatch), "PatchMethod")),
+                new CodeInstruction(OpCodes.Stloc, arrayindex),   //stores value to local var 1
+                new CodeInstruction(OpCodes.Ldloc_0),             //-PawnInvIDCounter
+                new CodeInstruction(OpCodes.Ldloc, arrayindex),   //load array
+                new CodeInstruction(OpCodes.Ldc_I4_0),            //index of element in array
+                new CodeInstruction(OpCodes.Ldelem_I4),           //-load element from array 
+                new CodeInstruction(OpCodes.Ldloc, arrayindex),   //load array
+                new CodeInstruction(OpCodes.Ldc_I4_1),            //index of element in array
+                new CodeInstruction(OpCodes.Ldelem_I4),           //-load element from array
+                new CodeInstruction(OpCodes.Ldarg_2),             //-biscuitlevel
+                new CodeInstruction(OpCodes.Ldc_I4_M1),           //-1
             };
             return PatchBySequence(instructions, targetSequence, injectedSequence, patchMode: PatchMode.REPLACE, checkMode: CheckMode.NONNULL);
         }
@@ -218,4 +216,5 @@ namespace PulsarPluginLoader.Content.Components.FBRecipeModule
             }
         }
     }
+
 }

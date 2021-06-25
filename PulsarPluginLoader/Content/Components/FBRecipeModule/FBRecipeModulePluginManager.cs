@@ -2,6 +2,7 @@
 using HarmonyLib;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using UnityEngine;
@@ -216,5 +217,45 @@ namespace PulsarPluginLoader.Content.Components.FBRecipeModule
             }
         }
     }
+    [HarmonyPatch(typeof(PLFluffyOven), "Update")]
+    class FluffyOvenUpdatePatch
+    {
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        {
+            List<CodeInstruction> targetSequence = new List<CodeInstruction>()
+            {
+                new CodeInstruction(OpCodes.Callvirt, AccessTools.Field(typeof(PLPawnItem), "get_SubType")),
+                new CodeInstruction(OpCodes.Ldarg_0),
+                new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(PLFBRecipeModule), "CurrentProducingModule")),
+                new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(PLFBRecipeModule), "GetBiscuitTypeToProduce")),
+            };
+            int LabelIndex = FindSequence(instructions, targetSequence, CheckMode.NONNULL) + 1;
+            Label thing = (Label)instructions.ToList()[LabelIndex].operand;
+            int PatchMethodArrayindex = generator.DeclareLocal(typeof(int[])).LocalIndex;
+            int outSubTypeindex = generator.DeclareLocal(typeof(int)).LocalIndex;
+            int outMainTypeindex = generator.DeclareLocal(typeof(int)).LocalIndex;
+            List<CodeInstruction> injectedSequence = new List<CodeInstruction>()
+            {
+                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Items.ItemPluginManager), "get_Instance")),
+                new CodeInstruction(OpCodes.Ldloca_S, outMainTypeindex),
+                new CodeInstruction(OpCodes.Ldloca_S, outSubTypeindex),
+                new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(Items.ItemPluginManager), "GetActualMainAndSubTypesFromPawnItem")),
+                new CodeInstruction(OpCodes.Ldloc_S, outMainTypeindex),
+                new CodeInstruction(OpCodes.Ldarg_0),
+                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(ServerTakeBiscuitPatch), "PatchMethod")),
+                new CodeInstruction(OpCodes.Stloc, PatchMethodArrayindex),
+                new CodeInstruction(OpCodes.Ldloc, PatchMethodArrayindex),   //load array
+                new CodeInstruction(OpCodes.Ldc_I4_0),            //index of element in array
+                new CodeInstruction(OpCodes.Ldelem_I4),
+                new CodeInstruction(OpCodes.Beq, thing),
+                new CodeInstruction(OpCodes.Ldloc_S, outSubTypeindex),
+                new CodeInstruction(OpCodes.Ldloc, PatchMethodArrayindex),   //load array
+                new CodeInstruction(OpCodes.Ldc_I4_1),            //index of element in array
+                new CodeInstruction(OpCodes.Ldelem_I4),
+                new CodeInstruction(OpCodes.Beq, thing),
+            };
 
+            return PatchBySequence(instructions, targetSequence, injectedSequence, patchMode: PatchMode.REPLACE, checkMode: CheckMode.NONNULL);
+        }
+    }
 }

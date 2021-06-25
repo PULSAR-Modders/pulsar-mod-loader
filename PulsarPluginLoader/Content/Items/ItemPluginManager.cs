@@ -151,6 +151,20 @@ namespace PulsarPluginLoader.Content.Items
                 throw new System.NotImplementedException();
             }
         }
+        public void GetActualMainAndSubTypesFromPawnItem(PLPawnItem InItem, out int MainType, out int SubType)
+        {
+            int InSubType = InItem.SubType;
+            if (InSubType > 63)
+            {
+                SubType = InSubType % 64;
+                MainType = ((InSubType - 64 - SubType) / 64) + Instance.VanillaItemMaxType;
+            }
+            else
+            {
+                MainType = (int)InItem.PawnItemType;
+                SubType = InSubType;
+            }
+        }
     }
 
     [HarmonyPatch(typeof(PLPawnItem), "GetPawnInfoFromHash")]

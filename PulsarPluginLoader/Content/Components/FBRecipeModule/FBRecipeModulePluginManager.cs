@@ -83,8 +83,10 @@ namespace PulsarPluginLoader.Content.Components.FBRecipeModule
             {
                 InFBRecipeModule = new PLFBRecipeModule(FBRecipe.E_MAX, level);
                 int subtypeformodded = Subtype - Instance.VanillaFBRecipeModuleMaxType;
+                Logger.Info($"Subtype for modded is {subtypeformodded}");
                 if (subtypeformodded <= Instance.FBRecipeModuleTypes.Count && subtypeformodded > -1)
                 {
+                    Logger.Info("Creating FBModule from list info");
                     FBRecipeModulePlugin FBRecipeModuleType = Instance.FBRecipeModuleTypes[Subtype - Instance.VanillaFBRecipeModuleMaxType];
                     InFBRecipeModule.SubType = Subtype;
                     InFBRecipeModule.Name = FBRecipeModuleType.Name;
@@ -103,7 +105,7 @@ namespace PulsarPluginLoader.Content.Components.FBRecipeModule
                     InFBRecipeModule.GetType().GetField("CookedMaxTimingOffset", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InFBRecipeModule, FBRecipeModuleType.CookedMaxTimingOffset);
                     InFBRecipeModule.GetType().GetField("FoodSupplyCost", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InFBRecipeModule, FBRecipeModuleType.FoodSupplyCost);
                     InFBRecipeModule.GetType().GetField("BiscuitTypeToProduce", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InFBRecipeModule, EFoodType.MAX);
-                    InFBRecipeModule.GetType().GetField("IconResourcePath", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InFBRecipeModule, string.Empty);
+                    InFBRecipeModule.GetType().GetField("IconResourcePath", BindingFlags.Instance | BindingFlags.Public).SetValue(InFBRecipeModule, string.Empty);
                 }
             }
             else
@@ -137,10 +139,13 @@ namespace PulsarPluginLoader.Content.Components.FBRecipeModule
                 new CodeInstruction(OpCodes.Call),
 
             };
+            int LabelIndex = FindSequence(instructions, targetSequence, CheckMode.NONNULL) -3;
+            object fieldRef = instructions.ToList()[LabelIndex].operand;
             List<CodeInstruction> injectedSequence = new List<CodeInstruction>()
             {
                 new CodeInstruction(OpCodes.Ldloc_3),
                 new CodeInstruction(OpCodes.Ldloc_0),
+                new CodeInstruction(OpCodes.Ldfld, fieldRef),
                 new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(RecipeDisplayIconPatch), "GetSprite")),
             };
 
@@ -148,6 +153,10 @@ namespace PulsarPluginLoader.Content.Components.FBRecipeModule
         }
         static Sprite GetSprite(PLFBRecipeModule recipeModule)
         {
+            if(recipeModule == null)
+            {
+                throw new Exception("Module Null");
+            }
             string inpath = recipeModule.IconResourcePath;
             if(inpath == string.Empty)
             {
@@ -162,7 +171,7 @@ namespace PulsarPluginLoader.Content.Components.FBRecipeModule
         }
     }
     [HarmonyPatch(typeof(PLFluffyOven), "ServerTakeBiscuit")]
-    public class ServerTakeBiscuitPatch
+    class ServerTakeBiscuitPatch
     {
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
@@ -198,7 +207,7 @@ namespace PulsarPluginLoader.Content.Components.FBRecipeModule
         }
         static int[] PatchMethod(PLFluffyOven instance)
         {
-            PLFBRecipeModule module = (PLFBRecipeModule)instance.GetType().GetField("CurrentProducingModule").GetValue(instance);
+            PLFBRecipeModule module = (PLFBRecipeModule)instance.GetType().GetField("CurrentProducingModule", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(instance);
             if (module.GetBiscuitTypeToProduce() == EFoodType.MAX)
             {
                 int subtypeformodded = module.SubType - FBRecipeModulePluginManager.Instance.VanillaFBRecipeModuleMaxType;
@@ -224,12 +233,14 @@ namespace PulsarPluginLoader.Content.Components.FBRecipeModule
         {
             List<CodeInstruction> targetSequence = new List<CodeInstruction>()
             {
-                new CodeInstruction(OpCodes.Callvirt, AccessTools.Field(typeof(PLPawnItem), "get_SubType")),
                 new CodeInstruction(OpCodes.Ldarg_0),
-                new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(PLFBRecipeModule), "CurrentProducingModule")),
+                new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(PLFluffyOven), "InternalBiscuitVisualInfo")),
+                new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(PLPawnItem), "get_SubType")),
+                new CodeInstruction(OpCodes.Ldarg_0),
+                new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(PLFluffyOven), "CurrentProducingModule")),
                 new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(PLFBRecipeModule), "GetBiscuitTypeToProduce")),
             };
-            int LabelIndex = FindSequence(instructions, targetSequence, CheckMode.NONNULL) + 1;
+            int LabelIndex = FindSequence(instructions, targetSequence, CheckMode.NONNULL);
             Label thing = (Label)instructions.ToList()[LabelIndex].operand;
             int PatchMethodArrayindex = generator.DeclareLocal(typeof(int[])).LocalIndex;
             int outSubTypeindex = generator.DeclareLocal(typeof(int)).LocalIndex;
@@ -237,22 +248,50 @@ namespace PulsarPluginLoader.Content.Components.FBRecipeModule
             List<CodeInstruction> injectedSequence = new List<CodeInstruction>()
             {
                 new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Items.ItemPluginManager), "get_Instance")),
+                new CodeInstruction(OpCodes.Ldarg_0),
+                new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(PLFluffyOven), "InternalBiscuitVisualInfo")),
                 new CodeInstruction(OpCodes.Ldloca_S, outMainTypeindex),
                 new CodeInstruction(OpCodes.Ldloca_S, outSubTypeindex),
                 new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(Items.ItemPluginManager), "GetActualMainAndSubTypesFromPawnItem")),
-                new CodeInstruction(OpCodes.Ldloc_S, outMainTypeindex),
                 new CodeInstruction(OpCodes.Ldarg_0),
                 new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(ServerTakeBiscuitPatch), "PatchMethod")),
-                new CodeInstruction(OpCodes.Stloc, PatchMethodArrayindex),
-                new CodeInstruction(OpCodes.Ldloc, PatchMethodArrayindex),   //load array
+                new CodeInstruction(OpCodes.Stloc_S, PatchMethodArrayindex),
+                new CodeInstruction(OpCodes.Ldloc_S, PatchMethodArrayindex),   //load array
                 new CodeInstruction(OpCodes.Ldc_I4_0),            //index of element in array
                 new CodeInstruction(OpCodes.Ldelem_I4),
+                new CodeInstruction(OpCodes.Ldloc_S, outMainTypeindex),
                 new CodeInstruction(OpCodes.Beq, thing),
-                new CodeInstruction(OpCodes.Ldloc_S, outSubTypeindex),
-                new CodeInstruction(OpCodes.Ldloc, PatchMethodArrayindex),   //load array
+                new CodeInstruction(OpCodes.Ldloc_S, PatchMethodArrayindex),   //load array
                 new CodeInstruction(OpCodes.Ldc_I4_1),            //index of element in array
                 new CodeInstruction(OpCodes.Ldelem_I4),
-                new CodeInstruction(OpCodes.Beq, thing),
+                new CodeInstruction(OpCodes.Ldloc_S, outSubTypeindex),
+            };
+
+            IEnumerable<CodeInstruction> firstModified = PatchBySequence(instructions, targetSequence, injectedSequence, patchMode: PatchMode.REPLACE, checkMode: CheckMode.NONNULL);
+            List<CodeInstruction> targetSequence2 = new List<CodeInstruction>()
+            {
+                new CodeInstruction(OpCodes.Ldarg_0),
+                new CodeInstruction(OpCodes.Ldc_I4_5),
+                new CodeInstruction(OpCodes.Ldarg_0),
+                new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(PLFluffyOven), "CurrentProducingModule")),
+                new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(PLFBRecipeModule), "GetBiscuitTypeToProduce")),
+                new CodeInstruction(OpCodes.Ldc_I4_0),
+                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(PLPawnItem), "CreateFromInfo")),
+            };
+            PatchMethodArrayindex = generator.DeclareLocal(typeof(int[])).LocalIndex;
+            List<CodeInstruction> injectedSequence2 = new List<CodeInstruction>()
+            {
+                new CodeInstruction(OpCodes.Ldarg_0),
+                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(ServerTakeBiscuitPatch), "PatchMethod")),
+                new CodeInstruction(OpCodes.Stloc_S, PatchMethodArrayindex),
+                new CodeInstruction(OpCodes.Ldloc_S, PatchMethodArrayindex),   //load array
+                new CodeInstruction(OpCodes.Ldc_I4_0),            //index of element in array
+                new CodeInstruction(OpCodes.Ldelem_I4),
+                new CodeInstruction(OpCodes.Ldloc_S, PatchMethodArrayindex),   //load array
+                new CodeInstruction(OpCodes.Ldc_I4_1),            //index of element in array
+                new CodeInstruction(OpCodes.Ldelem_I4),
+                new CodeInstruction(OpCodes.Ldc_I4_0),
+                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Items.ItemPluginManager), "CreatePawnItem"))
             };
 
             return PatchBySequence(instructions, targetSequence, injectedSequence, patchMode: PatchMode.REPLACE, checkMode: CheckMode.NONNULL);

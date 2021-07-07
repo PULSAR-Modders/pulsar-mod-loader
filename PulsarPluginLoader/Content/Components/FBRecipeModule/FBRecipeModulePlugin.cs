@@ -35,5 +35,10 @@ namespace PulsarPluginLoader.Content.Components.FBRecipeModule
         {
             get { return Resources.Load<Sprite>("BiscuitIcons/Icon_Classic"); }
         }
+
+        public override Texture2D IconTexture
+        {
+            get { return (Texture2D)Resources.Load("Icons/BiscuitRecipe"); }
+        }
     }
 }

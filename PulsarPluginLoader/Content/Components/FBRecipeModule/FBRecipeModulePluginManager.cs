@@ -277,10 +277,12 @@ namespace PulsarPluginLoader.Content.Components.FBRecipeModule
                 new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(PLFBRecipeModule), "GetBiscuitTypeToProduce")),
                 new CodeInstruction(OpCodes.Ldc_I4_0),
                 new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(PLPawnItem), "CreateFromInfo")),
+                new CodeInstruction(OpCodes.Isinst)
             };
             PatchMethodArrayindex = generator.DeclareLocal(typeof(int[])).LocalIndex;
             List<CodeInstruction> injectedSequence2 = new List<CodeInstruction>()
             {
+                new CodeInstruction(OpCodes.Ldarg_0),
                 new CodeInstruction(OpCodes.Ldarg_0),
                 new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(ServerTakeBiscuitPatch), "PatchMethod")),
                 new CodeInstruction(OpCodes.Stloc_S, PatchMethodArrayindex),
@@ -294,7 +296,7 @@ namespace PulsarPluginLoader.Content.Components.FBRecipeModule
                 new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Items.ItemPluginManager), "CreatePawnItem"))
             };
 
-            return PatchBySequence(instructions, targetSequence, injectedSequence, patchMode: PatchMode.REPLACE, checkMode: CheckMode.NONNULL);
+            return PatchBySequence(firstModified, targetSequence2, injectedSequence2, patchMode: PatchMode.REPLACE, checkMode: CheckMode.NONNULL);
         }
     }
 }

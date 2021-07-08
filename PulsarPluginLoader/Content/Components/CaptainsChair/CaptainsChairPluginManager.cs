@@ -74,16 +74,8 @@ namespace PulsarPluginLoader.Content.Components.CaptainsChair
             {
                 InCaptainsChair = new PLCaptainsChair(ECaptainsChairType.E_MAX, level);
                 int subtypeformodded = Subtype - Instance.VanillaCaptainsChairMaxType;
-                /*if (Global.DebugLogging)
-                {
-                    Logger.Info($"Subtype for modded is {subtypeformodded}");
-                }*/
                 if (subtypeformodded <= Instance.CaptainsChairTypes.Count && subtypeformodded > -1)
                 {
-                    /*if (Global.DebugLogging)
-                    {
-                        Logger.Info("Creating CaptainsChair from list info");
-                    }*/
                     CaptainsChairPlugin CaptainsChairType = Instance.CaptainsChairTypes[Subtype - Instance.VanillaCaptainsChairMaxType];
                     InCaptainsChair.SubType = Subtype;
                     InCaptainsChair.Name = CaptainsChairType.Name;

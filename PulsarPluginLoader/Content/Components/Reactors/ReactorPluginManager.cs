@@ -75,16 +75,8 @@ namespace PulsarPluginLoader.Content.Components.Reactor
             {
                 InReactor = new PLReactor(EReactorType.E_REAC_ID_MAX, level);
                 int subtypeformodded = Subtype - Instance.VanillaReactorMaxType;
-                /*if (Global.DebugLogging)
-                {
-                    Logger.Info($"Subtype for modded is {subtypeformodded}");
-                }*/
                 if (subtypeformodded <= Instance.ReactorTypes.Count && subtypeformodded > -1)
                 {
-                    /*if (Global.DebugLogging)
-                    {
-                        Logger.Info("Creating reactor from list info");
-                    }*/
                     ReactorPlugin ReactorType = Instance.ReactorTypes[Subtype - Instance.VanillaReactorMaxType];
                     InReactor.SubType = Subtype;
                     InReactor.Name = ReactorType.Name;

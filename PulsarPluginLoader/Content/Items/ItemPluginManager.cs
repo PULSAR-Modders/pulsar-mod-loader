@@ -95,25 +95,13 @@ namespace PulsarPluginLoader.Content.Items
             PLPawnItem InItem = null;
             if (Subtype > 63)
             {
-                /*if (Global.DebugLogging)
-                {
-                    Logger.Info("UpdateItem insubtype > 63");
-                }*/
                 Instance.GetActualMainAndSubTypesFromSubtype(Subtype, out Maintype, out Subtype);
             }
             if (Maintype >= Instance.VanillaItemMaxType)
             {
                 int MainTypeformodded = (Maintype - Instance.VanillaItemMaxType) * 64 + Subtype;
-                /*if (Global.DebugLogging)
-                {
-                    Logger.Info($"MainType for modded is {MainTypeformodded}");
-                }*/
                 if (MainTypeformodded <= Instance.ItemTypes.Count && MainTypeformodded > -1)
                 {
-                    /*if (Global.DebugLogging)
-                    {
-                        Logger.Info("Creating Item from list info");
-                    }*/
                     ItemPlugin ItemType = Instance.ItemTypes[MainTypeformodded];
                     InItem = ItemType.PLPawnItem;
                     InItem.Level = level;
@@ -140,10 +128,6 @@ namespace PulsarPluginLoader.Content.Items
             {
                 SubType = InSubType % 64;
                 MainType = ((InSubType - 64 - SubType) / 64) + Instance.VanillaItemMaxType;
-                /*if (Global.DebugLogging)
-                {
-                    Logger.Info($"in: {InSubType}, out: {MainType} {SubType}");
-                }*/
             }
             else
             {
@@ -190,10 +174,6 @@ namespace PulsarPluginLoader.Content.Items
                 ItemPluginManager.Instance.GetActualMainAndSubTypesFromSubtype(__instance.SubType, out int MainType, out int SubType);
                 num = (uint)(MainType & 63);
                 num2 = (uint)((uint)(SubType & 63) << 6);
-                /*if (Global.DebugLogging)
-                {
-                    Logger.Info($"GetHash found subtype greater than 63 ({__instance.SubType}). output is {MainType}, {SubType}");
-                }*/
             }
             else
             {

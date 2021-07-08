@@ -75,16 +75,8 @@ namespace PulsarPluginLoader.Content.Components.Hull
             {
                 InHull = new PLHull(EHullType.E_MAX, level);
                 int subtypeformodded = Subtype - Instance.VanillaHullMaxType;
-                /*if (Global.DebugLogging)
-                {
-                    Logger.Info($"Subtype for modded is {subtypeformodded}");
-                }*/
                 if (subtypeformodded <= Instance.HullTypes.Count && subtypeformodded > -1)
                 {
-                    /*if (Global.DebugLogging)
-                    {
-                        Logger.Info("Creating Hull from list info");
-                    }*/
                     HullPlugin HullType = Instance.HullTypes[Subtype - Instance.VanillaHullMaxType];
                     InHull.SubType = Subtype;
                     InHull.Name = HullType.Name;

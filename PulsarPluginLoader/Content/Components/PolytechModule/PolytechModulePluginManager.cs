@@ -74,16 +74,8 @@ namespace PulsarPluginLoader.Content.Components.PolytechModule
             {
                 InPolytechModule = new PLPolytechModule(EPolytechModuleType.E_MAX, level);
                 int subtypeformodded = Subtype - Instance.VanillaPolytechModuleMaxType;
-                /*if (Global.DebugLogging)
-                {
-                    Logger.Info($"Subtype for modded is {subtypeformodded}");
-                }*/
                 if (subtypeformodded <= Instance.PolytechModuleTypes.Count && subtypeformodded > -1)
                 {
-                    /*if (Global.DebugLogging)
-                    {
-                        Logger.Info("Creating PolytechModule from list info");
-                    }*/
                     PolytechModulePlugin PolytechModuleType = Instance.PolytechModuleTypes[Subtype - Instance.VanillaPolytechModuleMaxType];
                     InPolytechModule.SubType = Subtype;
                     InPolytechModule.Name = PolytechModuleType.Name;

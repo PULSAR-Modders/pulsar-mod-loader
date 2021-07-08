@@ -75,16 +75,8 @@ namespace PulsarPluginLoader.Content.Components.Extractor
             {
                 InExtractor = new PLExtractor(EExtractorType.E_MAX, level);
                 int subtypeformodded = Subtype - Instance.VanillaExtractorMaxType;
-                /*if (Global.DebugLogging)
-                {
-                    Logger.Info($"Subtype for modded is {subtypeformodded}");
-                }*/
                 if (subtypeformodded <= Instance.ExtractorTypes.Count && subtypeformodded > -1)
                 {
-                    /*if (Global.DebugLogging)
-                    {
-                        Logger.Info("Creating Extractor from list info");
-                    }*/
                     ExtractorPlugin ExtractorType = Instance.ExtractorTypes[Subtype - Instance.VanillaExtractorMaxType];
                     InExtractor.SubType = Subtype;
                     InExtractor.Name = ExtractorType.Name;

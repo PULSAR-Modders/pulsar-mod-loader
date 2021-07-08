@@ -75,16 +75,8 @@ namespace PulsarPluginLoader.Content.Components.CPU
             {
                 InCPU = new PLCPU(ECPUClass.E_MAX, level);
                 int subtypeformodded = Subtype - Instance.VanillaCPUMaxType;
-                /*if (Global.DebugLogging)
-                {
-                    Logger.Info($"Subtype for modded is {subtypeformodded}");
-                }*/
                 if (subtypeformodded <= Instance.CPUTypes.Count && subtypeformodded > -1)
                 {
-                    /*if (Global.DebugLogging)
-                    {
-                        Logger.Info("Creating CPU from list info");
-                    }*/
                     CPUPlugin CPUType = Instance.CPUTypes[Subtype - Instance.VanillaCPUMaxType];
                     InCPU.SubType = Subtype;
                     InCPU.Name = CPUType.Name;

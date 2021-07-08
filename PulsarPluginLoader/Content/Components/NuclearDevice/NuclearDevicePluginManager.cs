@@ -75,16 +75,8 @@ namespace PulsarPluginLoader.Content.Components.NuclearDevice
             {
                 InNuclearDevice = new PLNuclearDevice(ENuclearDeviceType.MAX, level);
                 int subtypeformodded = Subtype - Instance.VanillaNuclearDeviceMaxType;
-                /*if (Global.DebugLogging)
-                {
-                    Logger.Info($"Subtype for modded is {subtypeformodded}");
-                }*/
                 if (subtypeformodded <= Instance.NuclearDeviceTypes.Count && subtypeformodded > -1)
                 {
-                    /*if (Global.DebugLogging)
-                    {
-                        Logger.Info("Creating NuclearDevice from list info");
-                    }*/
                     NuclearDevicePlugin NuclearDeviceType = Instance.NuclearDeviceTypes[Subtype - Instance.VanillaNuclearDeviceMaxType];
                     InNuclearDevice.SubType = Subtype;
                     InNuclearDevice.Name = NuclearDeviceType.Name;

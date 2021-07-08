@@ -76,16 +76,8 @@ namespace PulsarPluginLoader.Content.Components.Shield
             {
                 InShield = new PLShieldGenerator(EShieldGeneratorType.E_SG_ID_MAX, level);
                 int subtypeformodded = Subtype - Instance.VanillaShieldMaxType;
-                /*if (Global.DebugLogging)
-                {
-                    Logger.Info($"Subtype for modded is {subtypeformodded}");
-                }*/
                 if (subtypeformodded <= Instance.ShieldTypes.Count && subtypeformodded > -1)
                 {
-                    /*if (Global.DebugLogging)
-                    {
-                        Logger.Info("Creating Shield from list info");
-                    }*/
                     ShieldPlugin ShieldType = Instance.ShieldTypes[Subtype - Instance.VanillaShieldMaxType];
                     InShield.SubType = Subtype;
                     InShield.Name = ShieldType.Name;

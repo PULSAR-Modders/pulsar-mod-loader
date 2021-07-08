@@ -75,16 +75,8 @@ namespace PulsarPluginLoader.Content.Components.Thruster
             {
                 InThruster = new PLThruster(EThrusterType.MAX, level);
                 int subtypeformodded = Subtype - Instance.VanillaThrusterMaxType;
-                /*if (Global.DebugLogging)
-                {
-                    Logger.Info($"Subtype for modded is {subtypeformodded}");
-                }*/
                 if (subtypeformodded <= Instance.ThrusterTypes.Count && subtypeformodded > -1)
                 {
-                    /*if (Global.DebugLogging)
-                    {
-                        Logger.Info("Creating Thruster from list info");
-                    }*/
                     ThrusterPlugin ThrusterType = Instance.ThrusterTypes[Subtype - Instance.VanillaThrusterMaxType];
                     InThruster.SubType = Subtype;
                     InThruster.Name = ThrusterType.Name;

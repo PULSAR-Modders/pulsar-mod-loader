@@ -75,16 +75,8 @@ namespace PulsarPluginLoader.Content.Components.MissionShipComponent
             {
                 InMissionShipComponent = new PLMissionShipComponent(0, level);
                 int subtypeformodded = Subtype - Instance.VanillaMissionShipComponentMaxType;
-                /*if (Global.DebugLogging)
-                {
-                    Logger.Info($"Subtype for modded is {subtypeformodded}");
-                }*/
                 if (subtypeformodded <= Instance.MissionShipComponentTypes.Count && subtypeformodded > -1)
                 {
-                    /*if (Global.DebugLogging)
-                    {
-                        Logger.Info("Creating MissionShipComponent from list info");
-                    }*/
                     MissionShipComponentPlugin MissionShipComponentType = Instance.MissionShipComponentTypes[Subtype - Instance.VanillaMissionShipComponentMaxType];
                     InMissionShipComponent.SubType = Subtype;
                     InMissionShipComponent.Name = MissionShipComponentType.Name;

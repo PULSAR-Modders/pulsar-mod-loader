@@ -19,5 +19,6 @@ namespace PulsarPluginLoader.Content.Components.ManeuverThruster
         {
             get { return 2000f; }
         }
+        public override int CargoVisualID => 8;
     }
 }

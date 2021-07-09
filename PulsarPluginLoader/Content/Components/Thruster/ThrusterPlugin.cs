@@ -19,5 +19,6 @@ namespace PulsarPluginLoader.Content.Components.Thruster
         {
             get { return 1200f; }
         }
+        public override int CargoVisualID => 8;
     }
 }

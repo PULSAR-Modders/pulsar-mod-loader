@@ -27,5 +27,6 @@ namespace PulsarPluginLoader.Content.Components.WarpDrive
         {
             get { return 3; }
         }
+        public override int CargoVisualID => 16;
     }
 }

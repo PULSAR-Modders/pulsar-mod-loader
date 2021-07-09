@@ -35,6 +35,7 @@ namespace PulsarPluginLoader.Content.Components.CPU
         {
             get { return 0; }
         }
+        public override int CargoVisualID => 36;
         public virtual void WhenProgramIsRun(PLWarpDriveProgram InProgram)
         {
 

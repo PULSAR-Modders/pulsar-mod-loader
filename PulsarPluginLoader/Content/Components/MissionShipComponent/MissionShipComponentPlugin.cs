@@ -5,5 +5,6 @@
         public MissionShipComponentPlugin()
         {
         }
+        public override int CargoVisualID => 49;
     }
 }

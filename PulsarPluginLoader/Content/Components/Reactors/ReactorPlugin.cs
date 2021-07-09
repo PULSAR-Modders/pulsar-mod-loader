@@ -31,5 +31,6 @@ namespace PulsarPluginLoader.Content.Components.Reactor
         {
             get { return 1f; }
         }
+        public override int CargoVisualID => 15;
     }
 }

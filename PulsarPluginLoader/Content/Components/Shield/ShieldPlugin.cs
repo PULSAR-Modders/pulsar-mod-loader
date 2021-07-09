@@ -39,5 +39,6 @@ namespace PulsarPluginLoader.Content.Components.Shield
         {
             get { return -1; }
         }
+        public override int CargoVisualID => 39;
     }
 }

@@ -23,5 +23,6 @@ namespace PulsarPluginLoader.Content.Components.Hull
         {
             get { return .2f; }
         }
+        public override int CargoVisualID => 6;
     }
 }

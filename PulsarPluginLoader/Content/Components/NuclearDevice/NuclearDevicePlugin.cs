@@ -35,5 +35,6 @@ namespace PulsarPluginLoader.Content.Components.NuclearDevice
         {
             get { return 200f; }
         }
+        public override int CargoVisualID => 15;
     }
 }

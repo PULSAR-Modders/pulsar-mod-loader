@@ -35,5 +35,6 @@ namespace PulsarPluginLoader.Content.Components.WarpDriveProgram
         {
 
         }
+        public override int CargoVisualID => 36;
     }
 }

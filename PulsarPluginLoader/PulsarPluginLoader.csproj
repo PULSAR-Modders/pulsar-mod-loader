@@ -107,6 +107,7 @@
   <ItemGroup>
     <Compile Include="Chat\Commands\LoadPluginCommand.cs" />
     <Compile Include="CustomGUI\ModSettingsMenu.cs" />
+    <Compile Include="CustomGUI\PPLSettings.cs" />
     <Compile Include="Loader\EntryPoint.cs" />
     <Compile Include="Chat\Commands\ClearCommand.cs" />
     <Compile Include="Chat\Commands\CommandRouter\ChatCommandRouter.cs" />

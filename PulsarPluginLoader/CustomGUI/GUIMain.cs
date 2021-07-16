@@ -2,19 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Text;
-using HarmonyLib;
-using PulsarPluginLoader.Utilities;
 using UnityEngine;
 using static UnityEngine.GUILayout;
 
 namespace PulsarPluginLoader.CustomGUI
 {
-    internal class GUIMain : PLMonoBehaviour
+    internal class GUIMain : MonoBehaviour
     {
         public static GUIMain Instance = null;
         public bool GUIActive = false;
@@ -35,15 +30,17 @@ namespace PulsarPluginLoader.CustomGUI
         readonly Rect ModSettingsArea = new Rect(6, 43, Screen.width * Width - 12, Screen.height * Height - 45);
         Vector2 ModSettingsScroll = Vector2.zero;
         List<ModSettingsMenu> settings = new List<ModSettingsMenu>(3);
+        ushort selectedSettings = ushort.MaxValue;
 
         internal GUIMain()
         {
             Instance = this;
+            settings.Add(new PPLSettings());
             PluginManager.Instance.OnPluginUnloaded += UpdateOnPluginRemoved;
             PluginManager.Instance.OnPluginSuccessfullyLoaded += UpdateOnPluginLoaded;
         }
 
-        protected override void Update()
+        void Update()
         {
             if (Input.GetKeyDown(KeyCode.F5))
                 GUIActive = !GUIActive;
@@ -67,10 +64,8 @@ namespace PulsarPluginLoader.CustomGUI
                     Tab = 0;
                 if (Button("Mod Settings"))
                     Tab = 1;
-                if (Button("PPL Settings"))
-                    Tab = 2;
                 if (Button("About"))
-                    Tab = 3;
+                    Tab = 2;
             }
             EndHorizontal(); // TAB End
             switch (Tab)
@@ -124,9 +119,25 @@ namespace PulsarPluginLoader.CustomGUI
                     {
                         ModSettingsScroll = BeginScrollView(ModSettingsScroll);
                         {
-                            foreach (ModSettingsMenu msm in settings)
+                            if (selectedSettings == ushort.MaxValue)
                             {
-                                msm.Draw();
+                                var length = settings.Count;
+                                for (ushort msm = 0; msm < length; msm++)
+                                {
+                                    var FSettings = settings[msm];
+                                    if (Button(FSettings.Name()))
+                                    {
+                                        selectedSettings = msm;
+                                        break;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                if (Button("Back"))
+                                    selectedSettings = ushort.MaxValue;
+
+                                settings[selectedSettings].Draw();
                             }
                         }
                         EndScrollView();
@@ -134,29 +145,8 @@ namespace PulsarPluginLoader.CustomGUI
                     EndArea();
                     break;
                 #endregion
-                #region PPLSettings
-                case 2:
-                    GUI.skin.label.alignment = TextAnchor.UpperLeft;
-                    BeginHorizontal();
-                    {
-                        Label($"ModInfoTextAnchor: {PPLConfig.instance.ModInfoTextAnchor.ToString()}");
-
-                        if (Button("<")) 
-                            PPLConfig.instance.ModInfoTextAnchor = Enum.GetValues(typeof(TextAnchor)).Cast<TextAnchor>().SkipWhile(e => (int)e != (int)PPLConfig.instance.ModInfoTextAnchor - 1).First();
-                        if (Button(">")) 
-                            PPLConfig.instance.ModInfoTextAnchor = Enum.GetValues(typeof(TextAnchor)).Cast<TextAnchor>().SkipWhile(e => (int)e != (int)PPLConfig.instance.ModInfoTextAnchor).Skip(1).First();
-                    }
-                    EndHorizontal();
-                    BeginHorizontal();
-                    {
-                        if (Button("Save")) PPLConfig.SaveConfig(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "PulsarPluginLoaderConfig.json");
-                        if (Button("Reset to default")) PPLConfig.CreateDefaultConfig(string.Empty, false);
-                    }
-                    EndHorizontal();
-                    break;
-                #endregion
                 #region About
-                case 3:
+                case 2:
                     GUI.skin.label.alignment = TextAnchor.MiddleCenter;
                     Label($"PulsarPluginLoader - Unofficial mod/plugin loader for PULSAR: Lost Colony.");
                     Label($"Version: {PluginManager.VERSION}");

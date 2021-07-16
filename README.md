@@ -23,9 +23,7 @@ Injects a basic plugin loader into [*PULSAR: Lost Colony*][10].
 
 ## Usage
 
-Run PulsarPluginLoader.exe and it will launch the game itself with the necessary patches.
-
-To run the game without PPL, just run it via Steam or PULSAR_LostColony.exe
+Copy all the files from the archive to the root folder with the game and just start the game.
 
 ## Creating Plugins
 
@@ -36,7 +34,7 @@ All plugins must be C# Class Libraries targeting .NET Framework 4.0 or later (to
 
 You Should reference the following assemblies in your plugin project:
 
- * `PulsarPluginLoader.exe` (PPL code)
+ * `PulsarPluginLoader.dll` (PPL code)
  * `Assembly-CSharp.dll` (Game code)
 
 Additionally, the following Assemblies might be needed.

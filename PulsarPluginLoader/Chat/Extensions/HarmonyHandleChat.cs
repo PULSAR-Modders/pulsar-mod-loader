@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Reflection.Emit;
 using UnityEngine;
-using static PulsarPluginLoader.Patches.HarmonyHelpers;
 using static PulsarPluginLoader.Chat.Extensions.ChatHelper;
 
 namespace PulsarPluginLoader.Chat.Extensions
@@ -259,7 +258,7 @@ namespace PulsarPluginLoader.Chat.Extensions
         //Fixes shadow in currently typing
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
-            List<CodeInstruction> targetSequence = new List<CodeInstruction>()
+            /*List<CodeInstruction> targetSequence = new List<CodeInstruction>()
             {
                 new CodeInstruction(OpCodes.Brfalse_S),
                 new CodeInstruction(OpCodes.Ldloc_S),
@@ -276,7 +275,9 @@ namespace PulsarPluginLoader.Chat.Extensions
                 new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(HarmonyColoredMessage), "RemoveColor"))
             };
 
-            return PatchBySequence(instructions, targetSequence, injectedSequence, PatchMode.AFTER, CheckMode.NEVER);
+            return PatchBySequence(instructions, targetSequence, injectedSequence, PatchMode.AFTER, CheckMode.NEVER); */
+            return new CodeMatcher(instructions).MatchForward(false, new CodeMatch(OpCodes.Brfalse_S), new CodeMatch(OpCodes.Ldloc_S), new CodeMatch(OpCodes.Ldstr), new CodeMatch(OpCodes.Callvirt), new CodeMatch(OpCodes.Pop), new CodeMatch(OpCodes.Ldloc_S), new CodeMatch(OpCodes.Ldsfld), new CodeMatch(OpCodes.Ldfld))
+                .Advance(7).Insert(new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(HarmonyColoredMessage), "RemoveColor"))).InstructionEnumeration();
         }
     }
 }

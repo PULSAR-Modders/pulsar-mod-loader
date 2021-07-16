@@ -78,7 +78,7 @@ namespace PulsarPluginLoader
             pluginDirectories.Add(pluginsDir);
 
             // Load plugins
-            foreach (string plugin in Directory.GetFiles(pluginsDir, "*.dll"))
+            foreach (string plugin in Directory.GetFiles(pluginsDir, "*.dll", SearchOption.AllDirectories))
                 LoadPlugin(plugin);
 
             Logger.Info($"Finished loading {activePlugins.Count.ToString()} plugin{(activePlugins.Count == 1 ? string.Empty : 's')}!"); // C# 9.0 feature

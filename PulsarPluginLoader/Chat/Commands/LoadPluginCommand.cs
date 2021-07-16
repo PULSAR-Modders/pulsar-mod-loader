@@ -1,10 +1,11 @@
-﻿using PulsarPluginLoader.Chat.Commands.CommandRouter;
+﻿#if DEBUG
+using PulsarPluginLoader.Chat.Commands.CommandRouter;
 using System.IO;
 using System.Reflection;
 
 namespace PulsarPluginLoader.Chat.Commands
 {
-    class LoadPluginCommand : ChatCommand
+    class LoadPluginCommand : ChatCommand // Debug only
     {
         public override string[] CommandAliases()
         {
@@ -18,6 +19,7 @@ namespace PulsarPluginLoader.Chat.Commands
 
         public override string[][] Arguments() => new string[][] { new string[] { "<filename>" } };
 
-        public override void Execute(string arguments) => PluginManager.Instance.LoadPlugin(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), PPLConfig.instance.ModsFolder, arguments + ".dll"));
+        public override void Execute(string arguments) => PluginManager.Instance.LoadPlugin(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Mods", arguments + ".dll"));
     }
 }
+#endif

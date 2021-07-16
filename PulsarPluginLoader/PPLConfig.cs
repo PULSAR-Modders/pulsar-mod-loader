@@ -16,7 +16,6 @@ namespace PulsarPluginLoader
             {
                 instance = this;
                 ModInfoTextAnchor = TextAnchor.UpperLeft;
-                ModsFolder = "Mods";
             }
         }
 
@@ -25,24 +24,25 @@ namespace PulsarPluginLoader
         internal static void CreateDefaultConfig(string path, bool save)
         {
             new PPLConfig(true);
-            if (save) SaveConfig(path);
+            if (save) 
+                SaveConfig(path);
         }
 
         internal static void CreateConfigFromFile(string path) =>
             JsonConvert.DeserializeObject<PPLConfig>(File.ReadAllText(path), settings());
 
         internal static void SaveConfig(string path) =>
-            File.WriteAllText(path, JsonConvert.SerializeObject(instance, typeof(PPLConfig), settings())
-                .Replace("{", "{\n\t").Replace("}", "\n}").Replace(",\"", ",\n\t\""));
+            File.WriteAllText(path, JsonConvert.SerializeObject(instance, typeof(PPLConfig), settings()));
+                //.Replace("{", "{\n\t").Replace("}", "\n}").Replace(",\"", ",\n\t\""));
 
         private static JsonSerializerSettings settings()
         {
             var settings = new JsonSerializerSettings();
+            settings.Formatting = Formatting.Indented;
             settings.Converters.Add(new StringEnumConverter() { });
             return settings;
         }
 
         public TextAnchor ModInfoTextAnchor { get; set; }
-        public string ModsFolder { get; set; }
     }
 }

@@ -6,11 +6,12 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{CF6CE9BA-9603-439D-9173-96C052C94417}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>PulsarPluginLoader</RootNamespace>
     <AssemblyName>PulsarPluginLoader</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <LangVersion>latest</LangVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
     <TargetFrameworkProfile />
@@ -26,7 +27,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
+    <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
@@ -36,13 +37,14 @@
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>PulsarPluginLoader.Loader.EntryPoint</StartupObject>
+    <StartupObject>
+    </StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="0Harmony, Version=2.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="0Harmony, Version=2.4.2.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\0Harmony.dll</HintPath>
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="ACTk.Runtime, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -105,11 +107,7 @@
   <ItemGroup>
     <Compile Include="Chat\Commands\LoadPluginCommand.cs" />
     <Compile Include="CustomGUI\ModSettingsMenu.cs" />
-    <Compile Include="Loader\Assembler.cs" />
     <Compile Include="Loader\EntryPoint.cs" />
-    <Compile Include="Loader\Loader.cs" />
-    <Compile Include="Loader\Memory.cs" />
-    <Compile Include="Loader\Native.cs" />
     <Compile Include="Chat\Commands\ClearCommand.cs" />
     <Compile Include="Chat\Commands\CommandRouter\ChatCommandRouter.cs" />
     <Compile Include="Chat\Commands\CommandRouter\ChatInputPatch.cs" />

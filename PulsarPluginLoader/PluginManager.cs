@@ -47,9 +47,6 @@ namespace PulsarPluginLoader
 
             // Add plugins directories to AppDomain so plugins referencing other as-yet-unloaded plugins don't fail to find assemblies
             AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(ResolvePluginsDirectory);
-
-            // Force Photon's static constructor to run so patching its methods doesn't fail
-            RuntimeHelpers.RunClassConstructor(typeof(PhotonNetwork).TypeHandle);
         }
 
         public PulsarPlugin GetPlugin(string name)
@@ -81,9 +78,10 @@ namespace PulsarPluginLoader
             pluginDirectories.Add(pluginsDir);
 
             // Load plugins
-            Directory.GetFiles(pluginsDir, "*.dll").AsParallel().ForAll((p) => LoadPlugin(p)); // Faster than foreach by 266ms (793ms -> 527ms). Tested with 5 mods and 4 non-dll files.
+            foreach (string plugin in Directory.GetFiles(pluginsDir, "*.dll"))
+                LoadPlugin(plugin);
 
-            Logger.Info($"Finished loading {activePlugins.Count.ToString()} plugins!");
+            Logger.Info($"Finished loading {activePlugins.Count.ToString()} plugin{(activePlugins.Count == 1 ? string.Empty : 's')}!"); // C# 9.0 feature
         }
 
         private Assembly ResolvePluginsDirectory(object sender, ResolveEventArgs args)

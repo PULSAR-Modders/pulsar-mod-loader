@@ -149,12 +149,6 @@ namespace PulsarPluginLoader.CustomGUI
                     EndHorizontal();
                     BeginHorizontal();
                     {
-                        Label("Mods Folder: ");
-                        PPLConfig.instance.ModsFolder = TextField(PPLConfig.instance.ModsFolder);
-                    }
-                    EndHorizontal();
-                    BeginHorizontal();
-                    {
                         if (Button("Save")) PPLConfig.SaveConfig(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "PulsarPluginLoaderConfig.json");
                         if (Button("Reset to default")) PPLConfig.CreateDefaultConfig(string.Empty, false);
                     }

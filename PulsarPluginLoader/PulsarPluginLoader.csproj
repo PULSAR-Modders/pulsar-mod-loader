@@ -29,7 +29,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\..\..\Steam\steamapps\common\PULSARLostColony\PulsarPluginLoader\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -107,6 +107,7 @@
   <ItemGroup>
     <Compile Include="Chat\Commands\LoadPluginCommand.cs" />
     <Compile Include="CustomGUI\ModSettingsMenu.cs" />
+    <Compile Include="CustomGUI\PPLSettings.cs" />
     <Compile Include="Loader\EntryPoint.cs" />
     <Compile Include="Chat\Commands\ClearCommand.cs" />
     <Compile Include="Chat\Commands\CommandRouter\ChatCommandRouter.cs" />

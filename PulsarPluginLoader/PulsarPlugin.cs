@@ -17,7 +17,7 @@ namespace PulsarPluginLoader
         {
             // Can't use Assembly.GetExecutingAssembly() or it grabs this assembly instead of the plugin's!
             // Executing assembly is technically PPL's during base class methods.
-            Assembly asm = this.GetType().Assembly;
+            Assembly asm = GetType().Assembly;
             VersionInfo = FileVersionInfo.GetVersionInfo(asm.Location);
 
             harmony = new Harmony(HarmonyIdentifier());

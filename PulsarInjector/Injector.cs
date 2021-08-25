@@ -76,7 +76,6 @@ namespace PulsarInjector
             AntiCheatBypass.Inject(targetAssemblyPath);
 
             Logger.Info("=== Logging Modifications ===");
-            InjectionTools.CreateMethod(targetAssemblyPath, "PLGlobal", "Start", typeof(void), null);
             InjectionTools.PatchMethod(targetAssemblyPath, "PLGlobal", "Start", typeof(LoggingInjections), "LoggingCleanup");
 
             Logger.Info("=== Injecting Harmony Initialization ===");

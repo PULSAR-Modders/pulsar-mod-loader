@@ -259,11 +259,19 @@ namespace PulsarPluginLoader.Chat.Extensions
         //Fixes shadow in currently typing
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
+            /*
+            if (PLNetworkManager.Instance.IsTyping)
+			{
+				stringBuilder2.Append(PLLocalize.Localize("Say: ", false));
+				stringBuilder2.Append(PLNetworkManager.Instance.CurrentChatText);
+            */
             List<CodeInstruction> targetSequence = new List<CodeInstruction>()
             {
                 new CodeInstruction(OpCodes.Brfalse_S),
                 new CodeInstruction(OpCodes.Ldloc_S),
                 new CodeInstruction(OpCodes.Ldstr),
+                new CodeInstruction(OpCodes.Ldc_I4_0),
+                new CodeInstruction(OpCodes.Call),
                 new CodeInstruction(OpCodes.Callvirt),
                 new CodeInstruction(OpCodes.Pop),
                 new CodeInstruction(OpCodes.Ldloc_S),
@@ -271,6 +279,12 @@ namespace PulsarPluginLoader.Chat.Extensions
                 new CodeInstruction(OpCodes.Ldfld)
             };
 
+            /*
+            if (PLNetworkManager.Instance.IsTyping)
+			{
+				stringBuilder2.Append(PLLocalize.Localize("Say: ", false));
+				stringBuilder2.Append(HarmonyColoredMessage.RemoveColor(PLNetworkManager.Instance.CurrentChatText));
+            */
             List<CodeInstruction> injectedSequence = new List<CodeInstruction>()
             {
                 new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(HarmonyColoredMessage), "RemoveColor"))

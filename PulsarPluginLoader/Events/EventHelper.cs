@@ -60,7 +60,7 @@ namespace PulsarPluginLoader.Events
 
         public static void OnPlayerRemoved(PLPlayer player)
         {
-            PostEvent(typeof(PlayerAddedEvent), new object[] { new PlayerRemovedEvent(player) });
+            PostEvent(typeof(PlayerRemovedEvent), new object[] { new PlayerRemovedEvent(player) });
         }
     }
 }

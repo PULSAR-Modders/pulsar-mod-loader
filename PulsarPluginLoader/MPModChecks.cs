@@ -1,11 +1,28 @@
 ﻿using HarmonyLib;
 using Steamworks;
+using System.Collections.Generic;
 using Logger = PulsarPluginLoader.Utilities.Logger;
 
 namespace PulsarPluginLoader
 {
     class MPModChecks
     {
+        public static string ConvertModlist(List<string> Missinglist)
+        {
+            string Missing = string.Empty;
+            for (int i = 0; i < Missinglist.Count; i++)
+            {
+                if (i < Missinglist.Count - 1)
+                {
+                    Missing += $"{Missinglist[i]},\n";
+                }
+                else
+                {
+                    Missing += Missinglist[i];
+                }
+            }
+            return Missing;
+        }
         public static string GetMPModList()
         {
             string modlist = string.Empty;
@@ -50,18 +67,18 @@ namespace PulsarPluginLoader
                 Logger.Info("Modlist != NullOrEmpty");
                 if (MPMods != LocalMods)
                 {
-                    string missingmods = string.Empty;
+                    List<string> missingmods = new List<string>();
                     string[] localmodlist = LocalMods.Split('\n');
                     foreach (string plugin in localmodlist)
                     {
                         //Logger.Info("Checking client mod " + plugin);
                         if (!string.IsNullOrEmpty(plugin) && !MPMods.Contains(plugin))
                         {
-                            missingmods += plugin + "\n";
+                            missingmods.Add(plugin);
                         }
                     }
                     string[] MPmodlist = MPMods.Split('\n');
-                    if (missingmods != string.Empty)
+                    if (missingmods.Count > 0)
                     {
                         Logger.Info("Client mods good, checking server mods");
                         foreach (string plugin in MPmodlist)
@@ -69,17 +86,17 @@ namespace PulsarPluginLoader
                             //Logger.Info("Checking Server mod " + plugin);
                             if (!string.IsNullOrEmpty(plugin) && !LocalMods.Contains(plugin) && plugin.Contains("MPF3"))
                             {
-                                missingmods += plugin + "\n";
+                                missingmods.Add(plugin);
                             }
                         }
-                        if (missingmods != string.Empty)
+                        if (missingmods.Count > 0)
                         {
                             Logger.Info("Server plugin list is not equal to local plugin list");
-                            PLNetworkManager.Instance.MainMenu.AddActiveMenu(new PLErrorMessageMenu($"Failed to join crew! The Server is missing the following mods or is not up to date (try uninstalling/updating):\n{missingmods}"));
+                            PLNetworkManager.Instance.MainMenu.AddActiveMenu(new PLErrorMessageMenu($"Failed to join crew! The Server is missing the following mods or is not up to date (try uninstalling/updating):\n{MPModChecks.ConvertModlist(missingmods)}"));
                             return false;
                         }
                     }
-                    PLNetworkManager.Instance.MainMenu.AddActiveMenu(new PLErrorMessageMenu($"Failed to join crew! You are missing the following mods or the mods are not up to date:\n{missingmods}"));
+                    PLNetworkManager.Instance.MainMenu.AddActiveMenu(new PLErrorMessageMenu($"Failed to join crew! You are missing the following mods or the mods are not up to date:\n{MPModChecks.ConvertModlist(missingmods)}"));
 
                     Logger.Info("Local Plugin list is not equal to Server plugin list");
                     return false;
@@ -117,7 +134,7 @@ namespace PulsarPluginLoader
             //Checks mod list
             if (foundplayer) //If server received mod list from client
             {
-                string missingmods = string.Empty;
+                List<string> missingmods = new List<string>();
                 string LocalMods = MPModChecks.GetMPModList();
                 string clientmods = ModMessageHelper.Instance.GetPlayerMods(pmi.sender);
                 Logger.Info($"Starting Serverside Mod check");
@@ -129,10 +146,10 @@ namespace PulsarPluginLoader
                     {
                         if (!string.IsNullOrWhiteSpace(plugin) && !clientmods.Contains(plugin) && plugin.Contains("MPF3"))
                         {
-                            missingmods += plugin;
+                            missingmods.Add(plugin);
                         }
                     }
-                    if (missingmods == string.Empty) //if nothing was added to the missing mod list check if the client needs something the server doesn't.
+                    if (missingmods.Count == 0) //if nothing was added to the missing mod list check if the client needs something the server doesn't.
                     {
                         Logger.Info($"Client isn't missing mods, checking if client has mods that require server installation");
                         string[] clientmodlist = clientmods.Split('\n');
@@ -140,13 +157,13 @@ namespace PulsarPluginLoader
                         {
                             if (!string.IsNullOrWhiteSpace(plugin) && !LocalMods.Contains(plugin) && (plugin.Contains("MPF2") || plugin.Contains("MPF3")))
                             {
-                                missingmods += plugin;
+                                missingmods.Add(plugin);
                             }
                         }
-                        if (missingmods != string.Empty) //Client has non-server mods
+                        if (missingmods.Count > 0) //Client has non-server mods
                         {
                             Logger.Info("Client has non-server multiplayer mods");
-                            string message = $"You have been disconnected for having the following mods (try removing them):\n{missingmods}";
+                            string message = $"You have been disconnected for having the following mods (try removing them):\n{MPModChecks.ConvertModlist(missingmods)}";
                             ModMessageHelper.Instance.photonView.RPC("RecieveErrorMessage", pmi.sender, new object[] { message });
                             if (SteamManager.Initialized && pmi.sender.SteamID != CSteamID.Nil)
                             {
@@ -159,7 +176,7 @@ namespace PulsarPluginLoader
                     else //client is missing server mods
                     {
                         Logger.Info("client is missing server mods");
-                        string message = $"You have been disconnected for not having the following mods (try installing them):\n{missingmods}";
+                        string message = $"You have been disconnected for not having the following mods (try installing them):\n{MPModChecks.ConvertModlist(missingmods)}";
                         ModMessageHelper.Instance.photonView.RPC("RecieveErrorMessage", pmi.sender, new object[] { message });
                         if (SteamManager.Initialized && pmi.sender.SteamID != CSteamID.Nil)
                         {

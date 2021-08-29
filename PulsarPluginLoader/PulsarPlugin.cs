@@ -8,6 +8,7 @@ namespace PulsarPluginLoader
     public abstract class PulsarPlugin
     {
         private FileVersionInfo VersionInfo;
+        protected Harmony harmony;
 
         /// <summary>
         /// Entry point of plugin; do setup here (e.g., Harmony, databases, etc).  Runs once during game startup.
@@ -19,9 +20,14 @@ namespace PulsarPluginLoader
             Assembly asm = GetType().Assembly;
             VersionInfo = FileVersionInfo.GetVersionInfo(asm.Location);
 
-            var harmony = new Harmony(HarmonyIdentifier());
+            harmony = new Harmony(HarmonyIdentifier());
             harmony.PatchAll(asm);
         }
+
+        /// <summary>
+        /// Removes a plugin from the list and calls UnpatchAll (); do some extra cleanup here.
+        /// </summary>
+        public virtual void Unload() => PluginManager.Instance.UnloadPlugin(this, ref harmony);
 
         /// <summary>
         /// Unique plugin identifier used by Harmony to differentiate between plugins.

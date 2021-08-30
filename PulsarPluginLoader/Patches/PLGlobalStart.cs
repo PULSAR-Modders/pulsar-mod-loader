@@ -22,8 +22,8 @@ namespace PulsarPluginLoader.Patches
 
 
                 new GameObject("ModManager", typeof(CustomGUI.GUIMain)) { hideFlags = HideFlags.HideAndDontSave };
-
-                string pluginsDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Mods");
+                
+                string pluginsDir = Path.Combine(Directory.GetCurrentDirectory(), "Mods");
                 PluginManager.Instance.LoadPluginsDirectory(pluginsDir);
                 pluginsLoaded = true;
             }

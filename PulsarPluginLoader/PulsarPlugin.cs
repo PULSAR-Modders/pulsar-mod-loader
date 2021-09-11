@@ -9,6 +9,7 @@ namespace PulsarPluginLoader
     {
         private FileVersionInfo VersionInfo;
         protected Harmony harmony;
+        protected bool enabled = true;
 
         /// <summary>
         /// Entry point of plugin; do setup here (e.g., Harmony, databases, etc).  Runs once during game startup.
@@ -106,5 +107,40 @@ namespace PulsarPluginLoader
             }
         }
         
+        /// <summary>
+        /// Up to the modder to implement
+        /// </summary>
+        /// <returns>true if <see cref="Disable"/>, <see cref="Enable"/>, and <see cref="IsEnabled"/> have been implemented, false by default</returns>
+        public virtual bool CanBeDisabled()
+        {
+            return false;
+        }
+
+        /// <summary>
+        /// The result is invalid if <see cref="CanBeDisabled"/> returns false
+        /// </summary>
+        /// <returns>true if the mod is enabled, false if the mod has been disabled</returns>
+        public virtual bool IsEnabled()
+        {
+            return enabled;
+        }
+
+        /// <summary>
+        /// Disables the mod. Up to the modder to implement this.<br/>
+        /// If implemented, <see cref="CanBeDisabled()"/> should be modified to return true
+        /// </summary>
+        public virtual void Disable()
+        {
+            enabled = false;
+        }
+
+        /// <summary>
+        /// Opposite of <see cref="Disable"/>.<br/>
+        /// The mod should be active if neither Disable nor Enable has been called.
+        /// </summary>
+        public virtual void Enable()
+        {
+            enabled = true;
+        }
     }
 }

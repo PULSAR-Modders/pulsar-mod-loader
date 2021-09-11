@@ -30,7 +30,7 @@ namespace PulsarPluginLoader
         public virtual void Unload() => PluginManager.Instance.UnloadPlugin(this, ref harmony);
 
         /// <summary>
-        /// Unique plugin identifier used by Harmony to differentiate between plugins.
+        /// Unique plugin identifier used by Harmony to differentiate between plugins.<br/>
         /// Reverse domain notation recommended (e.g., com.example.pulsar.plugins)
         /// </summary>
         /// <returns></returns>
@@ -92,10 +92,10 @@ namespace PulsarPluginLoader
         }
 
         /// <summary>
-        /// Plugin's multiplayer requirements. use MPFunction.
-        /// None: No Functionality
-        /// HostOnly: Only the host is required to have it installed
-        /// HostApproved: Host must have the mod installed, works better when client has it installed.
+        /// Plugin's multiplayer requirements. use MPFunction.<br/>
+        /// None: No Functionality<br/>
+        /// HostOnly: Only the host is required to have it installed<br/>
+        /// HostApproved: Host must have the mod installed, works better when client has it installed.<br/>
         /// All: All players must have the mod installed
         /// </summary>
         public virtual int MPFunctionality
@@ -105,6 +105,6 @@ namespace PulsarPluginLoader
                 return (int)MPFunction.None;
             }
         }
-             
+        
     }
 }

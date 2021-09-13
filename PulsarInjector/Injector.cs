@@ -3,24 +3,39 @@ using PulsarPluginLoader.Utilities;
 using System;
 using System.IO;
 using System.Reflection;
+using System.Runtime.InteropServices;
 
 namespace PulsarInjector
 {
     class Injector
     {
         static readonly string defaultPath = @"C:\Program Files (x86)\Steam\steamapps\common\PULSARLostColony\PULSAR_LostColony_Data\Managed\Assembly-CSharp.dll";
+        static readonly string defaultLinuxPath = "~/.steam/steam/steamapps/common/PULSARLostColony/PULSAR_LostColony_Data/Managed/Assembly-CSharp.dll";
+        static readonly string defaultMacPath = "~/Library/Application Support/Steam/steamapps/common/PULSARLostColony/PULSAR_LostColony_Data/Managed/Assembly-CSharp.dll";
 
         static void Main(string[] args)
         {
             string targetAssemblyPath = defaultPath;
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                targetAssemblyPath = defaultLinuxPath;
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                targetAssemblyPath = defaultMacPath;
+            }
 
             if (args.Length > 0)
             {
                 targetAssemblyPath = args[0];
             }
 
+            Logger.Info("Searching in " + targetAssemblyPath);
+
             if (!File.Exists(targetAssemblyPath))
             {
+                Logger.Info("Unable to find file");
                 Logger.Info("Please specify an assembly to inject (e.g., PULSARLostColony\\PULSAR_LostColony_Data\\Managed\\Assembly-CSharp.dll)");
 
                 Logger.Info("Press any key to continue...");

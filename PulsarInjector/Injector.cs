@@ -4,6 +4,7 @@ using System;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 namespace PulsarInjector
 {
@@ -13,6 +14,7 @@ namespace PulsarInjector
         static readonly string defaultLinuxPath = "~/.steam/steam/steamapps/common/PULSARLostColony/PULSAR_LostColony_Data/Managed/Assembly-CSharp.dll";
         static readonly string defaultMacPath = "~/Library/Application Support/Steam/steamapps/common/PULSARLostColony/PULSAR_LostColony_Data/Managed/Assembly-CSharp.dll";
 
+        [STAThread] //Required for file dialog to work
         static void Main(string[] args)
         {
             string targetAssemblyPath = defaultPath;
@@ -33,8 +35,23 @@ namespace PulsarInjector
 
             Logger.Info("Searching in " + targetAssemblyPath);
 
-            if (!File.Exists(targetAssemblyPath))
+            while (!File.Exists(targetAssemblyPath))
             {
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    OpenFileDialog ofd = new OpenFileDialog();
+                    ofd.InitialDirectory = "c:\\";
+                    ofd.Filter = "Dynamic Linked Library (*.dll)|*.dll";
+
+                    if (ofd.ShowDialog() == DialogResult.OK)
+                    {
+                        targetAssemblyPath = ofd.FileName;
+                        if (File.Exists(targetAssemblyPath))
+                        {
+                            break;
+                        }
+                    }
+                }
                 Logger.Info("Unable to find file");
                 Logger.Info("Please specify an assembly to inject (e.g., PULSARLostColony\\PULSAR_LostColony_Data\\Managed\\Assembly-CSharp.dll)");
 

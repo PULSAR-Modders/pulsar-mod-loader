@@ -12,7 +12,8 @@ namespace PulsarInjector
     {
         static readonly string defaultPath = @"C:\Program Files (x86)\Steam\steamapps\common\PULSARLostColony\PULSAR_LostColony_Data\Managed\Assembly-CSharp.dll";
         static readonly string defaultLinuxPath = "~/.steam/steam/steamapps/common/PULSARLostColony/PULSAR_LostColony_Data/Managed/Assembly-CSharp.dll";
-        static readonly string defaultMacPath = "~/Library/Application Support/Steam/steamapps/common/PULSARLostColony/PULSAR_LostColony_Data/Managed/Assembly-CSharp.dll";
+        //Default path does not work for OSX
+        //static readonly string defaultMacPath = "~/Library/Application Support/Steam/steamapps/common/PULSARLostColony/PULSARLostColony.app/Contents/Resources/Data/Managed/Assembly-CSharp.dll";
 
         [STAThread] //Required for file dialog to work
         static void Main(string[] args)
@@ -23,44 +24,67 @@ namespace PulsarInjector
             {
                 targetAssemblyPath = defaultLinuxPath;
             }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-            {
-                targetAssemblyPath = defaultMacPath;
-            }
+            //else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            //{
+                //targetAssemblyPath = defaultMacPath;
+            //}
 
             if (args.Length > 0)
             {
                 targetAssemblyPath = args[0];
             }
 
-            Logger.Info("Searching in " + targetAssemblyPath);
+            Logger.Info("Searching for " + targetAssemblyPath);
 
-            while (!File.Exists(targetAssemblyPath))
+            if (File.Exists(targetAssemblyPath))
             {
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                if (args.Length > 0)
                 {
-                    OpenFileDialog ofd = new OpenFileDialog();
-                    ofd.InitialDirectory = "c:\\";
-                    ofd.Filter = "Dynamic Linked Library (*.dll)|*.dll";
-
-                    if (ofd.ShowDialog() == DialogResult.OK)
+                    InstallModLoader(targetAssemblyPath);
+                    return;
+                }
+                else
+                {
+                    Logger.Info("File found. Install the mod loader here?");
+                    Logger.Info("(Y/N)");
+                    string answer = Console.ReadLine();
+                    if (answer.ToLower().StartsWith("y"))
                     {
-                        targetAssemblyPath = ofd.FileName;
-                        if (File.Exists(targetAssemblyPath))
-                        {
-                            break;
-                        }
+                        InstallModLoader(targetAssemblyPath);
+                        return;
                     }
                 }
-                Logger.Info("Unable to find file");
-                Logger.Info("Please specify an assembly to inject (e.g., PULSARLostColony\\PULSAR_LostColony_Data\\Managed\\Assembly-CSharp.dll)");
+            }
+            
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                OpenFileDialog ofd = new OpenFileDialog
+                {
+                    InitialDirectory = "c:\\",
+                    Filter = "Dynamic Linked Library (*.dll)|*.dll"
+                };
 
-                Logger.Info("Press any key to continue...");
-                Console.ReadKey();
-
-                return;
+                if (ofd.ShowDialog() == DialogResult.OK)
+                {
+                    targetAssemblyPath = ofd.FileName;
+                    Logger.Info("Selected " + targetAssemblyPath);
+                    if (File.Exists(targetAssemblyPath))
+                    {
+                        InstallModLoader(targetAssemblyPath);
+                        return;
+                    }
+                }
             }
 
+            Logger.Info("Unable to find file");
+            Logger.Info("Please specify an assembly to inject (e.g., PULSARLostColony\\PULSAR_LostColony_Data\\Managed\\Assembly-CSharp.dll)");
+
+            Logger.Info("Press any key to continue...");
+            Console.ReadKey();
+        }
+
+        public static void InstallModLoader(string targetAssemblyPath)
+        {
             Logger.Info("=== Backups ===");
             string backupPath = Path.ChangeExtension(targetAssemblyPath, "bak");
             if (InjectionTools.IsModified(targetAssemblyPath))
@@ -92,7 +116,7 @@ namespace PulsarInjector
             string Modsdir = Path.Combine(Directory.GetParent(Path.GetDirectoryName(targetAssemblyPath)).Parent.FullName, "Mods");
             if (Directory.Exists(pluginsdir))
             {
-                Logger.Info("Moving Old Plugins Directory");;
+                Logger.Info("Moving Old Plugins Directory"); ;
                 Directory.Move(pluginsdir, Modsdir);
             }
 

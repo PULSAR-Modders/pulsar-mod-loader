@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace PulsarPluginLoader.Content.Components.Thruster
+namespace PulsarModLoader.Content.Components.Thruster
 {
     public abstract class ThrusterPlugin : ComponentPluginBase
     {

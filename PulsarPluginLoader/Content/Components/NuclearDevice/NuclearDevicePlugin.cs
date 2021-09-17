@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace PulsarPluginLoader.Content.Components.NuclearDevice
+namespace PulsarModLoader.Content.Components.NuclearDevice
 {
     public abstract class NuclearDevicePlugin : ComponentPluginBase
     {

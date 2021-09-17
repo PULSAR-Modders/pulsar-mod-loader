@@ -2,9 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Logger = PulsarPluginLoader.Utilities.Logger;
+using Logger = PulsarModLoader.Utilities.Logger;
 
-namespace PulsarPluginLoader.Content.Components.AutoTurret
+namespace PulsarModLoader.Content.Components.AutoTurret
 {
     public class AutoTurretPluginManager
     {
@@ -27,7 +27,7 @@ namespace PulsarPluginLoader.Content.Components.AutoTurret
         {
             VanillaAutoTurretMaxType = 1;
             Logger.Info($"MaxTypeint = {VanillaAutoTurretMaxType - 1}");
-            foreach (PulsarPlugin plugin in PluginManager.Instance.GetAllPlugins())
+            foreach (PulsarMod plugin in PluginManager.Instance.GetAllPlugins())
             {
                 Assembly asm = plugin.GetType().Assembly;
                 Type AutoTurretPlugin = typeof(AutoTurretPlugin);

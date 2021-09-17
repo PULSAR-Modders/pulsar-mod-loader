@@ -1,12 +1,12 @@
 ﻿using CodeStage.AntiCheat.ObscuredTypes;
 using HarmonyLib;
-using PulsarPluginLoader;
-using PulsarPluginLoader.Utilities;
+using PulsarModLoader;
+using PulsarModLoader.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace PulsarPluginLoader.Content.Components.Reactor
+namespace PulsarModLoader.Content.Components.Reactor
 {
     public class ReactorPluginManager
     {
@@ -29,7 +29,7 @@ namespace PulsarPluginLoader.Content.Components.Reactor
         {
             VanillaReactorMaxType = Enum.GetValues(typeof(EReactorType)).Length;
             Logger.Info($"MaxTypeint = {VanillaReactorMaxType - 1}");
-            foreach (PulsarPlugin plugin in PluginManager.Instance.GetAllPlugins())
+            foreach (PulsarMod plugin in PluginManager.Instance.GetAllPlugins())
             {
                 Assembly asm = plugin.GetType().Assembly;
                 Type ReactorPlugin = typeof(ReactorPlugin);

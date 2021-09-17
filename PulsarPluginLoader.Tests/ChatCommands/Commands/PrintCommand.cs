@@ -1,7 +1,7 @@
-﻿using PulsarPluginLoader.Chat.Commands.CommandRouter;
+﻿using PulsarModLoader.Chat.Commands.CommandRouter;
 using System;
 
-namespace PulsarPluginLoader.Tests.Chat.Commands
+namespace PulsarModLoader.Tests.Chat.Commands
 {
     class PrintCommand : ChatCommand
     {

@@ -1,9 +1,9 @@
 ﻿using HarmonyLib;
-using PulsarPluginLoader.Chat.Commands;
+using PulsarModLoader.Chat.Commands;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace PulsarPluginLoader.Patches
+namespace PulsarModLoader.Patches
 {
     [HarmonyPatch(typeof(PLInGameUI), "Update")]
     class DebugReadout

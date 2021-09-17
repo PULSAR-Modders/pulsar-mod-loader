@@ -1,4 +1,4 @@
-﻿namespace PulsarPluginLoader.Utilities
+﻿namespace PulsarModLoader.Utilities
 {
     public static class HelperMethods
     {

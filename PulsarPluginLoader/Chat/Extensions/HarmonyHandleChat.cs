@@ -3,10 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Reflection.Emit;
 using UnityEngine;
-using static PulsarPluginLoader.Patches.HarmonyHelpers;
-using static PulsarPluginLoader.Chat.Extensions.ChatHelper;
+using static PulsarModLoader.Patches.HarmonyHelpers;
+using static PulsarModLoader.Chat.Extensions.ChatHelper;
 
-namespace PulsarPluginLoader.Chat.Extensions
+namespace PulsarModLoader.Chat.Extensions
 {
     [HarmonyPatch(typeof(PLInGameUI), "HandleChat")]
     class HarmonyHandleChat

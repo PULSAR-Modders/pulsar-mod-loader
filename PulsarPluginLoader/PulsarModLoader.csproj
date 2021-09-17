@@ -126,7 +126,7 @@
     <Compile Include="Chat\Commands\DebugModeCommand.cs" />
     <Compile Include="Chat\Commands\EchoCommand.cs" />
     <Compile Include="Chat\Commands\HelpCommand.cs" />
-    <Compile Include="Chat\Commands\ListPlugins.cs" />
+    <Compile Include="Chat\Commands\ListMods.cs" />
     <Compile Include="Chat\Commands\PublicHelpCommand.cs" />
     <Compile Include="Chat\Extensions\ChatHelper.cs" />
     <Compile Include="Chat\Extensions\HandlePublicCommands.cs" />
@@ -204,7 +204,7 @@
     <Compile Include="Patches\PLGlobalStart.cs" />
     <Compile Include="Patches\PhotonProperties.cs" />
     <Compile Include="PPLConfig.cs" />
-    <Compile Include="PulsarPlugin.cs" />
+    <Compile Include="PulsarMod.cs" />
     <Compile Include="PluginManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Patches\HarmonyHelpers.cs" />
@@ -218,7 +218,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="PulsarPluginLoader.nuspec" />
+    <None Include="PulsarModLoader.nuspec" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

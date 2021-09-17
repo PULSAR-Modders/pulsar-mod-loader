@@ -6,7 +6,7 @@ using System.Reflection;
 using UnityEngine;
 using static UnityEngine.GUILayout;
 
-namespace PulsarPluginLoader.CustomGUI
+namespace PulsarModLoader.CustomGUI
 {
     internal class GUIMain : MonoBehaviour
     {
@@ -17,7 +17,7 @@ namespace PulsarPluginLoader.CustomGUI
         Rect Window = new Rect((Screen.width * .5f - ((Screen.width * Width)/2)), Screen.height * .5f - ((Screen.height * Height)/2), Screen.width * Width, Screen.height * Height);
         byte Tab = 0;
         
-        List<PulsarPlugin> plugins = new List<PulsarPlugin>(8);
+        List<PulsarMod> plugins = new List<PulsarMod>(8);
         ushort selectedPlugin = ushort.MaxValue;
         
         readonly Rect ModListArea = new Rect(6, 43, 150, Screen.height * Height - 45);
@@ -95,7 +95,7 @@ namespace PulsarPluginLoader.CustomGUI
                         {
                             ModInfoScroll = BeginScrollView(ModInfoScroll);
                             {
-                                PulsarPlugin plugin = plugins[selectedPlugin];
+                                PulsarMod plugin = plugins[selectedPlugin];
                                 BeginHorizontal();
                                 {
                                     if (Button("Unload"))
@@ -153,7 +153,7 @@ namespace PulsarPluginLoader.CustomGUI
                 #region About
                 case 2:
                     GUI.skin.label.alignment = TextAnchor.MiddleCenter;
-                    Label($"PulsarPluginLoader - Unofficial mod/plugin loader for PULSAR: Lost Colony.");
+                    Label($"PulsarModLoader - Unofficial mod/plugin loader for PULSAR: Lost Colony.");
                     Label($"Version: {PluginManager.Instance.PPLVersionInfo.FileVersion}");
                     Label($"\n\nDeveloped by Tom Richter");
                     Label($"Contributors:\nDragonFire47\n18107\nBadRyuner");
@@ -263,7 +263,7 @@ namespace PulsarPluginLoader.CustomGUI
             return tex;
         }
 
-        void UpdateOnPluginRemoved(PulsarPlugin plugin)
+        void UpdateOnPluginRemoved(PulsarMod plugin)
         {
             selectedPlugin = UInt16.MaxValue;
             plugins.Remove(plugin);
@@ -275,7 +275,7 @@ namespace PulsarPluginLoader.CustomGUI
             settingsToRemove = null;
         }
 
-        void UpdateOnPluginLoaded(string pluginName, PulsarPlugin plugin)
+        void UpdateOnPluginLoaded(string pluginName, PulsarMod plugin)
         {
             plugins.Add(plugin);
             var modsettingstype = typeof(ModSettingsMenu);

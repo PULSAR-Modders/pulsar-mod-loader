@@ -1,4 +1,4 @@
-﻿namespace PulsarPluginLoader.Content.Components.MissionShipComponent
+﻿namespace PulsarModLoader.Content.Components.MissionShipComponent
 {
     public abstract class MissionShipComponentPlugin : ComponentPluginBase
     {

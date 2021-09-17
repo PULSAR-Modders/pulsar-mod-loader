@@ -1,4 +1,4 @@
-﻿namespace PulsarPluginLoader.Content.Components.CaptainsChair
+﻿namespace PulsarModLoader.Content.Components.CaptainsChair
 {
     public abstract class CaptainsChairPlugin : ComponentPluginBase
     {

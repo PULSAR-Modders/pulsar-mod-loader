@@ -4,11 +4,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("PulsarPluginLoader.dll")]
+[assembly: AssemblyTitle("PulsarModLoader.dll")]
 [assembly: AssemblyDescription("https://github.com/PULSAR-Modders/pulsar-plugin-loader")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Contributors")]
-[assembly: AssemblyProduct("Pulsar Plugin Loader")]
+[assembly: AssemblyProduct("Pulsar Mod Loader")]
 [assembly: AssemblyCopyright("Copyright © Contributors 2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

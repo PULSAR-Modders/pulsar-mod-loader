@@ -1,11 +1,11 @@
 ﻿using HarmonyLib;
-using PulsarPluginLoader;
+using PulsarModLoader;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Logger = PulsarPluginLoader.Utilities.Logger;
+using Logger = PulsarModLoader.Utilities.Logger;
 
-namespace PulsarPluginLoader.Content.Components.MegaTurret
+namespace PulsarModLoader.Content.Components.MegaTurret
 {
     public class MegaTurretPluginManager
     {
@@ -28,7 +28,7 @@ namespace PulsarPluginLoader.Content.Components.MegaTurret
         {
             VanillaMegaTurretMaxType = 7;
             Logger.Info($"MaxTypeint = {VanillaMegaTurretMaxType - 1}");
-            foreach (PulsarPlugin plugin in PluginManager.Instance.GetAllPlugins())
+            foreach (PulsarMod plugin in PluginManager.Instance.GetAllPlugins())
             {
                 Assembly asm = plugin.GetType().Assembly;
                 Type MegaTurretPlugin = typeof(MegaTurretPlugin);

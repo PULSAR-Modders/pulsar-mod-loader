@@ -1,7 +1,7 @@
 ﻿
 using System.Text;
 
-namespace PulsarPluginLoader.Chat.Commands.CommandRouter
+namespace PulsarModLoader.Chat.Commands.CommandRouter
 {
     public abstract class ChatCommand
     {

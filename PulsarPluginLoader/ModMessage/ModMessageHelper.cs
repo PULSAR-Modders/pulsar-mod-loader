@@ -1,11 +1,11 @@
 ﻿using HarmonyLib;
-using PulsarPluginLoader.Utilities;
+using PulsarModLoader.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 
-namespace PulsarPluginLoader
+namespace PulsarModLoader
 {
     [HarmonyPatch(typeof(PLServer), "Awake")]
     static class MMHInstantiate
@@ -37,8 +37,8 @@ namespace PulsarPluginLoader
         ModMessageHelper()
         {
             modMessageHandlers = new Dictionary<string, ModMessage>();
-            IEnumerable<PulsarPlugin> pluginList = PluginManager.Instance.GetAllPlugins();
-            foreach (PulsarPlugin plugin in pluginList)
+            IEnumerable<PulsarMod> pluginList = PluginManager.Instance.GetAllPlugins();
+            foreach (PulsarMod plugin in pluginList)
             {
                 Assembly asm = plugin.GetType().Assembly;
                 Type modMessage = typeof(ModMessage);
@@ -66,7 +66,7 @@ namespace PulsarPluginLoader
         }
         public string GetModName(string pluginName)
         {
-            PulsarPlugin plugin = PluginManager.Instance.GetPlugin(pluginName);
+            PulsarMod plugin = PluginManager.Instance.GetPlugin(pluginName);
             return $"{plugin.Name} {plugin.Version} MPF{plugin.MPFunctionality}";
         }
         [PunRPC]

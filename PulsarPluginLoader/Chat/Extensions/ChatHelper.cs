@@ -1,10 +1,10 @@
-﻿using PulsarPluginLoader.Chat.Commands;
-using PulsarPluginLoader.Utilities;
+﻿using PulsarModLoader.Chat.Commands;
+using PulsarModLoader.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace PulsarPluginLoader.Chat.Extensions
+namespace PulsarModLoader.Chat.Extensions
 {
     public class ChatHelper
     {
@@ -275,16 +275,16 @@ namespace PulsarPluginLoader.Chat.Extensions
                             fixedArguments.Add("weapon_specialist");
                             fixedArguments.Add("engineer");
                             break;
-                        case "plugin_name":
-                            foreach (PulsarPlugin plugin in PluginManager.Instance.GetAllPlugins())
+                        case "mod_name":
+                            foreach (PulsarMod mod in PluginManager.Instance.GetAllPlugins())
                             {
-                                fixedArguments.Add(plugin.Name);
+                                fixedArguments.Add(mod.Name);
                             }
                             break;
-                        case "plugin_identifier":
-                            foreach (PulsarPlugin plugin in PluginManager.Instance.GetAllPlugins())
+                        case "mod_identifier":
+                            foreach (PulsarMod mod in PluginManager.Instance.GetAllPlugins())
                             {
-                                fixedArguments.Add(plugin.HarmonyIdentifier());
+                                fixedArguments.Add(mod.HarmonyIdentifier());
                             }
                             break;
                     }

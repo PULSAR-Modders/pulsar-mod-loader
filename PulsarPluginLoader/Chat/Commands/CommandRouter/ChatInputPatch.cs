@@ -1,12 +1,12 @@
 ﻿using HarmonyLib;
-using PulsarPluginLoader.Patches;
-using PulsarPluginLoader.Utilities;
+using PulsarModLoader.Patches;
+using PulsarModLoader.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
 
-namespace PulsarPluginLoader.Chat.Commands
+namespace PulsarModLoader.Chat.Commands
 {
     [HarmonyPatch(typeof(PLNetworkManager), "ProcessCurrentChatText")]
     class ChatInputPatch

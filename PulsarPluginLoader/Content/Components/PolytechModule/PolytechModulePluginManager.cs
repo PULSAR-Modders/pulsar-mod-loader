@@ -1,11 +1,11 @@
 ﻿using CodeStage.AntiCheat.ObscuredTypes;
 using HarmonyLib;
-using PulsarPluginLoader.Utilities;
+using PulsarModLoader.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace PulsarPluginLoader.Content.Components.PolytechModule
+namespace PulsarModLoader.Content.Components.PolytechModule
 {
     public class PolytechModulePluginManager
     {
@@ -28,7 +28,7 @@ namespace PulsarPluginLoader.Content.Components.PolytechModule
         {
             VanillaPolytechModuleMaxType = Enum.GetValues(typeof(EPolytechModuleType)).Length;
             Logger.Info($"MaxTypeint = {VanillaPolytechModuleMaxType - 1}");
-            foreach (PulsarPlugin plugin in PluginManager.Instance.GetAllPlugins())
+            foreach (PulsarMod plugin in PluginManager.Instance.GetAllPlugins())
             {
                 Assembly asm = plugin.GetType().Assembly;
                 Type PolytechModulePlugin = typeof(PolytechModulePlugin);

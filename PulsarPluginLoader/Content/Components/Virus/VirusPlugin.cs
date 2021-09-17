@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace PulsarPluginLoader.Content.Components.Virus
+namespace PulsarModLoader.Content.Components.Virus
 {
     public abstract class VirusPlugin : ComponentPluginBase
     {

@@ -1,9 +1,9 @@
 ﻿using HarmonyLib;
 using Steamworks;
 using System.Collections.Generic;
-using Logger = PulsarPluginLoader.Utilities.Logger;
+using Logger = PulsarModLoader.Utilities.Logger;
 
-namespace PulsarPluginLoader
+namespace PulsarModLoader
 {
     class MPModChecks
     {
@@ -26,7 +26,7 @@ namespace PulsarPluginLoader
         public static string GetMPModList()
         {
             string modlist = string.Empty;
-            foreach (PulsarPlugin plugin in PluginManager.Instance.GetAllPlugins())
+            foreach (PulsarMod plugin in PluginManager.Instance.GetAllPlugins())
             {
                 if (plugin.MPFunctionality == (int)MPFunction.All || plugin.MPFunctionality == (int)MPFunction.HostRequired)
                 {
@@ -38,7 +38,7 @@ namespace PulsarPluginLoader
         public static string GetModList()
         {
             string modlist = string.Empty;
-            foreach (PulsarPlugin plugin in PluginManager.Instance.GetAllPlugins())
+            foreach (PulsarMod plugin in PluginManager.Instance.GetAllPlugins())
             {
                 modlist += $"{plugin.Name} {plugin.Version} MPF{plugin.MPFunctionality}\n";
             }

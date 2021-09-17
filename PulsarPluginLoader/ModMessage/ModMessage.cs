@@ -1,4 +1,4 @@
-﻿namespace PulsarPluginLoader
+﻿namespace PulsarModLoader
 {
     public abstract class ModMessage
     {
@@ -14,8 +14,8 @@
         /// <summary>
         /// Send data to a PhotonPlayer's mod specified by harmonyIdentifier and handlerIdentifier
         /// </summary>
-        /// <param name="harmonyIdentifier">PulsarPluginLoader.PulsarPlugin.HarmonyIdentifier()</param>
-        /// <param name="handlerIdentifier">PulsarPluginLoader.ModMessage.GetIdentifier()</param>
+        /// <param name="harmonyIdentifier">PulsarModLoader.PulsarMod.HarmonyIdentifier()</param>
+        /// <param name="handlerIdentifier">PulsarModLoader.ModMessage.GetIdentifier()</param>
         /// <param name="player"></param>
         /// <param name="arguments"></param>
         public static void SendRPC(string harmonyIdentifier, string handlerIdentifier, PhotonPlayer player, object[] arguments)
@@ -30,8 +30,8 @@
         /// <summary>
         /// Send data to a PhotonTarget's mod specified by harmonyIdentifier and handlerIdentifier
         /// </summary>
-        /// <param name="harmonyIdentifier">PulsarPluginLoader.PulsarPlugin.HarmonyIdentifier()</param>
-        /// <param name="handlerIdentifier">PulsarPluginLoader.ModMessage.GetIdentifier()</param>
+        /// <param name="harmonyIdentifier">PulsarModLoader.PulsarMod.HarmonyIdentifier()</param>
+        /// <param name="handlerIdentifier">PulsarModLoader.ModMessage.GetIdentifier()</param>
         /// <param name="targets"></param>
         /// <param name="arguments"></param>
         public static void SendRPC(string harmonyIdentifier, string handlerIdentifier, PhotonTargets targets, object[] arguments)

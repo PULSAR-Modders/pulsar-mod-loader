@@ -1,7 +1,7 @@
 ﻿using HarmonyLib;
 using System.Collections.Generic;
 
-namespace PulsarPluginLoader.Chat.Extensions
+namespace PulsarModLoader.Chat.Extensions
 {
     [HarmonyPatch(typeof(PLNetworkManager), "ProcessCurrentChatText")]
     class HarmonyProcessCurrentChatText

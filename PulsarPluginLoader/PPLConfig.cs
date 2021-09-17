@@ -5,7 +5,7 @@ using UnityEngine;
 using Valve.Newtonsoft.Json;
 using Valve.Newtonsoft.Json.Converters;
 
-namespace PulsarPluginLoader
+namespace PulsarModLoader
 {
     public class PPLConfig
     {

@@ -1,14 +1,14 @@
-﻿using PulsarPluginLoader.Chat.Commands;
-using PulsarPluginLoader.Utilities;
+﻿using PulsarModLoader.Chat.Commands;
+using PulsarModLoader.Utilities;
 using System;
 using System.Collections.Generic;
 
-namespace PulsarPluginLoader.Chat.Extensions
+namespace PulsarModLoader.Chat.Extensions
 {
     class HandlePublicCommands : ModMessage
     {
         private static readonly string harmonyIdentifier = "";
-        private static readonly string handlerIdentifier = "PulsarPluginLoader.Chat.Extensions.HandlePublicCommands";
+        private static readonly string handlerIdentifier = "PulsarModLoader.Chat.Extensions.HandlePublicCommands";
         private static readonly int version = 1;
 
         private static string[] GetPublicCommands()

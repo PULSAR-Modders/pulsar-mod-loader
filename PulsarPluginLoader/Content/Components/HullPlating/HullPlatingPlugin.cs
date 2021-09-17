@@ -1,4 +1,4 @@
-﻿namespace PulsarPluginLoader.Content.Components.HullPlating
+﻿namespace PulsarModLoader.Content.Components.HullPlating
 {
     public abstract class HullPlatingPlugin
     {

@@ -1,10 +1,10 @@
 ﻿using NUnit.Framework;
-using PulsarPluginLoader.Chat.Commands;
-using PulsarPluginLoader.Chat.Commands.CommandRouter;
+using PulsarModLoader.Chat.Commands;
+using PulsarModLoader.Chat.Commands.CommandRouter;
 using System;
 using System.IO;
 
-namespace PulsarPluginLoader.Tests.Chat.Commands
+namespace PulsarModLoader.Tests.Chat.Commands
 {
     [TestFixture]
     class ChatCommandRouterTests

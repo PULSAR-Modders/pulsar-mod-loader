@@ -1,12 +1,12 @@
 ﻿using HarmonyLib;
-using PulsarPluginLoader.Utilities;
+using PulsarModLoader.Utilities;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace PulsarPluginLoader.Patches
+namespace PulsarModLoader.Patches
 {
     public static class HarmonyHelpers
     {

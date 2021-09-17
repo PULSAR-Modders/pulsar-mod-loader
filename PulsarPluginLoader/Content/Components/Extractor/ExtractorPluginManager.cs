@@ -1,12 +1,12 @@
 ﻿using CodeStage.AntiCheat.ObscuredTypes;
 using HarmonyLib;
-using PulsarPluginLoader;
+using PulsarModLoader;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Logger = PulsarPluginLoader.Utilities.Logger;
+using Logger = PulsarModLoader.Utilities.Logger;
 
-namespace PulsarPluginLoader.Content.Components.Extractor
+namespace PulsarModLoader.Content.Components.Extractor
 {
     public class ExtractorPluginManager
     {
@@ -29,7 +29,7 @@ namespace PulsarPluginLoader.Content.Components.Extractor
         {
             VanillaExtractorMaxType = Enum.GetValues(typeof(EExtractorType)).Length;
             Logger.Info($"MaxTypeint = {VanillaExtractorMaxType - 1}");
-            foreach (PulsarPlugin plugin in PluginManager.Instance.GetAllPlugins())
+            foreach (PulsarMod plugin in PluginManager.Instance.GetAllPlugins())
             {
                 Assembly asm = plugin.GetType().Assembly;
                 Type ExtractorPlugin = typeof(ExtractorPlugin);

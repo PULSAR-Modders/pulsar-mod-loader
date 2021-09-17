@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace PulsarPluginLoader.Content.Components.PolytechModule
+namespace PulsarModLoader.Content.Components.PolytechModule
 {
     public class PolytechModulePlugin : ComponentPluginBase
     {

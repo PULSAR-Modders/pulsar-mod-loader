@@ -1,12 +1,12 @@
 ﻿using CodeStage.AntiCheat.ObscuredTypes;
 using HarmonyLib;
-using PulsarPluginLoader;
+using PulsarModLoader;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Logger = PulsarPluginLoader.Utilities.Logger;
+using Logger = PulsarModLoader.Utilities.Logger;
 
-namespace PulsarPluginLoader.Content.Components.ManeuverThruster
+namespace PulsarModLoader.Content.Components.ManeuverThruster
 {
     public class ManeuverThrusterPluginManager
     {
@@ -29,7 +29,7 @@ namespace PulsarPluginLoader.Content.Components.ManeuverThruster
         {
             VanillaManeuverThrusterMaxType = Enum.GetValues(typeof(EManeuverThrusterType)).Length;
             Logger.Info($"MaxTypeint = {VanillaManeuverThrusterMaxType - 1}");
-            foreach (PulsarPlugin plugin in PluginManager.Instance.GetAllPlugins())
+            foreach (PulsarMod plugin in PluginManager.Instance.GetAllPlugins())
             {
                 Assembly asm = plugin.GetType().Assembly;
                 Type ManeuverThrusterPlugin = typeof(ManeuverThrusterPlugin);

@@ -1,7 +1,7 @@
-﻿using PulsarPluginLoader.Chat.Commands.CommandRouter;
-using PulsarPluginLoader.Utilities;
+﻿using PulsarModLoader.Chat.Commands.CommandRouter;
+using PulsarModLoader.Utilities;
 
-namespace PulsarPluginLoader.Chat.Commands
+namespace PulsarModLoader.Chat.Commands
 {
     class DebugModeCommand : ChatCommand
     {

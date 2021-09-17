@@ -1,13 +1,13 @@
 ﻿using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Collections.Generic;
-using PulsarPluginLoader.Events;
-using PulsarPluginLoader.Utilities;
+using PulsarModLoader.Events;
+using PulsarModLoader.Utilities;
 using System;
 using System.IO;
 using System.Linq;
 
-namespace PulsarPluginLoader.Injections
+namespace PulsarModLoader.Injections
 {
     public class EventInjector
     {

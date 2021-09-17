@@ -1,5 +1,5 @@
 ﻿
-namespace PulsarPluginLoader.Events
+namespace PulsarModLoader.Events
 {
     public class Event
     {

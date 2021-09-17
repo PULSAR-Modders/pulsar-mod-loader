@@ -1,5 +1,5 @@
 ﻿using HarmonyLib;
-using PulsarPluginLoader.Utilities;
+using PulsarModLoader.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -8,17 +8,17 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-namespace PulsarPluginLoader
+namespace PulsarModLoader
 {
     public class PluginManager
     {
-        public delegate void PluginLoaded(string name, PulsarPlugin plugin);
-        public delegate void PluginUnloaded(PulsarPlugin plugin);
+        public delegate void PluginLoaded(string name, PulsarMod plugin);
+        public delegate void PluginUnloaded(PulsarMod plugin);
         public event PluginLoaded OnPluginSuccessfullyLoaded;
         public event PluginUnloaded OnPluginUnloaded;
         public FileVersionInfo PPLVersionInfo = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location);
 
-        private readonly Dictionary<string, PulsarPlugin> activePlugins;
+        private readonly Dictionary<string, PulsarMod> activePlugins;
         private readonly HashSet<string> pluginDirectories;
 
         private static PluginManager _instance = null;
@@ -40,7 +40,7 @@ namespace PulsarPluginLoader
         {
             Logger.Info($"Starting {PPLVersionInfo.ProductName} v{PPLVersionInfo.FileVersion}");
 
-            activePlugins = new Dictionary<string, PulsarPlugin>();
+            activePlugins = new Dictionary<string, PulsarMod>();
             pluginDirectories = new HashSet<string>();
 
             // Add plugins directories to AppDomain so plugins referencing other as-yet-unloaded plugins don't fail to find assemblies
@@ -50,9 +50,9 @@ namespace PulsarPluginLoader
             RuntimeHelpers.RunClassConstructor(typeof(PhotonNetwork).TypeHandle);
         }
 
-        public PulsarPlugin GetPlugin(string name)
+        public PulsarMod GetPlugin(string name)
         {
-            if (activePlugins.TryGetValue(name, out PulsarPlugin plugin))
+            if (activePlugins.TryGetValue(name, out PulsarMod plugin))
             {
                 return plugin;
             }
@@ -67,7 +67,7 @@ namespace PulsarPluginLoader
             return activePlugins.ContainsKey(name);
         }
 
-        public IEnumerable<PulsarPlugin> GetAllPlugins()
+        public IEnumerable<PulsarMod> GetAllPlugins()
         {
             return activePlugins.Values;
         }
@@ -113,7 +113,7 @@ namespace PulsarPluginLoader
             return null;
         }
 
-        public PulsarPlugin LoadPlugin(string assemblyPath)
+        public PulsarMod LoadPlugin(string assemblyPath)
         {
 
             if (!File.Exists(assemblyPath))
@@ -124,11 +124,11 @@ namespace PulsarPluginLoader
             try
             {
                 Assembly asm = Assembly.LoadFile(assemblyPath);
-                Type pluginType = asm.GetTypes().FirstOrDefault(t => t.IsSubclassOf(typeof(PulsarPlugin)));
+                Type pluginType = asm.GetTypes().FirstOrDefault(t => t.IsSubclassOf(typeof(PulsarMod)));
 
                 if (pluginType != null)
                 {
-                    PulsarPlugin plugin = Activator.CreateInstance(pluginType) as PulsarPlugin;
+                    PulsarMod plugin = Activator.CreateInstance(pluginType) as PulsarMod;
                     activePlugins.Add(plugin.Name, plugin);
                     OnPluginSuccessfullyLoaded?.Invoke(plugin.Name, plugin);
 
@@ -150,7 +150,7 @@ namespace PulsarPluginLoader
             }
         }
 
-        internal void UnloadPlugin(PulsarPlugin plugin, ref Harmony harmony)
+        internal void UnloadPlugin(PulsarMod plugin, ref Harmony harmony)
         {
             activePlugins.Remove(plugin.Name); // Removes selected plugin from activePlugins
             harmony.UnpatchAll(plugin.HarmonyIdentifier()); // Removes all patches from selected plugin

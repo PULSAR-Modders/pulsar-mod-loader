@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace PulsarPluginLoader.Content.Components.CPU
+namespace PulsarModLoader.Content.Components.CPU
 {
     public abstract class CPUPlugin : ComponentPluginBase
     {

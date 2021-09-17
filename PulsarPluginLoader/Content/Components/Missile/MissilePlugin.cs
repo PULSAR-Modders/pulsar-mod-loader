@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace PulsarPluginLoader.Content.Components.Missile
+namespace PulsarModLoader.Content.Components.Missile
 {
     public abstract class MissilePlugin : ComponentPluginBase
     {

@@ -1,7 +1,7 @@
 ﻿using HarmonyLib;
 using System.Reflection;
 
-namespace PulsarPluginLoader.Injections
+namespace PulsarModLoader.Injections
 {
     public static class HarmonyInjector
     {

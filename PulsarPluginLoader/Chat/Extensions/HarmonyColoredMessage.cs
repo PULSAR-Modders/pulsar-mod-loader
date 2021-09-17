@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
 
-namespace PulsarPluginLoader.Chat.Extensions
+namespace PulsarModLoader.Chat.Extensions
 {
     [HarmonyPatch(typeof(PLInGameUI), "ColoredMsg")]
     public class HarmonyColoredMessage

@@ -3,7 +3,7 @@ using System.IO;
 using System.Reflection;
 using UnityEngine;
 
-namespace PulsarPluginLoader.Patches
+namespace PulsarModLoader.Patches
 {
     [HarmonyPatch(typeof(PLGlobal), "Start")]
     class PLGlobalStart

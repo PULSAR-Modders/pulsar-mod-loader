@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace PulsarPluginLoader.Content.Components.FBRecipeModule
+namespace PulsarModLoader.Content.Components.FBRecipeModule
 {
     public abstract class FBRecipeModulePlugin : ComponentPluginBase
     {

@@ -1,12 +1,12 @@
 ﻿using CodeStage.AntiCheat.ObscuredTypes;
 using HarmonyLib;
-using PulsarPluginLoader;
+using PulsarModLoader;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Logger = PulsarPluginLoader.Utilities.Logger;
+using Logger = PulsarModLoader.Utilities.Logger;
 
-namespace PulsarPluginLoader.Content.Components.Hull
+namespace PulsarModLoader.Content.Components.Hull
 {
     public class HullPluginManager
     {
@@ -29,7 +29,7 @@ namespace PulsarPluginLoader.Content.Components.Hull
         {
             VanillaHullMaxType = Enum.GetValues(typeof(EHullType)).Length;
             Logger.Info($"MaxTypeint = {VanillaHullMaxType - 1}");
-            foreach (PulsarPlugin plugin in PluginManager.Instance.GetAllPlugins())
+            foreach (PulsarMod plugin in PluginManager.Instance.GetAllPlugins())
             {
                 Assembly asm = plugin.GetType().Assembly;
                 Type HullPlugin = typeof(HullPlugin);

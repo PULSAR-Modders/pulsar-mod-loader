@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace PulsarPluginLoader.Utilities
+namespace PulsarModLoader.Utilities
 {
     public static class Clipboard
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PulsarPluginLoader.Events
+namespace PulsarModLoader.Events
 {
     public class EventHandler : Attribute
     {

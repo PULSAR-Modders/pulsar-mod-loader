@@ -1,5 +1,5 @@
 ﻿
-namespace PulsarPluginLoader.Injections
+namespace PulsarModLoader.Injections
 {
     public static class AntiCheatBypass
     {

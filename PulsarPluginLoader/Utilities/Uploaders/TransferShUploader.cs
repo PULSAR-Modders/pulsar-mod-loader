@@ -2,7 +2,7 @@
 using System.Net;
 using System.Text;
 
-namespace PulsarPluginLoader.Utilities.Uploaders
+namespace PulsarModLoader.Utilities.Uploaders
 {
     class TransferShUploader : IUploader
     {

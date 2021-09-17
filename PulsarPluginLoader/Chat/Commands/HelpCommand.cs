@@ -1,11 +1,11 @@
-﻿using PulsarPluginLoader.Chat.Commands.CommandRouter;
-using PulsarPluginLoader.Utilities;
+﻿using PulsarModLoader.Chat.Commands.CommandRouter;
+using PulsarModLoader.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace PulsarPluginLoader.Chat.Commands
+namespace PulsarModLoader.Chat.Commands
 {
     class HelpCommand : ChatCommand
     {
@@ -43,11 +43,11 @@ namespace PulsarPluginLoader.Chat.Commands
                     {
                         arguments = arguments.Substring(1);
                     }
-                    Tuple<ChatCommand, PulsarPlugin> t = ChatCommandRouter.Instance.GetCommand(arguments);
+                    Tuple<ChatCommand, PulsarMod> t = ChatCommandRouter.Instance.GetCommand(arguments);
                     if (t != null)
                     {
                         ChatCommand cmd = t.Item1;
-                        string name = t.Item2 != null ? t.Item2.Name : "Pulsar Plugin Loader";
+                        string name = t.Item2 != null ? t.Item2.Name : "Pulsar Mod Loader";
 
                         Messaging.Echo(player, $"[&%~[C0 /{cmd.CommandAliases()[0]} ]&%~] - {cmd.Description()} <color=#ff6600ff>[{name}]</color>");
                         Messaging.Echo(player, $"Aliases: /{string.Join($", /", cmd.CommandAliases())}");
@@ -66,7 +66,7 @@ namespace PulsarPluginLoader.Chat.Commands
             }
 
             int commandsPerPage = (PLXMLOptionsIO.Instance.CurrentOptions.GetStringValueAsInt("ChatNumLines") * 5 + 10) - 2;
-            IOrderedEnumerable<Tuple<ChatCommand, PulsarPlugin>> commands = ChatCommandRouter.Instance.GetCommands();
+            IOrderedEnumerable<Tuple<ChatCommand, PulsarMod>> commands = ChatCommandRouter.Instance.GetCommands();
             int pages = Mathf.CeilToInt(commands.Count()/(float)commandsPerPage);
             page--; //Pages start from 1
             if (page < 0)

@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Reflection;
 using UnityEngine.UI;
 
-namespace PulsarPluginLoader.Patches
+namespace PulsarModLoader.Patches
 {
     [HarmonyPatch(typeof(PLInGameUI), "Update")]
     class GameVersion

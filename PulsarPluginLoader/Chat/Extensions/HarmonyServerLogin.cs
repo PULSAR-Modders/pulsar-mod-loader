@@ -1,8 +1,8 @@
 ﻿using HarmonyLib;
-using PulsarPluginLoader.Chat.Commands;
-using PulsarPluginLoader.Utilities;
+using PulsarModLoader.Chat.Commands;
+using PulsarModLoader.Utilities;
 
-namespace PulsarPluginLoader.Chat.Extensions
+namespace PulsarModLoader.Chat.Extensions
 {
     [HarmonyPatch(typeof(PLServer), "StartPlayer")]
     class HarmonyServerLogin

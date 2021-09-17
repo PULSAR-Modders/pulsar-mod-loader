@@ -1,12 +1,12 @@
 ﻿using HarmonyLib;
-using PulsarPluginLoader.Chat.Commands.CommandRouter;
-using PulsarPluginLoader.Utilities;
+using PulsarModLoader.Chat.Commands.CommandRouter;
+using PulsarModLoader.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace PulsarPluginLoader.Chat.Commands
+namespace PulsarModLoader.Chat.Commands
 {
     public class ChatCommandRouter
     {
@@ -24,7 +24,7 @@ namespace PulsarPluginLoader.Chat.Commands
                     _instance.LoadCommandsFromAssembly(Assembly.GetExecutingAssembly(), null);
 
                     // Attach commands from plugins already loaded
-                    foreach (PulsarPlugin p in PluginManager.Instance.GetAllPlugins())
+                    foreach (PulsarMod p in PluginManager.Instance.GetAllPlugins())
                     {
                         _instance.OnPluginLoaded(p.Name, p);
                     }
@@ -38,26 +38,26 @@ namespace PulsarPluginLoader.Chat.Commands
             }
         }
 
-        public readonly Dictionary<string, Tuple<ChatCommand, PulsarPlugin>> commands;
-        public readonly Dictionary<string, Tuple<PublicCommand, PulsarPlugin>> publicCommands;
-        public readonly Dictionary<string, PulsarPlugin> conflictingAliases;
-        public readonly Dictionary<string, PulsarPlugin> conflictingPublicAliases;
+        public readonly Dictionary<string, Tuple<ChatCommand, PulsarMod>> commands;
+        public readonly Dictionary<string, Tuple<PublicCommand, PulsarMod>> publicCommands;
+        public readonly Dictionary<string, PulsarMod> conflictingAliases;
+        public readonly Dictionary<string, PulsarMod> conflictingPublicAliases;
 
         public ChatCommandRouter()
         {
-            commands = new Dictionary<string, Tuple<ChatCommand, PulsarPlugin>>();
-            publicCommands = new Dictionary<string, Tuple<PublicCommand, PulsarPlugin>>();
-            conflictingAliases = new Dictionary<string, PulsarPlugin>();
-            conflictingPublicAliases = new Dictionary<string, PulsarPlugin>();
+            commands = new Dictionary<string, Tuple<ChatCommand, PulsarMod>>();
+            publicCommands = new Dictionary<string, Tuple<PublicCommand, PulsarMod>>();
+            conflictingAliases = new Dictionary<string, PulsarMod>();
+            conflictingPublicAliases = new Dictionary<string, PulsarMod>();
         }
 
-        public void Register (ChatCommand cmd, PulsarPlugin plugin)
+        public void Register (ChatCommand cmd, PulsarMod plugin)
         {
             foreach (string alias in cmd.CommandAliases())
             {
                 string lowerAlias = alias.ToLower();
 
-                if (conflictingAliases.TryGetValue(lowerAlias, out PulsarPlugin plugin2))
+                if (conflictingAliases.TryGetValue(lowerAlias, out PulsarMod plugin2))
                 {
                     string name = plugin != null ? plugin.Name : "Pulsar Plugin Loader";
                     string name2 = plugin2 != null ? plugin2.Name : "Pulsar Plugin Loader";
@@ -65,7 +65,7 @@ namespace PulsarPluginLoader.Chat.Commands
                 }
                 else
                 {
-                    if (commands.TryGetValue(lowerAlias, out Tuple<ChatCommand, PulsarPlugin> t))
+                    if (commands.TryGetValue(lowerAlias, out Tuple<ChatCommand, PulsarMod> t))
                     {
                         conflictingAliases.Add(lowerAlias, plugin);
                         commands.Remove(lowerAlias);
@@ -75,19 +75,19 @@ namespace PulsarPluginLoader.Chat.Commands
                     }
                     else
                     {
-                        commands.Add(lowerAlias, new Tuple<ChatCommand, PulsarPlugin>(cmd, plugin));
+                        commands.Add(lowerAlias, new Tuple<ChatCommand, PulsarMod>(cmd, plugin));
                     }
                 }
             }
         }
 
-        public void Register (PublicCommand cmd, PulsarPlugin plugin)
+        public void Register (PublicCommand cmd, PulsarMod plugin)
         {
             foreach (string alias in cmd.CommandAliases())
             {
                 string lowerAlias = alias.ToLower();
 
-                if (conflictingPublicAliases.TryGetValue(lowerAlias, out PulsarPlugin plugin2))
+                if (conflictingPublicAliases.TryGetValue(lowerAlias, out PulsarMod plugin2))
                 {
                     string name = plugin != null ? plugin.Name : "Pulsar Plugin Loader";
                     string name2 = plugin2 != null ? plugin2.Name : "Pulsar Plugin Loader";
@@ -95,7 +95,7 @@ namespace PulsarPluginLoader.Chat.Commands
                 }
                 else
                 {
-                    if (publicCommands.TryGetValue(lowerAlias, out Tuple<PublicCommand, PulsarPlugin> t))
+                    if (publicCommands.TryGetValue(lowerAlias, out Tuple<PublicCommand, PulsarMod> t))
                     {
                         conflictingPublicAliases.Add(lowerAlias, plugin);
                         publicCommands.Remove(lowerAlias);
@@ -105,17 +105,17 @@ namespace PulsarPluginLoader.Chat.Commands
                     }
                     else
                     {
-                        publicCommands.Add(lowerAlias, new Tuple<PublicCommand, PulsarPlugin>(cmd, plugin));
+                        publicCommands.Add(lowerAlias, new Tuple<PublicCommand, PulsarMod>(cmd, plugin));
                     }
                 }
             }
         }
 
-        public Tuple<ChatCommand, PulsarPlugin> GetCommand(string alias)
+        public Tuple<ChatCommand, PulsarMod> GetCommand(string alias)
         {
             string lowerAlias = alias.ToLower();
 
-            if (commands.TryGetValue(lowerAlias, out Tuple<ChatCommand, PulsarPlugin> t))
+            if (commands.TryGetValue(lowerAlias, out Tuple<ChatCommand, PulsarMod> t))
             {
                 return t;
             }
@@ -123,11 +123,11 @@ namespace PulsarPluginLoader.Chat.Commands
             return null;
         }
 
-        public Tuple<PublicCommand, PulsarPlugin> GetPublicCommand(string alias)
+        public Tuple<PublicCommand, PulsarMod> GetPublicCommand(string alias)
         {
             string lowerAlias = alias.ToLower();
 
-            if (publicCommands.TryGetValue(lowerAlias, out Tuple<PublicCommand, PulsarPlugin> t))
+            if (publicCommands.TryGetValue(lowerAlias, out Tuple<PublicCommand, PulsarMod> t))
             {
                 return t;
             }
@@ -135,7 +135,7 @@ namespace PulsarPluginLoader.Chat.Commands
             return null;
         }
 
-        public void Unregister(PulsarPlugin plugin)
+        public void Unregister(PulsarMod plugin)
         {
             List<string> commandsToRemove = new List<string>();
 
@@ -154,14 +154,14 @@ namespace PulsarPluginLoader.Chat.Commands
                 publicCommands.Remove(command);
         }
 
-        public IOrderedEnumerable<Tuple<ChatCommand, PulsarPlugin>> GetCommands()
+        public IOrderedEnumerable<Tuple<ChatCommand, PulsarMod>> GetCommands()
         {
-            return new HashSet<Tuple<ChatCommand, PulsarPlugin>>(commands.Values).OrderBy(t => t.Item1.CommandAliases()[0]);
+            return new HashSet<Tuple<ChatCommand, PulsarMod>>(commands.Values).OrderBy(t => t.Item1.CommandAliases()[0]);
         }
 
-        public IOrderedEnumerable<Tuple<PublicCommand, PulsarPlugin>> GetPublicCommands()
+        public IOrderedEnumerable<Tuple<PublicCommand, PulsarMod>> GetPublicCommands()
         {
-            return new HashSet<Tuple<PublicCommand, PulsarPlugin>>(publicCommands.Values).OrderBy(t => t.Item1.CommandAliases()[0]);
+            return new HashSet<Tuple<PublicCommand, PulsarMod>>(publicCommands.Values).OrderBy(t => t.Item1.CommandAliases()[0]);
         }
 
         public string[] getCommandAliases()
@@ -185,7 +185,7 @@ namespace PulsarPluginLoader.Chat.Commands
                 string alias = splitInput[0].ToLower();
                 string arguments = splitInput.Length > 1 ? splitInput[1] : String.Empty;
 
-                if (commands.TryGetValue(alias, out Tuple<ChatCommand, PulsarPlugin> t))
+                if (commands.TryGetValue(alias, out Tuple<ChatCommand, PulsarMod> t))
                 {
                     fallthroughToDevCommands = false;
                     try
@@ -203,13 +203,13 @@ namespace PulsarPluginLoader.Chat.Commands
             return fallthroughToDevCommands;
         }
 
-        public void OnPluginLoaded(string name, PulsarPlugin plugin)
+        public void OnPluginLoaded(string name, PulsarMod plugin)
         {
             Assembly asm = plugin.GetType().Assembly;
             LoadCommandsFromAssembly(asm, plugin);
         }
 
-        private void LoadCommandsFromAssembly(Assembly asm, PulsarPlugin plugin)
+        private void LoadCommandsFromAssembly(Assembly asm, PulsarMod plugin)
         {
             Type ChatCmd = typeof(ChatCommand);
             Type PublicCmd = typeof(PublicCommand);
@@ -240,7 +240,7 @@ namespace PulsarPluginLoader.Chat.Commands
                 string alias = splitInput[0].ToLower();
                 string arguments = splitInput.Length > 1 ? splitInput[1] : string.Empty;
 
-                if (ChatCommandRouter.Instance.publicCommands.TryGetValue(alias, out Tuple<PublicCommand, PulsarPlugin> t))
+                if (ChatCommandRouter.Instance.publicCommands.TryGetValue(alias, out Tuple<PublicCommand, PulsarMod> t))
                 {
                     try
                     {

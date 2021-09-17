@@ -1,5 +1,5 @@
-﻿using PulsarPluginLoader.Injections;
-using PulsarPluginLoader.Utilities;
+﻿using PulsarModLoader.Injections;
+using PulsarModLoader.Utilities;
 using System;
 using System.IO;
 using System.Reflection;
@@ -143,7 +143,7 @@ namespace PulsarInjector
             /* Copy important assemblies to target assembly's directory */
             string sourceDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             string[] copyables = new string[] {
-                typeof(PulsarPluginLoader.PulsarPlugin).Assembly.Location,
+                typeof(PulsarModLoader.PulsarMod).Assembly.Location,
                 Path.Combine(sourceDir, "0Harmony.dll")
             };
 

@@ -1,13 +1,13 @@
 ﻿using CodeStage.AntiCheat.ObscuredTypes;
 using HarmonyLib;
-using PulsarPluginLoader;
+using PulsarModLoader;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
-using Logger = PulsarPluginLoader.Utilities.Logger;
+using Logger = PulsarModLoader.Utilities.Logger;
 
-namespace PulsarPluginLoader.Content.Components.Shield
+namespace PulsarModLoader.Content.Components.Shield
 {
     public class ShieldPluginManager
     {
@@ -30,7 +30,7 @@ namespace PulsarPluginLoader.Content.Components.Shield
         {
             VanillaShieldMaxType = Enum.GetValues(typeof(EShieldGeneratorType)).Length;
             Logger.Info($"MaxTypeint = {VanillaShieldMaxType - 1}");
-            foreach (PulsarPlugin plugin in PluginManager.Instance.GetAllPlugins())
+            foreach (PulsarMod plugin in PluginManager.Instance.GetAllPlugins())
             {
                 Assembly asm = plugin.GetType().Assembly;
                 Type ShieldPlugin = typeof(ShieldPlugin);

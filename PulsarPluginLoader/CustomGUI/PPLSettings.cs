@@ -6,11 +6,11 @@ using UnityEngine;
 using static UnityEngine.GUILayout;
 
 
-namespace PulsarPluginLoader.CustomGUI
+namespace PulsarModLoader.CustomGUI
 {
     class PPLSettings : ModSettingsMenu
     {
-        public override string Name() => "PulsarPluginLoader";
+        public override string Name() => "PulsarModLoader";
         public override void Draw()
         {
             GUI.skin.label.alignment = TextAnchor.UpperLeft;

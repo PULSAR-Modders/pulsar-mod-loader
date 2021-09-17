@@ -1,4 +1,4 @@
-﻿namespace PulsarPluginLoader.Content.Components.Turret
+﻿namespace PulsarModLoader.Content.Components.Turret
 {
     public abstract class TurretPlugin
     {

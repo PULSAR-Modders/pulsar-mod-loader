@@ -1,6 +1,6 @@
-﻿using PulsarPluginLoader.Chat.Commands.CommandRouter;
+﻿using PulsarModLoader.Chat.Commands.CommandRouter;
 
-namespace PulsarPluginLoader.Chat.Commands
+namespace PulsarModLoader.Chat.Commands
 {
     class ClearCommand : ChatCommand
     {

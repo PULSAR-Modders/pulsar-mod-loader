@@ -1,4 +1,4 @@
-﻿namespace PulsarPluginLoader.Content.Components.MegaTurret
+﻿namespace PulsarModLoader.Content.Components.MegaTurret
 {
     public abstract class MegaTurretPlugin
     {

@@ -1,12 +1,12 @@
 ﻿using CodeStage.AntiCheat.ObscuredTypes;
 using HarmonyLib;
-using PulsarPluginLoader;
+using PulsarModLoader;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Logger = PulsarPluginLoader.Utilities.Logger;
+using Logger = PulsarModLoader.Utilities.Logger;
 
-namespace PulsarPluginLoader.Content.Components.Missile
+namespace PulsarModLoader.Content.Components.Missile
 {
     public class MissilePluginManager
     {
@@ -29,7 +29,7 @@ namespace PulsarPluginLoader.Content.Components.Missile
         {
             VanillaMissileMaxType = Enum.GetValues(typeof(ETrackerMissileType)).Length;
             Logger.Info($"MaxTypeint = {VanillaMissileMaxType - 1}");
-            foreach (PulsarPlugin plugin in PluginManager.Instance.GetAllPlugins())
+            foreach (PulsarMod plugin in PluginManager.Instance.GetAllPlugins())
             {
                 Assembly asm = plugin.GetType().Assembly;
                 Type MissilePlugin = typeof(MissilePlugin);

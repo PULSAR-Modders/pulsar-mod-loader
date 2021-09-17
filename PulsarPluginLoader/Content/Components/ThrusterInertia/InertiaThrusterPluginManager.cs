@@ -1,12 +1,12 @@
 ﻿using CodeStage.AntiCheat.ObscuredTypes;
 using HarmonyLib;
-using PulsarPluginLoader;
+using PulsarModLoader;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Logger = PulsarPluginLoader.Utilities.Logger;
+using Logger = PulsarModLoader.Utilities.Logger;
 
-namespace PulsarPluginLoader.Content.Components.InertiaThruster
+namespace PulsarModLoader.Content.Components.InertiaThruster
 {
     public class InertiaThrusterPluginManager
     {
@@ -29,7 +29,7 @@ namespace PulsarPluginLoader.Content.Components.InertiaThruster
         {
             VanillaInertiaThrusterMaxType = Enum.GetValues(typeof(EInertiaThrusterType)).Length;
             Logger.Info($"MaxTypeint = {VanillaInertiaThrusterMaxType - 1}");
-            foreach (PulsarPlugin plugin in PluginManager.Instance.GetAllPlugins())
+            foreach (PulsarMod plugin in PluginManager.Instance.GetAllPlugins())
             {
                 Assembly asm = plugin.GetType().Assembly;
                 Type InertiaThrusterPlugin = typeof(InertiaThrusterPlugin);

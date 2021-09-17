@@ -1,11 +1,11 @@
 ﻿using HarmonyLib;
-using PulsarPluginLoader;
+using PulsarModLoader;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Logger = PulsarPluginLoader.Utilities.Logger;
+using Logger = PulsarModLoader.Utilities.Logger;
 
-namespace PulsarPluginLoader.Content.Components.HullPlating
+namespace PulsarModLoader.Content.Components.HullPlating
 {
     public class HullPlatingPluginManager
     {
@@ -28,7 +28,7 @@ namespace PulsarPluginLoader.Content.Components.HullPlating
         {
             VanillaHullPlatingMaxType = Enum.GetValues(typeof(ETrackerMissileType)).Length;
             Logger.Info($"MaxTypeint = {VanillaHullPlatingMaxType - 1}");
-            foreach (PulsarPlugin plugin in PluginManager.Instance.GetAllPlugins())
+            foreach (PulsarMod plugin in PluginManager.Instance.GetAllPlugins())
             {
                 Assembly asm = plugin.GetType().Assembly;
                 Type HullPlatingPlugin = typeof(HullPlatingPlugin);

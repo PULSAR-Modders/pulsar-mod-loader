@@ -1,12 +1,12 @@
 ﻿using CodeStage.AntiCheat.ObscuredTypes;
 using HarmonyLib;
-using PulsarPluginLoader;
+using PulsarModLoader;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Logger = PulsarPluginLoader.Utilities.Logger;
+using Logger = PulsarModLoader.Utilities.Logger;
 
-namespace PulsarPluginLoader.Content.Components.NuclearDevice
+namespace PulsarModLoader.Content.Components.NuclearDevice
 {
     public class NuclearDevicePluginManager
     {
@@ -29,7 +29,7 @@ namespace PulsarPluginLoader.Content.Components.NuclearDevice
         {
             VanillaNuclearDeviceMaxType = Enum.GetValues(typeof(ENuclearDeviceType)).Length;
             Logger.Info($"MaxTypeint = {VanillaNuclearDeviceMaxType - 1}");
-            foreach (PulsarPlugin plugin in PluginManager.Instance.GetAllPlugins())
+            foreach (PulsarMod plugin in PluginManager.Instance.GetAllPlugins())
             {
                 Assembly asm = plugin.GetType().Assembly;
                 Type NuclearDevicePlugin = typeof(NuclearDevicePlugin);

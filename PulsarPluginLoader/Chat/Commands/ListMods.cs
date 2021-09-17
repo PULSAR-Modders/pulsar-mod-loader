@@ -1,5 +1,5 @@
-﻿using PulsarPluginLoader.Chat.Commands.CommandRouter;
-using PulsarPluginLoader.Utilities;
+﻿using PulsarModLoader.Chat.Commands.CommandRouter;
+using PulsarModLoader.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,18 +7,18 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace PulsarPluginLoader.Chat.Commands
+namespace PulsarModLoader.Chat.Commands
 {
-    class ListPlugins : ChatCommand
+    class ListMods : ChatCommand
     {
         public override string[] CommandAliases()
         {
-            return new string[] { "plugin", "plugins", "listPlugins" };
+            return new string[] { "mod", "mods", "listMods" };
         }
 
         public override string Description()
         {
-            return "Displays information about a plugin, or the list of plugins if none specified";
+            return "Displays information about a mod, or the list of mods if none specified";
         }
 
         public override string[][] Arguments()
@@ -34,10 +34,10 @@ namespace PulsarPluginLoader.Chat.Commands
             {
                 if (!int.TryParse(arguments, out page))
                 {
-                    PulsarPlugin plugin = PluginManager.Instance.GetPlugin(arguments);
+                    PulsarMod plugin = PluginManager.Instance.GetPlugin(arguments);
                     if (plugin == null)
                     {
-                        foreach (PulsarPlugin p in PluginManager.Instance.GetAllPlugins())
+                        foreach (PulsarMod p in PluginManager.Instance.GetAllPlugins())
                         {
                             if (p.HarmonyIdentifier().ToLower() == arguments.ToLower())
                             {
@@ -64,7 +64,7 @@ namespace PulsarPluginLoader.Chat.Commands
             }
 
             int pluginsPerPage = (PLXMLOptionsIO.Instance.CurrentOptions.GetStringValueAsInt("ChatNumLines") * 5 + 10) - 2;
-            IOrderedEnumerable<PulsarPlugin> plugins = PluginManager.Instance.GetAllPlugins().OrderBy(t => t.Name);
+            IOrderedEnumerable<PulsarMod> plugins = PluginManager.Instance.GetAllPlugins().OrderBy(t => t.Name);
             int pages = Mathf.CeilToInt(plugins.Count() / (float)pluginsPerPage);
             page--; //Pages start from 1
             if (page < 0)
@@ -78,7 +78,7 @@ namespace PulsarPluginLoader.Chat.Commands
                 int index = i + page * pluginsPerPage;
                 if (i + page * pluginsPerPage >= plugins.Count())
                     break;
-                PulsarPlugin plugin = plugins.ElementAt(index);
+                PulsarMod plugin = plugins.ElementAt(index);
                 Messaging.Echo(player, $"{plugin.Name} - {plugin.ShortDescription}");
             }
             Messaging.Echo(player, "Use [&%~[C2 /plugin <plugin> ]&%~] for details about a specific plugin");

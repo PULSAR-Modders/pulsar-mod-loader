@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace PulsarPluginLoader.Content.Components
+namespace PulsarModLoader.Content.Components
 {
     public abstract class ComponentPluginBase
     {

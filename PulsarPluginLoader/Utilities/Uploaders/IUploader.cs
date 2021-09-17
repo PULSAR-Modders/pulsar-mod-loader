@@ -1,4 +1,4 @@
-﻿namespace PulsarPluginLoader.Utilities.Uploaders
+﻿namespace PulsarModLoader.Utilities.Uploaders
 {
     interface IUploader
     {

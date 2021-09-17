@@ -1,4 +1,4 @@
-﻿namespace PulsarPluginLoader.Content.Components.Extractor
+﻿namespace PulsarModLoader.Content.Components.Extractor
 {
     public abstract class ExtractorPlugin : ComponentPluginBase
     {

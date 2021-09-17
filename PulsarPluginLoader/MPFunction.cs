@@ -1,4 +1,4 @@
-﻿namespace PulsarPluginLoader
+﻿namespace PulsarModLoader
 {
     public enum MPFunction
     {

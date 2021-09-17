@@ -1,11 +1,11 @@
 ﻿using Mono.Cecil;
 using Mono.Cecil.Cil;
-using PulsarPluginLoader.Utilities;
+using PulsarModLoader.Utilities;
 using System;
 using System.IO;
 using System.Linq;
 
-namespace PulsarPluginLoader.Injections
+namespace PulsarModLoader.Injections
 {
     public static class InjectionTools
     {

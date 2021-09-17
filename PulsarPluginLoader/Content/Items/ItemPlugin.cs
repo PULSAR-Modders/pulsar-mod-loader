@@ -1,4 +1,4 @@
-﻿namespace PulsarPluginLoader.Content.Items
+﻿namespace PulsarModLoader.Content.Items
 {
     public abstract class ItemPlugin
     {

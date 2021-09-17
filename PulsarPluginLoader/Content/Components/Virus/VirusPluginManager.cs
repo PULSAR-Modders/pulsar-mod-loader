@@ -3,9 +3,9 @@ using HarmonyLib;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Logger = PulsarPluginLoader.Utilities.Logger;
+using Logger = PulsarModLoader.Utilities.Logger;
 
-namespace PulsarPluginLoader.Content.Components.Virus
+namespace PulsarModLoader.Content.Components.Virus
 {
     public class VirusPluginManager
     {
@@ -28,7 +28,7 @@ namespace PulsarPluginLoader.Content.Components.Virus
         {
             VanillaVirusMaxType = Enum.GetValues(typeof(EVirusType)).Length - 1;
             Logger.Info($"MaxTypeint = {VanillaVirusMaxType - 1}");
-            foreach (PulsarPlugin plugin in PluginManager.Instance.GetAllPlugins())
+            foreach (PulsarMod plugin in PluginManager.Instance.GetAllPlugins())
             {
                 Assembly asm = plugin.GetType().Assembly;
                 Type VirusPlugin = typeof(VirusPlugin);

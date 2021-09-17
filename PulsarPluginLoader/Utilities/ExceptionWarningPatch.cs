@@ -1,9 +1,9 @@
 ﻿using HarmonyLib;
-using PulsarPluginLoader.Chat.Commands;
+using PulsarModLoader.Chat.Commands;
 using System;
 using UnityEngine;
 
-namespace PulsarPluginLoader.Utilities
+namespace PulsarModLoader.Utilities
 {
     [HarmonyPatch(typeof(PLNetworkManager), "Start")]
     class ExceptionWarningPatch

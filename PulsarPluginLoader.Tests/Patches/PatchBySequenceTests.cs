@@ -3,9 +3,9 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
-using static PulsarPluginLoader.Patches.HarmonyHelpers;
+using static PulsarModLoader.Patches.HarmonyHelpers;
 
-namespace PulsarPluginLoader.Tests.Patches
+namespace PulsarModLoader.Tests.Patches
 {
     [TestFixture]
     class PatchBySequenceTests

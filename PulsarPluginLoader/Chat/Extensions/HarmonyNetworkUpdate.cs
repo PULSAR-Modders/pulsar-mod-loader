@@ -2,9 +2,9 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using static PulsarPluginLoader.Chat.Extensions.ChatHelper;
+using static PulsarModLoader.Chat.Extensions.ChatHelper;
 
-namespace PulsarPluginLoader.Chat.Extensions
+namespace PulsarModLoader.Chat.Extensions
 {
     [HarmonyPatch(typeof(PLNetworkManager), "Update")]
     class HarmonyNetworkUpdate

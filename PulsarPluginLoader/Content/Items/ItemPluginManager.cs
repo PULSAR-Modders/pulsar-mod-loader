@@ -1,10 +1,10 @@
 ﻿using HarmonyLib;
-using PulsarPluginLoader.Utilities;
+using PulsarModLoader.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace PulsarPluginLoader.Content.Items
+namespace PulsarModLoader.Content.Items
 {
     public class ItemPluginManager
     {
@@ -26,7 +26,7 @@ namespace PulsarPluginLoader.Content.Items
         {
             VanillaItemMaxType = Enum.GetValues(typeof(EPawnItemType)).Length;
             Logger.Info($"ItemMaxTypeint = {VanillaItemMaxType - 1}");
-            foreach (PulsarPlugin plugin in PluginManager.Instance.GetAllPlugins())
+            foreach (PulsarMod plugin in PluginManager.Instance.GetAllPlugins())
             {
                 Assembly asm = plugin.GetType().Assembly;
                 Type ItemPlugin = typeof(ItemPlugin);

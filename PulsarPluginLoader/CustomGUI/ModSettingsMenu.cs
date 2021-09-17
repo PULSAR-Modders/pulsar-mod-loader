@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace PulsarPluginLoader.CustomGUI
+namespace PulsarModLoader.CustomGUI
 {
     public abstract class ModSettingsMenu
     {

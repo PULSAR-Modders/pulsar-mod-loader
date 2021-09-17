@@ -1,11 +1,11 @@
-﻿using PulsarPluginLoader.Chat.Commands.CommandRouter;
-using PulsarPluginLoader.Utilities;
+﻿using PulsarModLoader.Chat.Commands.CommandRouter;
+using PulsarModLoader.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace PulsarPluginLoader.Chat.Commands
+namespace PulsarModLoader.Chat.Commands
 {
     class PublicHelpCommand : PublicCommand
     {
@@ -35,7 +35,7 @@ namespace PulsarPluginLoader.Chat.Commands
         {
             if (PLNetworkManager.Instance.LocalPlayer.GetPhotonPlayer().IsMasterClient)
             {
-                IOrderedEnumerable<Tuple<PublicCommand, PulsarPlugin>> publicCommands = ChatCommandRouter.Instance.GetPublicCommands();
+                IOrderedEnumerable<Tuple<PublicCommand, PulsarMod>> publicCommands = ChatCommandRouter.Instance.GetPublicCommands();
 
                 if (publicCommands.Count() <= 1)
                 {
@@ -52,7 +52,7 @@ namespace PulsarPluginLoader.Chat.Commands
                         {
                             arguments = arguments.Substring(1);
                         }
-                        Tuple<PublicCommand, PulsarPlugin> t = ChatCommandRouter.Instance.GetPublicCommand(arguments);
+                        Tuple<PublicCommand, PulsarMod> t = ChatCommandRouter.Instance.GetPublicCommand(arguments);
                         if (t != null)
                         {
                             PublicCommand cmd = t.Item1;

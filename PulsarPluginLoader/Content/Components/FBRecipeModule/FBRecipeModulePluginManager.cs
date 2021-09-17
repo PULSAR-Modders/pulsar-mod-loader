@@ -6,10 +6,10 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using UnityEngine;
-using static PulsarPluginLoader.Patches.HarmonyHelpers;
-using Logger = PulsarPluginLoader.Utilities.Logger;
+using static PulsarModLoader.Patches.HarmonyHelpers;
+using Logger = PulsarModLoader.Utilities.Logger;
 
-namespace PulsarPluginLoader.Content.Components.FBRecipeModule
+namespace PulsarModLoader.Content.Components.FBRecipeModule
 {
     public class FBRecipeModulePluginManager
     {
@@ -32,7 +32,7 @@ namespace PulsarPluginLoader.Content.Components.FBRecipeModule
         {
             VanillaFBRecipeModuleMaxType = Enum.GetValues(typeof(FBRecipe)).Length;
             Logger.Info($"MaxTypeint = {VanillaFBRecipeModuleMaxType - 1}");
-            foreach (PulsarPlugin plugin in PluginManager.Instance.GetAllPlugins())
+            foreach (PulsarMod plugin in PluginManager.Instance.GetAllPlugins())
             {
                 Assembly asm = plugin.GetType().Assembly;
                 Type FBRecipeModulePlugin = typeof(FBRecipeModulePlugin);
@@ -165,7 +165,7 @@ namespace PulsarPluginLoader.Content.Components.FBRecipeModule
                 {
                     return FBRecipeModulePluginManager.Instance.FBRecipeModuleTypes[subtypeformodded].OvenIcon;
                 }
-                throw new Exception("PulsarPluginLoader.Content.FBModulePluginManager.RecipeDisplayIconPatch - Recipe Module not found");
+                throw new Exception("PulsarModLoader.Content.FBModulePluginManager.RecipeDisplayIconPatch - Recipe Module not found");
             }
             return Resources.Load<Sprite>(inpath);
         }
@@ -217,7 +217,7 @@ namespace PulsarPluginLoader.Content.Components.FBRecipeModule
                 }
                 else
                 {
-                    throw new Exception("PulsarPluginLoader.Content.FBModulePluginManager.ServerTakeBiscuitPatch - Foodtype max with no module found");
+                    throw new Exception("PulsarModLoader.Content.FBModulePluginManager.ServerTakeBiscuitPatch - Foodtype max with no module found");
                 }
             }
             else

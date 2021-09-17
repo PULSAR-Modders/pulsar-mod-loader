@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace PulsarPluginLoader.Events
+namespace PulsarModLoader.Events
 {
     class EventHelper
     {
         public static Dictionary<Type, List<MethodInfo>> EventHandlers = new Dictionary<Type, List<MethodInfo>>();
 
         //Called for every plugin loaded
-        public static void RegisterEventHandlers(string name, PulsarPlugin plugin)
+        public static void RegisterEventHandlers(string name, PulsarMod plugin)
         {
             Assembly asm = plugin.GetType().Assembly;
             foreach (Type classType in asm.GetTypes())

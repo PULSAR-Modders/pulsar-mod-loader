@@ -2,7 +2,7 @@
 using System.IO;
 using System.Reflection;
 
-namespace PulsarPluginLoader.Utilities
+namespace PulsarModLoader.Utilities
 {
     public static class Logger
     {

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace PulsarPluginLoader.Content.Components.InertiaThruster
+namespace PulsarModLoader.Content.Components.InertiaThruster
 {
     public abstract class InertiaThrusterPlugin : ComponentPluginBase
     {

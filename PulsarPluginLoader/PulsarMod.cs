@@ -3,9 +3,9 @@ using System;
 using System.Diagnostics;
 using System.Reflection;
 
-namespace PulsarPluginLoader
+namespace PulsarModLoader
 {
-    public abstract class PulsarPlugin
+    public abstract class PulsarMod
     {
         private FileVersionInfo VersionInfo;
         protected Harmony harmony;
@@ -14,7 +14,7 @@ namespace PulsarPluginLoader
         /// <summary>
         /// Entry point of plugin; do setup here (e.g., Harmony, databases, etc).  Runs once during game startup.
         /// </summary>
-        public PulsarPlugin()
+        public PulsarMod()
         {
             // Can't use Assembly.GetExecutingAssembly() or it grabs this assembly instead of the plugin's!
             // Executing assembly is technically PPL's during base class methods.

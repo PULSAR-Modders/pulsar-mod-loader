@@ -5,9 +5,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
-using Logger = PulsarPluginLoader.Utilities.Logger;
+using Logger = PulsarModLoader.Utilities.Logger;
 
-namespace PulsarPluginLoader.Content.Components.WarpDriveProgram
+namespace PulsarModLoader.Content.Components.WarpDriveProgram
 {
     public class WarpDriveProgramPluginManager
     {
@@ -30,7 +30,7 @@ namespace PulsarPluginLoader.Content.Components.WarpDriveProgram
         {
             VanillaWarpDriveProgramMaxType = Enum.GetValues(typeof(EWarpDriveProgramType)).Length;
             Logger.Info($"MaxTypeint = {VanillaWarpDriveProgramMaxType - 1}");
-            foreach (PulsarPlugin plugin in PluginManager.Instance.GetAllPlugins())
+            foreach (PulsarMod plugin in PluginManager.Instance.GetAllPlugins())
             {
                 Assembly asm = plugin.GetType().Assembly;
                 Type WarpDriveProgramPlugin = typeof(WarpDriveProgramPlugin);
@@ -144,7 +144,7 @@ namespace PulsarPluginLoader.Content.Components.WarpDriveProgram
                         WarpDriveProgramPluginManager.Instance.WarpDriveProgramTypes[subtypeformodded].VirusSubtype,
                         PLServer.Instance.GetEstimatedServerMs()
                     });
-                    PulsarPluginLoader.Utilities.Messaging.Notification($"{WarpDriveProgramPluginManager.Instance.WarpDriveProgramTypes[subtypeformodded].VirusSubtype}");
+                    PulsarModLoader.Utilities.Messaging.Notification($"{WarpDriveProgramPluginManager.Instance.WarpDriveProgramTypes[subtypeformodded].VirusSubtype}");
                 }
                 else
                 {

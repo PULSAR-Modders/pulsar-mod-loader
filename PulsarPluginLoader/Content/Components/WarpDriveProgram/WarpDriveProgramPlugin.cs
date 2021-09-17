@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace PulsarPluginLoader.Content.Components.WarpDriveProgram
+namespace PulsarModLoader.Content.Components.WarpDriveProgram
 {
     public abstract class WarpDriveProgramPlugin : ComponentPluginBase
     {

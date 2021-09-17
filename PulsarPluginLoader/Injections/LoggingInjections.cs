@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace PulsarPluginLoader.Injections
+namespace PulsarModLoader.Injections
 {
     public static class LoggingInjections
     {

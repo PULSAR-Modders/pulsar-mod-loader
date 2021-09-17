@@ -87,9 +87,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PulsarPluginLoader\PulsarPluginLoader.csproj">
+    <ProjectReference Include="..\PulsarPluginLoader\PulsarModLoader.csproj">
       <Project>{cf6ce9ba-9603-439d-9173-96c052c94417}</Project>
-      <Name>PulsarPluginLoader</Name>
+      <Name>PulsarModLoader</Name>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>

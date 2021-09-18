@@ -1,19 +1,19 @@
 # [PULSAR Mod Loader][0]
 
 
-[0]: https://github.com/PULSAR-Modders/pulsar-plugin-loader "PULSAR Mod Loader"
+[0]: https://github.com/PULSAR-Modders/pulsar-mod-loader "PULSAR Mod Loader"
 
 [![Build Status][1]][2]
 [![Download][3]][4]
 [![Wiki][5]][6]
 [![Discord][7]][8]
 
-[1]: https://github.com/PULSAR-Modders/pulsar-plugin-loader/workflows/Build/badge.svg
-[2]: https://github.com/PULSAR-Modders/pulsar-plugin-loader/actions "Build Status"
+[1]: https://github.com/PULSAR-Modders/pulsar-mod-loader/workflows/Build/badge.svg
+[2]: https://github.com/PULSAR-Modders/pulsar-mod-loader/actions "Build Status"
 [3]: https://img.shields.io/badge/-DOWNLOAD-success
-[4]: https://github.com/PULSAR-Modders/pulsar-plugin-loader/packages "Download"
+[4]: https://github.com/PULSAR-Modders/pulsar-mod-loader/packages "Download"
 [5]: https://img.shields.io/badge/-WIKI-informational
-[6]: https://github.com/PULSAR-Modders/pulsar-plugin-loader/wiki "Wiki"
+[6]: https://github.com/PULSAR-Modders/pulsar-mod-loader/wiki "Wiki"
 [7]: https://img.shields.io/discord/458244416562397184.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2
 [8]: https://discord.gg/yBJGv4T "PML Discord"
 

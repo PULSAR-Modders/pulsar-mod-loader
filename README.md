@@ -24,7 +24,7 @@ Injects a basic mod loader into [*PULSAR: Lost Colony*][10].
 ## Usage
 
 ```
-.\PulsarModBootstrapper.exe [Path\To\Pulsar\PULSAR_LostColony_Data\Managed\Assembly-CSharp.dll]
+.\PulsarModLoaderInstaller.exe [Path\To\Pulsar\PULSAR_LostColony_Data\Managed\Assembly-CSharp.dll]
 ```
 
 By default, PML will attempt to patch the Steam version of the game in Steam's default install location.  To patch a PULSAR installation in another location (non-Steam version, copy of client, etc), simply specify the path to `Assembly-CSharp.dll` as shown above.

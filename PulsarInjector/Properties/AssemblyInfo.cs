@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Pulsar Plugin Bootstrapper")]
+[assembly: AssemblyTitle("Pulsar Plugin Loader Installer")]
 [assembly: AssemblyDescription("https://github.com/TomRichter/pulsar-plugin-loader")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Tom Richter")]

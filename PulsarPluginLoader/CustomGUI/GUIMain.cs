@@ -17,8 +17,8 @@ namespace PulsarModLoader.CustomGUI
         Rect Window = new Rect((Screen.width * .5f - ((Screen.width * Width)/2)), Screen.height * .5f - ((Screen.height * Height)/2), Screen.width * Width, Screen.height * Height);
         byte Tab = 0;
         
-        List<PulsarMod> plugins = new List<PulsarMod>(8);
-        ushort selectedPlugin = ushort.MaxValue;
+        List<PulsarMod> mods = new List<PulsarMod>(8);
+        ushort selectedMod = ushort.MaxValue;
         
         readonly Rect ModListArea = new Rect(6, 43, 150, Screen.height * Height - 45);
         Vector2 ModListScroll = Vector2.zero;
@@ -34,9 +34,9 @@ namespace PulsarModLoader.CustomGUI
         internal GUIMain()
         {
             Instance = this;
-            settings.Add(new PPLSettings());
-            PluginManager.Instance.OnPluginUnloaded += UpdateOnPluginRemoved;
-            PluginManager.Instance.OnPluginSuccessfullyLoaded += UpdateOnPluginLoaded;
+            settings.Add(new PMLSettings());
+            ModManager.Instance.OnModUnloaded += UpdateOnModRemoved;
+            ModManager.Instance.OnModSuccessfullyLoaded += UpdateOnModLoaded;
         }
 
         void Awake()
@@ -77,39 +77,39 @@ namespace PulsarModLoader.CustomGUI
             {
                 #region ModList and ModInfo
                 case 0:
-                    GUI.skin.label.alignment = PPLConfig.instance.ModInfoTextAnchor;
+                    GUI.skin.label.alignment = PMLConfig.instance.ModInfoTextAnchor;
                     BeginArea(ModListArea);
                     {
                         ModListScroll = BeginScrollView(ModListScroll);
                         {
-                            for (ushort p = 0; p < plugins.Count; p++)
-                                if (Button(plugins[p].Name))
-                                    selectedPlugin = p;
+                            for (ushort p = 0; p < mods.Count; p++)
+                                if (Button(mods[p].Name))
+                                    selectedMod = p;
                         }
                         EndScrollView();
                     }
                     EndArea();
                     BeginArea(ModInfoArea);
                     {
-                        if (selectedPlugin != ushort.MaxValue)
+                        if (selectedMod != ushort.MaxValue)
                         {
                             ModInfoScroll = BeginScrollView(ModInfoScroll);
                             {
-                                PulsarMod plugin = plugins[selectedPlugin];
+                                PulsarMod mod = mods[selectedMod];
                                 BeginHorizontal();
                                 {
                                     if (Button("Unload"))
-                                        plugin.Unload();
+                                        mod.Unload();
                                 }
                                 EndHorizontal();
-                                Label($"Author: {plugin.Author}");
-                                Label($"Name: {plugin.Name}");
-                                Label($"Version: {plugin.Version}");
-                                if (plugin.ShortDescription != string.Empty)
-                                    Label($"Short Description: {plugin.ShortDescription}");
-                                if (plugin.LongDescription != string.Empty)
-                                    Label($"Long Description: {plugin.LongDescription}");
-                                Label($"MPFunctionality: {((MPFunction)plugin.MPFunctionality).ToString()}");
+                                Label($"Author: {mod.Author}");
+                                Label($"Name: {mod.Name}");
+                                Label($"Version: {mod.Version}");
+                                if (mod.ShortDescription != string.Empty)
+                                    Label($"Short Description: {mod.ShortDescription}");
+                                if (mod.LongDescription != string.Empty)
+                                    Label($"Long Description: {mod.LongDescription}");
+                                Label($"MPFunctionality: {((MPFunction)mod.MPFunctionality).ToString()}");
                             }
                             EndScrollView();
                         }
@@ -153,8 +153,8 @@ namespace PulsarModLoader.CustomGUI
                 #region About
                 case 2:
                     GUI.skin.label.alignment = TextAnchor.MiddleCenter;
-                    Label($"PulsarModLoader - Unofficial mod/plugin loader for PULSAR: Lost Colony.");
-                    Label($"Version: {PluginManager.Instance.PPLVersionInfo.FileVersion}");
+                    Label($"PulsarModLoader - Unofficial mod loader for PULSAR: Lost Colony.");
+                    Label($"Version: {ModManager.Instance.PPLVersionInfo.FileVersion}");
                     Label($"\n\nDeveloped by Tom Richter");
                     Label($"Contributors:\nDragonFire47\n18107\nBadRyuner");
                     BeginHorizontal();
@@ -263,23 +263,23 @@ namespace PulsarModLoader.CustomGUI
             return tex;
         }
 
-        void UpdateOnPluginRemoved(PulsarMod plugin)
+        void UpdateOnModRemoved(PulsarMod mod)
         {
-            selectedPlugin = UInt16.MaxValue;
-            plugins.Remove(plugin);
+            selectedMod = UInt16.MaxValue;
+            mods.Remove(mod);
             List<ModSettingsMenu> settingsToRemove = new List<ModSettingsMenu>();
-            Assembly asm = plugin.GetType().Assembly;
+            Assembly asm = mod.GetType().Assembly;
             settings.AsParallel().ForAll((arg) => { if (arg.GetType().Assembly == asm) settingsToRemove.Add(arg);});
             for (byte s = 0; s < settingsToRemove.Count; s++)
                 settings.Remove(settingsToRemove[s]);
             settingsToRemove = null;
         }
 
-        void UpdateOnPluginLoaded(string pluginName, PulsarMod plugin)
+        void UpdateOnModLoaded(string modName, PulsarMod mod)
         {
-            plugins.Add(plugin);
+            mods.Add(mod);
             var modsettingstype = typeof(ModSettingsMenu);
-            plugin.GetType().Assembly.GetTypes().AsParallel().ForAll((type) =>
+            mod.GetType().Assembly.GetTypes().AsParallel().ForAll((type) =>
             {
                 if (modsettingstype.IsAssignableFrom(type))
                 {

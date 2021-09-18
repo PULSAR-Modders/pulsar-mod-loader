@@ -9,10 +9,10 @@ namespace PulsarModLoader.Events
     {
         public static Dictionary<Type, List<MethodInfo>> EventHandlers = new Dictionary<Type, List<MethodInfo>>();
 
-        //Called for every plugin loaded
-        public static void RegisterEventHandlers(string name, PulsarMod plugin)
+        //Called for every mod loaded
+        public static void RegisterEventHandlers(string name, PulsarMod mod)
         {
-            Assembly asm = plugin.GetType().Assembly;
+            Assembly asm = mod.GetType().Assembly;
             foreach (Type classType in asm.GetTypes())
             {
                 foreach (MethodInfo method in classType.GetMethods())

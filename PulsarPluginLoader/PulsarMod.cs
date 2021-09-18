@@ -12,12 +12,12 @@ namespace PulsarModLoader
         protected bool enabled = true;
 
         /// <summary>
-        /// Entry point of plugin; do setup here (e.g., Harmony, databases, etc).  Runs once during game startup.
+        /// Entry point of mod; do setup here (e.g., Harmony, databases, etc).  Runs once during game startup.
         /// </summary>
         public PulsarMod()
         {
-            // Can't use Assembly.GetExecutingAssembly() or it grabs this assembly instead of the plugin's!
-            // Executing assembly is technically PPL's during base class methods.
+            // Can't use Assembly.GetExecutingAssembly() or it grabs this assembly instead of the mod's!
+            // Executing assembly is technically PML's during base class methods.
             Assembly asm = GetType().Assembly;
             VersionInfo = FileVersionInfo.GetVersionInfo(asm.Location);
 
@@ -26,19 +26,19 @@ namespace PulsarModLoader
         }
 
         /// <summary>
-        /// Removes a plugin from the list and calls UnpatchAll (); do some extra cleanup here.
+        /// Removes a mod from the list and calls UnpatchAll (); do some extra cleanup here.
         /// </summary>
-        public virtual void Unload() => PluginManager.Instance.UnloadPlugin(this, ref harmony);
+        public virtual void Unload() => ModManager.Instance.UnloadMod(this, ref harmony);
 
         /// <summary>
-        /// Unique plugin identifier used by Harmony to differentiate between plugins.<br/>
-        /// Reverse domain notation recommended (e.g., com.example.pulsar.plugins)
+        /// Unique mod identifier used by Harmony to differentiate between mods.<br/>
+        /// Reverse domain notation recommended (e.g., com.example.pulsar.mods)
         /// </summary>
         /// <returns></returns>
         public abstract string HarmonyIdentifier();
 
         /// <summary>
-        /// Version of plugin.  Displayed in plugin list.
+        /// Version of mod.  Displayed in mod list.
         /// </summary>
         public virtual string Version
         {
@@ -49,7 +49,7 @@ namespace PulsarModLoader
         }
 
         /// <summary>
-        /// Author(s) of plugin.  Displayed in plugin list.
+        /// Author(s) of mod.  Displayed in mod list.
         /// </summary>
         public virtual string Author
         {
@@ -60,7 +60,7 @@ namespace PulsarModLoader
         }
 
         /// <summary>
-        /// Short (one line) description of plugin.  Displayed in plugin list.
+        /// Short (one line) description of mod.  Displayed in mod list.
         /// </summary>
         public virtual string ShortDescription
         {
@@ -71,7 +71,7 @@ namespace PulsarModLoader
         }
 
         /// <summary>
-        /// Long (mutli-line) description of plugin.  Ideal for in-game readme or patch notes.  Displayed in plugin details.
+        /// Long (mutli-line) description of mod.  Ideal for in-game readme or patch notes.  Displayed in mod details.
         /// </summary>
         public virtual string LongDescription
         {
@@ -82,7 +82,7 @@ namespace PulsarModLoader
         }
 
         /// <summary>
-        /// Name of plugin.
+        /// Name of mod.
         /// </summary>
         public virtual string Name
         {
@@ -93,7 +93,7 @@ namespace PulsarModLoader
         }
 
         /// <summary>
-        /// Plugin's multiplayer requirements. use MPFunction.<br/>
+        /// Mod's multiplayer requirements. use MPFunction.<br/>
         /// None: No Functionality<br/>
         /// HostOnly: Only the host is required to have it installed<br/>
         /// HostApproved: Host must have the mod installed, works better when client has it installed.<br/>

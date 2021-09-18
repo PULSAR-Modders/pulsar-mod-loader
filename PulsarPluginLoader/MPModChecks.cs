@@ -26,11 +26,11 @@ namespace PulsarModLoader
         public static string GetMPModList()
         {
             string modlist = string.Empty;
-            foreach (PulsarMod plugin in PluginManager.Instance.GetAllPlugins())
+            foreach (PulsarMod mod in ModManager.Instance.GetAllMods())
             {
-                if (plugin.MPFunctionality == (int)MPFunction.All || plugin.MPFunctionality == (int)MPFunction.HostRequired)
+                if (mod.MPFunctionality == (int)MPFunction.All || mod.MPFunctionality == (int)MPFunction.HostRequired)
                 {
-                    modlist += $"{plugin.Name} {plugin.Version} MPF{plugin.MPFunctionality}\n";
+                    modlist += $"{mod.Name} {mod.Version} MPF{mod.MPFunctionality}\n";
                 }
             }
             return modlist;
@@ -38,9 +38,9 @@ namespace PulsarModLoader
         public static string GetModList()
         {
             string modlist = string.Empty;
-            foreach (PulsarMod plugin in PluginManager.Instance.GetAllPlugins())
+            foreach (PulsarMod mod in ModManager.Instance.GetAllMods())
             {
-                modlist += $"{plugin.Name} {plugin.Version} MPF{plugin.MPFunctionality}\n";
+                modlist += $"{mod.Name} {mod.Version} MPF{mod.MPFunctionality}\n";
             }
             return modlist;
         }
@@ -69,36 +69,36 @@ namespace PulsarModLoader
                 {
                     List<string> missingmods = new List<string>();
                     string[] localmodlist = LocalMods.Split('\n');
-                    foreach (string plugin in localmodlist)
+                    foreach (string mod in localmodlist)
                     {
-                        //Logger.Info("Checking client mod " + plugin);
-                        if (!string.IsNullOrEmpty(plugin) && !MPMods.Contains(plugin))
+                        //Logger.Info("Checking client mod " + mod);
+                        if (!string.IsNullOrEmpty(mod) && !MPMods.Contains(mod))
                         {
-                            missingmods.Add(plugin);
+                            missingmods.Add(mod);
                         }
                     }
                     string[] MPmodlist = MPMods.Split('\n');
                     if (missingmods.Count > 0)
                     {
                         Logger.Info("Client mods good, checking server mods");
-                        foreach (string plugin in MPmodlist)
+                        foreach (string mod in MPmodlist)
                         {
-                            //Logger.Info("Checking Server mod " + plugin);
-                            if (!string.IsNullOrEmpty(plugin) && !LocalMods.Contains(plugin) && plugin.Contains("MPF3"))
+                            //Logger.Info("Checking Server mod " + mod);
+                            if (!string.IsNullOrEmpty(mod) && !LocalMods.Contains(mod) && mod.Contains("MPF3"))
                             {
-                                missingmods.Add(plugin);
+                                missingmods.Add(mod);
                             }
                         }
                         if (missingmods.Count > 0)
                         {
-                            Logger.Info("Server plugin list is not equal to local plugin list");
+                            Logger.Info("Server mod list is not equal to local mod list");
                             PLNetworkManager.Instance.MainMenu.AddActiveMenu(new PLErrorMessageMenu($"Failed to join crew! The Server is missing the following mods or is not up to date (try uninstalling/updating):\n{MPModChecks.ConvertModlist(missingmods)}"));
                             return false;
                         }
                     }
                     PLNetworkManager.Instance.MainMenu.AddActiveMenu(new PLErrorMessageMenu($"Failed to join crew! You are missing the following mods or the mods are not up to date:\n{MPModChecks.ConvertModlist(missingmods)}"));
 
-                    Logger.Info("Local Plugin list is not equal to Server plugin list");
+                    Logger.Info("Local mod list is not equal to Server mod list");
                     return false;
                 }
             }
@@ -142,22 +142,22 @@ namespace PulsarModLoader
                 {
                     Logger.Info($"Checking if client is missing required mods");
                     string[] localmodlist = LocalMods.Split('\n');
-                    foreach (string plugin in localmodlist) //check local multiplayer mods to see if the client has required mods
+                    foreach (string mod in localmodlist) //check local multiplayer mods to see if the client has required mods
                     {
-                        if (!string.IsNullOrWhiteSpace(plugin) && !clientmods.Contains(plugin) && plugin.Contains("MPF3"))
+                        if (!string.IsNullOrWhiteSpace(mod) && !clientmods.Contains(mod) && mod.Contains("MPF3"))
                         {
-                            missingmods.Add(plugin);
+                            missingmods.Add(mod);
                         }
                     }
                     if (missingmods.Count == 0) //if nothing was added to the missing mod list check if the client needs something the server doesn't.
                     {
                         Logger.Info($"Client isn't missing mods, checking if client has mods that require server installation");
                         string[] clientmodlist = clientmods.Split('\n');
-                        foreach (string plugin in clientmodlist)
+                        foreach (string mod in clientmodlist)
                         {
-                            if (!string.IsNullOrWhiteSpace(plugin) && !LocalMods.Contains(plugin) && (plugin.Contains("MPF2") || plugin.Contains("MPF3")))
+                            if (!string.IsNullOrWhiteSpace(mod) && !LocalMods.Contains(mod) && (mod.Contains("MPF2") || mod.Contains("MPF3")))
                             {
-                                missingmods.Add(plugin);
+                                missingmods.Add(mod);
                             }
                         }
                         if (missingmods.Count > 0) //Client has non-server mods

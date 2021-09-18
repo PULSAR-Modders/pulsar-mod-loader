@@ -56,7 +56,7 @@ namespace PulsarModLoader.Chat.Commands
                         if (t != null)
                         {
                             PublicCommand cmd = t.Item1;
-                            string name = t.Item2 != null ? t.Item2.Name : "Pulsar Plugin Loader";
+                            string name = t.Item2 != null ? t.Item2.Name : "Pulsar Mod Loader";
 
                             Messaging.Echo(sender, $"[&%~[C3 !{cmd.CommandAliases()[0]} ]&%~] - {cmd.Description()} <color=#ff6600ff>[{name}]</color>");
                             Messaging.Echo(sender, $"Aliases: !{string.Join($", !", cmd.CommandAliases())}");

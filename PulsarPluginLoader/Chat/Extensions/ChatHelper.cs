@@ -276,13 +276,13 @@ namespace PulsarModLoader.Chat.Extensions
                             fixedArguments.Add("engineer");
                             break;
                         case "mod_name":
-                            foreach (PulsarMod mod in PluginManager.Instance.GetAllPlugins())
+                            foreach (PulsarMod mod in ModManager.Instance.GetAllMods())
                             {
                                 fixedArguments.Add(mod.Name);
                             }
                             break;
                         case "mod_identifier":
-                            foreach (PulsarMod mod in PluginManager.Instance.GetAllPlugins())
+                            foreach (PulsarMod mod in ModManager.Instance.GetAllMods())
                             {
                                 fixedArguments.Add(mod.HarmonyIdentifier());
                             }

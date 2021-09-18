@@ -20,18 +20,18 @@ namespace PulsarModLoader.Chat.Commands
                 {
                     _instance = new ChatCommandRouter();
 
-                    // Attach commands from PPL since it doesn't count as a plugin
+                    // Attach commands from PML since it doesn't count as a mod
                     _instance.LoadCommandsFromAssembly(Assembly.GetExecutingAssembly(), null);
 
-                    // Attach commands from plugins already loaded
-                    foreach (PulsarMod p in PluginManager.Instance.GetAllPlugins())
+                    // Attach commands from mods already loaded
+                    foreach (PulsarMod p in ModManager.Instance.GetAllMods())
                     {
-                        _instance.OnPluginLoaded(p.Name, p);
+                        _instance.OnModLoaded(p.Name, p);
                     }
 
-                    // Subscribe to plugins loading in the future
-                    PluginManager.Instance.OnPluginSuccessfullyLoaded += _instance.OnPluginLoaded;
-                    PluginManager.Instance.OnPluginUnloaded += _instance.Unregister;
+                    // Subscribe to mods loading in the future
+                    ModManager.Instance.OnModSuccessfullyLoaded += _instance.OnModLoaded;
+                    ModManager.Instance.OnModUnloaded += _instance.Unregister;
                 }
 
                 return _instance;
@@ -51,61 +51,61 @@ namespace PulsarModLoader.Chat.Commands
             conflictingPublicAliases = new Dictionary<string, PulsarMod>();
         }
 
-        public void Register (ChatCommand cmd, PulsarMod plugin)
+        public void Register (ChatCommand cmd, PulsarMod mod)
         {
             foreach (string alias in cmd.CommandAliases())
             {
                 string lowerAlias = alias.ToLower();
 
-                if (conflictingAliases.TryGetValue(lowerAlias, out PulsarMod plugin2))
+                if (conflictingAliases.TryGetValue(lowerAlias, out PulsarMod mod2))
                 {
-                    string name = plugin != null ? plugin.Name : "Pulsar Plugin Loader";
-                    string name2 = plugin2 != null ? plugin2.Name : "Pulsar Plugin Loader";
+                    string name = mod != null ? mod.Name : "Pulsar Mod Loader";
+                    string name2 = mod2 != null ? mod2.Name : "Pulsar Mod Loader";
                     Logger.Info($"Conflicting alias: {lowerAlias} from {name} and {name2}");
                 }
                 else
                 {
                     if (commands.TryGetValue(lowerAlias, out Tuple<ChatCommand, PulsarMod> t))
                     {
-                        conflictingAliases.Add(lowerAlias, plugin);
+                        conflictingAliases.Add(lowerAlias, mod);
                         commands.Remove(lowerAlias);
-                        string name = plugin != null ? plugin.Name : "Pulsar Plugin Loader";
-                        string name2 = t.Item2 != null ? t.Item2.Name : "Pulsar Plugin Loader";
+                        string name = mod != null ? mod.Name : "Pulsar Mod Loader";
+                        string name2 = t.Item2 != null ? t.Item2.Name : "Pulsar Mod Loader";
                         Logger.Info($"Conflicting alias: {lowerAlias} from {name} and {name2}");
                     }
                     else
                     {
-                        commands.Add(lowerAlias, new Tuple<ChatCommand, PulsarMod>(cmd, plugin));
+                        commands.Add(lowerAlias, new Tuple<ChatCommand, PulsarMod>(cmd, mod));
                     }
                 }
             }
         }
 
-        public void Register (PublicCommand cmd, PulsarMod plugin)
+        public void Register (PublicCommand cmd, PulsarMod mod)
         {
             foreach (string alias in cmd.CommandAliases())
             {
                 string lowerAlias = alias.ToLower();
 
-                if (conflictingPublicAliases.TryGetValue(lowerAlias, out PulsarMod plugin2))
+                if (conflictingPublicAliases.TryGetValue(lowerAlias, out PulsarMod mod2))
                 {
-                    string name = plugin != null ? plugin.Name : "Pulsar Plugin Loader";
-                    string name2 = plugin2 != null ? plugin2.Name : "Pulsar Plugin Loader";
+                    string name = mod != null ? mod.Name : "Pulsar Mod Loader";
+                    string name2 = mod2 != null ? mod2.Name : "Pulsar Mod Loader";
                     Logger.Info($"Conflicting public alias: {lowerAlias} from {name} and {name2}");
                 }
                 else
                 {
                     if (publicCommands.TryGetValue(lowerAlias, out Tuple<PublicCommand, PulsarMod> t))
                     {
-                        conflictingPublicAliases.Add(lowerAlias, plugin);
+                        conflictingPublicAliases.Add(lowerAlias, mod);
                         publicCommands.Remove(lowerAlias);
-                        string name = plugin != null ? plugin.Name : "Pulsar Plugin Loader";
-                        string name2 = t.Item2 != null ? t.Item2.Name : "Pulsar Plugin Loader";
+                        string name = mod != null ? mod.Name : "Pulsar Mod Loader";
+                        string name2 = t.Item2 != null ? t.Item2.Name : "Pulsar Mod Loader";
                         Logger.Info($"Conflicting public alias: {lowerAlias} from {name} and {name2}");
                     }
                     else
                     {
-                        publicCommands.Add(lowerAlias, new Tuple<PublicCommand, PulsarMod>(cmd, plugin));
+                        publicCommands.Add(lowerAlias, new Tuple<PublicCommand, PulsarMod>(cmd, mod));
                     }
                 }
             }
@@ -135,12 +135,12 @@ namespace PulsarModLoader.Chat.Commands
             return null;
         }
 
-        public void Unregister(PulsarMod plugin)
+        public void Unregister(PulsarMod mod)
         {
             List<string> commandsToRemove = new List<string>();
 
             foreach (var command in commands)
-                if (command.Value.Item2 == plugin)
+                if (command.Value.Item2 == mod)
                     commandsToRemove.Add(command.Key);
             foreach (var command in commandsToRemove)
                 commands.Remove(command);
@@ -148,7 +148,7 @@ namespace PulsarModLoader.Chat.Commands
             commandsToRemove.Clear();
 
             foreach (var command in publicCommands)
-                if (command.Value.Item2 == plugin)
+                if (command.Value.Item2 == mod)
                     commandsToRemove.Add(command.Key);
             foreach (var command in commandsToRemove)
                 publicCommands.Remove(command);
@@ -203,13 +203,13 @@ namespace PulsarModLoader.Chat.Commands
             return fallthroughToDevCommands;
         }
 
-        public void OnPluginLoaded(string name, PulsarMod plugin)
+        public void OnModLoaded(string name, PulsarMod mod)
         {
-            Assembly asm = plugin.GetType().Assembly;
-            LoadCommandsFromAssembly(asm, plugin);
+            Assembly asm = mod.GetType().Assembly;
+            LoadCommandsFromAssembly(asm, mod);
         }
 
-        private void LoadCommandsFromAssembly(Assembly asm, PulsarMod plugin)
+        private void LoadCommandsFromAssembly(Assembly asm, PulsarMod mod)
         {
             Type ChatCmd = typeof(ChatCommand);
             Type PublicCmd = typeof(PublicCommand);
@@ -218,11 +218,11 @@ namespace PulsarModLoader.Chat.Commands
             {
                 if (ChatCmd.IsAssignableFrom(t) && !t.IsAbstract && !t.IsInterface)
                 {
-                    Register((ChatCommand)Activator.CreateInstance(t), plugin);
+                    Register((ChatCommand)Activator.CreateInstance(t), mod);
                 }
                 else if (PublicCmd.IsAssignableFrom(t) && !t.IsAbstract && !t.IsInterface)
                 {
-                    Register((PublicCommand)Activator.CreateInstance(t), plugin);
+                    Register((PublicCommand)Activator.CreateInstance(t), mod);
                 }
             }
         }

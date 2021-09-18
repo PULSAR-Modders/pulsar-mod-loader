@@ -7,7 +7,7 @@ namespace PulsarModLoader.Injections
     {
         public static void InitializeHarmony()
         {
-            var harmony = new Harmony("wiki.pulsar.ppl");
+            var harmony = new Harmony("wiki.pulsar.pml");
             harmony.PatchAll(Assembly.GetExecutingAssembly());
         }
     }

@@ -70,7 +70,7 @@ namespace PulsarModLoader.Patches
                     sb.AppendLine($"Failed to patch by sequence: couldn't find target sequence.  This might be okay in certain cases.");
 
                     // Cut down the stack trace because it's 20 lines of unhelpful reflection internals.
-                    // Show enough to figure out which plugin + transpiler method is causing this:
+                    // Show enough to figure out which mod + transpiler method is causing this:
                     sb.AppendLine($"Stack Trace:");
                     string[] stackTrace = new System.Diagnostics.StackTrace().ToString().Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
                     for (int lineNumber = 0; lineNumber < 2; lineNumber++)
@@ -139,7 +139,7 @@ namespace PulsarModLoader.Patches
                     sb.AppendLine($"Couldn't find target sequence.  This might be okay in certain cases.");
 
                     // Cut down the stack trace because it's 20 lines of unhelpful reflection internals.
-                    // Show enough to figure out which plugin + transpiler method is causing this:
+                    // Show enough to figure out which mod + transpiler method is causing this:
                     sb.AppendLine($"Stack Trace:");
                     string[] stackTrace = new System.Diagnostics.StackTrace().ToString().Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
                     for (int lineNumber = 0; lineNumber < 2; lineNumber++)

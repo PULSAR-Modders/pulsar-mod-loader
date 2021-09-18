@@ -37,12 +37,12 @@ namespace PulsarModLoader
         ModMessageHelper()
         {
             modMessageHandlers = new Dictionary<string, ModMessage>();
-            IEnumerable<PulsarMod> pluginList = PluginManager.Instance.GetAllPlugins();
-            foreach (PulsarMod plugin in pluginList)
+            IEnumerable<PulsarMod> modList = ModManager.Instance.GetAllMods();
+            foreach (PulsarMod mod in modList)
             {
-                Assembly asm = plugin.GetType().Assembly;
+                Assembly asm = mod.GetType().Assembly;
                 Type modMessage = typeof(ModMessage);
-                if(plugin.MPFunctionality > 2)
+                if(mod.MPFunctionality > 2)
                 {
                     ServerHasMPMods = true;
                 }
@@ -51,7 +51,7 @@ namespace PulsarModLoader
                     if (modMessage.IsAssignableFrom(t) && !t.IsAbstract && !t.IsInterface)
                     {
                         ModMessage modMessageHandler = (ModMessage)Activator.CreateInstance(t);
-                        modMessageHandlers.Add(plugin.HarmonyIdentifier() + "#" + modMessageHandler.GetIdentifier(), modMessageHandler);
+                        modMessageHandlers.Add(mod.HarmonyIdentifier() + "#" + modMessageHandler.GetIdentifier(), modMessageHandler);
                     }
                 }
             }
@@ -64,10 +64,10 @@ namespace PulsarModLoader
             ModMessageHelper.Instance = this;
             PlayersWithMods = new Dictionary<PhotonPlayer, string>();
         }
-        public string GetModName(string pluginName)
+        public string GetModName(string modName)
         {
-            PulsarMod plugin = PluginManager.Instance.GetPlugin(pluginName);
-            return $"{plugin.Name} {plugin.Version} MPF{plugin.MPFunctionality}";
+            PulsarMod mod = ModManager.Instance.GetMod(modName);
+            return $"{mod.Name} {mod.Version} MPF{mod.MPFunctionality}";
         }
         [PunRPC]
         public void ReceiveMessage(string modID, object[] arguments, PhotonMessageInfo pmi)

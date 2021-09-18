@@ -8,24 +8,24 @@ namespace PulsarModLoader.Patches
     [HarmonyPatch(typeof(PLGlobal), "Start")]
     class PLGlobalStart
     {
-        private static bool pluginsLoaded = false;
+        private static bool modsLoaded = false;
 
         static void Prefix()
         {
-            if (!pluginsLoaded)
+            if (!modsLoaded)
             {
-                string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "/PulsarPluginLoaderConfig.json";
+                string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "/PulsarModLoaderConfig.json";
                 if (!File.Exists(path))
-                    PPLConfig.CreateDefaultConfig(path, true);
+                    PMLConfig.CreateDefaultConfig(path, true);
                 else
-                    PPLConfig.CreateConfigFromFile(path);
+                    PMLConfig.CreateConfigFromFile(path);
 
 
                 new GameObject("ModManager", typeof(CustomGUI.GUIMain)) { hideFlags = HideFlags.HideAndDontSave };
                 
-                string pluginsDir = Path.Combine(Directory.GetCurrentDirectory(), "Mods");
-                PluginManager.Instance.LoadPluginsDirectory(pluginsDir);
-                pluginsLoaded = true;
+                string modsDir = Path.Combine(Directory.GetCurrentDirectory(), "Mods");
+                ModManager.Instance.LoadModsDirectory(modsDir);
+                modsLoaded = true;
             }
         }
     }

@@ -112,13 +112,7 @@ namespace PulsarInjector
             }
 
             Logger.Info("=== Creating directories ===");
-            string pluginsdir = Path.Combine(Path.GetDirectoryName(targetAssemblyPath), "Plugins");
             string Modsdir = Path.Combine(Directory.GetParent(Path.GetDirectoryName(targetAssemblyPath)).Parent.FullName, "Mods");
-            if (Directory.Exists(pluginsdir))
-            {
-                Logger.Info("Moving Old Plugins Directory"); ;
-                Directory.Move(pluginsdir, Modsdir);
-            }
             if (!Directory.Exists(Modsdir))
             {
                 Logger.Info("Creating Mods Directory");

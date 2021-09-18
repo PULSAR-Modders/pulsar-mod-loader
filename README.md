@@ -84,7 +84,7 @@ namespace ExampleMod
 {
     class MyMod : PulsarMod
     {
-        protected override string HarmonyIdentifier()
+        public override string HarmonyIdentifier()
         {
             // Make this unique to your mod!
             return "com.example.pulsar.mods";

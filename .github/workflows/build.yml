@@ -78,8 +78,8 @@ jobs:
         COMMIT_HASH: "${{ steps.version.outputs.hash }}"
       shell: "powershell"
       run: |
-        7z a PulsarPluginBootstrapper-${Env:BUILD_VERSION}-${Env:COMMIT_HASH}.zip README.md VERSION.md .\lib\System.Windows.Forms.dll .\PulsarInjector\bin\Release\* -xr!'*.pdb' -mx=7
-        7z a PulsarPluginLoader.dll-${Env:BUILD_VERSION}-${Env:COMMIT_HASH}.zip README.md VERSION.md .\PulsarPluginLoader\bin\Release\PulsarPluginLoader.dll -mx=7
+        7z a PulsarModBootstrapper-${Env:BUILD_VERSION}-${Env:COMMIT_HASH}.zip README.md VERSION.md .\lib\System.Windows.Forms.dll .\PulsarInjector\bin\Release\* -xr!'*.pdb' -mx=7
+        7z a PulsarModLoader.dll-${Env:BUILD_VERSION}-${Env:COMMIT_HASH}.zip README.md VERSION.md .\PulsarModLoader\bin\Release\PulsarModLoader.dll -mx=7
     
     - name: "Publish to GitHub Releases"
       uses: "marvinpinto/action-automatic-releases@latest"
@@ -93,8 +93,8 @@ jobs:
     - name: "NuGet Pack and Push"
       shell: "powershell"
       run: |
-        cd PulsarPluginLoader
+        cd PulsarModLoader
         $GITHUB_OWNER = $Env:GITHUB_REPOSITORY.Split("/", 2)[0]
-        $version = [System.Reflection.Assembly]::LoadFrom("$(pwd)\bin\Release\PulsarPluginLoader.dll").GetName().Version.ToString()
-        nuget pack PulsarPluginLoader.csproj -Version $version -Prop Configuration=Release
+        $version = [System.Reflection.Assembly]::LoadFrom("$(pwd)\bin\Release\PulsarModLoader.dll").GetName().Version.ToString()
+        nuget pack PulsarModLoader.csproj -Version $version -Prop Configuration=Release
         nuget push **/*.nupkg -SkipDuplicate -NoSymbols -Source "GitHub/${GITHUB_OWNER}"

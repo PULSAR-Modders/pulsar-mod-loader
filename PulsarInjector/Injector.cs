@@ -119,6 +119,11 @@ namespace PulsarInjector
                 Logger.Info("Moving Old Plugins Directory"); ;
                 Directory.Move(pluginsdir, Modsdir);
             }
+            if (!Directory.Exists(Modsdir))
+            {
+                Logger.Info("Creating Mods Directory");
+                Directory.CreateDirectory(Modsdir);
+            }
 
             Logger.Info("=== Anti-Cheat ===");
             AntiCheatBypass.Inject(targetAssemblyPath);

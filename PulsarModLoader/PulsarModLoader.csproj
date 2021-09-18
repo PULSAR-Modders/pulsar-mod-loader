@@ -8,8 +8,8 @@
     <ProjectGuid>{CF6CE9BA-9603-439D-9173-96C052C94417}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>PulsarPluginLoader</RootNamespace>
-    <AssemblyName>PulsarPluginLoader</AssemblyName>
+    <RootNamespace>PulsarModLoader</RootNamespace>
+    <AssemblyName>PulsarModLoader</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -228,12 +228,12 @@
     </CreateItem>
     <Copy SourceFiles="@(MarkdownFiles)" DestinationFiles="@(MarkdownFiles->'$(OutDir)\%(RecursiveDir)%(Filename)%(Extension)')" />
   </Target>
-  <Target Name="DeployPlugin" AfterTargets="CopyMarkdownFiles" Condition="'$(PULSAR_PATH)' != '' AND Exists('$(PULSAR_PATH)')">
+  <Target Name="DeployMod" AfterTargets="CopyMarkdownFiles" Condition="'$(PULSAR_PATH)' != '' AND Exists('$(PULSAR_PATH)')">
     <CombinePath BasePath="$(PULSAR_PATH)" Paths="PULSAR_LostColony_Data\Managed">
       <Output TaskParameter="CombinedPaths" PropertyName="ManagedDir" />
     </CombinePath>
-    <CombinePath BasePath="$(PULSAR_PATH)" Paths="PULSAR_LostColony_Data\Managed\Plugins">
-      <Output TaskParameter="CombinedPaths" PropertyName="PluginsDir" />
+    <CombinePath BasePath="$(PULSAR_PATH)" Paths="Mods">
+      <Output TaskParameter="CombinedPaths" PropertyName="ModsDir" />
     </CombinePath>
     <CreateItem Include="$(TargetDir)\*.md">
       <Output TaskParameter="Include" ItemName="MarkdownFiles" />
@@ -245,15 +245,15 @@
     <Copy SourceFiles="@(MarkdownFiles)" DestinationFiles="@(MarkdownFiles->'$(ManagedDir)\%(RecursiveDir)%(Filename)%(Extension)')" />
     <Copy SourceFiles="@(Assemblies)" DestinationFiles="@(Assemblies->'$(ManagedDir)\%(RecursiveDir)%(Filename)%(Extension)')" />
   </Target>
-  <Target Name="DeployPluginFailed" AfterTargets="CopyMarkdownFiles" Condition="'$(PULSAR_PATH)' != '' AND !Exists('$(PULSAR_PATH)')">
+  <Target Name="DeployModFailed" AfterTargets="CopyMarkdownFiles" Condition="'$(PULSAR_PATH)' != '' AND !Exists('$(PULSAR_PATH)')">
     <Message Importance="High" Text="PULSAR_PATH set but directory doesn't exist!  PULSAR_PATH='$(PULSAR_PATH)'" />
   </Target>
   <PropertyGroup>
-    <PostBuildEvent>SET PLUGIN_DIR="D:\Program Files (x86)\Steam\steamapps\common\PULSARLostColony\PULSAR_LostColony_Data\Managed"
+    <PostBuildEvent>SET MOD_DIR="D:\Program Files (x86)\Steam\steamapps\common\PULSARLostColony"
 
-IF EXIST %25PLUGIN_DIR%25 (
-    ECHO Copying DLLs to Plugins directory...
-    XCOPY /Y /F "$(TargetPath)" %25PLUGIN_DIR%25
+IF EXIST %25MOD_DIR%25 (
+    ECHO Copying DLLs to Mods directory...
+    XCOPY /Y /F "$(TargetPath)" %25MOD_DIR%25
 )</PostBuildEvent>
   </PropertyGroup>
 </Project>

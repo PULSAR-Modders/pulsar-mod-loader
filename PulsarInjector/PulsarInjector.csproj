@@ -7,7 +7,7 @@
     <ProjectGuid>{F15E6EFA-3584-4503-98E0-17D3E87900F5}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>PulsarInjector</RootNamespace>
-    <AssemblyName>PulsarPluginBootstrapper</AssemblyName>
+    <AssemblyName>PulsarModBootstrapper</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -87,7 +87,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PulsarPluginLoader\PulsarModLoader.csproj">
+    <ProjectReference Include="..\PulsarModLoader\PulsarModLoader.csproj">
       <Project>{cf6ce9ba-9603-439d-9173-96c052c94417}</Project>
       <Name>PulsarModLoader</Name>
       <Private>True</Private>

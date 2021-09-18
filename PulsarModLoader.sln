@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30523.141
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PulsarModLoader", "PulsarPluginLoader\PulsarModLoader.csproj", "{CF6CE9BA-9603-439D-9173-96C052C94417}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PulsarModLoader", "PulsarModLoader\PulsarModLoader.csproj", "{CF6CE9BA-9603-439D-9173-96C052C94417}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PulsarInjector", "PulsarInjector\PulsarInjector.csproj", "{F15E6EFA-3584-4503-98E0-17D3E87900F5}"
 EndProject
@@ -15,7 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.github\workflows\UpdateAssemblyInfo.ps1 = .github\workflows\UpdateAssemblyInfo.ps1
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PulsarModLoader.Tests", "PulsarPluginLoader.Tests\PulsarModLoader.Tests.csproj", "{9ACD22DC-0BEB-44AB-A012-D93E993D75F3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PulsarModLoader.Tests", "PulsarModLoader.Tests\PulsarModLoader.Tests.csproj", "{9ACD22DC-0BEB-44AB-A012-D93E993D75F3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

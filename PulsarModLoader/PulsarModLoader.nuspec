@@ -8,8 +8,8 @@
     <description>Unofficial mod support for PULSAR: Lost Colony.</description>
     <copyright>$copyright$</copyright>
     <license type="expression">MIT</license>
-    <projectUrl>https://github.com/PULSAR-Modders/pulsar-plugin-loader</projectUrl>
-    <repository type="git" url="https://github.com/PULSAR-Modders/pulsar-plugin-loader" />
+    <projectUrl>https://github.com/PULSAR-Modders/pulsar-mod-loader</projectUrl>
+    <repository type="git" url="https://github.com/PULSAR-Modders/pulsar-mod-loader" />
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <tags>pulsar-game unity3d modding-games</tags>
     <dependencies>

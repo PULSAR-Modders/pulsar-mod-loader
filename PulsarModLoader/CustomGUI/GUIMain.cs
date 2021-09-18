@@ -159,7 +159,7 @@ namespace PulsarModLoader.CustomGUI
                     Label($"Contributors:\nDragonFire47\n18107\nBadRyuner");
                     BeginHorizontal();
                     if (Button("Github"))
-                        Process.Start("https://github.com/PULSAR-Modders/pulsar-plugin-loader");
+                        Process.Start("https://github.com/PULSAR-Modders/pulsar-mod-loader");
                     if (Button("Discord"))
                         Process.Start("https://discord.gg/j3Pydn6");
                     EndHorizontal();

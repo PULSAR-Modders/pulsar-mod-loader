@@ -16,7 +16,7 @@ namespace PulsarModLoader
         public delegate void ModUnloaded(PulsarMod mod);
         public event ModLoaded OnModSuccessfullyLoaded;
         public event ModUnloaded OnModUnloaded;
-        public FileVersionInfo PPLVersionInfo = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location);
+        public FileVersionInfo PMLVersionInfo = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location);
 
         private readonly Dictionary<string, PulsarMod> activeMods;
         private readonly HashSet<string> modDirectories;
@@ -38,7 +38,7 @@ namespace PulsarModLoader
 
         public ModManager()
         {
-            Logger.Info($"Starting {PPLVersionInfo.ProductName} v{PPLVersionInfo.FileVersion}");
+            Logger.Info($"Starting {PMLVersionInfo.ProductName} v{PMLVersionInfo.FileVersion}");
 
             activeMods = new Dictionary<string, PulsarMod>();
             modDirectories = new HashSet<string>();

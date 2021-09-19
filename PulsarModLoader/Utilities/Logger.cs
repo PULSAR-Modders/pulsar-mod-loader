@@ -23,7 +23,7 @@ namespace PulsarModLoader.Utilities
 
         public static void Info(string message)
         {
-            string line = $"[PPL] {message}";
+            string line = $"[PML] {message}";
 
             Console.WriteLine(line);
 

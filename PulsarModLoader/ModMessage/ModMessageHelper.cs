@@ -83,10 +83,10 @@ namespace PulsarModLoader
             }
         }
         [PunRPC]
-        public void ReceiveConnectionMessage(string modList, string PPLVersion, PhotonMessageInfo pmi) //Pong
+        public void ReceiveConnectionMessage(string modList, string PMLVersion, PhotonMessageInfo pmi) //Pong
         {
             PhotonPlayer sender = pmi.sender;
-            Utilities.Logger.Info($"ConnectionMessage received message from a sender with the following PPL Version and modlist:\nPPLVersion: {PPLVersion}\nModlist:\n{modList}");            
+            Utilities.Logger.Info($"ConnectionMessage received message from a sender with the following PML Version and modlist:\nPMLVersion: {PMLVersion}\nModlist:\n{modList}");            
             
             if (!PlayersWithMods.ContainsKey(sender))
             {

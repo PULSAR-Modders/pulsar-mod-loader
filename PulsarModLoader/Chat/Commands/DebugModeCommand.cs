@@ -23,10 +23,10 @@ namespace PulsarModLoader.Chat.Commands
             DebugMode = !DebugMode;
 
             //Write new DebugMode value to settings xml file
-            PLXMLOptionsIO.Instance.CurrentOptions.SetStringValue("PPLDebugMode", DebugMode.ToString());
+            PLXMLOptionsIO.Instance.CurrentOptions.SetStringValue("PMLDebugMode", DebugMode.ToString());
 
             //notify player of new DebugMode value
-            Messaging.Notification($"PPLDebugMode is now {DebugMode}");
+            Messaging.Notification($"PMLDebugMode is now {DebugMode}");
         }
 
         public string UsageExample()
@@ -39,7 +39,7 @@ namespace PulsarModLoader.Chat.Commands
     {
         static void Postfix()
         {//load DebugMoad from settings.xml
-            if (bool.TryParse(PLXMLOptionsIO.Instance.CurrentOptions.GetStringValue("PPLDebugMode"), out bool result))
+            if (bool.TryParse(PLXMLOptionsIO.Instance.CurrentOptions.GetStringValue("PMLDebugMode"), out bool result))
             {
                 DebugModeCommand.DebugMode = result;
             }

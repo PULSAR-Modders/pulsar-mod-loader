@@ -1,6 +1,8 @@
-﻿using PulsarModLoader.Injections;
+﻿using Microsoft.Win32;
+using PulsarModLoader.Injections;
 using PulsarModLoader.Utilities;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -10,28 +12,29 @@ namespace PulsarInjector
 {
     class Injector
     {
-        static readonly string defaultPath = @"C:\Program Files (x86)\Steam\steamapps\common\PULSARLostColony\PULSAR_LostColony_Data\Managed\Assembly-CSharp.dll";
-        static readonly string defaultLinuxPath = "~/.steam/steam/steamapps/common/PULSARLostColony/PULSAR_LostColony_Data/Managed/Assembly-CSharp.dll";
-        //Default path does not work for OSX
-        //static readonly string defaultMacPath = "~/Library/Application Support/Steam/steamapps/common/PULSARLostColony/PULSARLostColony.app/Contents/Resources/Data/Managed/Assembly-CSharp.dll";
-
         [STAThread] //Required for file dialog to work
         static void Main(string[] args)
         {
-            string targetAssemblyPath = defaultPath;
-
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-            {
-                targetAssemblyPath = defaultLinuxPath;
-            }
-            //else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-            //{
-                //targetAssemblyPath = defaultMacPath;
-            //}
+            string targetAssemblyPath = null;
 
             if (args.Length > 0)
             {
                 targetAssemblyPath = args[0];
+            }
+            else
+            {
+                string steamPath = FindSteam();
+                if (steamPath != null)
+                {
+                    Logger.Info("Found Steam at " + steamPath);
+                    string pulsarPath = GetPulsarPath(steamPath);
+                    if (pulsarPath != null)
+                    {
+                        Logger.Info("Found Pulsar at " + pulsarPath);
+                        targetAssemblyPath = pulsarPath + Path.DirectorySeparatorChar + "PULSAR_LostColony_Data" +
+                            Path.DirectorySeparatorChar + "Managed" + Path.DirectorySeparatorChar + "Assembly-CSharp.dll";
+                    }
+                }
             }
 
             Logger.Info("Searching for " + targetAssemblyPath);
@@ -77,10 +80,66 @@ namespace PulsarInjector
             }
 
             Logger.Info("Unable to find file");
-            Logger.Info("Please specify an assembly to inject (e.g., PULSARLostColony\\PULSAR_LostColony_Data\\Managed\\Assembly-CSharp.dll)");
+            Logger.Info("Please specify an assembly to inject (e.g., PULSARLostColony/PULSAR_LostColony_Data/Managed/Assembly-CSharp.dll)");
 
             Logger.Info("Press any key to continue...");
             Console.ReadKey();
+        }
+
+        public static string FindSteam()
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                string home = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                //Default steam install directory
+                if (Directory.Exists(home + "/.steam/steam"))
+                {
+                    return home + "/.steam/steam";
+                }
+                //Flatpack steam install directory
+                else if (Directory.Exists(home + "/.var/app/com.valvesoftware.Steam/.steam/steam"))
+                {
+                    return home + "/.var/app/com.valvesoftware.Steam/.steam/steam";
+                }
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                //Get steam location from registry
+                return (string)Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Valve\Steam", "InstallPath", null);
+            }
+            return null;
+        }
+
+        public static string GetPulsarPath(string steamDir)
+        {
+            string libraryFolders = steamDir + Path.DirectorySeparatorChar + "steamapps" + Path.DirectorySeparatorChar + "libraryfolders.vdf";
+            if (!File.Exists(libraryFolders))
+            {
+                return null;
+            }
+            Logger.Info("Reading " + libraryFolders);
+            string fileContents = File.ReadAllText(libraryFolders);
+            List<string> paths = new List<string>();
+            paths.Add(steamDir);
+            while (fileContents.Contains("\"path\"\t\t\""))
+            {
+                int index = fileContents.IndexOf("\"path\"\t\t\"") + 9;
+                int index2;
+                for (index2 = index; fileContents[index2] != '"'; index2++);
+                paths.Add(fileContents.Substring(index, index2 - index));
+                fileContents = fileContents.Substring(index2);
+            }
+            foreach (string path in paths)
+            {
+                string pulsarPath = path + Path.DirectorySeparatorChar + "steamapps" + Path.DirectorySeparatorChar + "common" + Path.DirectorySeparatorChar + "PULSARLostColony";
+                Logger.Info("Checking " + pulsarPath);
+                if (Directory.Exists(pulsarPath))
+                {
+                    return pulsarPath;
+                }
+            }
+
+            return null;
         }
 
         public static void InstallModLoader(string targetAssemblyPath)

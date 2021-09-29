@@ -27,6 +27,10 @@ namespace PulsarModLoader.Content.Components.WarpDrive
         {
             get { return 3; }
         }
+        public virtual float MaxPowerUsage_Watts
+        {
+            get { return 3000f; }
+        }
         public override int CargoVisualID => 16;
     }
 }

@@ -85,6 +85,7 @@ namespace PulsarModLoader.Content.Components.WarpDrive
                     InWarpDrive.WarpRange = WarpDriveType.WarpRange;
                     InWarpDrive.EnergySignatureAmt = WarpDriveType.EnergySignature;
                     InWarpDrive.NumberOfChargingNodes = WarpDriveType.NumberOfChargesPerFuel;
+                    InWarpDrive.GetType().GetField("m_MaxPowerUsage_Watts", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InWarpDrive, WarpDriveType.MaxPowerUsage_Watts);
                     InWarpDrive.GetType().GetField("m_MarketPrice", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InWarpDrive, (ObscuredInt)WarpDriveType.MarketPrice);
                     InWarpDrive.CargoVisualPrefabID = WarpDriveType.CargoVisualID;
                     InWarpDrive.CanBeDroppedOnShipDeath = WarpDriveType.CanBeDroppedOnShipDeath;

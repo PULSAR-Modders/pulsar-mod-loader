@@ -1,9 +1,8 @@
 ﻿using HarmonyLib;
-using PulsarModLoader;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Logger = PulsarModLoader.Utilities.Logger;
+using PulsarModLoader.Utilities;
 
 namespace PulsarModLoader.Content.Components.Turret
 {

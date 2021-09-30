@@ -1,10 +1,9 @@
 ﻿using CodeStage.AntiCheat.ObscuredTypes;
 using HarmonyLib;
-using PulsarModLoader;
+using PulsarModLoader.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Logger = PulsarModLoader.Utilities.Logger;
 
 namespace PulsarModLoader.Content.Components.MissionShipComponent
 {

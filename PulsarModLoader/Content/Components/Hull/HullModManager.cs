@@ -1,10 +1,9 @@
 ﻿using CodeStage.AntiCheat.ObscuredTypes;
 using HarmonyLib;
-using PulsarModLoader;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Logger = PulsarModLoader.Utilities.Logger;
+using PulsarModLoader.Utilities;
 
 namespace PulsarModLoader.Content.Components.Hull
 {
@@ -111,6 +110,18 @@ namespace PulsarModLoader.Content.Components.Hull
         {
             __result = HullModManager.CreateHull(inSubType, inLevel);
             return false;
+        }
+    }
+    [HarmonyPatch(typeof(PLHull), "Tick")]
+    class TickPatch
+    {
+        static void Postfix(PLHull __instance)
+        {
+            int subtypeformodded = __instance.SubType - HullModManager.Instance.VanillaHullMaxType;
+            if (subtypeformodded > -1 && subtypeformodded < HullModManager.Instance.HullTypes.Count && __instance.ShipStats != null)
+            {
+                HullModManager.Instance.HullTypes[subtypeformodded].Tick(__instance);
+            }
         }
     }
 }

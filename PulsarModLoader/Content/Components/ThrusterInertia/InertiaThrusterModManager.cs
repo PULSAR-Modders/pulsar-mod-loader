@@ -110,4 +110,17 @@ namespace PulsarModLoader.Content.Components.InertiaThruster
             return false;
         }
     }
+
+    [HarmonyPatch(typeof(PLInertiaThruster), "Tick")]
+    class TickPatch
+    {
+        static void Postfix(PLInertiaThruster __instance)
+        {
+            int subtypeformodded = __instance.SubType - InertiaThrusterModManager.Instance.VanillaInertiaThrusterMaxType;
+            if (subtypeformodded > -1 && subtypeformodded < InertiaThrusterModManager.Instance.InertiaThrusterTypes.Count && __instance.ShipStats != null)
+            {
+                InertiaThrusterModManager.Instance.InertiaThrusterTypes[subtypeformodded].Tick(__instance);
+            }
+        }
+    }
 }

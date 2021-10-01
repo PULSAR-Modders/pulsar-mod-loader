@@ -122,16 +122,17 @@ namespace PulsarModLoader.Content.Components.Shield
             return false;
         }
     }
-    /*[HarmonyPatch(typeof(PLShieldGenerator), "Tick")]
+    //Applies the Tick of the modded shields
+    [HarmonyPatch(typeof(PLShieldGenerator), "Tick")]
     class TickPatch
     {
         static void Postfix(PLShieldGenerator __instance)
         {
             int subtypeformodded = __instance.SubType - ShieldModManager.Instance.VanillaShieldMaxType;
-            if (subtypeformodded > -1 && subtypeformodded < ShieldModManager.Instance.ShieldTypes.Count && __instance.ShipStats != null && __instance.ShipStats.ShieldTempMax != 0f)
+            if (subtypeformodded > -1 && subtypeformodded < ShieldModManager.Instance.ShieldTypes.Count && __instance.ShipStats != null)
             {
-                ShieldModManager.Instance.ShieldTypes[subtypeformodded].ShieldPowerCode(__instance);
+                ShieldModManager.Instance.ShieldTypes[subtypeformodded].Tick(__instance);
             }
         }
-    }*/
+    }
 }

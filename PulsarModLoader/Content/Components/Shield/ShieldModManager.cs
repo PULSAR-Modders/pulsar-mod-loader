@@ -135,4 +135,28 @@ namespace PulsarModLoader.Content.Components.Shield
             }
         }
     }
+    [HarmonyPatch(typeof(PLShieldGenerator), "GetStatLineLeft")]
+    class LeftDescFix
+    {
+        static void Postfix(PLShieldGenerator __instance, ref string __result)
+        {
+            int subtypeformodded = __instance.SubType - ShieldModManager.Instance.VanillaShieldMaxType;
+            if (subtypeformodded > -1 && subtypeformodded < ShieldModManager.Instance.ShieldTypes.Count && __instance.ShipStats != null)
+            {
+                __result = ShieldModManager.Instance.ShieldTypes[subtypeformodded].GetStatLineLeft(__instance);
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShieldGenerator), "GetStatLineRight")]
+    class RightDescFix
+    {
+        static void Postfix(PLShieldGenerator __instance, ref string __result)
+        {
+            int subtypeformodded = __instance.SubType - ShieldModManager.Instance.VanillaShieldMaxType;
+            if (subtypeformodded > -1 && subtypeformodded < ShieldModManager.Instance.ShieldTypes.Count && __instance.ShipStats != null)
+            {
+                __result = ShieldModManager.Instance.ShieldTypes[subtypeformodded].GetStatLineRight(__instance);
+            }
+        }
+    }
 }

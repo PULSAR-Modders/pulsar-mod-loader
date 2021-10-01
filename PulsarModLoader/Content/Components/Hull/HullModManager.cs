@@ -124,4 +124,28 @@ namespace PulsarModLoader.Content.Components.Hull
             }
         }
     }
+    [HarmonyPatch(typeof(PLHull), "GetStatLineLeft")]
+    class LeftDescFix 
+    {
+        static void Postfix(PLHull __instance, ref string __result) 
+        {
+            int subtypeformodded = __instance.SubType - HullModManager.Instance.VanillaHullMaxType;
+            if (subtypeformodded > -1 && subtypeformodded < HullModManager.Instance.HullTypes.Count && __instance.ShipStats != null)
+            {
+                __result = HullModManager.Instance.HullTypes[subtypeformodded].GetStatLineLeft(__instance);
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLHull), "GetStatLineRight")]
+    class RightDescFix
+    {
+        static void Postfix(PLHull __instance, ref string __result)
+        {
+            int subtypeformodded = __instance.SubType - HullModManager.Instance.VanillaHullMaxType;
+            if (subtypeformodded > -1 && subtypeformodded < HullModManager.Instance.HullTypes.Count && __instance.ShipStats != null)
+            {
+                __result = HullModManager.Instance.HullTypes[subtypeformodded].GetStatLineRight(__instance);
+            }
+        }
+    }
 }

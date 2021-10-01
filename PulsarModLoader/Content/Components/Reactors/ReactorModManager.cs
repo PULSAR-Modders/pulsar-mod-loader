@@ -125,4 +125,28 @@ namespace PulsarModLoader.Content.Components.Reactor
             }
         }
     }
+    [HarmonyPatch(typeof(PLReactor), "GetStatLineLeft")]
+    class LeftDescFix
+    {
+        static void Postfix(PLReactor __instance, ref string __result)
+        {
+            int subtypeformodded = __instance.SubType - ReactorModManager.Instance.VanillaReactorMaxType;
+            if (subtypeformodded > -1 && subtypeformodded < ReactorModManager.Instance.ReactorTypes.Count && __instance.ShipStats != null)
+            {
+                __result = ReactorModManager.Instance.ReactorTypes[subtypeformodded].GetStatLineLeft(__instance);
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLReactor), "GetStatLineRight")]
+    class RightDescFix
+    {
+        static void Postfix(PLReactor __instance, ref string __result)
+        {
+            int subtypeformodded = __instance.SubType - ReactorModManager.Instance.VanillaReactorMaxType;
+            if (subtypeformodded > -1 && subtypeformodded < ReactorModManager.Instance.ReactorTypes.Count && __instance.ShipStats != null)
+            {
+                __result = ReactorModManager.Instance.ReactorTypes[subtypeformodded].GetStatLineRight(__instance);
+            }
+        }
+    }
 }

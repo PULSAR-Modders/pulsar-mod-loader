@@ -122,4 +122,28 @@ namespace PulsarModLoader.Content.Components.ManeuverThruster
             }
         }
     }
+    [HarmonyPatch(typeof(PLManeuverThruster), "GetStatLineLeft")]
+    class LeftDescFix
+    {
+        static void Postfix(PLManeuverThruster __instance, ref string __result)
+        {
+            int subtypeformodded = __instance.SubType - ManeuverThrusterModManager.Instance.VanillaManeuverThrusterMaxType;
+            if (subtypeformodded > -1 && subtypeformodded < ManeuverThrusterModManager.Instance.ManeuverThrusterTypes.Count && __instance.ShipStats != null)
+            {
+                __result = ManeuverThrusterModManager.Instance.ManeuverThrusterTypes[subtypeformodded].GetStatLineLeft(__instance);
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLManeuverThruster), "GetStatLineRight")]
+    class RightDescFix
+    {
+        static void Postfix(PLManeuverThruster __instance, ref string __result)
+        {
+            int subtypeformodded = __instance.SubType - ManeuverThrusterModManager.Instance.VanillaManeuverThrusterMaxType;
+            if (subtypeformodded > -1 && subtypeformodded < ManeuverThrusterModManager.Instance.ManeuverThrusterTypes.Count && __instance.ShipStats != null)
+            {
+                __result = ManeuverThrusterModManager.Instance.ManeuverThrusterTypes[subtypeformodded].GetStatLineRight(__instance);
+            }
+        }
+    }
 }

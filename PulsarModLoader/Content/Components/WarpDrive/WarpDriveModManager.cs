@@ -112,4 +112,28 @@ namespace PulsarModLoader.Content.Components.WarpDrive
             return false;
         }
     }
+    [HarmonyPatch(typeof(PLWarpDrive), "GetStatLineLeft")]
+    class LeftDescFix
+    {
+        static void Postfix(PLWarpDrive __instance, ref string __result)
+        {
+            int subtypeformodded = __instance.SubType - WarpDriveModManager.Instance.VanillaWarpDriveMaxType;
+            if (subtypeformodded > -1 && subtypeformodded < WarpDriveModManager.Instance.WarpDriveTypes.Count && __instance.ShipStats != null)
+            {
+                __result = WarpDriveModManager.Instance.WarpDriveTypes[subtypeformodded].GetStatLineLeft(__instance);
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLWarpDrive), "GetStatLineRight")]
+    class RightDescFix
+    {
+        static void Postfix(PLWarpDrive __instance, ref string __result)
+        {
+            int subtypeformodded = __instance.SubType - WarpDriveModManager.Instance.VanillaWarpDriveMaxType;
+            if (subtypeformodded > -1 && subtypeformodded < WarpDriveModManager.Instance.WarpDriveTypes.Count && __instance.ShipStats != null)
+            {
+                __result = WarpDriveModManager.Instance.WarpDriveTypes[subtypeformodded].GetStatLineRight(__instance);
+            }
+        }
+    }
 }

@@ -123,4 +123,28 @@ namespace PulsarModLoader.Content.Components.Thruster
             }
         }
     }
+    [HarmonyPatch(typeof(PLThruster), "GetStatLineLeft")]
+    class LeftDescFix
+    {
+        static void Postfix(PLThruster __instance, ref string __result)
+        {
+            int subtypeformodded = __instance.SubType - ThrusterModManager.Instance.VanillaThrusterMaxType;
+            if (subtypeformodded > -1 && subtypeformodded < ThrusterModManager.Instance.ThrusterTypes.Count && __instance.ShipStats != null)
+            {
+                __result = ThrusterModManager.Instance.ThrusterTypes[subtypeformodded].GetStatLineLeft(__instance);
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLThruster), "GetStatLineRight")]
+    class RightDescFix
+    {
+        static void Postfix(PLThruster __instance, ref string __result)
+        {
+            int subtypeformodded = __instance.SubType - ThrusterModManager.Instance.VanillaThrusterMaxType;
+            if (subtypeformodded > -1 && subtypeformodded < ThrusterModManager.Instance.ThrusterTypes.Count && __instance.ShipStats != null)
+            {
+                __result = ThrusterModManager.Instance.ThrusterTypes[subtypeformodded].GetStatLineRight(__instance);
+            }
+        }
+    }
 }

@@ -114,4 +114,28 @@ namespace PulsarModLoader.Content.Components.NuclearDevice
             return false;
         }
     }
+    [HarmonyPatch(typeof(PLNuclearDevice), "GetStatLineLeft")]
+    class LeftDescFix
+    {
+        static void Postfix(PLNuclearDevice __instance, ref string __result)
+        {
+            int subtypeformodded = __instance.SubType - NuclearDeviceModManager.Instance.VanillaNuclearDeviceMaxType;
+            if (subtypeformodded > -1 && subtypeformodded < NuclearDeviceModManager.Instance.NuclearDeviceTypes.Count && __instance.ShipStats != null)
+            {
+                __result = NuclearDeviceModManager.Instance.NuclearDeviceTypes[subtypeformodded].GetStatLineLeft(__instance);
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLNuclearDevice), "GetStatLineRight")]
+    class RightDescFix
+    {
+        static void Postfix(PLNuclearDevice __instance, ref string __result)
+        {
+            int subtypeformodded = __instance.SubType - NuclearDeviceModManager.Instance.VanillaNuclearDeviceMaxType;
+            if (subtypeformodded > -1 && subtypeformodded < NuclearDeviceModManager.Instance.NuclearDeviceTypes.Count && __instance.ShipStats != null)
+            {
+                __result = NuclearDeviceModManager.Instance.NuclearDeviceTypes[subtypeformodded].GetStatLineRight(__instance);
+            }
+        }
+    }
 }

@@ -123,4 +123,28 @@ namespace PulsarModLoader.Content.Components.InertiaThruster
             }
         }
     }
+    [HarmonyPatch(typeof(PLInertiaThruster), "GetStatLineLeft")]
+    class LeftDescFix
+    {
+        static void Postfix(PLInertiaThruster __instance, ref string __result)
+        {
+            int subtypeformodded = __instance.SubType - InertiaThrusterModManager.Instance.VanillaInertiaThrusterMaxType;
+            if (subtypeformodded > -1 && subtypeformodded < InertiaThrusterModManager.Instance.InertiaThrusterTypes.Count && __instance.ShipStats != null)
+            {
+                __result = InertiaThrusterModManager.Instance.InertiaThrusterTypes[subtypeformodded].GetStatLineLeft(__instance);
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLInertiaThruster), "GetStatLineRight")]
+    class RightDescFix
+    {
+        static void Postfix(PLInertiaThruster __instance, ref string __result)
+        {
+            int subtypeformodded = __instance.SubType - InertiaThrusterModManager.Instance.VanillaInertiaThrusterMaxType;
+            if (subtypeformodded > -1 && subtypeformodded < InertiaThrusterModManager.Instance.InertiaThrusterTypes.Count && __instance.ShipStats != null)
+            {
+                __result = InertiaThrusterModManager.Instance.InertiaThrusterTypes[subtypeformodded].GetStatLineRight(__instance);
+            }
+        }
+    }
 }

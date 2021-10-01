@@ -108,4 +108,28 @@ namespace PulsarModLoader.Content.Components.Extractor
             return false;
         }
     }
+    [HarmonyPatch(typeof(PLExtractor), "GetStatLineLeft")]
+    class LeftDescFix
+    {
+        static void Postfix(PLExtractor __instance, ref string __result)
+        {
+            int subtypeformodded = __instance.SubType - ExtractorModManager.Instance.VanillaExtractorMaxType;
+            if (subtypeformodded > -1 && subtypeformodded < ExtractorModManager.Instance.ExtractorTypes.Count && __instance.ShipStats != null)
+            {
+                __result = ExtractorModManager.Instance.ExtractorTypes[subtypeformodded].GetStatLineLeft(__instance);
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLExtractor), "GetStatLineRight")]
+    class RightDescFix
+    {
+        static void Postfix(PLExtractor __instance, ref string __result)
+        {
+            int subtypeformodded = __instance.SubType - ExtractorModManager.Instance.VanillaExtractorMaxType;
+            if (subtypeformodded > -1 && subtypeformodded < ExtractorModManager.Instance.ExtractorTypes.Count && __instance.ShipStats != null)
+            {
+                __result = ExtractorModManager.Instance.ExtractorTypes[subtypeformodded].GetStatLineRight(__instance);
+            }
+        }
+    }
 }

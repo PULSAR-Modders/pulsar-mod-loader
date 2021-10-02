@@ -40,5 +40,31 @@ namespace PulsarModLoader.Content.Components.Shield
             get { return -1; }
         }
         public override int CargoVisualID => 39;
+
+        public override string GetStatLineLeft(PLShipComponent InComp)
+        {
+            return string.Concat(new string[]
+            {
+            PLLocalize.Localize("Integrity", false),
+            "\n",
+            PLLocalize.Localize("Charge Rate", false),
+            "\n",
+            PLLocalize.Localize("Min For QT Shields", false)
+            });
+        }
+
+        public override string GetStatLineRight(PLShipComponent InComp)
+        {
+            PLShieldGenerator me = InComp as PLShieldGenerator;
+            return string.Concat(new string[]
+            {
+            (me.Max * me.LevelMultiplier(0.25f,1f)).ToString("0"),
+            "\n",
+            (me.ChargeRateMax * me.LevelMultiplier(0.5f,1f)).ToString("0"),
+            "\n",
+            (me.MinIntegrityPercentForQuantumShield * 100f).ToString("0"),
+            "%"
+            });
+        }
     }
 }

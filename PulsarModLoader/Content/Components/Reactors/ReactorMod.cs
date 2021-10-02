@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Reflection;
 
 namespace PulsarModLoader.Content.Components.Reactor
 {
@@ -32,5 +33,31 @@ namespace PulsarModLoader.Content.Components.Reactor
             get { return 1f; }
         }
         public override int CargoVisualID => 15;
+
+        public override string GetStatLineLeft(PLShipComponent InComp)
+        {
+            return string.Concat(new string[]
+            {
+            PLLocalize.Localize("Max Temp", false),
+            "\n",
+            PLLocalize.Localize("Emer. Cooldown", false),
+            "\n",
+            PLLocalize.Localize("Output", false)
+            });
+        }
+
+        public override string GetStatLineRight(PLShipComponent InComp)
+        {
+            PLReactor me = InComp as PLReactor;
+            return string.Concat(new string[]
+            {
+            (me.TempMax * me.LevelMultiplier(0.1f, 1f)).ToString("0"),
+            " kP\n",
+            me.EmergencyCooldownTime.ToString("0.0"),
+            " sec\n",
+            ((float)me.GetType().GetField("OriginalEnergyOutputMax", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(me) * me.LevelMultiplier(0.1f, 1f)).ToString("0"),
+            " MW"
+            });
+        }
     }
 }

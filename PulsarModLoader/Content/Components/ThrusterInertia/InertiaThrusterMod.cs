@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-
+using System.Reflection;
 namespace PulsarModLoader.Content.Components.InertiaThruster
 {
     public abstract class InertiaThrusterMod : ComponentModBase
@@ -20,5 +20,14 @@ namespace PulsarModLoader.Content.Components.InertiaThruster
             get { return 2600f; }
         }
         public override int CargoVisualID => 8;
+        public override string GetStatLineLeft(PLShipComponent InComp)
+        {
+            return PLLocalize.Localize("Inertia", false) + "\n";
+        }
+        public override string GetStatLineRight(PLShipComponent InComp)
+        {
+            PLInertiaThruster me = InComp as PLInertiaThruster;
+            return ((float)me.GetType().GetField("MaxOutput", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(me) * me.LevelMultiplier(0.18f, 1f) * 100f).ToString("0") + "\n";
+        }
     }
 }

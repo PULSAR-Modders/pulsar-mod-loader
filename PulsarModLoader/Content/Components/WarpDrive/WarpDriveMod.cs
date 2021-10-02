@@ -32,5 +32,28 @@ namespace PulsarModLoader.Content.Components.WarpDrive
             get { return 3000f; }
         }
         public override int CargoVisualID => 16;
+        public override string GetStatLineLeft(PLShipComponent InComp)
+        {
+            return string.Concat(new string[]
+            {
+            PLLocalize.Localize("Charge Rate", false),
+            "\n",
+            PLLocalize.Localize("Range", false),
+            "\n",
+            PLLocalize.Localize("Charges Per Fuel", false)
+            });
+        }
+        public override string GetStatLineRight(PLShipComponent InComp)
+        {
+            PLWarpDrive me = InComp as PLWarpDrive;
+            return string.Concat(new string[]
+            {
+            (me.ChargeSpeed * me.LevelMultiplier(0.25f, 1f)).ToString("0"),
+            "\n",
+            (me.WarpRange * 100f * me.LevelMultiplier(0.2f, 1f)).ToString("0"),
+            "\n",
+            me.NumberOfChargingNodes.ToString("0")
+            });
+        }
     }
 }

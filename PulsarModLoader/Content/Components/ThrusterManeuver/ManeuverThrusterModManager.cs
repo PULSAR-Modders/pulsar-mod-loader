@@ -82,7 +82,7 @@ namespace PulsarModLoader.Content.Components.ManeuverThruster
                     InManeuverThruster.Desc = ManeuverThrusterType.Description;
                     InManeuverThruster.GetType().GetField("m_IconTexture", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InManeuverThruster, ManeuverThrusterType.IconTexture);
                     InManeuverThruster.GetType().GetField("m_MaxOutput", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InManeuverThruster, ManeuverThrusterType.MaxOutput);
-                    InManeuverThruster.GetType().GetField("m_MaxPowerUsage_Watts", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InManeuverThruster, ManeuverThrusterType.MaxPowerUsage_Watts);
+                    InManeuverThruster.GetType().GetField("m_BaseMaxPower", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InManeuverThruster, ManeuverThrusterType.MaxPowerUsage_Watts);
                     InManeuverThruster.GetType().GetField("m_MarketPrice", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InManeuverThruster, (ObscuredInt)ManeuverThrusterType.MarketPrice);
                     InManeuverThruster.CargoVisualPrefabID = ManeuverThrusterType.CargoVisualID;
                     InManeuverThruster.CanBeDroppedOnShipDeath = ManeuverThrusterType.CanBeDroppedOnShipDeath;

@@ -87,6 +87,7 @@ namespace PulsarModLoader.Content.Components.Virus
                     InVirus.Experimental = VirusType.Experimental;
                     InVirus.Unstable = VirusType.Unstable;
                     InVirus.Contraband = VirusType.Contraband;
+                    InVirus.InfectionTimeLimitMs = VirusType.InfectionTimeLimitMs;
                     InVirus.GetType().GetField("Price_LevelMultiplierExponent", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InVirus, VirusType.Price_LevelMultiplierExponent);
                 }
             }

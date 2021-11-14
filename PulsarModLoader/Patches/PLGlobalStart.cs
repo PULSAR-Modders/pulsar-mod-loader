@@ -14,18 +14,26 @@ namespace PulsarModLoader.Patches
         {
             if (!modsLoaded)
             {
+                //PML Config
                 string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "/PulsarModLoaderConfig.json";
                 if (!File.Exists(path))
                     PMLConfig.CreateDefaultConfig(path, true);
                 else
                     PMLConfig.CreateConfigFromFile(path);
 
-
+                //Modmanager GUI Init.
                 new GameObject("ModManager", typeof(CustomGUI.GUIMain)) { hideFlags = HideFlags.HideAndDontSave };
                 
+                //ModLoading
                 string modsDir = Path.Combine(Directory.GetCurrentDirectory(), "Mods");
                 ModManager.Instance.LoadModsDirectory(modsDir);
                 modsLoaded = true;
+
+                //DebugModeSetting
+                if (bool.TryParse(PLXMLOptionsIO.Instance.CurrentOptions.GetStringValue("PMLDebugMode"), out bool result))
+                {
+                    Chat.Commands.DebugModeCommand.DebugMode = result;
+                }
             }
         }
     }

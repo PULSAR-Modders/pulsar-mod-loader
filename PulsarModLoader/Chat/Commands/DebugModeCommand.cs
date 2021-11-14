@@ -9,7 +9,7 @@ namespace PulsarModLoader.Chat.Commands
 
         public override string[] CommandAliases()
         {
-            return new string[] { "debugmode", "dbm"};
+            return new string[] { "debugmode", "dbm" };
         }
 
         public override string Description()
@@ -32,17 +32,6 @@ namespace PulsarModLoader.Chat.Commands
         public string UsageExample()
         {
             return $"{CommandAliases()[0]}";
-        }
-    }
-    [HarmonyLib.HarmonyPatch(typeof(PLServer), "Start")]
-    class LoadSetting
-    {
-        static void Postfix()
-        {//load DebugMoad from settings.xml
-            if (bool.TryParse(PLXMLOptionsIO.Instance.CurrentOptions.GetStringValue("PMLDebugMode"), out bool result))
-            {
-                DebugModeCommand.DebugMode = result;
-            }
         }
     }
 }

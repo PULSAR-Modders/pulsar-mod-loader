@@ -61,7 +61,7 @@ namespace PulsarModLoader
         protected override void Awake() //gameobject startup script
         {
             base.Awake();
-            ModMessageHelper.Instance = this;
+            Instance = this;
             PlayersWithMods = new Dictionary<PhotonPlayer, string>();
         }
         public string GetModName(string modName)

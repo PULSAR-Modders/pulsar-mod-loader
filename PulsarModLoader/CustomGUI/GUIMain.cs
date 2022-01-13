@@ -133,6 +133,7 @@ namespace PulsarModLoader.CustomGUI
                                     if (Button(FSettings.Name()))
                                     {
                                         selectedSettings = msm;
+                                        settings[msm].OnOpen();
                                         break;
                                     }
                                 }

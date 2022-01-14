@@ -48,7 +48,18 @@ namespace PulsarModLoader.CustomGUI
         void Update()
         {
             if (Input.GetKeyDown(KeyCode.F5))
+            {
+                if(GUIActive && selectedSettings != ushort.MaxValue) //Menu Closing and MM Selected
+                {
+                    settings[selectedSettings].OnClose();
+                }
+                else if(!GUIActive && selectedSettings != ushort.MaxValue) //Menu Opening and MM selected
+                {
+                    settings[selectedSettings].OnOpen();
+                }
                 GUIActive = !GUIActive;
+
+            }
         }
         
         void OnGUI()
@@ -269,7 +280,7 @@ namespace PulsarModLoader.CustomGUI
 
         void UpdateOnModRemoved(PulsarMod mod)
         {
-            selectedMod = UInt16.MaxValue;
+            selectedMod = ushort.MaxValue;
             mods.Remove(mod);
             List<ModSettingsMenu> settingsToRemove = new List<ModSettingsMenu>();
             Assembly asm = mod.GetType().Assembly;

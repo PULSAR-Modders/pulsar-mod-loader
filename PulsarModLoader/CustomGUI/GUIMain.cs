@@ -126,14 +126,12 @@ namespace PulsarModLoader.CustomGUI
                         {
                             if (selectedSettings == ushort.MaxValue)
                             {
-                                var length = settings.Count;
-                                for (ushort msm = 0; msm < length; msm++)
+                                for (ushort msm = 0; msm < settings.Count; msm++)
                                 {
-                                    var FSettings = settings[msm];
-                                    if (Button(FSettings.Name()))
+                                    if (Button(settings[msm].Name()))
                                     {
-                                        selectedSettings = msm;
                                         settings[msm].OnOpen();
+                                        selectedSettings = msm;
                                         break;
                                     }
                                 }
@@ -141,9 +139,14 @@ namespace PulsarModLoader.CustomGUI
                             else
                             {
                                 if (Button("Back"))
+                                {
+                                    settings[selectedSettings].OnClose();
                                     selectedSettings = ushort.MaxValue;
-
-                                settings[selectedSettings].Draw();
+                                }
+                                else
+                                {
+                                    settings[selectedSettings].Draw();
+                                }
                             }
                         }
                         EndScrollView();

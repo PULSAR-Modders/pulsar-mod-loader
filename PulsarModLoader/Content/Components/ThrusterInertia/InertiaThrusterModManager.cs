@@ -82,7 +82,7 @@ namespace PulsarModLoader.Content.Components.InertiaThruster
                     InInertiaThruster.Desc = InertiaThrusterType.Description;
                     InInertiaThruster.GetType().GetField("m_IconTexture", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InInertiaThruster, InertiaThrusterType.IconTexture);
                     InInertiaThruster.GetType().GetField("m_MaxOutput", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InInertiaThruster, InertiaThrusterType.MaxOutput);
-                    InInertiaThruster.GetType().GetField("m_MaxPowerUsage_Watts", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InInertiaThruster, InertiaThrusterType.MaxPowerUsage_Watts);
+                    InInertiaThruster.GetType().GetField("m_BaseMaxPower", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InInertiaThruster, InertiaThrusterType.MaxPowerUsage_Watts);
                     InInertiaThruster.GetType().GetField("m_MarketPrice", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InInertiaThruster, (ObscuredInt)InertiaThrusterType.MarketPrice);
                     InInertiaThruster.CargoVisualPrefabID = InertiaThrusterType.CargoVisualID;
                     InInertiaThruster.CanBeDroppedOnShipDeath = InertiaThrusterType.CanBeDroppedOnShipDeath;

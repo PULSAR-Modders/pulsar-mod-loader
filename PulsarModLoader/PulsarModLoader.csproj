@@ -159,6 +159,7 @@
     <Compile Include="Content\Components\MissionShipComponent\MissionShipComponentModManager.cs" />
     <Compile Include="Content\Components\NuclearDevice\NuclearDeviceMod.cs" />
     <Compile Include="Content\Components\NuclearDevice\NuclearDeviceModManager.cs" />
+    <Compile Include="Content\Components\OnWarpUnstableNotificationPatch.cs" />
     <Compile Include="Content\Components\PolytechModule\PolytechModuleMod.cs" />
     <Compile Include="Content\Components\PolytechModule\PolytechModuleModManager.cs" />
     <Compile Include="Content\Components\Reactors\ReactorMod.cs" />

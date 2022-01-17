@@ -189,12 +189,12 @@ namespace PulsarModLoader.Content.Components.WarpDriveProgram
     [HarmonyPatch(typeof(PLWarpDriveProgram), "GetActiveTimerAlpha")]
     class WarpDriveProgramGetActiveTimerAlphaPatch
     {
-        static void Postfix(PLWarpDriveProgram __instance, ref float __result)
+        static void Postfix(PLWarpDriveProgram __instance, ref float __result, float __ShieldBooster_LastActivationTime)
         {
             int subtypeformodded = __instance.SubType - WarpDriveProgramModManager.Instance.VanillaWarpDriveProgramMaxType;
             if (subtypeformodded > -1 && subtypeformodded < WarpDriveProgramModManager.Instance.WarpDriveProgramTypes.Count)
             {
-                __result = Mathf.Clamp01((Time.time - (float)__instance.GetType().GetField("ShieldBooster_LastActivationTime", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(__instance)) / WarpDriveProgramModManager.Instance.WarpDriveProgramTypes[subtypeformodded].ActiveTime);
+                __result = Mathf.Clamp01((Time.time - __ShieldBooster_LastActivationTime) / WarpDriveProgramModManager.Instance.WarpDriveProgramTypes[subtypeformodded].ActiveTime);
             }
         }
     }

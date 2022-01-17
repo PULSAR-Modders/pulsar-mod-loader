@@ -70,25 +70,7 @@ namespace PulsarModLoader.Content.Components
         }
         public virtual void OnWarp(PLShipComponent InComp)
         {
-            if (InComp.Unstable)
-		    {
-		    	int num = InComp.Unstable_JumpCounter;
-		    	InComp.Unstable_JumpCounter = num + 1;
-		    }
-		    if (InComp.Level == 0)
-		    {
-		    	InComp.Unstable_JumpCounter = 0;
-		    }
-		    if (InComp.Unstable_JumpCounter > 6)
-		    {
-		    	InComp.Unstable_JumpCounter = 0;
-		    	if (InComp.Level > 0)
-		    	{
-		    		int num = InComp.Level;
-		    		InComp.Level = num - 1;
-                    PulsarModLoader.Utilities.Messaging.Notification(InComp.GetItemName(true) + " has degraded to Level " + (InComp.Level + 1));
-		    	}
-		    }
+
         }
         public virtual void Tick(PLShipComponent InComp)
         {

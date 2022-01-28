@@ -5,14 +5,12 @@ using UnityEngine.UI;
 
 namespace PulsarModLoader.Patches
 {
-    // broken due to ToString being called once. We can manually update CurrentVersionLabel, but is it necessary?
-    /* [HarmonyPriority(Priority.Last)]
-    [HarmonyPatch(typeof(PLCachedFormatString<int, string, string>), "ToString", new[] { typeof(int), typeof(string), typeof(string) })]\
-    class DebugReadout 
+    [HarmonyPatch(typeof(PLInGameUI), "Update")]
+    class DebugReadout
     {
-        static void Prefix(ref string Obj3)
+        static void Postfix(PLInGameUI __instance)
         {
-            if (DebugModeCommand.DebugMode && PLServer.Instance != null && PLEncounterManager.Instance != null && PLNetworkManager.Instance != null)
+            if (DebugModeCommand.DebugMode && PLServer.Instance != null && PLEncounterManager.Instance != null && PLNetworkManager.Instance != null && GameVersion.Version != string.Empty)
             {
                 Vector3 pos;
                 if (PLNetworkManager.Instance.LocalPlayer != null)
@@ -29,9 +27,8 @@ namespace PulsarModLoader.Patches
                 string visualType = sectorInfo != null ? sectorInfo.VisualIndication.ToString() : "--";
                 int sector = sectorInfo != null ? sectorInfo.ID : -1;
 
-                //Obj3 += $"\n\n\nPOS: {pos}, Level ID: {levelID}, Sector: {sector}, Visual: {visualType}";
-                Obj3 += $"\nPOS: {pos}, Level ID: {levelID}, Sector: {sector}, Visual: {visualType}";
+                PLGlobal.SafeLabelSetText(__instance.CurrentVersionLabel, $"{GameVersion.Version}\nPOS: {pos}, Level ID: {levelID}, Sector: {sector}, Visual: {visualType}");
             }
         }
-    } */
+    }
 }

@@ -9,8 +9,9 @@ namespace PulsarModLoader.Patches
 {
     [HarmonyPriority(Priority.First)]
     [HarmonyPatch(typeof(PLCachedFormatString<int,string,string>), "ToString", new[] { typeof(int), typeof(string), typeof(string) })]
-    class GameVersion
+    internal class GameVersion
     {
+        internal static string Version = string.Empty;
         static readonly string PMLVersion = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion;
 
         static void Prefix(ref string Obj3)
@@ -18,5 +19,7 @@ namespace PulsarModLoader.Patches
             if (Obj3.Contains("v"))
                 Obj3 += $"\nPML {PMLVersion}";
         }
+
+        static void Postfix(string __result) => Version = __result;
     }
 }

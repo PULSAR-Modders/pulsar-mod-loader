@@ -80,20 +80,20 @@ namespace PulsarModLoader.Content.Components.Missile
                     InMissile.SubType = Subtype;
                     InMissile.Name = MissileType.Name;
                     InMissile.Desc = MissileType.Description;
-                    InMissile.GetType().GetField("m_IconTexture", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InMissile, MissileType.IconTexture);
+                    InMissile.m_IconTexture = MissileType.IconTexture;
                     InMissile.Damage = MissileType.Damage;
                     InMissile.Speed = MissileType.Speed;
                     InMissile.DamageType = MissileType.DamageType;
                     InMissile.MissileRefillPrice = MissileType.MissileRefillPrice;
                     InMissile.AmmoCapacity = MissileType.AmmoCapacity;
                     InMissile.PrefabID = MissileType.PrefabID;
-                    InMissile.GetType().GetField("m_MarketPrice", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InMissile, (ObscuredInt)MissileType.MarketPrice);
+                    InMissile.m_MarketPrice = MissileType.MarketPrice;
                     InMissile.CargoVisualPrefabID = MissileType.CargoVisualID;
                     InMissile.CanBeDroppedOnShipDeath = MissileType.CanBeDroppedOnShipDeath;
                     InMissile.Experimental = MissileType.Experimental;
                     InMissile.Unstable = MissileType.Unstable;
                     InMissile.Contraband = MissileType.Contraband;
-                    InMissile.GetType().GetField("Price_LevelMultiplierExponent", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InMissile, MissileType.Price_LevelMultiplierExponent);
+                    InMissile.Price_LevelMultiplierExponent = MissileType.Price_LevelMultiplierExponent;
                     if (PhotonNetwork.isMasterClient)
                     {
                         InMissile.SubTypeData = (short)InMissile.AmmoCapacity;

@@ -81,21 +81,21 @@ namespace PulsarModLoader.Content.Components.Shield
                     InShield.SubType = Subtype;
                     InShield.Name = ShieldType.Name;
                     InShield.Desc = ShieldType.Description;
-                    InShield.GetType().GetField("m_IconTexture", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InShield, ShieldType.IconTexture);
+                    InShield.m_IconTexture = ShieldType.IconTexture;
                     InShield.Max = ShieldType.ShieldMax;
                     InShield.ChargeRateMax = ShieldType.ChargeRateMax;
                     InShield.RecoveryRate = ShieldType.RecoveryRate;
                     InShield.Deflection = ShieldType.Deflection;
                     InShield.MinIntegrityPercentForQuantumShield = ShieldType.MinIntegrityPercentForQuantumShield;
                     InShield.MinIntegrityAfterDamage = ShieldType.MinIntegrityAfterDamage;
-                    InShield.GetType().GetField("m_MaxPowerUsage_Watts", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InShield, (ShieldType.MaxPowerUsage_Watts * 1.4f));
-                    InShield.GetType().GetField("m_MarketPrice", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InShield, (ObscuredInt)ShieldType.MarketPrice);
+                    InShield.m_MaxPowerUsage_Watts = (ShieldType.MaxPowerUsage_Watts * 1.4f);
+                    InShield.m_MarketPrice = ShieldType.MarketPrice;
                     InShield.CargoVisualPrefabID = ShieldType.CargoVisualID;
                     InShield.CanBeDroppedOnShipDeath = ShieldType.CanBeDroppedOnShipDeath;
                     InShield.Experimental = ShieldType.Experimental;
                     InShield.Unstable = ShieldType.Unstable;
                     InShield.Contraband = ShieldType.Contraband;
-                    InShield.GetType().GetField("Price_LevelMultiplierExponent", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InShield, ShieldType.Price_LevelMultiplierExponent);
+                    InShield.Price_LevelMultiplierExponent = ShieldType.Price_LevelMultiplierExponent;
                     if (InShield.MinIntegrityAfterDamage == -1)
                     {
                         InShield.MinIntegrityAfterDamage = Mathf.RoundToInt(InShield.Max * 0.15f);

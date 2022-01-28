@@ -80,15 +80,15 @@ namespace PulsarModLoader.Content.Components.Extractor
                     InExtractor.SubType = Subtype;
                     InExtractor.Name = ExtractorType.Name;
                     InExtractor.Desc = ExtractorType.Description;
-                    InExtractor.GetType().GetField("m_IconTexture", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InExtractor, ExtractorType.IconTexture);
-                    InExtractor.GetType().GetField("m_Stability", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InExtractor, ExtractorType.Stability);
-                    InExtractor.GetType().GetField("m_MarketPrice", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InExtractor, (ObscuredInt)ExtractorType.MarketPrice);
+                    InExtractor.m_IconTexture = ExtractorType.IconTexture;
+                    InExtractor.m_Stability = ExtractorType.Stability;
+                    InExtractor.m_MarketPrice = ExtractorType.MarketPrice;
                     InExtractor.CargoVisualPrefabID = ExtractorType.CargoVisualID;
                     InExtractor.CanBeDroppedOnShipDeath = ExtractorType.CanBeDroppedOnShipDeath;
                     InExtractor.Experimental = ExtractorType.Experimental;
                     InExtractor.Unstable = ExtractorType.Unstable;
                     InExtractor.Contraband = ExtractorType.Contraband;
-                    InExtractor.GetType().GetField("Price_LevelMultiplierExponent", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InExtractor, ExtractorType.Price_LevelMultiplierExponent);
+                    InExtractor.Price_LevelMultiplierExponent = ExtractorType.Price_LevelMultiplierExponent;
                 }
             }
             else

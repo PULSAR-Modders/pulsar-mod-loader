@@ -80,19 +80,19 @@ namespace PulsarModLoader.Content.Components.WarpDrive
                     InWarpDrive.SubType = Subtype;
                     InWarpDrive.Name = WarpDriveType.Name;
                     InWarpDrive.Desc = WarpDriveType.Description;
-                    InWarpDrive.GetType().GetField("m_IconTexture", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InWarpDrive, WarpDriveType.IconTexture);
+                    InWarpDrive.m_IconTexture = WarpDriveType.IconTexture;
                     InWarpDrive.ChargeSpeed = WarpDriveType.ChargeSpeed;
                     InWarpDrive.WarpRange = WarpDriveType.WarpRange;
                     InWarpDrive.EnergySignatureAmt = WarpDriveType.EnergySignature;
                     InWarpDrive.NumberOfChargingNodes = WarpDriveType.NumberOfChargesPerFuel;
-                    InWarpDrive.GetType().GetField("m_MaxPowerUsage_Watts", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InWarpDrive, WarpDriveType.MaxPowerUsage_Watts);
-                    InWarpDrive.GetType().GetField("m_MarketPrice", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InWarpDrive, (ObscuredInt)WarpDriveType.MarketPrice);
+                    InWarpDrive.m_MaxPowerUsage_Watts = WarpDriveType.MaxPowerUsage_Watts;
+                    InWarpDrive.m_MarketPrice = WarpDriveType.MarketPrice;
                     InWarpDrive.CargoVisualPrefabID = WarpDriveType.CargoVisualID;
                     InWarpDrive.CanBeDroppedOnShipDeath = WarpDriveType.CanBeDroppedOnShipDeath;
                     InWarpDrive.Experimental = WarpDriveType.Experimental;
                     InWarpDrive.Unstable = WarpDriveType.Unstable;
                     InWarpDrive.Contraband = WarpDriveType.Contraband;
-                    InWarpDrive.GetType().GetField("Price_LevelMultiplierExponent", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InWarpDrive, WarpDriveType.Price_LevelMultiplierExponent);
+                    InWarpDrive.Price_LevelMultiplierExponent = WarpDriveType.Price_LevelMultiplierExponent;
                 }
             }
             else

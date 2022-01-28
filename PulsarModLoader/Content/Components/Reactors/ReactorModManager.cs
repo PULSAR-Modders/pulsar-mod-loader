@@ -80,20 +80,20 @@ namespace PulsarModLoader.Content.Components.Reactor
                     InReactor.SubType = Subtype;
                     InReactor.Name = ReactorType.Name;
                     InReactor.Desc = ReactorType.Description;
-                    InReactor.GetType().GetField("m_IconTexture", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InReactor, ReactorType.IconTexture);
+                    InReactor.m_IconTexture = ReactorType.IconTexture;
                     InReactor.EnergyOutputMax = ReactorType.EnergyOutputMax;
                     InReactor.EnergySignatureAmt = ReactorType.EnergySignatureAmount;
                     InReactor.TempMax = ReactorType.MaxTemp;
                     InReactor.EmergencyCooldownTime = ReactorType.EmergencyCooldownTime;
                     InReactor.HeatOutput = ReactorType.HeatOutput;
-                    InReactor.GetType().GetField("m_MarketPrice", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InReactor, (ObscuredInt)ReactorType.MarketPrice);
+                    InReactor.m_MarketPrice = ReactorType.MarketPrice;
                     InReactor.CargoVisualPrefabID = ReactorType.CargoVisualID;
                     InReactor.CanBeDroppedOnShipDeath = ReactorType.CanBeDroppedOnShipDeath;
                     InReactor.Experimental = ReactorType.Experimental;
                     InReactor.Unstable = ReactorType.Unstable;
                     InReactor.Contraband = ReactorType.Contraband;
-                    InReactor.GetType().GetField("OriginalEnergyOutputMax", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InReactor, InReactor.EnergyOutputMax);
-                    InReactor.GetType().GetField("Price_LevelMultiplierExponent", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InReactor, ReactorType.Price_LevelMultiplierExponent);
+                    InReactor.OriginalEnergyOutputMax = InReactor.EnergyOutputMax;
+                    InReactor.Price_LevelMultiplierExponent = ReactorType.Price_LevelMultiplierExponent;
                 }
             }
             else

@@ -80,17 +80,17 @@ namespace PulsarModLoader.Content.Components.Thruster
                     InThruster.SubType = Subtype;
                     InThruster.Name = ThrusterType.Name;
                     InThruster.Desc = ThrusterType.Description;
-                    InThruster.GetType().GetField("m_IconTexture", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InThruster, ThrusterType.IconTexture);
-                    InThruster.GetType().GetField("m_MaxOutput", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InThruster, ThrusterType.MaxOutput);
-                    InThruster.GetType().GetField("m_BaseMaxPower", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InThruster, ThrusterType.MaxPowerUsage_Watts);
-                    InThruster.GetType().GetField("m_MarketPrice", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InThruster, (ObscuredInt)ThrusterType.MarketPrice);
+                    InThruster.m_IconTexture = ThrusterType.IconTexture;
+                    InThruster.m_MaxOutput = ThrusterType.MaxOutput;
+                    InThruster.m_BaseMaxPower = ThrusterType.MaxPowerUsage_Watts;
+                    InThruster.m_MarketPrice = ThrusterType.MarketPrice;
                     InThruster.CargoVisualPrefabID = ThrusterType.CargoVisualID;
                     InThruster.CanBeDroppedOnShipDeath = ThrusterType.CanBeDroppedOnShipDeath;
                     InThruster.Experimental = ThrusterType.Experimental;
                     InThruster.Unstable = ThrusterType.Unstable;
                     InThruster.Contraband = ThrusterType.Contraband;
-                    InThruster.GetType().GetMethod("UpdateMaxPowerWatts", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(InThruster, new object[0]);
-                    InThruster.GetType().GetField("Price_LevelMultiplierExponent", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InThruster, ThrusterType.Price_LevelMultiplierExponent);
+                    InThruster.UpdateMaxPowerWatts();
+                    InThruster.Price_LevelMultiplierExponent = ThrusterType.Price_LevelMultiplierExponent;
                 }
             }
             else

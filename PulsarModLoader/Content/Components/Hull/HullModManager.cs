@@ -80,17 +80,17 @@ namespace PulsarModLoader.Content.Components.Hull
                     InHull.SubType = Subtype;
                     InHull.Name = HullType.Name;
                     InHull.Desc = HullType.Description;
-                    InHull.GetType().GetField("m_IconTexture", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InHull, HullType.IconTexture);
+                    InHull.m_IconTexture = HullType.IconTexture;
                     InHull.Max = HullType.HullMax;
                     InHull.Armor = HullType.Armor;
                     InHull.Defense = HullType.Defense;
-                    InHull.GetType().GetField("m_MarketPrice", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InHull, (ObscuredInt)HullType.MarketPrice);
+                    InHull.m_MarketPrice = HullType.MarketPrice;
                     InHull.CargoVisualPrefabID = HullType.CargoVisualID;
                     InHull.CanBeDroppedOnShipDeath = HullType.CanBeDroppedOnShipDeath;
                     InHull.Experimental = HullType.Experimental;
                     InHull.Unstable = HullType.Unstable;
                     InHull.Contraband = HullType.Contraband;
-                    InHull.GetType().GetField("Price_LevelMultiplierExponent", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InHull, HullType.Price_LevelMultiplierExponent);
+                    InHull.Price_LevelMultiplierExponent = HullType.Price_LevelMultiplierExponent;
                     InHull.Max *= 2f;
                     InHull.Current = InHull.Max;
                 }

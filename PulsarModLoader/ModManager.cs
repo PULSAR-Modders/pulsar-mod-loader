@@ -14,8 +14,12 @@ namespace PulsarModLoader
     {
         public delegate void ModLoaded(string name, PulsarMod mod);
         public delegate void ModUnloaded(PulsarMod mod);
+        public delegate void AllModsLoaded();
+
         public event ModLoaded OnModSuccessfullyLoaded;
         public event ModUnloaded OnModUnloaded;
+        public event AllModsLoaded OnAllModsLoaded;
+
         public FileVersionInfo PMLVersionInfo = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location);
 
         private readonly Dictionary<string, PulsarMod> activeMods;
@@ -94,6 +98,32 @@ namespace PulsarModLoader
             }
 
             Logger.Info($"Finished loading {activeMods.Count} mods!");
+
+            // Activate all managers
+            _ = PulsarModLoader.Content.Items.ItemModManager.Instance;
+            _ = PulsarModLoader.Content.Components.AutoTurret.AutoTurretModManager.Instance;
+            _ = PulsarModLoader.Content.Components.CaptainsChair.CaptainsChairModManager.Instance;
+            _ = PulsarModLoader.Content.Components.CPU.CPUModManager.Instance;
+            _ = PulsarModLoader.Content.Components.Extractor.ExtractorModManager.Instance;
+            _ = PulsarModLoader.Content.Components.FBRecipeModule.FBRecipeModuleModManager.Instance;
+            _ = PulsarModLoader.Content.Components.Hull.HullModManager.Instance;
+            _ = PulsarModLoader.Content.Components.HullPlating.HullPlatingModManager.Instance;
+            _ = PulsarModLoader.Content.Components.InertiaThruster.InertiaThrusterModManager.Instance;
+            _ = PulsarModLoader.Content.Components.ManeuverThruster.ManeuverThrusterModManager.Instance;
+            _ = PulsarModLoader.Content.Components.MegaTurret.MegaTurretModManager.Instance;
+            _ = PulsarModLoader.Content.Components.Missile.MissileModManager.Instance;
+            _ = PulsarModLoader.Content.Components.MissionShipComponent.MissionShipComponentModManager.Instance;
+            _ = PulsarModLoader.Content.Components.NuclearDevice.NuclearDeviceModManager.Instance;
+            _ = PulsarModLoader.Content.Components.PolytechModule.PolytechModuleModManager.Instance;
+            _ = PulsarModLoader.Content.Components.Reactor.ReactorModManager.Instance;
+            _ = PulsarModLoader.Content.Components.Shield.ShieldModManager.Instance;
+            _ = PulsarModLoader.Content.Components.Thruster.ThrusterModManager.Instance;
+            _ = PulsarModLoader.Content.Components.Turret.TurretModManager.Instance;
+            _ = PulsarModLoader.Content.Components.Virus.VirusModManager.Instance;
+            _ = PulsarModLoader.Content.Components.WarpDrive.WarpDriveModManager.Instance;
+            _ = PulsarModLoader.Content.Components.WarpDriveProgram.WarpDriveProgramModManager.Instance;
+
+            OnAllModsLoaded?.Invoke();
         }
 
         private Assembly ResolveModsDirectory(object sender, ResolveEventArgs args)

@@ -80,17 +80,17 @@ namespace PulsarModLoader.Content.Components.ManeuverThruster
                     InManeuverThruster.SubType = Subtype;
                     InManeuverThruster.Name = ManeuverThrusterType.Name;
                     InManeuverThruster.Desc = ManeuverThrusterType.Description;
-                    InManeuverThruster.GetType().GetField("m_IconTexture", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InManeuverThruster, ManeuverThrusterType.IconTexture);
-                    InManeuverThruster.GetType().GetField("m_MaxOutput", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InManeuverThruster, ManeuverThrusterType.MaxOutput);
-                    InManeuverThruster.GetType().GetField("m_BaseMaxPower", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InManeuverThruster, ManeuverThrusterType.MaxPowerUsage_Watts);
-                    InManeuverThruster.GetType().GetField("m_MarketPrice", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InManeuverThruster, (ObscuredInt)ManeuverThrusterType.MarketPrice);
+                    InManeuverThruster.m_IconTexture = ManeuverThrusterType.IconTexture;
+                    InManeuverThruster.m_MaxOutput = ManeuverThrusterType.MaxOutput;
+                    InManeuverThruster.m_BaseMaxPower = ManeuverThrusterType.MaxPowerUsage_Watts;
+                    InManeuverThruster.m_MarketPrice = ManeuverThrusterType.MarketPrice;
                     InManeuverThruster.CargoVisualPrefabID = ManeuverThrusterType.CargoVisualID;
                     InManeuverThruster.CanBeDroppedOnShipDeath = ManeuverThrusterType.CanBeDroppedOnShipDeath;
                     InManeuverThruster.Experimental = ManeuverThrusterType.Experimental;
                     InManeuverThruster.Unstable = ManeuverThrusterType.Unstable;
                     InManeuverThruster.Contraband = ManeuverThrusterType.Contraband;
-                    InManeuverThruster.GetType().GetMethod("UpdateMaxPowerWatts", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(InManeuverThruster, new object[0]);
-                    InManeuverThruster.GetType().GetField("Price_LevelMultiplierExponent", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InManeuverThruster, ManeuverThrusterType.Price_LevelMultiplierExponent);
+                    InManeuverThruster.UpdateMaxPowerWatts();
+                    InManeuverThruster.Price_LevelMultiplierExponent = ManeuverThrusterType.Price_LevelMultiplierExponent;
                 }
             }
             else

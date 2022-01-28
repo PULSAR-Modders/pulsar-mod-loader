@@ -91,21 +91,21 @@ namespace PulsarModLoader.Content.Components.FBRecipeModule
                     InFBRecipeModule.SubType = Subtype;
                     InFBRecipeModule.Name = FBRecipeModuleType.Name;
                     InFBRecipeModule.Desc = FBRecipeModuleType.Description;
-                    InFBRecipeModule.GetType().GetField("m_IconTexture", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InFBRecipeModule, FBRecipeModuleType.IconTexture);
-                    InFBRecipeModule.GetType().GetField("m_MarketPrice", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InFBRecipeModule, (ObscuredInt)FBRecipeModuleType.MarketPrice);
+                    InFBRecipeModule.m_IconTexture = FBRecipeModuleType.IconTexture;
+                    InFBRecipeModule.m_MarketPrice = FBRecipeModuleType.MarketPrice;
                     InFBRecipeModule.CargoVisualPrefabID = FBRecipeModuleType.CargoVisualID;
                     InFBRecipeModule.CanBeDroppedOnShipDeath = FBRecipeModuleType.CanBeDroppedOnShipDeath;
                     InFBRecipeModule.Experimental = FBRecipeModuleType.Experimental;
                     InFBRecipeModule.Unstable = FBRecipeModuleType.Unstable;
                     InFBRecipeModule.Contraband = FBRecipeModuleType.Contraband;
-                    InFBRecipeModule.GetType().GetField("Price_LevelMultiplierExponent", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InFBRecipeModule, FBRecipeModuleType.Price_LevelMultiplierExponent);
-                    InFBRecipeModule.GetType().GetField("CookDurationMs", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InFBRecipeModule, FBRecipeModuleType.CookDurationMs);
-                    InFBRecipeModule.GetType().GetField("CookedTimingOffsetMidpoint", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InFBRecipeModule, FBRecipeModuleType.CookedTimingOffsetMidpoint);
-                    InFBRecipeModule.GetType().GetField("PerfectlyCookedMaxTimingOffset", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InFBRecipeModule, FBRecipeModuleType.PerfectlyCookedMaxTimingOffset);
-                    InFBRecipeModule.GetType().GetField("CookedMaxTimingOffset", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InFBRecipeModule, FBRecipeModuleType.CookedMaxTimingOffset);
-                    InFBRecipeModule.GetType().GetField("FoodSupplyCost", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InFBRecipeModule, FBRecipeModuleType.FoodSupplyCost);
-                    InFBRecipeModule.GetType().GetField("BiscuitTypeToProduce", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InFBRecipeModule, EFoodType.MAX);
-                    InFBRecipeModule.GetType().GetField("IconResourcePath", BindingFlags.Instance | BindingFlags.Public).SetValue(InFBRecipeModule, string.Empty);
+                    InFBRecipeModule.Price_LevelMultiplierExponent = FBRecipeModuleType.Price_LevelMultiplierExponent;
+                    InFBRecipeModule.CookDurationMs = FBRecipeModuleType.CookDurationMs;
+                    InFBRecipeModule.CookedTimingOffsetMidpoint = FBRecipeModuleType.CookedTimingOffsetMidpoint;
+                    InFBRecipeModule.PerfectlyCookedMaxTimingOffset = FBRecipeModuleType.PerfectlyCookedMaxTimingOffset;
+                    InFBRecipeModule.CookedMaxTimingOffset = FBRecipeModuleType.CookedMaxTimingOffset;
+                    InFBRecipeModule.FoodSupplyCost = FBRecipeModuleType.FoodSupplyCost;
+                    InFBRecipeModule.BiscuitTypeToProduce = EFoodType.MAX;
+                    InFBRecipeModule.IconResourcePath = string.Empty;
                 }
             }
             else

@@ -83,16 +83,16 @@ namespace PulsarModLoader.Content.Components.WarpDriveProgram
                     InWarpDriveProgram.Name = WarpDriveProgramType.Name;
                     InWarpDriveProgram.Desc = WarpDriveProgramType.Description;
                     InWarpDriveProgram.MaxLevelCharges = WarpDriveProgramType.MaxLevelCharges;
-                    InWarpDriveProgram.GetType().GetField("m_IconTexture", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InWarpDriveProgram, WarpDriveProgramType.IconTexture);
+                    InWarpDriveProgram.m_IconTexture = WarpDriveProgramType.IconTexture;
                     InWarpDriveProgram.ShortName = WarpDriveProgramType.ShortName;
-                    InWarpDriveProgram.GetType().GetField("ShieldBooster_BoostAmount", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InWarpDriveProgram, 0f);
-                    InWarpDriveProgram.GetType().GetField("m_MarketPrice", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InWarpDriveProgram, (ObscuredInt)WarpDriveProgramType.MarketPrice);
+                    InWarpDriveProgram.ShieldBooster_BoostAmount = 0f;
+                    InWarpDriveProgram.m_MarketPrice = WarpDriveProgramType.MarketPrice;
                     InWarpDriveProgram.CargoVisualPrefabID = WarpDriveProgramType.CargoVisualID;
                     InWarpDriveProgram.CanBeDroppedOnShipDeath = WarpDriveProgramType.CanBeDroppedOnShipDeath;
                     InWarpDriveProgram.Experimental = WarpDriveProgramType.Experimental;
                     InWarpDriveProgram.Unstable = WarpDriveProgramType.Unstable;
                     InWarpDriveProgram.Contraband = WarpDriveProgramType.Contraband;
-                    InWarpDriveProgram.GetType().GetField("Price_LevelMultiplierExponent", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InWarpDriveProgram, WarpDriveProgramType.Price_LevelMultiplierExponent);
+                    InWarpDriveProgram.Price_LevelMultiplierExponent = WarpDriveProgramType.Price_LevelMultiplierExponent;
                     if (PhotonNetwork.isMasterClient)
                     {
                         InWarpDriveProgram.Level = InWarpDriveProgram.MaxLevelCharges;
@@ -122,7 +122,7 @@ namespace PulsarModLoader.Content.Components.WarpDriveProgram
         static void Postfix(PLWarpDriveProgram __instance)
         {
             int subtypeformodded = __instance.SubType - WarpDriveProgramModManager.Instance.VanillaWarpDriveProgramMaxType;
-            if (subtypeformodded > -1 && subtypeformodded < WarpDriveProgramModManager.Instance.WarpDriveProgramTypes.Count && Time.time - (float)__instance.GetType().GetField("ShieldBooster_LastActivationTime", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(__instance) < WarpDriveProgramModManager.Instance.WarpDriveProgramTypes[subtypeformodded].ActiveTime)
+            if (subtypeformodded > -1 && subtypeformodded < WarpDriveProgramModManager.Instance.WarpDriveProgramTypes.Count && Time.time - __instance.ShieldBooster_LastActivationTime < WarpDriveProgramModManager.Instance.WarpDriveProgramTypes[subtypeformodded].ActiveTime)
             {
                 WarpDriveProgramModManager.Instance.WarpDriveProgramTypes[subtypeformodded].FinalLateAddStats(__instance);
             }
@@ -148,7 +148,7 @@ namespace PulsarModLoader.Content.Components.WarpDriveProgram
                 }
                 else
                 {
-                    __instance.GetType().GetField("ShieldBooster_LastActivationTime", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(__instance, Time.time);
+                    __instance.ShieldBooster_LastActivationTime = Time.time;
                     WarpDriveProgramModManager.Instance.WarpDriveProgramTypes[subtypeformodded].Execute(__instance);
                 }
             }
@@ -189,12 +189,12 @@ namespace PulsarModLoader.Content.Components.WarpDriveProgram
     [HarmonyPatch(typeof(PLWarpDriveProgram), "GetActiveTimerAlpha")]
     class WarpDriveProgramGetActiveTimerAlphaPatch
     {
-        static void Postfix(PLWarpDriveProgram __instance, ref float __result, float __ShieldBooster_LastActivationTime)
+        static void Postfix(PLWarpDriveProgram __instance, ref float __result)
         {
             int subtypeformodded = __instance.SubType - WarpDriveProgramModManager.Instance.VanillaWarpDriveProgramMaxType;
             if (subtypeformodded > -1 && subtypeformodded < WarpDriveProgramModManager.Instance.WarpDriveProgramTypes.Count)
             {
-                __result = Mathf.Clamp01((Time.time - __ShieldBooster_LastActivationTime) / WarpDriveProgramModManager.Instance.WarpDriveProgramTypes[subtypeformodded].ActiveTime);
+                __result = Mathf.Clamp01((Time.time - __instance.ShieldBooster_LastActivationTime) / WarpDriveProgramModManager.Instance.WarpDriveProgramTypes[subtypeformodded].ActiveTime);
             }
         }
     }

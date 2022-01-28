@@ -5,7 +5,7 @@ using static PulsarModLoader.Patches.HarmonyHelpers;
 
 namespace PulsarModLoader.Content.Components
 {
-    [HarmonyPatch()]
+    /* [HarmonyPatch()] // ???
     class OnWarpUnstableNotificationPatch
     {
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
@@ -30,5 +30,5 @@ namespace PulsarModLoader.Content.Components
         {
             PulsarModLoader.Utilities.Messaging.Notification(InComp.GetItemName(true) + " has degraded to Level " + (InComp.Level + 1));
         }
-    }
+    } */
 }

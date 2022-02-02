@@ -80,15 +80,15 @@ namespace PulsarModLoader.Content.Components.Virus
                     InVirus.SubType = Subtype;
                     InVirus.Name = VirusType.Name;
                     InVirus.Desc = VirusType.Description;
-                    InVirus.GetType().GetField("m_IconTexture", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InVirus, VirusType.IconTexture);
-                    InVirus.GetType().GetField("m_MarketPrice", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InVirus, (ObscuredInt)VirusType.MarketPrice);
+                    InVirus.m_IconTexture = VirusType.IconTexture;
+                    InVirus.m_MarketPrice = VirusType.MarketPrice;
                     InVirus.CargoVisualPrefabID = VirusType.CargoVisualID;
                     InVirus.CanBeDroppedOnShipDeath = VirusType.CanBeDroppedOnShipDeath;
                     InVirus.Experimental = VirusType.Experimental;
                     InVirus.Unstable = VirusType.Unstable;
                     InVirus.Contraband = VirusType.Contraband;
                     InVirus.InfectionTimeLimitMs = VirusType.InfectionTimeLimitMs;
-                    InVirus.GetType().GetField("Price_LevelMultiplierExponent", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InVirus, VirusType.Price_LevelMultiplierExponent);
+                    InVirus.Price_LevelMultiplierExponent = VirusType.Price_LevelMultiplierExponent;
                 }
             }
             else

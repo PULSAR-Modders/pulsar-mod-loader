@@ -80,14 +80,14 @@ namespace PulsarModLoader.Content.Components.MissionShipComponent
                     InMissionShipComponent.SubType = Subtype;
                     InMissionShipComponent.Name = MissionShipComponentType.Name;
                     InMissionShipComponent.Desc = MissionShipComponentType.Description;
-                    InMissionShipComponent.GetType().GetField("m_IconTexture", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InMissionShipComponent, MissionShipComponentType.IconTexture);
-                    InMissionShipComponent.GetType().GetField("m_MarketPrice", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InMissionShipComponent, (ObscuredInt)MissionShipComponentType.MarketPrice);
+                    InMissionShipComponent.m_IconTexture = MissionShipComponentType.IconTexture;
+                    InMissionShipComponent.m_MarketPrice = MissionShipComponentType.MarketPrice;
                     InMissionShipComponent.CargoVisualPrefabID = MissionShipComponentType.CargoVisualID;
                     InMissionShipComponent.CanBeDroppedOnShipDeath = MissionShipComponentType.CanBeDroppedOnShipDeath;
                     InMissionShipComponent.Experimental = MissionShipComponentType.Experimental;
                     InMissionShipComponent.Unstable = MissionShipComponentType.Unstable;
                     InMissionShipComponent.Contraband = MissionShipComponentType.Contraband;
-                    InMissionShipComponent.GetType().GetField("Price_LevelMultiplierExponent", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InMissionShipComponent, MissionShipComponentType.Price_LevelMultiplierExponent);
+                    InMissionShipComponent.Price_LevelMultiplierExponent = MissionShipComponentType.Price_LevelMultiplierExponent;
                 }
             }
             else

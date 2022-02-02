@@ -215,7 +215,7 @@ namespace PulsarModLoader.Content.Items
                 {
                     plpawnItem.NetID = inNetID;
                     plpawnItem.EquipID = inEquipID;
-                    __instance.GetType().GetMethod("AddItem_Internal", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, new object[] { inNetID, plpawnItem });
+                    __instance.AddItem_Internal(inNetID, plpawnItem);
                 }
             }
             if (PLNetworkManager.Instance.IsInternalBuild)

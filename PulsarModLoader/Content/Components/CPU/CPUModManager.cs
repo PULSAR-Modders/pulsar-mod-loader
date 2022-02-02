@@ -80,19 +80,19 @@ namespace PulsarModLoader.Content.Components.CPU
                     InCPU.SubType = Subtype;
                     InCPU.Name = CPUType.Name;
                     InCPU.Desc = CPUType.Description;
-                    InCPU.GetType().GetField("m_IconTexture", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InCPU, CPUType.IconTexture);
-                    InCPU.GetType().GetField("m_MarketPrice", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InCPU, (ObscuredInt)CPUType.MarketPrice);
-                    InCPU.GetType().GetField("m_MaxPowerUsage_Watts", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InCPU, (CPUType.MaxPowerUsage_Watts));
+                    InCPU.m_IconTexture = CPUType.IconTexture;
+                    InCPU.m_MarketPrice = CPUType.MarketPrice;
+                    InCPU.m_MaxPowerUsage_Watts = CPUType.MaxPowerUsage_Watts;
                     InCPU.CargoVisualPrefabID = CPUType.CargoVisualID;
                     InCPU.CanBeDroppedOnShipDeath = CPUType.CanBeDroppedOnShipDeath;
                     InCPU.Experimental = CPUType.Experimental;
                     InCPU.Unstable = CPUType.Unstable;
                     InCPU.Contraband = CPUType.Contraband;
                     InCPU.Speed = CPUType.Speed;
-                    InCPU.GetType().GetField("m_Defense", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InCPU, CPUType.Defense);
-                    InCPU.GetType().GetField("m_MaxCompUpgradeLevelBoost", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InCPU, CPUType.MaxCompUpgradeLevelBoost);
-                    InCPU.GetType().GetField("m_MaxPawnItemUpgradeLevelBoost", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InCPU, CPUType.MaxItemUpgradeLevelBoost);
-                    InCPU.GetType().GetField("Price_LevelMultiplierExponent", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InCPU, CPUType.Price_LevelMultiplierExponent);
+                    InCPU.m_Defense = CPUType.Defense;
+                    InCPU.m_MaxCompUpgradeLevelBoost = CPUType.MaxCompUpgradeLevelBoost;
+                    InCPU.m_MaxPawnItemUpgradeLevelBoost = CPUType.MaxItemUpgradeLevelBoost;
+                    InCPU.Price_LevelMultiplierExponent = CPUType.Price_LevelMultiplierExponent;
                 }
             }
             else

@@ -27,6 +27,9 @@ namespace PulsarModLoader.Chat.Commands
 
             //notify player of new DebugMode value
             Messaging.Notification($"PMLDebugMode is now {DebugMode}");
+
+            if (!DebugMode)
+                PLInGameUI.Instance.CurrentVersionLabel.text = PulsarModLoader.Patches.GameVersion.Version;
         }
 
         public string UsageExample()

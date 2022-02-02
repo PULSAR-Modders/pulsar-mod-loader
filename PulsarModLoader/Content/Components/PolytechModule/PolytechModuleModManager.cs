@@ -80,15 +80,15 @@ namespace PulsarModLoader.Content.Components.PolytechModule
                     InPolytechModule.SubType = Subtype;
                     InPolytechModule.Name = PolytechModuleType.Name;
                     InPolytechModule.Desc = PolytechModuleType.Description;
-                    InPolytechModule.GetType().GetField("m_IconTexture", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InPolytechModule, PolytechModuleType.IconTexture);
-                    InPolytechModule.GetType().GetField("m_MarketPrice", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InPolytechModule, (ObscuredInt)PolytechModuleType.MarketPrice);
+                    InPolytechModule.m_IconTexture = PolytechModuleType.IconTexture;
+                    InPolytechModule.m_MarketPrice = PolytechModuleType.MarketPrice;
                     InPolytechModule.CargoVisualPrefabID = PolytechModuleType.CargoVisualID;
                     InPolytechModule.CanBeDroppedOnShipDeath = PolytechModuleType.CanBeDroppedOnShipDeath;
                     InPolytechModule.Experimental = PolytechModuleType.Experimental;
                     InPolytechModule.Unstable = PolytechModuleType.Unstable;
                     InPolytechModule.Contraband = PolytechModuleType.Contraband;
-                    InPolytechModule.GetType().GetField("Price_LevelMultiplierExponent", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InPolytechModule, PolytechModuleType.Price_LevelMultiplierExponent);
-                    InPolytechModule.GetType().GetField("m_MaxPowerUsage_Watts", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InPolytechModule, PolytechModuleType.MaxPowerUsage_Watts);
+                    InPolytechModule.Price_LevelMultiplierExponent = PolytechModuleType.Price_LevelMultiplierExponent;
+                    InPolytechModule.m_MaxPowerUsage_Watts = PolytechModuleType.MaxPowerUsage_Watts;
                 }
             }
             else

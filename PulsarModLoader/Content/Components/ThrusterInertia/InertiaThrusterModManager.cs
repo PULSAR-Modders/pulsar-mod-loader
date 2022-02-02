@@ -80,17 +80,17 @@ namespace PulsarModLoader.Content.Components.InertiaThruster
                     InInertiaThruster.SubType = Subtype;
                     InInertiaThruster.Name = InertiaThrusterType.Name;
                     InInertiaThruster.Desc = InertiaThrusterType.Description;
-                    InInertiaThruster.GetType().GetField("m_IconTexture", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InInertiaThruster, InertiaThrusterType.IconTexture);
-                    InInertiaThruster.GetType().GetField("m_MaxOutput", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InInertiaThruster, InertiaThrusterType.MaxOutput);
-                    InInertiaThruster.GetType().GetField("m_BaseMaxPower", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InInertiaThruster, InertiaThrusterType.MaxPowerUsage_Watts);
-                    InInertiaThruster.GetType().GetField("m_MarketPrice", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InInertiaThruster, (ObscuredInt)InertiaThrusterType.MarketPrice);
+                    InInertiaThruster.m_IconTexture = InertiaThrusterType.IconTexture;
+                    InInertiaThruster.m_MaxOutput = InertiaThrusterType.MaxOutput;
+                    InInertiaThruster.m_BaseMaxPower = InertiaThrusterType.MaxPowerUsage_Watts;
+                    InInertiaThruster.m_MarketPrice = InertiaThrusterType.MarketPrice; 
                     InInertiaThruster.CargoVisualPrefabID = InertiaThrusterType.CargoVisualID;
                     InInertiaThruster.CanBeDroppedOnShipDeath = InertiaThrusterType.CanBeDroppedOnShipDeath;
                     InInertiaThruster.Experimental = InertiaThrusterType.Experimental;
                     InInertiaThruster.Unstable = InertiaThrusterType.Unstable;
                     InInertiaThruster.Contraband = InertiaThrusterType.Contraband;
-                    InInertiaThruster.GetType().GetMethod("UpdateMaxPowerWatts", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(InInertiaThruster, new object[0]);
-                    InInertiaThruster.GetType().GetField("Price_LevelMultiplierExponent", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InInertiaThruster, InertiaThrusterType.Price_LevelMultiplierExponent);
+                    InInertiaThruster.UpdateMaxPowerWatts();
+                    InInertiaThruster.Price_LevelMultiplierExponent = InertiaThrusterType.Price_LevelMultiplierExponent;
                 }
             }
             else

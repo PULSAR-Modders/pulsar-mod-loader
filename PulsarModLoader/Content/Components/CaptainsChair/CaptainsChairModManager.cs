@@ -80,14 +80,14 @@ namespace PulsarModLoader.Content.Components.CaptainsChair
                     InCaptainsChair.SubType = Subtype;
                     InCaptainsChair.Name = CaptainsChairType.Name;
                     InCaptainsChair.Desc = CaptainsChairType.Description;
-                    InCaptainsChair.GetType().GetField("m_IconTexture", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InCaptainsChair, CaptainsChairType.IconTexture);
-                    InCaptainsChair.GetType().GetField("m_MarketPrice", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InCaptainsChair, (ObscuredInt)CaptainsChairType.MarketPrice);
+                    InCaptainsChair.m_IconTexture = CaptainsChairType.IconTexture;
+                    InCaptainsChair.m_MarketPrice = CaptainsChairType.MarketPrice;
                     InCaptainsChair.CargoVisualPrefabID = CaptainsChairType.CargoVisualID;
                     InCaptainsChair.CanBeDroppedOnShipDeath = CaptainsChairType.CanBeDroppedOnShipDeath;
                     InCaptainsChair.Experimental = CaptainsChairType.Experimental;
                     InCaptainsChair.Unstable = CaptainsChairType.Unstable;
                     InCaptainsChair.Contraband = CaptainsChairType.Contraband;
-                    InCaptainsChair.GetType().GetField("Price_LevelMultiplierExponent", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(InCaptainsChair, CaptainsChairType.Price_LevelMultiplierExponent);
+                    InCaptainsChair.Price_LevelMultiplierExponent = CaptainsChairType.Price_LevelMultiplierExponent;
                 }
             }
             else

@@ -8,9 +8,9 @@ namespace PulsarModLoader.Patches
     [HarmonyPatch(typeof(PLInGameUI), "Update")]
     class DebugReadout
     {
-        static void Postfix(Text ___CurrentVersionLabel)
+        static void Postfix(PLInGameUI __instance)
         {
-            if (DebugModeCommand.DebugMode && PLServer.Instance != null && PLEncounterManager.Instance != null && PLNetworkManager.Instance != null && ___CurrentVersionLabel != null)
+            if (DebugModeCommand.DebugMode && PLServer.Instance != null && PLEncounterManager.Instance != null && PLNetworkManager.Instance != null && GameVersion.Version != string.Empty)
             {
                 Vector3 pos;
                 if (PLNetworkManager.Instance.LocalPlayer != null)
@@ -27,7 +27,7 @@ namespace PulsarModLoader.Patches
                 string visualType = sectorInfo != null ? sectorInfo.VisualIndication.ToString() : "--";
                 int sector = sectorInfo != null ? sectorInfo.ID : -1;
 
-                PLGlobal.SafeLabelSetText(___CurrentVersionLabel, $"{___CurrentVersionLabel.text}\n\n\nPOS: {pos}, Level ID: {levelID}, Sector: {sector}, Visual: {visualType}");
+                PLGlobal.SafeLabelSetText(__instance.CurrentVersionLabel, $"{GameVersion.Version}\nPOS: {pos}, Level ID: {levelID}, Sector: {sector}, Visual: {visualType}");
             }
         }
     }

@@ -1,7 +1,7 @@
 ﻿using HarmonyLib;
+using PulsarModLoader.Utilities;
 using Steamworks;
 using System.Collections.Generic;
-using PulsarModLoader.Utilities;
 
 namespace PulsarModLoader
 {

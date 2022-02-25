@@ -55,7 +55,7 @@ namespace PulsarModLoader.Content.Components.Reactor
             " kP\n",
             me.EmergencyCooldownTime.ToString("0.0"),
             " sec\n",
-            ((float)me.GetType().GetField("OriginalEnergyOutputMax", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(me) * me.LevelMultiplier(0.1f, 1f)).ToString("0"),
+            ((float)me.OriginalEnergyOutputMax * me.LevelMultiplier(0.1f, 1f)).ToString("0"),
             " MW"
             });
         }

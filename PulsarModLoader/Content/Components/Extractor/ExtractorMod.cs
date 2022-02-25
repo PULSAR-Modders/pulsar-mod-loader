@@ -17,7 +17,7 @@ namespace PulsarModLoader.Content.Components.Extractor
         public override string GetStatLineRight(PLShipComponent InComp)
         {
             PLExtractor me = InComp as PLExtractor;
-            return ((float)me.GetType().GetField("m_Stability", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(me) * 10f).ToString("0");
+            return ((float)me.m_Stability * 10f).ToString("0");
         }
     }
 }

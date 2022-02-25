@@ -28,7 +28,7 @@ namespace PulsarModLoader.Content.Components.Thruster
         public override string GetStatLineRight(PLShipComponent InComp)
         {
             PLThruster me = InComp as PLThruster;
-            return ((float)me.GetType().GetField("MaxOutput", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(me) * me.LevelMultiplier(0.18f, 1f) * 100f).ToString("0") + "\n";
+            return ((float)me.m_MaxOutput * me.LevelMultiplier(0.18f, 1f) * 100f).ToString("0") + "\n";
         }
     }
 }

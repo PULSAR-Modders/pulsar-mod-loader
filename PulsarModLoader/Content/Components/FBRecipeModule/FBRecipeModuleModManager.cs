@@ -207,7 +207,7 @@ namespace PulsarModLoader.Content.Components.FBRecipeModule
         }
         static int[] PatchMethod(PLFluffyOven instance)
         {
-            PLFBRecipeModule module = (PLFBRecipeModule)instance.GetType().GetField("CurrentProducingModule", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(instance);
+            PLFBRecipeModule module = instance.CurrentProducingModule;
             if (module.GetBiscuitTypeToProduce() == EFoodType.MAX)
             {
                 int subtypeformodded = module.SubType - FBRecipeModuleModManager.Instance.VanillaFBRecipeModuleMaxType;

@@ -23,6 +23,9 @@ namespace PulsarModLoader.Utilities
 
         public static void Info(string message)
         {
+            if (message == null)
+                Messaging.AntiNullReferenceException(message == null ? "NULL" : $"\"{message}\"");
+
             string line = $"[PML] {message}";
 
             Console.WriteLine(line);

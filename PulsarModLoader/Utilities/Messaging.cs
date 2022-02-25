@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
 
 namespace PulsarModLoader.Utilities
 {
@@ -6,7 +7,12 @@ namespace PulsarModLoader.Utilities
     {
         public static void ChatMessage(PLPlayer recipient, string message, int sendingPlayerId = -1)
         {
-            if(sendingPlayerId == -1)
+            if (recipient == null || message == null)
+            {
+                AntiNullReferenceException($"{(recipient == null ? "recipent: null" : "recipent: PLPlayer")}, {(message == null ? "message: null" : $"message: \"{message}\"")}, sendingPlayerId: {sendingPlayerId}");
+                return;
+            }
+            if (sendingPlayerId == -1)
             {
                 sendingPlayerId = PLNetworkManager.Instance.LocalPlayerID;
             }
@@ -15,6 +21,12 @@ namespace PulsarModLoader.Utilities
 
         public static void ChatMessage(PhotonPlayer recipient, string message, int sendingPlayerId = -1)
         {
+            if (recipient == null || message == null)
+            {
+                AntiNullReferenceException($"{(recipient == null ? "recipent: null" : "recipent: PLPlayer")}, {(message == null ? "message: null" : $"message: \"{message}\"")}, sendingPlayerId: {sendingPlayerId}");
+                return;
+            }
+
             if (sendingPlayerId == -1)
             {
                 sendingPlayerId = PLNetworkManager.Instance.LocalPlayerID;
@@ -27,6 +39,12 @@ namespace PulsarModLoader.Utilities
 
         public static void ChatMessage(PhotonTargets targets, string message, int sendingPlayerId = -1)
         {
+            if (message == null)
+            {
+                AntiNullReferenceException($"targets: {targets}, {(message == null ? "message: null" : $"message: \"{message}\"")}, sendingPlayerId: {sendingPlayerId}");
+                return;
+            }
+
             if (sendingPlayerId == -1)
             {
                 sendingPlayerId = PLNetworkManager.Instance.LocalPlayerID;
@@ -39,11 +57,23 @@ namespace PulsarModLoader.Utilities
 
         public static void Echo(PLPlayer recipient, string message)
         {
+            if (recipient == null || message == null)
+            {
+                AntiNullReferenceException($"{(recipient == null ? "recipent: null" : "recipent: PLPlayer")}, {(message == null ? "message: null" : $"message: \"{message}\"")}");
+                return;
+            }
+
             Echo(recipient.GetPhotonPlayer(), message);
         }
 
         public static void Echo(PhotonPlayer recipient, string message)
         {
+            if (recipient == null || message == null)
+            {
+                AntiNullReferenceException($"{(recipient == null ? "recipent: null" : "recipent: PhotonPlayer")}, {(message == null ? "message: null" : $"message: \"{message}\"")}");
+                return;
+            }
+
             PLServer.Instance.photonView.RPC("ConsoleMessage", recipient, new object[] {
                 message
             });
@@ -51,6 +81,12 @@ namespace PulsarModLoader.Utilities
 
         public static void Echo(PhotonTargets targets, string message)
         {
+            if (message == null)
+            {
+                AntiNullReferenceException($"targets: {targets}, {(message == null ? "message: null" : $"message: \"{message}\"")}");
+                return;
+            }
+
             PLServer.Instance.photonView.RPC("ConsoleMessage", targets, new object[] {
                 message
             });
@@ -65,11 +101,18 @@ namespace PulsarModLoader.Utilities
         }
         public static void Notification(string message, PhotonPlayer recipient, int subjectPlayerId = 0, int durationMs = 6000, bool addToShipLog = false)
         {
-            if(PLServer.Instance == null || message == null)
+            if (PLServer.Instance == null)
             {
-                Logger.Info($"Notification attempted and PLServer or message was null. Message: {message}");
+                Logger.Info($"Notification attempted and PLServer was null. Message: {message}");
                 return;
             }
+
+            if (recipient == null || message == null)
+            {
+                AntiNullReferenceException($"{(message == null ? "message: null" : $"message: \"{message}\"")}, {(recipient == null ? "recipent: null" : "recipent: PLPlayer")}, subjectPlayerId: {subjectPlayerId}, durationMs: {durationMs}, addToShipLog: {addToShipLog}");
+                return;
+            }
+
             PLServer.Instance.photonView.RPC("AddNotification", recipient, new object[] {
                 message,
                 subjectPlayerId,
@@ -80,11 +123,18 @@ namespace PulsarModLoader.Utilities
 
         public static void Notification(string message, PhotonTargets targets, int subjectPlayerId = 0, int durationMs = 6000, bool addToShipLog = false)
         {
-            if (PLServer.Instance == null || message == null)
+            if (PLServer.Instance == null)
             {
-                Logger.Info($"Notification attempted and PLServer or message was null. Message: {message}");
+                Logger.Info($"Notification attempted and PLServer was null. Message: {message}");
                 return;
             }
+
+            if (message == null)
+            {
+                AntiNullReferenceException($"{(message == null ? "message: null" : $"message: \"{message}\"")}, targets: {targets}, subjectPlayerId: {subjectPlayerId}, durationMs: {durationMs}, addToShipLog: {addToShipLog}");
+                return;
+            }
+
             PLServer.Instance.photonView.RPC("AddNotification", targets, new object[] {
                 message,
                 subjectPlayerId,
@@ -95,11 +145,23 @@ namespace PulsarModLoader.Utilities
 
         public static void Centerprint(string message, PLPlayer recipient, string tag = "msg", Color color = new Color(), EWarningType type = EWarningType.E_NORMAL)
         {
+            if (recipient == null || message == null || tag == null)
+            {
+                AntiNullReferenceException($"{(recipient == null ? "recipent: null" : "recipent: PLPlayer")}, {(message == null ? "message: null" : $"message: \"{message}\"")}, ..., {(tag == null ? "tag: null" : $"tag: \"{tag}\"")}");
+                return;
+            }
+
             Centerprint(message, recipient.GetPhotonPlayer(), tag, color, type);
         }
 
         public static void Centerprint(string message, PhotonPlayer recipient, string tag = "msg", Color color = new Color(), EWarningType type = EWarningType.E_NORMAL)
         {
+            if (recipient == null || message == null || tag == null)
+            {
+                AntiNullReferenceException($"{(recipient == null ? "recipent: null" : "recipent: PhotonPlayer")}, {(message == null ? "message: null" : $"message: \"{message}\"")}, ..., {(tag == null ? "tag: null" : $"tag: \"{tag}\"")}");
+                return;
+            }
+
             PLServer.Instance.photonView.RPC("AddCrewWarning", recipient, new object[] {
                 message,
                 color,
@@ -110,6 +172,12 @@ namespace PulsarModLoader.Utilities
 
         public static void Centerprint(string message, PhotonTargets targets, string tag = "msg", Color color = new Color(), EWarningType type = EWarningType.E_NORMAL)
         {
+            if (message == null || tag == null)
+            {
+                AntiNullReferenceException($"targets: {targets}, {(message == null ? "message: null" : $"message: \"{message}\"")}, {(tag == null ? "tag: null" : $"tag: \"{tag}\"")}");
+                return;
+            }
+
             PLServer.Instance.photonView.RPC("AddCrewWarning", targets, new object[] {
                 message,
                 color,
@@ -122,8 +190,28 @@ namespace PulsarModLoader.Utilities
         {
             if (PhotonNetwork.isMasterClient)
             {
+                if (message == null || tag == null)
+                {
+                    AntiNullReferenceException($"{(message == null ? "message: null" : $"message: \"{message}\"")}, {(tag == null ? "tag: null" : $"tag: \"{tag}\"")}, ..., {(source == null ? "null source" : $"source: \"{source}\"")}, {(destination == null ? "null destination" : $"destination: \"{destination}\"")}");
+                    return;
+                }
+
                 PLServer.Instance.AddToShipLog(tag, message, color, addOnlyLocally, source, destination, turretID, damage);
             }
         }
+
+        internal static void AntiNullReferenceException(string args)
+        {
+            var stacktrace = new System.Diagnostics.StackTrace();
+            var targetMethod = stacktrace.GetFrame(1).GetMethod();
+            var who = stacktrace.GetFrames().Skip(1).FirstOrDefault(f => !ignore.Any(i => i == f.GetMethod().Name))?.GetMethod();
+
+            Logger.Info($"NullReferenceException! Target -> {targetMethod.Name}({args}); Caller -> {who?.ReflectedType?.FullName}.{who?.Name}({who?.GetParameters()?.ToStringFull()});");
+
+            if (Chat.Commands.DebugModeCommand.DebugMode)
+                Messaging.Notification("NullReferenceException! Check the logs!");
+        }
+
+        static string[] ignore = { "ShipLog", "Centerprint", "Notification", "Echo", "ChatMessage" };
     }
 }

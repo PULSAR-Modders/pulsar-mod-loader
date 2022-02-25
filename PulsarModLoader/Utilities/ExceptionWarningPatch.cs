@@ -12,7 +12,7 @@ namespace PulsarModLoader.Utilities
         {
             Application.logMessageReceived += OnUnityLog;
         }
-    private static void OnUnityLog(string line, string stackTrace, LogType type)
+        private static void OnUnityLog(string line, string stackTrace, LogType type)
         {
             if (type.Equals(LogType.Exception))
             {

@@ -12,6 +12,8 @@ namespace PulsarModLoader
 {
     public class ModManager
     {
+        public static bool IsOldVersion;
+
         public delegate void ModLoaded(string name, PulsarMod mod);
         public delegate void ModUnloaded(PulsarMod mod);
         public delegate void AllModsLoaded();
@@ -52,6 +54,27 @@ namespace PulsarModLoader
 
             // Force Photon's static constructor to run so patching its methods doesn't fail
             RuntimeHelpers.RunClassConstructor(typeof(PhotonNetwork).TypeHandle);
+
+            IsOldVersion = false;
+
+#if !DEBUG
+            try
+            {
+                using (var web = new System.Net.WebClient())
+                {
+                    web.Headers.Add("user-agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.71 Safari/537.36");
+
+                    string[] info = web.DownloadString("https://api.github.com/repos/PULSAR-Modders/pulsar-mod-loader/releases/latest").Split('\n');
+                    string versionFromInfo = info.First(i => i.Contains("tag_name"))
+                        .Replace(@"  ""tag_name"": """, string.Empty)
+                        .Replace(@""",", string.Empty);
+
+                    if (!PMLVersionInfo.FileVersion.StartsWith(versionFromInfo))
+                        IsOldVersion = true;
+                }
+            }
+            catch { }
+#endif
         }
 
         public PulsarMod GetMod(string name)

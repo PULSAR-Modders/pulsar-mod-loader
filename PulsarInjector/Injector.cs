@@ -4,6 +4,7 @@ using PulsarModLoader.Utilities;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -198,16 +199,18 @@ namespace PulsarInjector
 
         public static void CopyAssemblies(string targetAssemblyDir)
         {
+            string PulsarModLoaderDll = CheckForUpdates(typeof(PulsarModLoader.PulsarMod).Assembly.Location);
+
             /* Copy important assemblies to target assembly's directory */
             string sourceDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             string[] copyables = new string[] {
-                typeof(PulsarModLoader.PulsarMod).Assembly.Location,
+                PulsarModLoaderDll,
                 Path.Combine(sourceDir, "0Harmony.dll")
             };
 
             foreach (string sourcePath in copyables)
             {
-                string destPath = Path.Combine(targetAssemblyDir, Path.GetFileName(sourcePath));
+                string destPath = Path.Combine(targetAssemblyDir, Path.GetFileName(sourcePath).Replace("_updated.dll", ".dll"));
                 Logger.Info($"Copying {Path.GetFileName(destPath)} to {Path.GetDirectoryName(destPath)}");
                 try
                 {
@@ -219,6 +222,84 @@ namespace PulsarInjector
                     Environment.Exit(0);
                 }
             };
+        }
+
+        public static string CheckForUpdates(string CurrentPMLDll)
+        {
+            string version = System.Diagnostics.FileVersionInfo.GetVersionInfo(CurrentPMLDll).FileVersion;
+            bool useOtherDll = false;
+
+            if (File.Exists(CurrentPMLDll.Replace(".dll", "_updated.dll")))
+            {
+                string UpdatedPMLDll = CurrentPMLDll.Replace(".dll", "_updated.dll");
+                string UpdatedVersion = System.Diagnostics.FileVersionInfo.GetVersionInfo(UpdatedPMLDll).FileVersion;
+                short[] versionAsNum = version.Split('.').Select(s => short.Parse(s)).ToArray();
+                short[] UpdatedVersionAsNum = UpdatedVersion.Split('.').Select(s => short.Parse(s)).ToArray();
+
+                for (byte i = 0; i < 4; i++)
+                    if (UpdatedVersionAsNum[i] > versionAsNum[i])
+                    {
+                        CurrentPMLDll = UpdatedPMLDll;
+                        version = UpdatedPMLDll;
+                        useOtherDll = true;
+                        break;
+                    }
+                    else if (UpdatedVersionAsNum[i] < versionAsNum[i]) 
+                    {
+                        break;
+                    }
+            }
+
+            Logger.Info("=== Updates ===");
+            Logger.Info("Check for a newer version of PML?");
+            Logger.Info("(Y/N)");
+
+            if (Console.ReadLine().ToUpper() == "N")
+                return CurrentPMLDll;
+
+            using (var web = new System.Net.WebClient())
+            {
+                web.Headers.Add("user-agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.71 Safari/537.36");
+
+                string[] info = web.DownloadString("https://api.github.com/repos/PULSAR-Modders/pulsar-mod-loader/releases/latest").Split('\n');
+                string versionFromInfo = info.First(i => i.Contains("tag_name"))
+                    .Replace(@"  ""tag_name"": """, string.Empty)
+                    .Replace(@""",", string.Empty); // for example: returns "0.10.4"
+
+                if (version.StartsWith(versionFromInfo))
+                    return CurrentPMLDll;
+
+                Logger.Info($"New update available! Download {versionFromInfo}?");
+                Logger.Info("(Y/N)");
+
+                if (Console.ReadLine().ToUpper() == "N")
+                    return CurrentPMLDll;
+
+                string downloadLink = info.First(i => i.Contains("https://github.com/PULSAR-Modders/pulsar-mod-loader/releases/download") && i.Contains(".dll"))
+                    .Replace(@"      ""browser_download_url"": """, string.Empty).Replace(@"""", string.Empty);
+                string zipPath = CurrentPMLDll.Replace(".dll", ".zip");
+                File.WriteAllBytes(zipPath, web.DownloadData(downloadLink));
+
+                string newDllPath = useOtherDll ? CurrentPMLDll : CurrentPMLDll.Replace(".dll", "_updated.dll");
+
+                using (var zipfile = Pathfinding.Ionic.Zip.ZipFile.Read(zipPath))
+                {
+                    var dll = zipfile.First(z => z.FileName.EndsWith("PulsarModLoader.dll"));
+                    List<byte> bytes = new List<byte>();
+                    using (var reader = dll.OpenReader())
+                    {
+                        while (reader.Position != reader.Length)
+                            bytes.Add((byte)reader.ReadByte());
+                    }
+                    File.WriteAllBytes(newDllPath, bytes.ToArray());
+                }
+
+                File.Delete(zipPath);
+
+                Logger.Info("Successfully updated!");
+
+                return newDllPath;
+            }
         }
     }
 }

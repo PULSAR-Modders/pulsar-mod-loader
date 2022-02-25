@@ -17,7 +17,7 @@ namespace PulsarModLoader.Patches
         static void Prefix(ref string Obj3)
         {
             if (Obj3.Contains("v"))
-                Obj3 += $"\nPML {PMLVersion}";
+                Obj3 += $"    PML {PMLVersion}{(ModManager.IsOldVersion ? " (OLD)" : string.Empty)}";
         }
 
         static void Postfix(string __result) => Version = __result;

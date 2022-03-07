@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 
 namespace PulsarModLoader.Utilities
@@ -24,9 +25,26 @@ namespace PulsarModLoader.Utilities
         public static void Info(string message)
         {
             if (message == null)
-                Messaging.AntiNullReferenceException(message == null ? "NULL" : $"\"{message}\"");
+            {
+                Messaging.AntiNullReferenceException("message: null");
+                return;
+            }
 
-            string line = $"[PML] {message}";
+            string line;
+            if (Chat.Commands.DebugModeCommand.DebugMode)
+            {
+                MethodBase invoker = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod();
+                string type = invoker.DeclaringType.ToString();
+                string methodName = '.' + invoker.Name;
+                if (methodName.Contains("..ctor"))
+                {
+                    methodName = methodName.Replace("..ctor", string.Empty);
+                    type = "new " + type;
+                }
+                line = $"[PML-{type}{methodName}({string.Join(", ", invoker.GetParameters().Select(p => p.Name))})] {message}";
+            }
+            else 
+                line = $"[PML] {message}";
 
             Console.WriteLine(line);
 

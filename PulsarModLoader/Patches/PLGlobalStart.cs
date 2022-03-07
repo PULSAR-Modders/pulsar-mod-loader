@@ -14,6 +14,12 @@ namespace PulsarModLoader.Patches
         {
             if (!modsLoaded)
             {
+                //DebugModeSetting
+                if (bool.TryParse(PLXMLOptionsIO.Instance.CurrentOptions.GetStringValue("PMLDebugMode"), out bool result))
+                {
+                    Chat.Commands.DebugModeCommand.DebugMode = result;
+                }
+
                 //PML Config
                 string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "/PulsarModLoaderConfig.json";
                 if (!File.Exists(path))
@@ -28,12 +34,6 @@ namespace PulsarModLoader.Patches
                 string modsDir = Path.Combine(Directory.GetCurrentDirectory(), "Mods");
                 ModManager.Instance.LoadModsDirectory(modsDir);
                 modsLoaded = true;
-
-                //DebugModeSetting
-                if (bool.TryParse(PLXMLOptionsIO.Instance.CurrentOptions.GetStringValue("PMLDebugMode"), out bool result))
-                {
-                    Chat.Commands.DebugModeCommand.DebugMode = result;
-                }
             }
         }
     }

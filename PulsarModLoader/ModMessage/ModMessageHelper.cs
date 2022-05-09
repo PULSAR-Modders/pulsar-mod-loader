@@ -13,6 +13,7 @@ namespace PulsarModLoader
         static void Prefix(PLServer __instance)
         {
             __instance.gameObject.AddComponent(typeof(ModMessageHelper));
+            Content.Dialogs.DialogsManager.Instance = new Content.Dialogs.DialogsManager();
         }
     }
     public class ModMessageHelper : PLMonoBehaviour
@@ -113,5 +114,31 @@ namespace PulsarModLoader
         {
             PLNetworkManager.Instance.MainMenu.AddActiveMenu(new PLErrorMessageMenu(message));
         }
+        [PunRPC]
+        public void SendDialogCreate(int id, string dialogName, string text, string[] choices)
+        {
+            var dialog = Content.Dialogs.DialogsManager.Instance.CreateGenericDialog(id);
+            dialog.AddText(false, text);
+            dialog.SetChoices(choices);
+            dialog.dialogName = dialogName;
+        }
+        [PunRPC]
+        public void DialogClick(int id, string selectedChoice, PhotonMessageInfo pmi)
+        {
+            this.photonView.RPC("DialogSyncText", PhotonTargets.Others, id, true, selectedChoice);
+            this.photonView.RPC("DialogSyncChoices", PhotonTargets.Others, id, new string[] { });
+            DialogSyncText(id, true, selectedChoice);
+            DialogSyncChoices(id, new string[] { });
+            Content.Dialogs.DialogsManager.Instance.ActiveHostSideDialogs[id].OnClick(pmi.sender, selectedChoice);
+        }
+        [PunRPC]
+        public void DialogSyncText(int id, bool right, string text) =>
+            Content.Dialogs.DialogsManager.Instance.ActiveDialogs[id].AddText(right, text);
+        [PunRPC]
+        public void DialogSyncChoices(int id, string[] choices) =>
+            Content.Dialogs.DialogsManager.Instance.ActiveDialogs[id].SetChoices(choices);
+        [PunRPC]
+        public void DialogDestroy(int id) =>
+            Content.Dialogs.DialogsManager.Instance.DestroyDialog(id);
     }
 }

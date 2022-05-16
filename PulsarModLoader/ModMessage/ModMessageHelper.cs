@@ -115,8 +115,14 @@ namespace PulsarModLoader
             PLNetworkManager.Instance.MainMenu.AddActiveMenu(new PLErrorMessageMenu(message));
         }
         [PunRPC]
-        public void SendDialogCreate(int id, string dialogName, string text, string[] choices)
+        public void SendDialogCreate(int id, string dialogName, string text, string[] choices, PhotonMessageInfo pmi)
         {
+            if (!pmi.sender.IsMasterClient)
+            {
+                Logger.Info($"{PLServer.GetPlayerForPhotonPlayer(pmi.sender).PlayerName} tried to create a dialog!");
+                return;
+            }
+
             var dialog = Content.Dialogs.DialogsManager.Instance.CreateGenericDialog(id);
             dialog.AddText(false, text);
             dialog.SetChoices(choices);
@@ -127,18 +133,39 @@ namespace PulsarModLoader
         {
             this.photonView.RPC("DialogSyncText", PhotonTargets.Others, id, true, selectedChoice);
             this.photonView.RPC("DialogSyncChoices", PhotonTargets.Others, id, new string[] { });
-            DialogSyncText(id, true, selectedChoice);
-            DialogSyncChoices(id, new string[] { });
+            Content.Dialogs.DialogsManager.Instance.ActiveDialogs[id].AddText(true, selectedChoice);
+            Content.Dialogs.DialogsManager.Instance.ActiveDialogs[id].SetChoices(new string[] { });
             Content.Dialogs.DialogsManager.Instance.ActiveHostSideDialogs[id].OnClick(pmi.sender, selectedChoice);
         }
         [PunRPC]
-        public void DialogSyncText(int id, bool right, string text) =>
+        public void DialogSyncText(int id, bool right, string text, PhotonMessageInfo pmi)
+        {
+            if (!pmi.sender.IsMasterClient)
+            {
+                Logger.Info($"{PLServer.GetPlayerForPhotonPlayer(pmi.sender).PlayerName} tried to add fake text to the dialog with id {id}!");
+                return;
+            }
             Content.Dialogs.DialogsManager.Instance.ActiveDialogs[id].AddText(right, text);
+        }
         [PunRPC]
-        public void DialogSyncChoices(int id, string[] choices) =>
+        public void DialogSyncChoices(int id, string[] choices, PhotonMessageInfo pmi)
+        {
+            if (!pmi.sender.IsMasterClient)
+            {
+                Logger.Info($"{PLServer.GetPlayerForPhotonPlayer(pmi.sender).PlayerName} tried to add fake choices to the dialog with id {id}!");
+                return;
+            }
             Content.Dialogs.DialogsManager.Instance.ActiveDialogs[id].SetChoices(choices);
+        }
         [PunRPC]
-        public void DialogDestroy(int id) =>
+        public void DialogDestroy(int id, PhotonMessageInfo pmi)
+        {
+            if (!pmi.sender.IsMasterClient)
+            {
+                Logger.Info($"{PLServer.GetPlayerForPhotonPlayer(pmi.sender).PlayerName} tried to delete the dialog with id {id}!");
+                return;
+            }
             Content.Dialogs.DialogsManager.Instance.DestroyDialog(id);
+        }
     }
 }

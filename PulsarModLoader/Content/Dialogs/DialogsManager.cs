@@ -20,13 +20,16 @@ namespace PulsarModLoader.Content.Dialogs
 
         public void CreateDialog<T>() where T : HostSideDialog, new()
         {
+            if (!PhotonNetwork.isMasterClient)
+                return;
+
             var instance = new UnityEngine.GameObject().AddComponent<GenericDialog>();
             var dialog = new T();
             ActiveDialogs.Add(Id,instance);
             instance.id = Id;
             instance.HailTargetID = Id;
             ActiveHostSideDialogs.Add(Id, dialog);
-            dialog.id = Id;
+            dialog.DialogId = Id;
             dialog.OnCreate(out string name, out string text, out string[] choices);
             ModMessageHelper.Instance.photonView.RPC("SendDialogCreate", PhotonTargets.Others, Id, name, text, choices);
             instance.AddText(false, text);

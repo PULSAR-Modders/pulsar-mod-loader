@@ -25,7 +25,7 @@ namespace PulsarModLoader.Content.Components.Turret
 
         TurretModManager()
         {
-            VanillaTurretMaxType = 19;
+            VanillaTurretMaxType = Enum.GetValues(typeof(ETurretType)).Length;
             Logger.Info($"MaxTypeint = {VanillaTurretMaxType - 1}");
             foreach (PulsarMod mod in ModManager.Instance.GetAllMods())
             {

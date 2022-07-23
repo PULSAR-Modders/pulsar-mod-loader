@@ -25,7 +25,7 @@ namespace PulsarModLoader.Content.Components.MegaTurret
 
         MegaTurretModManager()
         {
-            VanillaMegaTurretMaxType = 7;
+            VanillaMegaTurretMaxType = 8;
             Logger.Info($"MaxTypeint = {VanillaMegaTurretMaxType - 1}");
             foreach (PulsarMod mod in ModManager.Instance.GetAllMods())
             {

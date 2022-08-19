@@ -106,15 +106,15 @@ namespace PulsarModLoader
             return true;
         }
     }
-    [HarmonyPatch(typeof(PLServer), "OnPhotonPlayerConnected")]
+    [HarmonyPatch(typeof(PLServer), "AttemptGetVerified")]
     class PrefixServerOnClientJoin
     {
-        static void Prefix(PhotonPlayer connected)
+        static void Prefix(PhotonMessageInfo pmi)
         {
             if (PhotonNetwork.isMasterClient)
             {
                 Logger.Info("Sending Ping (asking for mod list/Pong)");
-                ModMessageHelper.Instance.photonView.RPC("SendConnectionMessage", connected, new object[0]);
+                ModMessageHelper.Instance.photonView.RPC("SendConnectionMessage", pmi.sender, new object[0]);
             }
         }
     }

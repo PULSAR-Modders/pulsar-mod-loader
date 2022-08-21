@@ -3,7 +3,7 @@ using PulsarModLoader.Utilities;
 using Steamworks;
 using System.Collections.Generic;
 
-namespace PulsarModLoader
+namespace PulsarModLoader.MPModChecks
 {
     class MPModChecks
     {
@@ -187,7 +187,7 @@ namespace PulsarModLoader
                     }
 
                 }
-                Logger.Info("Modcheck passed, proceding ondwards");
+                Logger.Info("Modcheck passed, proceding onwards");
             }
             else //client wasn't found in mod list
             {

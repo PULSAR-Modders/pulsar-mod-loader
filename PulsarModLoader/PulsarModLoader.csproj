@@ -192,8 +192,8 @@
     <Compile Include="CustomGUI\PMLSettings.cs" />
     <Compile Include="ModMessage\ModMessage.cs" />
     <Compile Include="ModMessage\ModMessageHelper.cs" />
-    <Compile Include="MPModChecks.cs" />
-    <Compile Include="MPFunction.cs" />
+    <Compile Include="MPModChecks\MPModChecks.cs" />
+    <Compile Include="MPModChecks\MPFunction.cs" />
     <Compile Include="Events\PlayerAddedEvent.cs" />
     <Compile Include="Events\Event.cs" />
     <Compile Include="Events\EventHelper.cs" />

@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using PulsarModLoader;
 using PulsarModLoader.Utilities;
 using System;
 using System.Collections.Generic;
@@ -18,10 +17,12 @@ namespace PulsarModLoader.SaveData
         }
         public static SaveDataManager Instance;
 
+        public static string ReadMods = "";
         static public string SaveDir = Directory.GetCurrentDirectory() + "/Saves";
         static public string LocalSaveDir = SaveDir + "/Local";
 
         List<PMLSaveData> SaveConfigs = new List<PMLSaveData>();
+        public int SaveCount = 0;
 
         void OnModLoaded(string modName, PulsarMod mod)
         {
@@ -32,6 +33,7 @@ namespace PulsarModLoader.SaveData
                     PMLSaveData SaveData = (PMLSaveData)Activator.CreateInstance(type);
                     SaveData.MyMod = mod;
                     SaveConfigs.Add(SaveData);
+                    SaveCount = SaveConfigs.Count;
                 }
             });
         }
@@ -49,12 +51,13 @@ namespace PulsarModLoader.SaveData
             for (byte s = 0; s < saveConfigsToRemove.Count; s++)
             {
                 SaveConfigs.Remove(saveConfigsToRemove[s]);
+                SaveCount = SaveConfigs.Count;
             }
         }
 
         public static string getPMLSaveFileName(string inFileName)
         {
-            if(inFileName.EndsWith("LastRecoveredSave.plsave")) //Fix LastRecoveredSave
+            if (inFileName.EndsWith("LastRecoveredSave.plsave")) //Fix LastRecoveredSave
             {
                 return inFileName.Replace("LastRecoveredSave.plsave", "LastRecoveredMSave.pmlsave");
             }
@@ -65,9 +68,9 @@ namespace PulsarModLoader.SaveData
         {
             //Stop if no save configs to save. Additionally check for older .pmlsave file under the same name and delete.
             string fileName = getPMLSaveFileName(inFileName);
-            if (SaveConfigs.Count == 0)
+            if (SaveCount == 0)
             {
-                if(File.Exists(fileName))
+                if (File.Exists(fileName))
                 {
                     Logger.Info("Old PMLSave found with no new data to save. Deleting old data.");
                     File.Delete(fileName);
@@ -81,7 +84,7 @@ namespace PulsarModLoader.SaveData
             BinaryWriter binaryWriter = new BinaryWriter(fileStream);
 
             //save for mods
-            binaryWriter.Write(SaveConfigs.Count);                      //int32 representing total configs
+            binaryWriter.Write(SaveCount);                      //int32 representing total configs
             foreach (PMLSaveData saveData in SaveConfigs)
             {
                 try
@@ -90,7 +93,7 @@ namespace PulsarModLoader.SaveData
                     MemoryStream dataStream = saveData.SaveData();          //Collect Save data from mod
                     int bytecount = (int)dataStream.Length;
 
-                                                                            //SaveDataHeader
+                    //SaveDataHeader
                     binaryWriter.Write(saveData.MyMod.HarmonyIdentifier()); //Write Mod Identifier
                     binaryWriter.Write(saveData.Identifier());              //Write PMLSaveData Identifier
                     binaryWriter.Write(saveData.VersionID);                 //Write PMLSaveData VersionID
@@ -141,7 +144,7 @@ namespace PulsarModLoader.SaveData
         {
             //start reading
             string fileName = getPMLSaveFileName(inFileName);
-            if(!File.Exists(fileName))
+            if (!File.Exists(fileName))
             {
                 return;
             }
@@ -152,6 +155,7 @@ namespace PulsarModLoader.SaveData
             int count = binaryReader.ReadInt32();                //int32 representing total configs
             string missingMods = "";
             string VersionMismatchedMods = "";
+            string readMods = "";
             for (int i = 0; i < count; i++)
             {
                 //SaveDataHeader
@@ -160,6 +164,7 @@ namespace PulsarModLoader.SaveData
                 uint VersionID = binaryReader.ReadUInt32();      //VersionID
                 int bytecount = binaryReader.ReadInt32();        //ByteCount
                 PulsarModLoader.Utilities.Logger.Info($"Reading SaveData: {harmonyIdent}::{SavDatIdent} SaveDataVersion: {VersionID} bytecount: {bytecount} Pos: {binaryReader.BaseStream.Position}");
+                readMods += "\n" + harmonyIdent;
 
 
                 bool foundReader = false;
@@ -167,7 +172,7 @@ namespace PulsarModLoader.SaveData
                 {
                     if (savedata.MyMod.HarmonyIdentifier() == harmonyIdent && savedata.Identifier() == SavDatIdent)
                     {
-                        if(VersionID != savedata.VersionID)
+                        if (VersionID != savedata.VersionID)
                         {
                             Logger.Info($"Mismatched SaveData VersionID. Read: {VersionID} SaveData: {savedata.VersionID}");
                             VersionMismatchedMods += "\n" + harmonyIdent;
@@ -202,6 +207,7 @@ namespace PulsarModLoader.SaveData
             binaryReader.Close();
             fileStream.Close();
             Logger.Info("PMLSaveManager has read file: " + PLNetworkManager.Instance.FileNameToRelative(fileName));
+            ReadMods = readMods;
 
             if (missingMods.Length > 0)
             {
@@ -218,6 +224,34 @@ namespace PulsarModLoader.SaveData
     [HarmonyPatch(typeof(PLSaveGameIO), "SaveToFile")]
     class SavePatch
     {
+        //Attempt at blocking saving of .plsave to steam when modded data exists.
+        /*static bool PatchMethod(string a)
+        {
+            if(SaveDataManager.Instance.SaveCount > 0)
+            {
+                Logger.Info("Running PatchMethod");
+                return true;
+            }
+            else
+            {
+                return a.StartsWith(SaveDataManager.LocalSaveDir);
+            }
+        }
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        {
+            List<CodeInstruction>  targetsequence = new List<CodeInstruction>()
+            {
+                new CodeInstruction(OpCodes.Ldarg_0),
+                new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(PLSaveGameIO), "LocalSaveDir")),
+                new CodeInstruction(OpCodes.Call),
+                new CodeInstruction(OpCodes.Callvirt),
+            };
+            List<CodeInstruction>  injectedsequence = new List<CodeInstruction>()
+            {
+                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(SavePatch), "PatchMethod")),
+            };
+            return HarmonyHelpers.PatchBySequence(instructions, targetsequence, injectedsequence, HarmonyHelpers.PatchMode.REPLACE, HarmonyHelpers.CheckMode.NONNULL);
+        }*/
         static void Postfix(string inFileName)
         {
             SaveDataManager.Instance.SaveDatas(inFileName);

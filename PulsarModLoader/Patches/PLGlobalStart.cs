@@ -29,7 +29,10 @@ namespace PulsarModLoader.Patches
 
                 //Modmanager GUI Init.
                 new GameObject("ModManager", typeof(CustomGUI.GUIMain)) { hideFlags = HideFlags.HideAndDontSave };
-                
+
+                //SaveDataManager Init()
+                new SaveData.SaveDataManager();
+
                 //ModLoading
                 string modsDir = Path.Combine(Directory.GetCurrentDirectory(), "Mods");
                 ModManager.Instance.LoadModsDirectory(modsDir);

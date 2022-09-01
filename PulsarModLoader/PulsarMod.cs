@@ -103,7 +103,7 @@ namespace PulsarModLoader
         {
             get
             {
-                return (int)MPFunction.None;
+                return (int)MPModChecks.MPFunction.None;
             }
         }
         
@@ -142,5 +142,10 @@ namespace PulsarModLoader
         {
             enabled = true;
         }
+
+        /// <summary>
+        /// Mod ID for future feature involving download IDs for a public webserver
+        /// </summary>
+        public virtual string ModID => "";
     }
 }

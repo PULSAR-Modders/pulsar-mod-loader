@@ -139,7 +139,6 @@
     <Compile Include="Chat\Extensions\HarmonyNetworkUpdate.cs" />
     <Compile Include="Chat\Extensions\HarmonyProcessCurrentChatText.cs" />
     <Compile Include="Chat\Extensions\HarmonyServerLogin.cs" />
-    <Compile Include="Chat\Extensions\HarmonyServerStart.cs" />
     <Compile Include="Chat\Extensions\HarmonyColoredMessage.cs" />
     <Compile Include="Content\Components\AutoTurret\AutoTurretMod.cs" />
     <Compile Include="Content\Components\AutoTurret\AutoTurretModManager.cs" />
@@ -192,7 +191,7 @@
     <Compile Include="CustomGUI\PMLSettings.cs" />
     <Compile Include="ModMessage\ModMessage.cs" />
     <Compile Include="ModMessage\ModMessageHelper.cs" />
-    <Compile Include="MPModChecks\MPModChecks.cs" />
+    <Compile Include="MPModChecks\MPModCheckManager.cs" />
     <Compile Include="MPModChecks\MPFunction.cs" />
     <Compile Include="Events\PlayerAddedEvent.cs" />
     <Compile Include="Events\Event.cs" />
@@ -205,11 +204,14 @@
     <Compile Include="Injections\HarmonyInjector.cs" />
     <Compile Include="Injections\InjectionTools.cs" />
     <Compile Include="Injections\LoggingInjections.cs" />
+    <Compile Include="MPModChecks\MPModDataBlock.cs" />
+    <Compile Include="MPModChecks\MPUserDataBlock.cs" />
     <Compile Include="Patches\DebugReadout.cs" />
     <Compile Include="Patches\GameVersion.cs" />
     <Compile Include="Patches\ModdedLobbyTag.cs" />
     <Compile Include="Patches\PLGlobalStart.cs" />
     <Compile Include="Patches\PhotonProperties.cs" />
+    <Compile Include="Patches\PLServerStart.cs" />
     <Compile Include="PMLConfig.cs" />
     <Compile Include="PulsarMod.cs" />
     <Compile Include="ModManager.cs" />

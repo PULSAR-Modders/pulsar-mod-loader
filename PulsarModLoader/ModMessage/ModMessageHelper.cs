@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using PulsarModLoader.MPModChecks;
 using PulsarModLoader.Utilities;
 using System;
 using System.Collections.Generic;
@@ -17,16 +18,19 @@ namespace PulsarModLoader
     }
     public class ModMessageHelper : PLMonoBehaviour
     {
-        public static bool ServerHasMPMods = false;
         public static ModMessageHelper Instance;
-        public Dictionary<PhotonPlayer, string> PlayersWithMods;
+
+        [Obsolete]
+        public Dictionary<PhotonPlayer, string> PlayersWithMods = new Dictionary<PhotonPlayer, string>();
+
         private static Dictionary<string, ModMessage> modMessageHandlers = new Dictionary<string, ModMessage>();
 
+        [Obsolete]
         public string GetPlayerMods(PhotonPlayer inPlayer) //if the player exists, return the modlist, otherwise return the string 'NoPlayer'
         {
             if (PlayersWithMods.ContainsKey(inPlayer))
             {
-                return PlayersWithMods[inPlayer];
+                return "NoPlayer";
             }
             else
             {
@@ -42,10 +46,6 @@ namespace PulsarModLoader
             {
                 Assembly asm = mod.GetType().Assembly;
                 Type modMessage = typeof(ModMessage);
-                if(mod.MPFunctionality > 2)
-                {
-                    ServerHasMPMods = true;
-                }
                 foreach (Type t in asm.GetTypes())
                 {
                     if (modMessage.IsAssignableFrom(t) && !t.IsAbstract && !t.IsInterface)
@@ -62,13 +62,15 @@ namespace PulsarModLoader
         {
             base.Awake();
             Instance = this;
-            PlayersWithMods = new Dictionary<PhotonPlayer, string>();
         }
+
+        [Obsolete]
         public string GetModName(string modName)
         {
             PulsarMod mod = ModManager.Instance.GetMod(modName);
             return $"{mod.Name} {mod.Version} MPF{mod.MPFunctionality}";
         }
+        
         [PunRPC]
         public void ReceiveMessage(string modID, object[] arguments, PhotonMessageInfo pmi)
         {
@@ -82,36 +84,18 @@ namespace PulsarModLoader
                 Utilities.Logger.Info($"ModMessage for {modID} doesn't exist");
             }
         }
-        [PunRPC]
-        public void ReceiveConnectionMessage(string modList, string PMLVersion, PhotonMessageInfo pmi) //Pong
-        {
-            PhotonPlayer sender = pmi.sender;
-            Utilities.Logger.Info($"ConnectionMessage received message from a sender with the following PML Version and modlist:\nPMLVersion: {PMLVersion}\nModlist:\n{modList}");            
-            
-            if (!PlayersWithMods.ContainsKey(sender))
-            {
-                PlayersWithMods.Add(sender, modList);
-                Utilities.Logger.Info("Added Sender to PlayersWithMods list");
-            }
-            else
-            {
-                Utilities.Logger.Info("Couldn't find sender");
-            }
-        }
-        [PunRPC]
-        public void SendConnectionMessage(PhotonMessageInfo pmi) //Ping
-        {
-            Logger.Info("Received ping, Sending pong");
-            ModMessageHelper.Instance.photonView.RPC("ReceiveConnectionMessage", pmi.sender, new object[]
-            {
-                MPModChecks.GetModList(),
-                FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion
-            });
-        }
+
         [PunRPC]
         public void RecieveErrorMessage(string message)
         {
             PLNetworkManager.Instance.MainMenu.AddActiveMenu(new PLErrorMessageMenu(message));
+        }
+
+        [PunRPC]
+        public void ReceiveConnectionMessage(MPModDataBlock[] modList, string PMLVersion, PhotonMessageInfo pmi) //Pong
+        {
+            Logger.Info($"recieved modlist and connection info from user with the following info:\nPMLVersion: {PMLVersion}\nModlist:{MPModCheckManager.GetModListAsString(modList)}");
+            MPModCheckManager.Instance.AddNetworkedPeerMods(pmi.sender, modList);
         }
     }
 }

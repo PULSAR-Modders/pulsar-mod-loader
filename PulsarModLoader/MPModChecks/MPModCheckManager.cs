@@ -47,7 +47,7 @@ namespace PulsarModLoader.MPModChecks
 
         private bool ServerHasMPMods = false;
 
-        public MPModDataBlock[] getNetworkedPeerMods(PhotonPlayer Photonplayer)
+        public MPModDataBlock[] GetNetworkedPeerMods(PhotonPlayer Photonplayer)
         {
             return NetworkedPeersModLists[Photonplayer];
         }
@@ -130,7 +130,7 @@ namespace PulsarModLoader.MPModChecks
             return dataStream;
         }
 
-        public MPUserDataBlock GetModListFromLobbyListingData(MemoryStream memoryStream)
+        public static MPUserDataBlock GetModListFromLobbyListingData(MemoryStream memoryStream)
         {
             memoryStream.Position = 0;
             MPUserDataBlock UserData = null;
@@ -161,7 +161,7 @@ namespace PulsarModLoader.MPModChecks
             return UserData;
         }
 
-        public static string GetModListAsString(MPModDataBlock[] ModDatas)
+        private static string GetModListAsString(MPModDataBlock[] ModDatas)
         {
             string ModList = string.Empty;
             foreach (MPModDataBlock DataBlock in ModDatas)
@@ -171,7 +171,7 @@ namespace PulsarModLoader.MPModChecks
             return ModList;
         }
 
-        private MPUserDataBlock GetHostModList(RoomInfo room)
+        private static MPUserDataBlock GetHostModList(RoomInfo room)
         {
             if (room.CustomProperties.ContainsKey("modList"))
             {
@@ -180,7 +180,7 @@ namespace PulsarModLoader.MPModChecks
             return new MPUserDataBlock();
         }
 
-        public void KickClient(PhotonPlayer client)
+        private static void KickClient(PhotonPlayer client)
         {
             if (SteamManager.Initialized && client.SteamID != CSteamID.Nil)
             {

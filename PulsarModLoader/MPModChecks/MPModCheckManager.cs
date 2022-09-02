@@ -43,16 +43,16 @@ namespace PulsarModLoader.MPModChecks
 
         private MPModDataBlock[] MyModList = null;
 
-        private Dictionary<PhotonPlayer, MPModDataBlock[]> NetworkedPeersModLists = new Dictionary<PhotonPlayer, MPModDataBlock[]>();
+        private Dictionary<PhotonPlayer, MPUserDataBlock> NetworkedPeersModLists = new Dictionary<PhotonPlayer, MPUserDataBlock>();
 
         private bool ServerHasMPMods = false;
 
-        public MPModDataBlock[] GetNetworkedPeerMods(PhotonPlayer Photonplayer)
+        public MPUserDataBlock GetNetworkedPeerMods(PhotonPlayer Photonplayer)
         {
             return NetworkedPeersModLists[Photonplayer];
         }
 
-        public void AddNetworkedPeerMods(PhotonPlayer Photonplayer, MPModDataBlock[] modList)
+        public void AddNetworkedPeerMods(PhotonPlayer Photonplayer, MPUserDataBlock modList)
         {
             if (NetworkedPeersModLists.ContainsKey(Photonplayer))
             {
@@ -109,7 +109,7 @@ namespace PulsarModLoader.MPModChecks
             Logger.Info("Finished Building MyModList, time elapsted: " + stopwatch.ElapsedMilliseconds.ToString());
         }
 
-        private MemoryStream GetModListForLobbyListing()
+        public byte[] GetModListForLobbyListing()
         {
             MemoryStream dataStream = new MemoryStream();
             using (BinaryWriter writer = new BinaryWriter(dataStream))
@@ -127,11 +127,12 @@ namespace PulsarModLoader.MPModChecks
                     writer.Write(dataBlock.ModID);              //string ModID
                 }
             }
-            return dataStream;
+            return dataStream.ToArray();
         }
 
-        public static MPUserDataBlock GetModListFromLobbyListingData(MemoryStream memoryStream)
+        public static MPUserDataBlock GetModListFromLobbyListingData(byte[] byteData)
         {
+            MemoryStream memoryStream = new MemoryStream(byteData);
             memoryStream.Position = 0;
             MPUserDataBlock UserData = null;
             using (BinaryReader reader = new BinaryReader(memoryStream))
@@ -161,7 +162,7 @@ namespace PulsarModLoader.MPModChecks
             return UserData;
         }
 
-        private static string GetModListAsString(MPModDataBlock[] ModDatas)
+        public static string GetModListAsString(MPModDataBlock[] ModDatas)
         {
             string ModList = string.Empty;
             foreach (MPModDataBlock DataBlock in ModDatas)
@@ -175,7 +176,7 @@ namespace PulsarModLoader.MPModChecks
         {
             if (room.CustomProperties.ContainsKey("modList"))
             {
-                return GetModListFromLobbyListingData((MemoryStream)room.CustomProperties["modList"]);
+                return GetModListFromLobbyListingData((byte[])room.CustomProperties["modList"]);
             }
             return new MPUserDataBlock();
         }
@@ -287,7 +288,7 @@ namespace PulsarModLoader.MPModChecks
             bool foundplayer = false;
             if (NetworkedPeersModLists.ContainsKey(Player)) //checks if server has received mod list from client.
             {
-                ClientMods = NetworkedPeersModLists[Player];
+                ClientMods = NetworkedPeersModLists[Player].ModData;
                 foundplayer = true;
             }
             Logger.Info("HostOnClientJoined checking for player mods, returned " + foundplayer.ToString());
@@ -398,6 +399,7 @@ namespace PulsarModLoader.MPModChecks
                     string message = $"You have been disconnected for not having the mod loader installed";
                     ModMessageHelper.Instance.photonView.RPC("RecieveErrorMessage", Player, new object[] { message });
                     KickClient(Player);
+                    return;
                 }
                 Utilities.Logger.Info("Didn't receive message or proper modlist, but the server doesn't have multiplayer explicit mods. Proceeding onwards");
             }
@@ -446,10 +448,10 @@ namespace PulsarModLoader.MPModChecks
                 {
                     if (player == PhotonNetwork.player)
                     {
+                        Logger.Info("Sending 'RecieveConnectionMessage' RPC");
                         ModMessageHelper.Instance.photonView.RPC("ReceiveConnectionMessage", pmi.sender, new object[]
                         {
-                            MPModCheckManager.Instance.MyModList,
-                            Patches.GameVersion.PMLVersion
+                            MPModCheckManager.Instance.GetModListForLobbyListing()
                         });
                     }
                     player.Verified = true;

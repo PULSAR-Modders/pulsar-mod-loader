@@ -25,6 +25,9 @@ namespace PulsarModLoader.Patches
                 "playerList",
                 "modList",
             });
+
+            //MPModCheck
+            roomOptions.CustomRoomProperties["modList"] = MPModChecks.MPModCheckManager.Instance.GetModListForLobbyListing();
         }
 
         public static void UpdatePlayerList()

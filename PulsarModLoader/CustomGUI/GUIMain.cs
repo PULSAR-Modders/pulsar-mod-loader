@@ -120,7 +120,7 @@ namespace PulsarModLoader.CustomGUI
                                     Label($"Short Description: {mod.ShortDescription}");
                                 if (mod.LongDescription != string.Empty)
                                     Label($"Long Description: {mod.LongDescription}");
-                                Label($"MPFunctionality: {((MPFunction)mod.MPFunctionality).ToString()}");
+                                Label($"MPFunctionality: {((MPModChecks.MPFunction)mod.MPFunctionality).ToString()}");
                             }
                             EndScrollView();
                         }

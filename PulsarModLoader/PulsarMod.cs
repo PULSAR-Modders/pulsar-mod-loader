@@ -141,6 +141,6 @@ namespace PulsarModLoader
         public virtual void Enable()
         {
             enabled = true;
-        }
+        }     
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using HarmonyLib;
 using UnityEngine;
 using static UnityEngine.GUILayout;
 
@@ -184,7 +185,7 @@ namespace PulsarModLoader.CustomGUI
             GUI.DragWindow();
         }
 
-        private static GUISkin _cachedSkin;
+        internal static GUISkin _cachedSkin;
         private static readonly Color32 _classicMenuBackground = new Color32(32,32,32, 255);
         private static readonly Color32 _classicButtonBackground = new Color32(40,40,40, 255);
         private static readonly Color32 _hoverButtonFromMenu = new Color32(18,79,179, 255);
@@ -205,9 +206,13 @@ namespace PulsarModLoader.CustomGUI
                 
                 _cachedSkin.window.hover.textColor = Color.white;
                 _cachedSkin.window.onHover.textColor = Color.white;
-                
+
+                Color32 hoverbutton = PLServer.Instance == null || PLNetworkManager.Instance?.LocalPlayer == null
+	                ? _hoverButtonFromMenu
+	                : (Color32)PLPlayer.GetClassColorFromID(PLNetworkManager.Instance.LocalPlayer.ClassID);
+
                 Texture2D buttonBackground = BuildTexFrom1Color(_classicButtonBackground);
-                Texture2D hbuttonBackground = BuildTexFrom1Color(_hoverButtonFromMenu);
+                Texture2D hbuttonBackground = BuildTexFrom1Color(hoverbutton);
                 _cachedSkin.button.active.background = buttonBackground;
                 _cachedSkin.button.onActive.background = buttonBackground;
                 _cachedSkin.button.focused.background = buttonBackground;
@@ -246,10 +251,10 @@ namespace PulsarModLoader.CustomGUI
                 _cachedSkin.textField.normal.background = textfield;
                 _cachedSkin.textField.onNormal.background = textfield;
 
-                _cachedSkin.textField.active.textColor = _hoverButtonFromMenu;
-                _cachedSkin.textField.onActive.textColor = _hoverButtonFromMenu;
-                _cachedSkin.textField.hover.textColor = _hoverButtonFromMenu;
-                _cachedSkin.textField.onHover.textColor = _hoverButtonFromMenu;
+                _cachedSkin.textField.active.textColor = hoverbutton;
+                _cachedSkin.textField.onActive.textColor = hoverbutton;
+                _cachedSkin.textField.hover.textColor = hoverbutton;
+                _cachedSkin.textField.onHover.textColor = hoverbutton;
 
                 UnityEngine.Object.DontDestroyOnLoad(windowBackground);
                 UnityEngine.Object.DontDestroyOnLoad(buttonBackground);
@@ -305,5 +310,11 @@ namespace PulsarModLoader.CustomGUI
                 }
             });
         }
+    }
+
+    [HarmonyPatch(typeof(PLPlayer), nameof(PLPlayer.SetClassID))]
+    static class UpdateGUIColorOnClassChanged
+    {
+	    static void Postfix() => GUIMain._cachedSkin = null;
     }
 }

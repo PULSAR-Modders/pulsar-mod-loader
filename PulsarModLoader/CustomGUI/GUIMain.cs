@@ -88,7 +88,7 @@ namespace PulsarModLoader.CustomGUI
             {
                 #region ModList and ModInfo
                 case 0:
-                    GUI.skin.label.alignment = PMLConfig.instance.ModInfoTextAnchor;
+                    GUI.skin.label.alignment = PMLConfig.ModInfoTextAnchor;
                     BeginArea(ModListArea);
                     {
                         ModListScroll = BeginScrollView(ModListScroll);

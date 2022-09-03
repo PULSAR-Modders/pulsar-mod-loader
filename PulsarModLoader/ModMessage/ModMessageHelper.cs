@@ -94,7 +94,7 @@ namespace PulsarModLoader
         [PunRPC]
         public void ReceiveConnectionMessage(byte[] recievedData, PhotonMessageInfo pmi) //Pong
         {
-            MPUserDataBlock userDataBlock = MPModCheckManager.GetModListFromLobbyListingData(recievedData);
+            MPUserDataBlock userDataBlock = MPModCheckManager.DeserializeHashfullMPUserData(recievedData);
             Logger.Info($"recieved modlist and connection info from user with the following info:\nPMLVersion: {userDataBlock.PMLVersion}\nModlist:{MPModCheckManager.GetModListAsString(userDataBlock.ModData)}");
             MPModCheckManager.Instance.AddNetworkedPeerMods(pmi.sender, userDataBlock);
         }

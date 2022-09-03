@@ -1,5 +1,6 @@
 ﻿using ExitGames.Client.Photon;
 using HarmonyLib;
+using PulsarModLoader.Patches;
 using PulsarModLoader.Utilities;
 using Steamworks;
 using System;
@@ -7,7 +8,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection.Emit;
 using System.Security.Cryptography;
+using System.Text;
 using UnityEngine;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 using Logger = PulsarModLoader.Utilities.Logger;
@@ -30,11 +33,11 @@ namespace PulsarModLoader.MPModChecks
 
         private void UpdateLobbyModList()  //Update Photon Lobby Listing with mod list
         {
-            if (PhotonNetwork.isMasterClient && PhotonNetwork.inRoom)
+            if (PhotonNetwork.isMasterClient && PhotonNetwork.inRoom && PLNetworkManager.Instance != null)
             {
                 Room room = PhotonNetwork.room;
                 Hashtable customProperties = room.CustomProperties;
-                customProperties["modList"] = GetModListForLobbyListing();
+                customProperties["modList"] = SerializeHashlessUserData();
                 room.SetCustomProperties(customProperties);
             }
         }
@@ -45,7 +48,7 @@ namespace PulsarModLoader.MPModChecks
 
         private Dictionary<PhotonPlayer, MPUserDataBlock> NetworkedPeersModLists = new Dictionary<PhotonPlayer, MPUserDataBlock>();
 
-        private bool ServerHasMPMods = false;
+        private int HighestLevelOfMPMods = 0;
 
         public MPUserDataBlock GetNetworkedPeerMods(PhotonPlayer Photonplayer)
         {
@@ -69,14 +72,15 @@ namespace PulsarModLoader.MPModChecks
 
         private List<PulsarMod> GetMPModList()
         {
+            HighestLevelOfMPMods = 0;
             List<PulsarMod> modList = new List<PulsarMod>();
             foreach (PulsarMod mod in ModManager.Instance.GetAllMods())
             {
                 if (mod.MPFunctionality != (int)MPFunction.HideFromServerList)
                 {
-                    if (mod.MPFunctionality > (int)MPFunction.HostRequired)
+                    if (mod.MPFunctionality >= (int)MPFunction.HostRequired && mod.MPFunctionality > HighestLevelOfMPMods)
                     {
-                        ServerHasMPMods = true;
+                        HighestLevelOfMPMods = (mod.MPFunctionality);
                     }
                     modList.Add(mod);
                 }
@@ -109,7 +113,7 @@ namespace PulsarModLoader.MPModChecks
             Logger.Info("Finished Building MyModList, time elapsted: " + stopwatch.ElapsedMilliseconds.ToString());
         }
 
-        public byte[] GetModListForLobbyListing()
+        public byte[] SerializeHashlessUserData()
         {
             MemoryStream dataStream = new MemoryStream();
             using (BinaryWriter writer = new BinaryWriter(dataStream))
@@ -130,7 +134,29 @@ namespace PulsarModLoader.MPModChecks
             return dataStream.ToArray();
         }
 
-        public static MPUserDataBlock GetModListFromLobbyListingData(byte[] byteData)
+        public byte[] SerializeHashfullUserData()
+        {
+            MemoryStream dataStream = new MemoryStream();
+            using (BinaryWriter writer = new BinaryWriter(dataStream))
+            {
+                //Datastream storage structure:
+                writer.Write(Patches.GameVersion.PMLVersion);   //--Header--
+                writer.Write(MyModList.Length);                 //string PMLVersion
+                for (int i = 0; i < MyModList.Length; i++)      //int    modcount
+                {                                               //
+                    MPModDataBlock dataBlock = MyModList[i];    //--ModData--
+                    writer.Write(dataBlock.ModName);            //string mod name
+                    writer.Write(dataBlock.HarmonyIdentifier);  //string harmony ident
+                    writer.Write(dataBlock.Version);            //string mod version
+                    writer.Write((byte)dataBlock.MPFunction);   //byte   MPFunction
+                    writer.Write(dataBlock.ModID);              //string ModID
+                    writer.Write(dataBlock.Hash);               //byte[] Hash
+                }
+            }
+            return dataStream.ToArray();
+        }
+
+        public static MPUserDataBlock DeserializeHashlessMPUserData(byte[] byteData)
         {
             MemoryStream memoryStream = new MemoryStream(byteData);
             memoryStream.Position = 0;
@@ -158,6 +184,39 @@ namespace PulsarModLoader.MPModChecks
                     Logger.Info($"Failed to read mod list from lobby listing data.\n{ex.Message}");
                 }
             }
+            Logger.Info("Failed to read mod list from hashless data, returning null.");
+            return UserData;
+        }
+
+        public static MPUserDataBlock DeserializeHashfullMPUserData(byte[] byteData)
+        {
+            MemoryStream memoryStream = new MemoryStream(byteData);
+            memoryStream.Position = 0;
+            MPUserDataBlock UserData = null;
+            using (BinaryReader reader = new BinaryReader(memoryStream))
+            {
+                try
+                {
+                    string PMLVersion = reader.ReadString();
+                    int ModCount = reader.ReadInt32();
+                    MPModDataBlock[] ModList = new MPModDataBlock[ModCount];
+                    for (int i = 0; i < ModCount; i++)
+                    {
+                        string modname = reader.ReadString();
+                        string HarmonyIdent = reader.ReadString();
+                        string ModVersion = reader.ReadString();
+                        MPFunction MPFunction = (MPFunction)reader.ReadByte();
+                        string ModID = reader.ReadString();
+                        byte[] Hash = reader.ReadBytes(32);
+                        ModList[i] = new MPModDataBlock(HarmonyIdent, modname, ModVersion, MPFunction, ModID, Hash);
+                    }
+                    UserData = new MPUserDataBlock(PMLVersion, ModList);
+                }
+                catch (Exception ex)
+                {
+                    Logger.Info($"Failed to read mod list from lobby listing data.\n{ex.Message}");
+                }
+            }
             Logger.Info("Failed to read mod list from lobby listing data, returning null.");
             return UserData;
         }
@@ -176,7 +235,7 @@ namespace PulsarModLoader.MPModChecks
         {
             if (room.CustomProperties.ContainsKey("modList"))
             {
-                return GetModListFromLobbyListingData((byte[])room.CustomProperties["modList"]);
+                return DeserializeHashlessMPUserData((byte[])room.CustomProperties["modList"]);
             }
             return new MPUserDataBlock();
         }
@@ -198,6 +257,20 @@ namespace PulsarModLoader.MPModChecks
         public bool ClientClickJoinRoom(RoomInfo room)
         {
             MPUserDataBlock HostModData = GetHostModList(room);
+            if(HostModData.PMLVersion == string.Empty)
+            {
+                if(HighestLevelOfMPMods >= (int)MPFunction.HostRequired)
+                {
+                    PLNetworkManager.Instance.MainMenu.AddActiveMenu(new PLErrorMessageMenu($"<color=red>FAILED TO JOIN CREW!</color>\nMods requiring host installation or higher have been installed locally"));
+
+                    Logger.Info("Mods requiring host installation or higher have been installed locally");
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
             MPModDataBlock[] HostModList = HostModData.ModData;
 
             string HostModListString = GetModListAsString(HostModList);
@@ -302,7 +375,6 @@ namespace PulsarModLoader.MPModChecks
                 string outdatedMods = string.Empty;
                 string incorrectHashMods = string.Empty;
                 Logger.Info($"Starting Serverside Mod check");
-                Logger.Info($"Checking if client is missing required mods");
 
                 int localLength = MyModList.Length;
                 int clientLength = ClientMods.Length;
@@ -329,11 +401,11 @@ namespace PulsarModLoader.MPModChecks
                             {
                                 outdatedMods += $"\nLocal: {MyModList[a].ModName} {MyModList[a].Version} Client: {ClientMods[b].ModName} {ClientMods[b].Version}";
                             }
-                            else if (MyModList[a].Hash != ClientMods[b].Hash)   //if mod versions match but hash doesn't, add as kick reason
+                            else if (Encoding.ASCII.GetString(MyModList[a].Hash) != Encoding.ASCII.GetString(ClientMods[b].Hash))   //if mod versions match but hash doesn't, add as kick reason
                             {
                                 incorrectHashMods += $"\n{ClientMods[b].ModName}";
                                 missingMods += $"\n{ClientMods[b].ModName}";
-                                Logger.Info("Client has bad hash for " + MyModList[a].ModName);
+                                Logger.Info($"Client has bad hash for {MyModList[a].ModName}. Local: {Encoding.ASCII.GetString(MyModList[a].Hash)} Client: {Encoding.ASCII.GetString(ClientMods[b].Hash)}");
                             }
                         }
                     }
@@ -370,21 +442,22 @@ namespace PulsarModLoader.MPModChecks
                 string message = string.Empty;
                 if (missingMods != string.Empty)
                 {
-                    message += $"\n<color=yellow>YOU ARE MISSING THE FOLLOWING REQUIRED MODS</color>{missingMods}";
+                    message += $"\n<color=yellow>You are missing the following required mods</color>{missingMods}";
                 }
                 if (clientMPLimitedMods != string.Empty)
                 {
-                    message += $"\n<color=yellow>YOU CANNOT JOIN WITH THE FOLLOWING MODS INSTALLED</color>{clientMPLimitedMods}";
+                    message += $"\n<color=yellow>You cannot join without the following mods installed</color>{clientMPLimitedMods}";
                 }
                 if (outdatedMods != string.Empty)
                 {
-                    message += $"\n<color=yellow>THE FOLLOWING MOD VERSIONS DO NOT MATCH</color>{outdatedMods}";
+                    message += $"\n<color=yellow>The following mod versions do not match</color>{outdatedMods}";
                 }
                 if (message != string.Empty)
                 {
-                    PLNetworkManager.Instance.MainMenu.AddActiveMenu(new PLErrorMessageMenu($"<color=red>Failed to join crew!</color>{message}"));
+                    ModMessageHelper.Instance.photonView.RPC("RecieveErrorMessage", Player, new object[] {$"<color=red>Failed to join crew!</color>{message}"});
+                    KickClient(Player);
 
-                    Logger.Info("Local mod list is not equal to Server mod list");
+                    Logger.Info("Kicked client for failing mod check with the following message:" + message);
                 }
                 else
                 {
@@ -393,7 +466,7 @@ namespace PulsarModLoader.MPModChecks
             }
             else //client wasn't found in mod list
             {
-                if (ServerHasMPMods)
+                if (HighestLevelOfMPMods >= (int)MPFunction.All)
                 {
                     Utilities.Logger.Info("Didn't receive message or proper modlist. proceeding to kick PhotonPlayer");
                     string message = $"You have been disconnected for not having the mod loader installed";
@@ -439,7 +512,7 @@ namespace PulsarModLoader.MPModChecks
             }
         }
 
-        [HarmonyPatch(typeof(PLServer), "VerifyClient")] //Client sends mod info as early as possible during connection,
+        [HarmonyPatch(typeof(PLServer), "VerifyClient")] //Client sends mod info as early as possible during connection
         class ClientJoinPatch
         {
             static void Postfix(PhotonPlayer player, PhotonMessageInfo pmi)
@@ -451,11 +524,20 @@ namespace PulsarModLoader.MPModChecks
                         Logger.Info("Sending 'RecieveConnectionMessage' RPC");
                         ModMessageHelper.Instance.photonView.RPC("ReceiveConnectionMessage", pmi.sender, new object[]
                         {
-                            MPModCheckManager.Instance.GetModListForLobbyListing()
+                            MPModCheckManager.Instance.SerializeHashfullUserData()
                         });
                     }
                     player.Verified = true;
                 }
+            }
+        }
+
+        [HarmonyPatch(typeof(PLServer), "RemovePlayer")]
+        class RemovePlayerPatch
+        {
+            static void Postfix(PhotonPlayer inPlayer)
+            {
+                Instance.RemoveNetworkedPeerMods(inPlayer);
             }
         }
     }

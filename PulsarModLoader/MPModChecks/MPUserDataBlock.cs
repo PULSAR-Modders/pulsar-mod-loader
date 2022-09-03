@@ -16,7 +16,7 @@ namespace PulsarModLoader.MPModChecks
 
         public MPUserDataBlock()
         {
-            this.PMLVersion = "";
+            this.PMLVersion = string.Empty;
             this.ModData = null;
         }
 

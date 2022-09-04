@@ -355,7 +355,7 @@ namespace PulsarModLoader.MPModChecks
             }
         }
 
-        public void HostOnClientJoined(PhotonPlayer Player)
+        public bool HostOnClientJoined(PhotonPlayer Player)
         {
             MPModDataBlock[] ClientMods = null;
             bool foundplayer = false;
@@ -458,6 +458,7 @@ namespace PulsarModLoader.MPModChecks
                     KickClient(Player);
 
                     Logger.Info("Kicked client for failing mod check with the following message:" + message);
+                    return false;
                 }
                 else
                 {
@@ -472,13 +473,14 @@ namespace PulsarModLoader.MPModChecks
                     string message = $"You have been disconnected for not having the mod loader installed";
                     ModMessageHelper.Instance.photonView.RPC("RecieveErrorMessage", Player, new object[] { message });
                     KickClient(Player);
-                    return;
+                    return false;
                 }
                 Utilities.Logger.Info("Didn't receive message or proper modlist, but the server doesn't have multiplayer explicit mods. Proceeding onwards");
             }
+            return true;
         }
 
-        public IEnumerator ServerVerifyClient(PhotonPlayer player)
+        /*public IEnumerator ServerVerifyClient(PhotonPlayer player)
         {
             int loops = 0;
             WaitForSeconds cachedWaitTime = new WaitForSeconds(0.25f);
@@ -492,7 +494,7 @@ namespace PulsarModLoader.MPModChecks
                 yield return cachedWaitTime;
             }
             HostOnClientJoined(player);
-        }
+        }*/
 
         [HarmonyPatch(typeof(PLUIPlayMenu), "ActuallyJoinRoom")] //allow/disallow local client to join server.
         class JoinRoomPatch
@@ -503,16 +505,24 @@ namespace PulsarModLoader.MPModChecks
             }
         }
 
-        [HarmonyPatch(typeof(PLServer), "ServerOnClientVerified")] //Starts host mod verification coroutine
+        /*[HarmonyPatch(typeof(PLServer), "ServerOnClientVerified")] //Starts host mod verification coroutine
         class ServerOnClientVerifiedPatch
         {
             static void Postfix(PhotonPlayer client)
             {
                 PLServer.Instance.StartCoroutine(Instance.ServerVerifyClient(client));
             }
+        }*/
+        [HarmonyPatch(typeof(PLServer), "AttemptGetVerified")]
+        class AttemptGetVerifiedRecievePatch
+        {
+            static bool Prefix(PhotonMessageInfo pmi)
+            {
+                return Instance.HostOnClientJoined(pmi.sender);
+            }
         }
 
-        [HarmonyPatch(typeof(PLServer), "VerifyClient")] //Client sends mod info as early as possible during connection
+        /*[HarmonyPatch(typeof(PLServer), "VerifyClient")] //Client sends mod info as early as possible during connection
         class ClientJoinPatch
         {
             static void Postfix(PhotonPlayer player, PhotonMessageInfo pmi)
@@ -529,6 +539,31 @@ namespace PulsarModLoader.MPModChecks
                     }
                     player.Verified = true;
                 }
+            }
+        }*/
+
+        [HarmonyPatch(typeof(PLServer), "Update")]
+        class AttemptGetVerifiedSendPatch
+        {
+            static void PatchMethod() //Client sends mod info just before requesting verification
+            {
+                Logger.Info("Sending 'RecieveConnectionMessage' RPC");
+                ModMessageHelper.Instance.photonView.RPC("ReceiveConnectionMessage", PhotonTargets.MasterClient, new object[]
+                {
+                    Instance.SerializeHashfullUserData()
+                });
+            }
+            static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+            {
+                List<CodeInstruction> targetSequence = new List<CodeInstruction>()
+                {
+                    new CodeInstruction(OpCodes.Ldstr, "Attempting to get verified")
+                };
+                List<CodeInstruction> injectedSequence = new List<CodeInstruction>()
+                {
+                    new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(AttemptGetVerifiedSendPatch), "PatchMethod"))
+                };
+                return HarmonyHelpers.PatchBySequence(instructions, targetSequence, injectedSequence);
             }
         }
 

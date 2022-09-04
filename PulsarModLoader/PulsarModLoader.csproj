@@ -189,6 +189,7 @@
     <Compile Include="CustomGUI\GUIMain.cs" />
     <Compile Include="CustomGUI\ModSettingsMenu.cs" />
     <Compile Include="CustomGUI\PMLSettings.cs" />
+    <Compile Include="ModMessage\AllowPMLRPCPatch.cs" />
     <Compile Include="ModMessage\ModMessage.cs" />
     <Compile Include="ModMessage\ModMessageHelper.cs" />
     <Compile Include="MPModChecks\MPModCheckManager.cs" />

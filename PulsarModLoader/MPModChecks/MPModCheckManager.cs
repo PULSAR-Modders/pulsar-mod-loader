@@ -528,17 +528,6 @@ namespace PulsarModLoader.MPModChecks
             }
         }
 
-        [HarmonyPatch(typeof(PLServer), "ServerOnClientVerified")] //Starts host mod verification coroutine
-        class ServerOnClientVerifiedPatch
-        {
-            static void Postfix(PhotonPlayer client)
-            {
-                ModMessageHelper.Instance.photonView.RPC("ClientRecieveModList", client, new object[]
-                {
-                    Instance.SerializeHashlessUserData()
-                });
-            }
-        }
         [HarmonyPatch(typeof(PLServer), "AttemptGetVerified")]
         class AttemptGetVerifiedRecievePatch
         {
@@ -547,26 +536,6 @@ namespace PulsarModLoader.MPModChecks
                 return Instance.HostOnClientJoined(pmi.sender);
             }
         }
-
-        /*[HarmonyPatch(typeof(PLServer), "VerifyClient")] //Client sends mod info as early as possible during connection
-        class ClientJoinPatch
-        {
-            static void Postfix(PhotonPlayer player, PhotonMessageInfo pmi)
-            {
-                if (pmi.sender != null && pmi.sender.IsMasterClient && player != null)
-                {
-                    if (player == PhotonNetwork.player)
-                    {
-                        Logger.Info("Sending 'RecieveConnectionMessage' RPC");
-                        ModMessageHelper.Instance.photonView.RPC("ReceiveConnectionMessage", pmi.sender, new object[]
-                        {
-                            MPModCheckManager.Instance.SerializeHashfullUserData()
-                        });
-                    }
-                    player.Verified = true;
-                }
-            }
-        }*/
 
         [HarmonyPatch(typeof(PLServer), "Update")]
         class AttemptGetVerifiedSendPatch
@@ -609,6 +578,10 @@ namespace PulsarModLoader.MPModChecks
             {
                 if(PhotonNetwork.isMasterClient)
                 {
+                    ModMessageHelper.Instance.photonView.RPC("ClientRecieveModList", photonPlayer, new object[]
+                    {
+                            Instance.SerializeHashlessUserData()
+                    });
                     return;
                 }
                 Instance.RequestedModLists.Add(photonPlayer);

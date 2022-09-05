@@ -67,7 +67,7 @@ namespace PulsarModLoader
         public string GetModName(string modName)
         {
             PulsarMod mod = ModManager.Instance.GetMod(modName);
-            return $"{mod.Name} {mod.Version} MPF{mod.MPFunctionality}";
+            return $"{mod.Name} {mod.Version} MPF{mod.MPRequirements}";
         }
         
         [PunRPC]

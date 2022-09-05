@@ -25,7 +25,7 @@ namespace PulsarModLoader
 }
 namespace PulsarModLoader.MPModChecks
 {
-    public enum MPFunction
+    public enum MPRequirement
     {
         /// <summary>
         /// No MP Requirements
@@ -38,7 +38,7 @@ namespace PulsarModLoader.MPModChecks
         /// <summary>
         /// Host must have installed for clients to join
         /// </summary>
-        HostRequired,           //2 Host must have installed for clients to join
+        Host,                   //2 Host must have installed for clients to join
         /// <summary>
         /// All clients must have installed
         /// </summary>

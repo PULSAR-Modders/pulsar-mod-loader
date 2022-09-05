@@ -193,7 +193,7 @@
     <Compile Include="ModMessage\ModMessage.cs" />
     <Compile Include="ModMessage\ModMessageHelper.cs" />
     <Compile Include="MPModChecks\MPModCheckManager.cs" />
-    <Compile Include="MPModChecks\MPFunction.cs" />
+    <Compile Include="MPModChecks\MPRequirement.cs" />
     <Compile Include="Events\PlayerAddedEvent.cs" />
     <Compile Include="Events\Event.cs" />
     <Compile Include="Events\EventHelper.cs" />

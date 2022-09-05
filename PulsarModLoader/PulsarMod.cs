@@ -92,18 +92,26 @@ namespace PulsarModLoader
             }
         }
 
-        /// <summary>
-        /// Mod's multiplayer requirements. use MPFunction.<br/>
-        /// None: No Functionality<br/>
-        /// HostOnly: Only the host is required to have it installed<br/>
-        /// HostApproved: Host must have the mod installed, works better when client has it installed.<br/>
-        /// All: All players must have the mod installed
-        /// </summary>
+        [Obsolete]
         public virtual int MPFunctionality
         {
             get
             {
-                return (int)MPModChecks.MPFunction.None;
+                return MPRequirements;
+            }
+        }
+        /// <summary>
+        /// Mod's multiplayer requirements. use MPModChecks.MPRequirement.<br/>
+        /// None: No requirement<br/>
+        /// Hidden: Hidden from mod lists<br/>
+        /// Host: Host must have the mod installed, works better when client has it installed.<br/>
+        /// All: All players must have the mod installed
+        /// </summary>
+        public virtual int MPRequirements
+        {
+            get
+            {
+                return (int)MPModChecks.MPRequirement.None;
             }
         }
         

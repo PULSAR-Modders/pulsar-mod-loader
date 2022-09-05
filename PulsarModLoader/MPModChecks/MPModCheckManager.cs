@@ -115,11 +115,11 @@ namespace PulsarModLoader.MPModChecks
             List<PulsarMod> modList = new List<PulsarMod>();
             foreach (PulsarMod mod in ModManager.Instance.GetAllMods())
             {
-                if (mod.MPFunctionality != (int)MPFunction.HideFromServerList)
+                if (mod.MPRequirements != (int)MPRequirement.HideFromServerList)
                 {
-                    if (mod.MPFunctionality >= (int)MPFunction.HostRequired && mod.MPFunctionality > HighestLevelOfMPMods)
+                    if (mod.MPRequirements >= (int)MPRequirement.Host && mod.MPRequirements > HighestLevelOfMPMods)
                     {
-                        HighestLevelOfMPMods = (mod.MPFunctionality);
+                        HighestLevelOfMPMods = (mod.MPRequirements);
                     }
                     modList.Add(mod);
                 }
@@ -143,7 +143,7 @@ namespace PulsarModLoader.MPModChecks
                     {
                         MyStream.Position = 0;
                         byte[] Hash = MyHasher.ComputeHash(MyStream);
-                        ProcessedMods[i] = new MPModDataBlock(currentMod.HarmonyIdentifier(), currentMod.Name, currentMod.Version, (MPFunction)currentMod.MPFunctionality, currentMod.ModID, Hash);
+                        ProcessedMods[i] = new MPModDataBlock(currentMod.HarmonyIdentifier(), currentMod.Name, currentMod.Version, (MPRequirement)currentMod.MPRequirements, currentMod.ModID, Hash);
                     }
                 }
             }
@@ -166,7 +166,7 @@ namespace PulsarModLoader.MPModChecks
                     writer.Write(dataBlock.ModName);            //string mod name
                     writer.Write(dataBlock.HarmonyIdentifier);  //string harmony ident
                     writer.Write(dataBlock.Version);            //string mod version
-                    writer.Write((byte)dataBlock.MPFunction);   //byte   MPFunction
+                    writer.Write((byte)dataBlock.MPRequirement);//byte   MPRequirement
                     writer.Write(dataBlock.ModID);              //string ModID
                 }
             }
@@ -187,7 +187,7 @@ namespace PulsarModLoader.MPModChecks
                     writer.Write(dataBlock.ModName);            //string mod name
                     writer.Write(dataBlock.HarmonyIdentifier);  //string harmony ident
                     writer.Write(dataBlock.Version);            //string mod version
-                    writer.Write((byte)dataBlock.MPFunction);   //byte   MPFunction
+                    writer.Write((byte)dataBlock.MPRequirement);//byte   MPRequirements
                     writer.Write(dataBlock.ModID);              //string ModID
                     writer.Write(dataBlock.Hash);               //byte[] Hash
                 }
@@ -212,9 +212,9 @@ namespace PulsarModLoader.MPModChecks
                         string modname = reader.ReadString();
                         string HarmonyIdent = reader.ReadString();
                         string ModVersion = reader.ReadString();
-                        MPFunction MPFunction = (MPFunction)reader.ReadByte();
+                        MPRequirement MPRequirements = (MPRequirement)reader.ReadByte();
                         string ModID = reader.ReadString();
-                        ModList[i] = new MPModDataBlock(HarmonyIdent, modname, ModVersion, MPFunction, ModID);
+                        ModList[i] = new MPModDataBlock(HarmonyIdent, modname, ModVersion, MPRequirements, ModID);
                     }
                     return new MPUserDataBlock(PMLVersion, ModList);
 
@@ -244,10 +244,10 @@ namespace PulsarModLoader.MPModChecks
                         string modname = reader.ReadString();
                         string HarmonyIdent = reader.ReadString();
                         string ModVersion = reader.ReadString();
-                        MPFunction MPFunction = (MPFunction)reader.ReadByte();
+                        MPRequirement MPRequirements = (MPRequirement)reader.ReadByte();
                         string ModID = reader.ReadString();
                         byte[] Hash = reader.ReadBytes(32);
-                        ModList[i] = new MPModDataBlock(HarmonyIdent, modname, ModVersion, MPFunction, ModID, Hash);
+                        ModList[i] = new MPModDataBlock(HarmonyIdent, modname, ModVersion, MPRequirements, ModID, Hash);
                     }
                     return new MPUserDataBlock(PMLVersion, ModList);
                 }
@@ -298,7 +298,7 @@ namespace PulsarModLoader.MPModChecks
             MPUserDataBlock HostModData = GetHostModList(room);
             if (HostModData.PMLVersion == string.Empty)
             {
-                if (HighestLevelOfMPMods >= (int)MPFunction.HostRequired)
+                if (HighestLevelOfMPMods >= (int)MPRequirement.Host)
                 {
                     PLNetworkManager.Instance.MainMenu.AddActiveMenu(new PLErrorMessageMenu($"<color=red>FAILED TO JOIN CREW!</color>\nMods requiring host installation or higher have been installed locally"));
 
@@ -335,7 +335,7 @@ namespace PulsarModLoader.MPModChecks
                 }
                 if (!found)
                 {   //didn't find mod in host list, checking if mod function mandates host installation
-                    if (MyModList[a].MPFunction >= MPFunction.HostRequired)
+                    if (MyModList[a].MPRequirement >= MPRequirement.Host)
                     {
                         localMPLimitedMods += $"\n{MyModList[a].ModName}";
                     }
@@ -361,7 +361,7 @@ namespace PulsarModLoader.MPModChecks
                 }
                 if (!found)
                 {
-                    if (HostModList[a].MPFunction == MPFunction.All)
+                    if (HostModList[a].MPRequirement == MPRequirement.All)
                     {   //Host MP mod not found locally
                         missingMods += $"\n{HostModList[a].ModName}";
                     }
@@ -434,7 +434,7 @@ namespace PulsarModLoader.MPModChecks
 
                     if (found)
                     {
-                        if (MyModList[a].MPFunction >= MPFunction.HostRequired) //limit these types of kicking to MPLimited mods.
+                        if (MyModList[a].MPRequirement >= MPRequirement.Host) //limit these types of kicking to MPLimited mods.
                         {
                             if (MyModList[a].Version != ClientMods[b].Version)  //if mod versions don't match, add as kick reason
                             {
@@ -450,7 +450,7 @@ namespace PulsarModLoader.MPModChecks
                     }
                     else
                     {
-                        if (MyModList[a].MPFunction == MPFunction.All) //if client needs mod installed
+                        if (MyModList[a].MPRequirement == MPRequirement.All) //if client needs mod installed
                         {
                             missingMods += $"\n{MyModList[a].ModName}";
                         }
@@ -471,7 +471,7 @@ namespace PulsarModLoader.MPModChecks
                     }
                     if (!found) //if client mod not installed locally requires host to have installed.
                     {
-                        if (ClientMods[b].MPFunction >= MPFunction.HostRequired)
+                        if (ClientMods[b].MPRequirement >= MPRequirement.Host)
                         {
                             clientMPLimitedMods += $"\n{ClientMods[b].ModName}";
                         }
@@ -506,7 +506,7 @@ namespace PulsarModLoader.MPModChecks
             }
             else //client wasn't found in mod list
             {
-                if (HighestLevelOfMPMods >= (int)MPFunction.All)
+                if (HighestLevelOfMPMods >= (int)MPRequirement.All)
                 {
                     Utilities.Logger.Info("Didn't receive message or proper modlist. proceeding to kick PhotonPlayer");
                     string message = $"You have been disconnected for not having the mod loader installed";

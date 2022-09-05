@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using PulsarModLoader.MPModChecks;
 using System;
 using System.Diagnostics;
 using System.Reflection;
@@ -111,7 +112,14 @@ namespace PulsarModLoader
         {
             get
             {
-                return (int)MPModChecks.MPRequirement.None;
+                if (MPFunctionality >= (int)MPRequirement.Host)
+                {
+                    return MPFunctionality;
+                }
+                else
+                {
+                    return (int)MPRequirement.None;
+                }
             }
         }
         

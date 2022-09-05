@@ -21,11 +21,9 @@ namespace PulsarModLoader.Patches
                 }
 
                 //PML Config
-                string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "/PulsarModLoaderConfig.json";
-                if (!File.Exists(path))
-                    PMLConfig.CreateDefaultConfig(path, true);
-                else
-                    PMLConfig.CreateConfigFromFile(path);
+                //string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "/PulsarModLoaderConfig.json";
+                //if (!File.Exists(path)) PMLConfig.CreateDefaultConfig(path, true);
+                //else PMLConfig.CreateConfigFromFile(path);
 
                 //Modmanager GUI Init.
                 new GameObject("ModManager", typeof(CustomGUI.GUIMain)) { hideFlags = HideFlags.HideAndDontSave };

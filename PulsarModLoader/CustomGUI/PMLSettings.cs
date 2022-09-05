@@ -16,20 +16,15 @@ namespace PulsarModLoader.CustomGUI
             GUI.skin.label.alignment = TextAnchor.UpperLeft;
             BeginHorizontal();
             {
-                Label($"ModInfoTextAnchor: {PMLConfig.instance.ModInfoTextAnchor.ToString()}");
+                Label($"ModInfoTextAnchor: {PMLConfig.ModInfoTextAnchor.ToString()}");
 
                 if (Button("<"))
-                    PMLConfig.instance.ModInfoTextAnchor = Enum.GetValues(typeof(TextAnchor)).Cast<TextAnchor>().SkipWhile(e => (int)e != (int)PMLConfig.instance.ModInfoTextAnchor - 1).First();
+                    PMLConfig.ModInfoTextAnchor.Value = Enum.GetValues(typeof(TextAnchor)).Cast<TextAnchor>().SkipWhile(e => (int)e != (int)PMLConfig.ModInfoTextAnchor.Value - 1).First();
                 if (Button(">"))
-                    PMLConfig.instance.ModInfoTextAnchor = Enum.GetValues(typeof(TextAnchor)).Cast<TextAnchor>().SkipWhile(e => (int)e != (int)PMLConfig.instance.ModInfoTextAnchor).Skip(1).First();
+                    PMLConfig.ModInfoTextAnchor.Value = Enum.GetValues(typeof(TextAnchor)).Cast<TextAnchor>().SkipWhile(e => (int)e != (int)PMLConfig.ModInfoTextAnchor.Value).Skip(1).First();
             }
             EndHorizontal();
-            BeginHorizontal();
-            {
-                if (Button("Save")) PMLConfig.SaveConfig(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "/PulsarModLoaderConfig.json");
-                if (Button("Reset to default")) PMLConfig.CreateDefaultConfig(string.Empty, false);
-            }
-            EndHorizontal();
+            if (Button("Reset to default")) PMLConfig.SetDefault();
         }
     }
 }

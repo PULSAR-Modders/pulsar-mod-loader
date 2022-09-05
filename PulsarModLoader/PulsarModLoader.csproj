@@ -225,6 +225,7 @@
     <Compile Include="SaveData\DisplayModdedSavePatch.cs" />
     <Compile Include="SaveData\PMLSaveData.cs" />
     <Compile Include="SaveData\SaveDataManager.cs" />
+    <Compile Include="SaveValue.cs" />
     <Compile Include="Utilities\Clipboard.cs" />
     <Compile Include="Utilities\HelperMethods.cs" />
     <Compile Include="Utilities\ExceptionWarningPatch.cs" />

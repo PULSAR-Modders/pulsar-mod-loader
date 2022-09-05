@@ -61,6 +61,38 @@ namespace PulsarModLoader.MPModChecks
                 return null;
             }
         }
+        
+        public bool NetworkedPeerHasMod(PhotonPlayer player, string HarmonyIdentifier)
+        {
+            MPUserDataBlock userData = GetNetworkedPeerMods(player);
+            if(userData != null)
+            {
+                foreach(MPModDataBlock modData in userData.ModData)
+                {
+                    if(modData.HarmonyIdentifier == HarmonyIdentifier)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        public List<PhotonPlayer> NetworkedPeersWithMod(string HarmonyIdentifier)
+        {
+            List<PhotonPlayer> playerList = new List<PhotonPlayer>();
+            foreach(KeyValuePair<PhotonPlayer,MPUserDataBlock> userEntry in NetworkedPeersModLists)
+            {
+                foreach(MPModDataBlock modData in userEntry.Value.ModData)
+                {
+                    if(modData.HarmonyIdentifier == HarmonyIdentifier)
+                    {
+                        playerList.Add(userEntry.Key);
+                    }
+                }
+            }
+            return playerList;
+        }
 
         public void AddNetworkedPeerMods(PhotonPlayer Photonplayer, MPUserDataBlock modList)
         {
@@ -487,18 +519,6 @@ namespace PulsarModLoader.MPModChecks
             return true;
         }
 
-        /*public IEnumerator ServerSendModsToClient(PhotonPlayer client)
-        {
-            foreach (PhotonPlayer player in NetworkedPeersModLists.Keys)
-            {
-                ModMessageHelper.Instance.photonView.RPC("ClientRecieveModList", client, new object[]
-                {
-                    Instance.SerializeHashlessUserData()
-                });
-                yield return null;
-            }
-        }*/
-
         [HarmonyPatch(typeof(PLUIPlayMenu), "ActuallyJoinRoom")] //allow/disallow local client to join server.
         class JoinRoomPatch
         {
@@ -508,14 +528,17 @@ namespace PulsarModLoader.MPModChecks
             }
         }
 
-        /*[HarmonyPatch(typeof(PLServer), "ServerOnClientVerified")] //Starts host mod verification coroutine
+        [HarmonyPatch(typeof(PLServer), "ServerOnClientVerified")] //Starts host mod verification coroutine
         class ServerOnClientVerifiedPatch
         {
             static void Postfix(PhotonPlayer client)
             {
-                PLServer.Instance.StartCoroutine(Instance.ServerSendModsToClient(client));
+                ModMessageHelper.Instance.photonView.RPC("ClientRecieveModList", client, new object[]
+                {
+                    Instance.SerializeHashlessUserData()
+                });
             }
-        }*/
+        }
         [HarmonyPatch(typeof(PLServer), "AttemptGetVerified")]
         class AttemptGetVerifiedRecievePatch
         {

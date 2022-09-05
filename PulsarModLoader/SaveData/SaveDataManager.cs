@@ -83,6 +83,9 @@ namespace PulsarModLoader.SaveData
             FileStream fileStream = File.Create(tempText);
             BinaryWriter binaryWriter = new BinaryWriter(fileStream);
 
+            //Save VersionID for later, starting with 0
+            binaryWriter.Write((uint)0);
+
             //save for mods
             binaryWriter.Write(SaveCount);                      //int32 representing total configs
             foreach (PMLSaveData saveData in SaveConfigs)
@@ -152,6 +155,7 @@ namespace PulsarModLoader.SaveData
             BinaryReader binaryReader = new BinaryReader(fileStream);
 
             //read for mods
+            uint PMLSaveVersion = binaryReader.ReadUInt32();     //uint32 represnting PMLSaveVersion. This will probably be used in the future.
             int count = binaryReader.ReadInt32();                //int32 representing total configs
             string missingMods = "";
             string VersionMismatchedMods = "";

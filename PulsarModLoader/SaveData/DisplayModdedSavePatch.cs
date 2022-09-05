@@ -1,6 +1,5 @@
 ﻿using HarmonyLib;
 using PulsarModLoader.Patches;
-using PulsarModLoader.Utilities;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection.Emit;

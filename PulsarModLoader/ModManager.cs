@@ -110,7 +110,7 @@ namespace PulsarModLoader
                 Directory.CreateDirectory(modsDir);
             }
             modDirectories.Add(modsDir);
-
+            
             // Load mods
             foreach (string assemblyPath in Directory.GetFiles(modsDir, "*.dll"))
             {
@@ -145,6 +145,7 @@ namespace PulsarModLoader
             _ = PulsarModLoader.Content.Components.Virus.VirusModManager.Instance;
             _ = PulsarModLoader.Content.Components.WarpDrive.WarpDriveModManager.Instance;
             _ = PulsarModLoader.Content.Components.WarpDriveProgram.WarpDriveProgramModManager.Instance;
+            _ = PulsarModLoader.KeybindManager.Instance;
 
             OnAllModsLoaded?.Invoke();
         }

@@ -162,6 +162,12 @@ namespace PulsarModLoader
         /// <summary>
         /// Mod ID for future feature involving download IDs for a public webserver
         /// </summary>
-        public virtual string ModID => "";
+        public virtual string ModID
+        {
+            get
+            {
+                return string.Empty;
+            }
+        }
     }
 }

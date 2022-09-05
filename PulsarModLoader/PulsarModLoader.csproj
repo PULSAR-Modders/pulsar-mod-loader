@@ -79,6 +79,9 @@
       <HintPath>..\lib\Photon3Unity3D.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="PLInputBase">
+      <HintPath>..\..\..\SteamLibrary\steamapps\common\PULSARLostColony\PULSAR_LostColony_Data\Managed\PLInputBase.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.InteropServices.RuntimeInformation" />
@@ -189,6 +192,7 @@
     <Compile Include="CustomGUI\GUIMain.cs" />
     <Compile Include="CustomGUI\ModSettingsMenu.cs" />
     <Compile Include="CustomGUI\PMLSettings.cs" />
+    <Compile Include="KeybindManager.cs" />
     <Compile Include="ModMessage\AllowPMLRPCPatch.cs" />
     <Compile Include="ModMessage\ModMessage.cs" />
     <Compile Include="ModMessage\ModMessageHelper.cs" />

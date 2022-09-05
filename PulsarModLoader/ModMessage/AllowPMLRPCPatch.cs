@@ -10,7 +10,7 @@ namespace PulsarModLoader.ModMessages
     {
         static bool PatchMethod(bool ShouldContinue, string MethodName)
         {
-            if (MethodName == "ReceiveConnectionMessage" || MethodName == "ReceiveMessage")
+            if (MethodName == "ReceiveMessage" || MethodName == "ClientRecieveModList" || MethodName == "ServerRecieveModList" || MethodName == "ClientRequestModList")
             {
                 return true;
             }
@@ -22,17 +22,19 @@ namespace PulsarModLoader.ModMessages
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             List<CodeInstruction> targetSequence = new List<CodeInstruction>()
-                {
-                    new CodeInstruction(OpCodes.Stloc_S, (byte)10),
-                    new CodeInstruction(OpCodes.Ldloc_S, (byte)10),
-                };
+            {
+                new CodeInstruction(OpCodes.Brfalse_S),
+                new CodeInstruction(OpCodes.Ldc_I4_1),
+                new CodeInstruction(OpCodes.Stloc_S),
+                new CodeInstruction(OpCodes.Ldloc_S),
+            };
 
             List<CodeInstruction> injectedSequence = new List<CodeInstruction>()
-                {
-                    new CodeInstruction(OpCodes.Ldloc_2),
-                    new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(AllowPMLRPCPatch), "PatchMethod")),
-                };
-            return HarmonyHelpers.PatchBySequence(instructions, targetSequence, injectedSequence, patchMode: HarmonyHelpers.PatchMode.AFTER);
+            {
+                new CodeInstruction(OpCodes.Ldloc_2),
+                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(AllowPMLRPCPatch), "PatchMethod")),
+            };
+            return HarmonyHelpers.PatchBySequence(instructions, targetSequence, injectedSequence, checkMode: HarmonyHelpers.CheckMode.NEVER);
         }
     }
 }

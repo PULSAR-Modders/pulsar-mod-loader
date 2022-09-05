@@ -3,7 +3,6 @@ using PulsarModLoader.MPModChecks;
 using PulsarModLoader.Utilities;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Reflection;
 
 namespace PulsarModLoader
@@ -92,11 +91,42 @@ namespace PulsarModLoader
         }
 
         [PunRPC]
-        public void ReceiveConnectionMessage(byte[] recievedData, PhotonMessageInfo pmi) //Pong
+        public void ServerRecieveModList(byte[] recievedData, PhotonMessageInfo pmi)
         {
             MPUserDataBlock userDataBlock = MPModCheckManager.DeserializeHashfullMPUserData(recievedData);
-            Logger.Info($"recieved modlist and connection info from user with the following info:\nPMLVersion: {userDataBlock.PMLVersion}\nModlist:{MPModCheckManager.GetModListAsString(userDataBlock.ModData)}");
+            Logger.Info($"recieved modlist from user with the following info:\nPMLVersion: {userDataBlock.PMLVersion}\nModlist:{MPModCheckManager.GetModListAsString(userDataBlock.ModData)}");
             MPModCheckManager.Instance.AddNetworkedPeerMods(pmi.sender, userDataBlock);
+        }
+
+        /*[PunRPC]
+        public void ClientRecieveModListFromServer(PhotonPlayer player, byte[] recievedData, PhotonMessageInfo pmi)
+        {
+            MPUserDataBlock userDataBlock = MPModCheckManager.DeserializeHashfullMPUserData(recievedData);
+            MPModCheckManager.Instance.AddNetworkedPeerMods(player, userDataBlock);
+        }*/
+
+        [PunRPC]
+        public void ClientRecieveModList(byte[] recievedData, PhotonMessageInfo pmi)
+        {
+            MPUserDataBlock userDataBlock = MPModCheckManager.DeserializeHashlessMPUserData(recievedData);
+            Logger.Info($"recieved modlist from user with the following info:\nPMLVersion: {userDataBlock.PMLVersion}\nModlist:{MPModCheckManager.GetModListAsString(userDataBlock.ModData)}");
+            MPModCheckManager.Instance.AddNetworkedPeerMods(pmi.sender, userDataBlock);
+        }
+
+        [PunRPC]
+        public void ClientRequestModList(PhotonMessageInfo pmi)
+        {
+            PhotonPlayer sender = pmi.sender;
+            photonView.RPC("ClientRecieveModList", sender, new object[]
+            {
+                MPModCheckManager.Instance.SerializeHashlessUserData()
+            });
+
+            if (MPModCheckManager.Instance.GetNetworkedPeerMods(sender) == null && !MPModCheckManager.Instance.RequestedModLists.Contains(sender))
+            {
+                MPModCheckManager.Instance.RequestedModLists.Add(sender);
+                photonView.RPC("ClientRequestModList", sender, new object[] {});
+            }
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using ExitGames.Client.Photon;
 using HarmonyLib;
+using PulsarModLoader.MPModChecks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,8 +25,9 @@ namespace PulsarModLoader.Patches
                 "playerList",
                 "modList",
             });
-            //Add multiplayer mods to modList
-            roomOptions.CustomRoomProperties["modList"] = MPModChecks.GetMPModList();
+
+            //MPModCheck
+            roomOptions.CustomRoomProperties["modList"] = MPModChecks.MPModCheckManager.Instance.SerializeHashlessUserData();
         }
 
         public static void UpdatePlayerList()

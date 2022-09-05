@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using PulsarModLoader.MPModChecks;
 using System;
 using System.Diagnostics;
 using System.Reflection;
@@ -92,18 +93,33 @@ namespace PulsarModLoader
             }
         }
 
-        /// <summary>
-        /// Mod's multiplayer requirements. use MPFunction.<br/>
-        /// None: No Functionality<br/>
-        /// HostOnly: Only the host is required to have it installed<br/>
-        /// HostApproved: Host must have the mod installed, works better when client has it installed.<br/>
-        /// All: All players must have the mod installed
-        /// </summary>
+        [Obsolete]
         public virtual int MPFunctionality
         {
             get
             {
-                return (int)MPFunction.None;
+                return MPRequirements;
+            }
+        }
+        /// <summary>
+        /// Mod's multiplayer requirements. use MPModChecks.MPRequirement.<br/>
+        /// None: No requirement<br/>
+        /// Hidden: Hidden from mod lists<br/>
+        /// Host: Host must have the mod installed, works better when client has it installed.<br/>
+        /// All: All players must have the mod installed
+        /// </summary>
+        public virtual int MPRequirements
+        {
+            get
+            {
+                if (MPFunctionality >= (int)MPRequirement.Host)
+                {
+                    return MPFunctionality;
+                }
+                else
+                {
+                    return (int)MPRequirement.None;
+                }
             }
         }
         
@@ -142,5 +158,10 @@ namespace PulsarModLoader
         {
             enabled = true;
         }
+
+        /// <summary>
+        /// Mod ID for future feature involving download IDs for a public webserver
+        /// </summary>
+        public virtual string ModID => "";
     }
 }

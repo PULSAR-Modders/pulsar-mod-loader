@@ -1,9 +1,6 @@
 ﻿using HarmonyLib;
-using PulsarModLoader.Chat.Commands;
 using System.Diagnostics;
 using System.Reflection;
-using UnityEngine;
-using UnityEngine.UI;
 
 namespace PulsarModLoader.Patches
 {
@@ -12,7 +9,7 @@ namespace PulsarModLoader.Patches
     internal class GameVersion
     {
         internal static string Version = string.Empty;
-        static readonly string PMLVersion = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion;
+        public static readonly string PMLVersion = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion;
 
         static void Prefix(ref string Obj3)
         {

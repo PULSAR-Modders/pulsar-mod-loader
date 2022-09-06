@@ -98,7 +98,7 @@ namespace PulsarModLoader
         {
             get
             {
-                return MPRequirements;
+                return (int)MPRequirement.None;
             }
         }
         /// <summary>

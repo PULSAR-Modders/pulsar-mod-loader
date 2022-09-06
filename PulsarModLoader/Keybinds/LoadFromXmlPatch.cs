@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
 using System.Collections.Generic;
-namespace PulsarModLoader
+namespace PulsarModLoader.Keybinds
 {
     [HarmonyPatch(typeof(PLInput), "LoadFromXmlDoc")]
     internal class LoadFromXmlPatch

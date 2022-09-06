@@ -145,7 +145,7 @@ namespace PulsarModLoader
             _ = PulsarModLoader.Content.Components.Virus.VirusModManager.Instance;
             _ = PulsarModLoader.Content.Components.WarpDrive.WarpDriveModManager.Instance;
             _ = PulsarModLoader.Content.Components.WarpDriveProgram.WarpDriveProgramModManager.Instance;
-            _ = PulsarModLoader.KeybindManager.Instance;
+            _ = PulsarModLoader.Keybinds.KeybindManager.Instance;
 
             OnAllModsLoaded?.Invoke();
         }

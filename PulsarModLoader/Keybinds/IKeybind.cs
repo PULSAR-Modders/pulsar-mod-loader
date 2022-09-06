@@ -1,4 +1,4 @@
-﻿namespace PulsarModLoader
+﻿namespace PulsarModLoader.Keybinds
 {
     public interface IKeybind
     {

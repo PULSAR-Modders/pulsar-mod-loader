@@ -274,7 +274,14 @@ namespace PulsarModLoader.MPModChecks
         {
             if (room.CustomProperties.ContainsKey("modList"))
             {
-                return DeserializeHashlessMPUserData((byte[])room.CustomProperties["modList"]);
+                try
+                {
+                    return DeserializeHashlessMPUserData((byte[])room.CustomProperties["modList"]);
+                }
+                catch
+                {
+
+                }
             }
             return new MPUserDataBlock();
         }

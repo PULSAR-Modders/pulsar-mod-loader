@@ -148,6 +148,21 @@ namespace PulsarModLoader.Content.Components.CPU
             }
         }
     }
+    [HarmonyPatch(typeof(PLShipComponent), "LateAddStats")]
+    class CPULateAddStatsPatch
+    {
+        static void Postfix(PLShipStats inStats, PLShipComponent __instance)
+        {
+            if(__instance is PLCPU)
+            {
+                int subtypeformodded = __instance.SubType - CPUModManager.Instance.VanillaCPUMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < CPUModManager.Instance.CPUTypes.Count)
+                {
+                    CPUModManager.Instance.CPUTypes[subtypeformodded].LateAddStats(__instance);
+                }
+            }
+        }
+    }
     [HarmonyPatch(typeof(PLCPU), "Tick")]
     class CPUTickPatch
     {
@@ -157,6 +172,18 @@ namespace PulsarModLoader.Content.Components.CPU
             if (subtypeformodded > -1 && subtypeformodded < CPUModManager.Instance.CPUTypes.Count)
             {
                 CPUModManager.Instance.CPUTypes[subtypeformodded].Tick(__instance);
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLCPU), "OnWarp")]
+    class CPUOnWarpPatch
+    {
+        static void Postfix(PLCPU __instance)
+        {
+            int subtypeformodded = __instance.SubType - CPUModManager.Instance.VanillaCPUMaxType;
+            if (subtypeformodded > -1 && subtypeformodded < CPUModManager.Instance.CPUTypes.Count)
+            {
+                CPUModManager.Instance.CPUTypes[subtypeformodded].OnWarp(__instance);
             }
         }
     }

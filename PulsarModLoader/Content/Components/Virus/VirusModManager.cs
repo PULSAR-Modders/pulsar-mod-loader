@@ -120,4 +120,79 @@ namespace PulsarModLoader.Content.Components.Virus
             }
         }
     }
+    [HarmonyPatch(typeof(PLShipComponent), "AddStats")]
+    class VirusAddStats
+    {
+        static void Postfix(PLShipStats inStats, PLShipComponent __instance) 
+        {
+            if(__instance is PLVirus) 
+            {
+                int subtypeformodded = __instance.SubType - VirusModManager.Instance.VanillaVirusMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < VirusModManager.Instance.VirusTypes.Count && inStats != null)
+                {
+                    VirusModManager.Instance.VirusTypes[subtypeformodded].AddStats(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "Tick")]
+    class VirusTick
+    {
+        static void Postfix(PLShipComponent __instance)
+        {
+            if (__instance is PLVirus)
+            {
+                int subtypeformodded = __instance.SubType - VirusModManager.Instance.VanillaVirusMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < VirusModManager.Instance.VirusTypes.Count)
+                {
+                    VirusModManager.Instance.VirusTypes[subtypeformodded].Tick(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "GetStatLineLeft")]
+    class VirusGetStatLineLeft
+    {
+        static void Postfix(ref string __result, PLShipComponent __instance)
+        {
+            if (__instance is PLVirus)
+            {
+                int subtypeformodded = __instance.SubType - VirusModManager.Instance.VanillaVirusMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < VirusModManager.Instance.VirusTypes.Count)
+                {
+                    __result = VirusModManager.Instance.VirusTypes[subtypeformodded].GetStatLineLeft(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "GetStatLineRight")]
+    class VirusGetStatLineRight
+    {
+        static void Postfix(ref string __result, PLShipComponent __instance)
+        {
+            if (__instance is PLVirus)
+            {
+                int subtypeformodded = __instance.SubType - VirusModManager.Instance.VanillaVirusMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < VirusModManager.Instance.VirusTypes.Count)
+                {
+                    __result = VirusModManager.Instance.VirusTypes[subtypeformodded].GetStatLineRight(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "OnWarp")]
+    class VirusOnWarp
+    {
+        static void Postfix(PLShipComponent __instance)
+        {
+            if (__instance is PLVirus)
+            {
+                int subtypeformodded = __instance.SubType - VirusModManager.Instance.VanillaVirusMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < VirusModManager.Instance.VirusTypes.Count)
+                {
+                    VirusModManager.Instance.VirusTypes[subtypeformodded].OnWarp(__instance);
+                }
+            }
+        }
+    }
 }

@@ -159,4 +159,64 @@ namespace PulsarModLoader.Content.Components.Shield
             }
         }
     }
+    [HarmonyPatch(typeof(PLShipComponent), "LateAddStats")]
+    class ShieldLateAddStatsPatch
+    {
+        static void Postfix(PLShipStats inStats, PLShipComponent __instance)
+        {
+            if(__instance is PLShieldGenerator)
+            {
+                int subtypeformodded = __instance.SubType - ShieldModManager.Instance.VanillaShieldMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < ShieldModManager.Instance.ShieldTypes.Count && inStats != null)
+                {
+                    ShieldModManager.Instance.ShieldTypes[subtypeformodded].LateAddStats(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "AddStats")]
+    class CapitanChairAddStats
+    {
+        static void Postfix(PLShipStats inStats, PLShipComponent __instance) 
+        {
+            if(__instance is PLShieldGenerator) 
+            {
+                int subtypeformodded = __instance.SubType - ShieldModManager.Instance.VanillaShieldMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < ShieldModManager.Instance.ShieldTypes.Count && inStats != null)
+                {
+                    ShieldModManager.Instance.ShieldTypes[subtypeformodded].AddStats(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "FinalLateAddStats")]
+    class CapitanChairFinalLateAddStats
+    {
+        static void Postfix(PLShipStats inStats, PLShipComponent __instance)
+        {
+            if (__instance is PLShieldGenerator)
+            {
+                int subtypeformodded = __instance.SubType - ShieldModManager.Instance.VanillaShieldMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < ShieldModManager.Instance.ShieldTypes.Count && inStats != null)
+                {
+                    ShieldModManager.Instance.ShieldTypes[subtypeformodded].FinalLateAddStats(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "OnWarp")]
+    class CapitanChairOnWarp
+    {
+        static void Postfix(PLShipComponent __instance)
+        {
+            if (__instance is PLShieldGenerator)
+            {
+                int subtypeformodded = __instance.SubType - ShieldModManager.Instance.VanillaShieldMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < ShieldModManager.Instance.ShieldTypes.Count)
+                {
+                    ShieldModManager.Instance.ShieldTypes[subtypeformodded].OnWarp(__instance);
+                }
+            }
+        }
+    }
 }

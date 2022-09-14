@@ -299,4 +299,109 @@ namespace PulsarModLoader.Content.Components.FBRecipeModule
             return PatchBySequence(firstModified, targetSequence2, injectedSequence2, patchMode: PatchMode.REPLACE, checkMode: CheckMode.NONNULL);
         }
     }
+    [HarmonyPatch(typeof(PLShipComponent), "LateAddStats")]
+    class FBRecipeModuleLateAddStatsPatch
+    {
+        static void Postfix(PLShipStats inStats, PLShipComponent __instance)
+        {
+            if(__instance is PLFBRecipeModule)
+            {
+                int subtypeformodded = __instance.SubType - FBRecipeModuleModManager.Instance.VanillaFBRecipeModuleMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < FBRecipeModuleModManager.Instance.FBRecipeModuleTypes.Count && inStats != null)
+                {
+                    FBRecipeModuleModManager.Instance.FBRecipeModuleTypes[subtypeformodded].LateAddStats(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "AddStats")]
+    class CapitanChairAddStats
+    {
+        static void Postfix(PLShipStats inStats, PLShipComponent __instance) 
+        {
+            if(__instance is PLFBRecipeModule) 
+            {
+                int subtypeformodded = __instance.SubType - FBRecipeModuleModManager.Instance.VanillaFBRecipeModuleMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < FBRecipeModuleModManager.Instance.FBRecipeModuleTypes.Count && inStats != null)
+                {
+                    FBRecipeModuleModManager.Instance.FBRecipeModuleTypes[subtypeformodded].AddStats(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "Tick")]
+    class CapitanChairTick
+    {
+        static void Postfix(PLShipComponent __instance)
+        {
+            if (__instance is PLFBRecipeModule)
+            {
+                int subtypeformodded = __instance.SubType - FBRecipeModuleModManager.Instance.VanillaFBRecipeModuleMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < FBRecipeModuleModManager.Instance.FBRecipeModuleTypes.Count)
+                {
+                    FBRecipeModuleModManager.Instance.FBRecipeModuleTypes[subtypeformodded].Tick(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "FinalLateAddStats")]
+    class CapitanChairFinalLateAddStats
+    {
+        static void Postfix(PLShipStats inStats, PLShipComponent __instance)
+        {
+            if (__instance is PLFBRecipeModule)
+            {
+                int subtypeformodded = __instance.SubType - FBRecipeModuleModManager.Instance.VanillaFBRecipeModuleMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < FBRecipeModuleModManager.Instance.FBRecipeModuleTypes.Count && inStats != null)
+                {
+                    FBRecipeModuleModManager.Instance.FBRecipeModuleTypes[subtypeformodded].FinalLateAddStats(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "GetStatLineLeft")]
+    class CapitanChairGetStatLineLeft
+    {
+        static void Postfix(ref string __result, PLShipComponent __instance)
+        {
+            if (__instance is PLFBRecipeModule)
+            {
+                int subtypeformodded = __instance.SubType - FBRecipeModuleModManager.Instance.VanillaFBRecipeModuleMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < FBRecipeModuleModManager.Instance.FBRecipeModuleTypes.Count)
+                {
+                    __result = FBRecipeModuleModManager.Instance.FBRecipeModuleTypes[subtypeformodded].GetStatLineLeft(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "GetStatLineRight")]
+    class CapitanChairGetStatLineRight
+    {
+        static void Postfix(ref string __result, PLShipComponent __instance)
+        {
+            if (__instance is PLFBRecipeModule)
+            {
+                int subtypeformodded = __instance.SubType - FBRecipeModuleModManager.Instance.VanillaFBRecipeModuleMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < FBRecipeModuleModManager.Instance.FBRecipeModuleTypes.Count)
+                {
+                    __result = FBRecipeModuleModManager.Instance.FBRecipeModuleTypes[subtypeformodded].GetStatLineRight(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "OnWarp")]
+    class CapitanChairOnWarp
+    {
+        static void Postfix(PLShipComponent __instance)
+        {
+            if (__instance is PLFBRecipeModule)
+            {
+                int subtypeformodded = __instance.SubType - FBRecipeModuleModManager.Instance.VanillaFBRecipeModuleMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < FBRecipeModuleModManager.Instance.FBRecipeModuleTypes.Count)
+                {
+                    FBRecipeModuleModManager.Instance.FBRecipeModuleTypes[subtypeformodded].OnWarp(__instance);
+                }
+            }
+        }
+    }
 }

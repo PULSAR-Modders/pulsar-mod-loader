@@ -198,4 +198,88 @@ namespace PulsarModLoader.Content.Components.WarpDriveProgram
             }
         }
     }
+    [HarmonyPatch(typeof(PLShipComponent), "LateAddStats")]
+    class WarpDriveProgramLateAddStatsPatch
+    {
+        static void Postfix(PLShipStats inStats, PLShipComponent __instance)
+        {
+            int subtypeformodded = __instance.SubType - WarpDriveProgramModManager.Instance.VanillaWarpDriveProgramMaxType;
+            if (subtypeformodded > -1 && subtypeformodded < WarpDriveProgramModManager.Instance.WarpDriveProgramTypes.Count && inStats != null)
+            {
+                WarpDriveProgramModManager.Instance.WarpDriveProgramTypes[subtypeformodded].LateAddStats(__instance);
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "AddStats")]
+    class WarpDriveProgramAddStats
+    {
+        static void Postfix(PLShipStats inStats, PLShipComponent __instance) 
+        {
+            if(__instance is PLWarpDriveProgram) 
+            {
+                int subtypeformodded = __instance.SubType - WarpDriveProgramModManager.Instance.VanillaWarpDriveProgramMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < WarpDriveProgramModManager.Instance.WarpDriveProgramTypes.Count && inStats != null)
+                {
+                    WarpDriveProgramModManager.Instance.WarpDriveProgramTypes[subtypeformodded].AddStats(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLWarpDriveProgram), "Tick")]
+    class WarpDriveProgramTick
+    {
+        static void Postfix(PLWarpDriveProgram __instance)
+        {
+            int subtypeformodded = __instance.SubType - WarpDriveProgramModManager.Instance.VanillaWarpDriveProgramMaxType;
+            if (subtypeformodded > -1 && subtypeformodded < WarpDriveProgramModManager.Instance.WarpDriveProgramTypes.Count)
+            {
+                 WarpDriveProgramModManager.Instance.WarpDriveProgramTypes[subtypeformodded].Tick(__instance);
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "GetStatLineLeft")]
+    class WarpDriveProgramGetStatLineLeft
+    {
+        static void Postfix(ref string __result, PLShipComponent __instance)
+        {
+            if (__instance is PLWarpDriveProgram)
+            {
+                int subtypeformodded = __instance.SubType - WarpDriveProgramModManager.Instance.VanillaWarpDriveProgramMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < WarpDriveProgramModManager.Instance.WarpDriveProgramTypes.Count)
+                {
+                    __result = WarpDriveProgramModManager.Instance.WarpDriveProgramTypes[subtypeformodded].GetStatLineLeft(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "GetStatLineRight")]
+    class WarpDriveProgramGetStatLineRight
+    {
+        static void Postfix(ref string __result, PLShipComponent __instance)
+        {
+            if (__instance is PLWarpDriveProgram)
+            {
+                int subtypeformodded = __instance.SubType - WarpDriveProgramModManager.Instance.VanillaWarpDriveProgramMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < WarpDriveProgramModManager.Instance.WarpDriveProgramTypes.Count)
+                {
+                    __result = WarpDriveProgramModManager.Instance.WarpDriveProgramTypes[subtypeformodded].GetStatLineRight(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "OnWarp")]
+    class WarpDriveProgramOnWarp
+    {
+        static void Postfix(PLShipComponent __instance)
+        {
+            if (__instance is PLWarpDriveProgram)
+            {
+                int subtypeformodded = __instance.SubType - WarpDriveProgramModManager.Instance.VanillaWarpDriveProgramMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < WarpDriveProgramModManager.Instance.WarpDriveProgramTypes.Count)
+                {
+                    WarpDriveProgramModManager.Instance.WarpDriveProgramTypes[subtypeformodded].OnWarp(__instance);
+                }
+            }
+        }
+    }
 }

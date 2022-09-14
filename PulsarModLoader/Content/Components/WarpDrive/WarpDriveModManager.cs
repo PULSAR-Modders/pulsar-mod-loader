@@ -136,4 +136,79 @@ namespace PulsarModLoader.Content.Components.WarpDrive
             }
         }
     }
+    [HarmonyPatch(typeof(PLWarpDrive), "LateAddStats")]
+    class WarpDriveLateAddStatsPatch
+    {
+        static void Postfix(PLShipStats inStats, PLWarpDrive __instance)
+        {
+            if(__instance is PLWarpDrive)
+            {
+                int subtypeformodded = __instance.SubType - WarpDriveModManager.Instance.VanillaWarpDriveMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < WarpDriveModManager.Instance.WarpDriveTypes.Count && inStats != null)
+                {
+                    WarpDriveModManager.Instance.WarpDriveTypes[subtypeformodded].LateAddStats(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "AddStats")]
+    class WarpDriveAddStats
+    {
+        static void Postfix(PLShipStats inStats, PLShipComponent __instance) 
+        {
+            if(__instance is PLWarpDrive) 
+            {
+                int subtypeformodded = __instance.SubType - WarpDriveModManager.Instance.VanillaWarpDriveMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < WarpDriveModManager.Instance.WarpDriveTypes.Count && inStats != null)
+                {
+                    WarpDriveModManager.Instance.WarpDriveTypes[subtypeformodded].AddStats(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "Tick")]
+    class WarpDriveTick
+    {
+        static void Postfix(PLShipComponent __instance)
+        {
+            if (__instance is PLWarpDrive)
+            {
+                int subtypeformodded = __instance.SubType - WarpDriveModManager.Instance.VanillaWarpDriveMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < WarpDriveModManager.Instance.WarpDriveTypes.Count)
+                {
+                    WarpDriveModManager.Instance.WarpDriveTypes[subtypeformodded].Tick(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "FinalLateAddStats")]
+    class WarpDriveFinalLateAddStats
+    {
+        static void Postfix(PLShipStats inStats, PLShipComponent __instance)
+        {
+            if (__instance is PLWarpDrive)
+            {
+                int subtypeformodded = __instance.SubType - WarpDriveModManager.Instance.VanillaWarpDriveMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < WarpDriveModManager.Instance.WarpDriveTypes.Count && inStats != null)
+                {
+                    WarpDriveModManager.Instance.WarpDriveTypes[subtypeformodded].FinalLateAddStats(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "OnWarp")]
+    class WarpDriveOnWarp
+    {
+        static void Postfix(PLShipComponent __instance)
+        {
+            if (__instance is PLWarpDrive)
+            {
+                int subtypeformodded = __instance.SubType - WarpDriveModManager.Instance.VanillaWarpDriveMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < WarpDriveModManager.Instance.WarpDriveTypes.Count)
+                {
+                    WarpDriveModManager.Instance.WarpDriveTypes[subtypeformodded].OnWarp(__instance);
+                }
+            }
+        }
+    }
 }

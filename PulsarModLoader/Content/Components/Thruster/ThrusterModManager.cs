@@ -147,4 +147,64 @@ namespace PulsarModLoader.Content.Components.Thruster
             }
         }
     }
+    [HarmonyPatch(typeof(PLShipComponent), "LateAddStats")]
+    class ThrusterLateAddStatsPatch
+    {
+        static void Postfix(PLShipStats inStats, PLShipComponent __instance)
+        {
+            if(__instance is PLThruster)
+            {
+                int subtypeformodded = __instance.SubType - ThrusterModManager.Instance.VanillaThrusterMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < ThrusterModManager.Instance.ThrusterTypes.Count && inStats != null)
+                {
+                    ThrusterModManager.Instance.ThrusterTypes[subtypeformodded].LateAddStats(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "AddStats")]
+    class ThrusterAddStats
+    {
+        static void Postfix(PLShipStats inStats, PLShipComponent __instance) 
+        {
+            if(__instance is PLThruster) 
+            {
+                int subtypeformodded = __instance.SubType - ThrusterModManager.Instance.VanillaThrusterMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < ThrusterModManager.Instance.ThrusterTypes.Count && inStats != null)
+                {
+                    ThrusterModManager.Instance.ThrusterTypes[subtypeformodded].AddStats(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "FinalLateAddStats")]
+    class ThrusterFinalLateAddStats
+    {
+        static void Postfix(PLShipStats inStats, PLShipComponent __instance)
+        {
+            if (__instance is PLThruster)
+            {
+                int subtypeformodded = __instance.SubType - ThrusterModManager.Instance.VanillaThrusterMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < ThrusterModManager.Instance.ThrusterTypes.Count && inStats != null)
+                {
+                    ThrusterModManager.Instance.ThrusterTypes[subtypeformodded].FinalLateAddStats(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "OnWarp")]
+    class ThrusterOnWarp
+    {
+        static void Postfix(PLShipComponent __instance)
+        {
+            if (__instance is PLThruster)
+            {
+                int subtypeformodded = __instance.SubType - ThrusterModManager.Instance.VanillaThrusterMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < ThrusterModManager.Instance.ThrusterTypes.Count)
+                {
+                    ThrusterModManager.Instance.ThrusterTypes[subtypeformodded].OnWarp(__instance);
+                }
+            }
+        }
+    }
 }

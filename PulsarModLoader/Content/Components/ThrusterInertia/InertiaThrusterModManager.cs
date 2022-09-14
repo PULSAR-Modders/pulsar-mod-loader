@@ -147,4 +147,64 @@ namespace PulsarModLoader.Content.Components.InertiaThruster
             }
         }
     }
+    [HarmonyPatch(typeof(PLShipComponent), "LateAddStats")]
+    class InertiaThrusterLateAddStatsPatch
+    {
+        static void Postfix(PLShipStats inStats, PLShipComponent __instance)
+        {
+            if(__instance is PLInertiaThruster)
+            {
+                int subtypeformodded = __instance.SubType - InertiaThrusterModManager.Instance.VanillaInertiaThrusterMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < InertiaThrusterModManager.Instance.InertiaThrusterTypes.Count && inStats != null)
+                {
+                    InertiaThrusterModManager.Instance.InertiaThrusterTypes[subtypeformodded].LateAddStats(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "AddStats")]
+    class InertiaThrusterAddStats
+    {
+        static void Postfix(PLShipStats inStats, PLShipComponent __instance) 
+        {
+            if(__instance is PLInertiaThruster) 
+            {
+                int subtypeformodded = __instance.SubType - InertiaThrusterModManager.Instance.VanillaInertiaThrusterMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < InertiaThrusterModManager.Instance.InertiaThrusterTypes.Count && inStats != null)
+                {
+                    InertiaThrusterModManager.Instance.InertiaThrusterTypes[subtypeformodded].AddStats(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "FinalLateAddStats")]
+    class InertiaThrusterFinalLateAddStats
+    {
+        static void Postfix(PLShipStats inStats, PLShipComponent __instance)
+        {
+            if (__instance is PLInertiaThruster)
+            {
+                int subtypeformodded = __instance.SubType - InertiaThrusterModManager.Instance.VanillaInertiaThrusterMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < InertiaThrusterModManager.Instance.InertiaThrusterTypes.Count && inStats != null)
+                {
+                    InertiaThrusterModManager.Instance.InertiaThrusterTypes[subtypeformodded].FinalLateAddStats(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "OnWarp")]
+    class InertiaThrusterOnWarp
+    {
+        static void Postfix(PLShipComponent __instance)
+        {
+            if (__instance is PLInertiaThruster)
+            {
+                int subtypeformodded = __instance.SubType - InertiaThrusterModManager.Instance.VanillaInertiaThrusterMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < InertiaThrusterModManager.Instance.InertiaThrusterTypes.Count)
+                {
+                    InertiaThrusterModManager.Instance.InertiaThrusterTypes[subtypeformodded].OnWarp(__instance);
+                }
+            }
+        }
+    }
 }

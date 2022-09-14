@@ -149,4 +149,64 @@ namespace PulsarModLoader.Content.Components.Reactor
             }
         }
     }
+    [HarmonyPatch(typeof(PLShipComponent), "LateAddStats")]
+    class ReactorLateAddStatsPatch
+    {
+        static void Postfix(PLShipStats inStats, PLShipComponent __instance)
+        {
+            if(__instance is PLReactor)
+            {
+                int subtypeformodded = __instance.SubType - ReactorModManager.Instance.VanillaReactorMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < ReactorModManager.Instance.ReactorTypes.Count && inStats != null)
+                {
+                    ReactorModManager.Instance.ReactorTypes[subtypeformodded].LateAddStats(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "AddStats")]
+    class ReactorAddStats
+    {
+        static void Postfix(PLShipStats inStats, PLShipComponent __instance) 
+        {
+            if(__instance is PLReactor) 
+            {
+                int subtypeformodded = __instance.SubType - ReactorModManager.Instance.VanillaReactorMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < ReactorModManager.Instance.ReactorTypes.Count && inStats != null)
+                {
+                    ReactorModManager.Instance.ReactorTypes[subtypeformodded].AddStats(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "FinalLateAddStats")]
+    class ReactorFinalLateAddStats
+    {
+        static void Postfix(PLShipStats inStats, PLShipComponent __instance)
+        {
+            if (__instance is PLReactor)
+            {
+                int subtypeformodded = __instance.SubType - ReactorModManager.Instance.VanillaReactorMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < ReactorModManager.Instance.ReactorTypes.Count && inStats != null)
+                {
+                    ReactorModManager.Instance.ReactorTypes[subtypeformodded].FinalLateAddStats(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "OnWarp")]
+    class ReactorOnWarp
+    {
+        static void Postfix(PLShipComponent __instance)
+        {
+            if (__instance is PLReactor)
+            {
+                int subtypeformodded = __instance.SubType - ReactorModManager.Instance.VanillaReactorMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < ReactorModManager.Instance.ReactorTypes.Count)
+                {
+                    ReactorModManager.Instance.ReactorTypes[subtypeformodded].OnWarp(__instance);
+                }
+            }
+        }
+    }
 }

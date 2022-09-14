@@ -132,4 +132,79 @@ namespace PulsarModLoader.Content.Components.Extractor
             }
         }
     }
+    [HarmonyPatch(typeof(PLShipComponent), "LateAddStats")]
+    class ExtractorLateAddStatsPatch
+    {
+        static void Postfix(PLShipStats inStats, PLShipComponent __instance)
+        {
+            if(__instance is PLExtractor)
+            {
+                int subtypeformodded = __instance.SubType - ExtractorModManager.Instance.VanillaExtractorMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < ExtractorModManager.Instance.ExtractorTypes.Count && inStats != null)
+                {
+                    ExtractorModManager.Instance.ExtractorTypes[subtypeformodded].LateAddStats(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "AddStats")]
+    class CapitanChairAddStats
+    {
+        static void Postfix(PLShipStats inStats, PLShipComponent __instance) 
+        {
+            if(__instance is PLExtractor) 
+            {
+                int subtypeformodded = __instance.SubType - ExtractorModManager.Instance.VanillaExtractorMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < ExtractorModManager.Instance.ExtractorTypes.Count && inStats != null)
+                {
+                    ExtractorModManager.Instance.ExtractorTypes[subtypeformodded].AddStats(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "Tick")]
+    class CapitanChairTick
+    {
+        static void Postfix(PLShipComponent __instance)
+        {
+            if (__instance is PLExtractor)
+            {
+                int subtypeformodded = __instance.SubType - ExtractorModManager.Instance.VanillaExtractorMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < ExtractorModManager.Instance.ExtractorTypes.Count)
+                {
+                    ExtractorModManager.Instance.ExtractorTypes[subtypeformodded].Tick(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "FinalLateAddStats")]
+    class CapitanChairFinalLateAddStats
+    {
+        static void Postfix(PLShipStats inStats, PLShipComponent __instance)
+        {
+            if (__instance is PLExtractor)
+            {
+                int subtypeformodded = __instance.SubType - ExtractorModManager.Instance.VanillaExtractorMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < ExtractorModManager.Instance.ExtractorTypes.Count && inStats != null)
+                {
+                    ExtractorModManager.Instance.ExtractorTypes[subtypeformodded].FinalLateAddStats(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "OnWarp")]
+    class CapitanChairOnWarp
+    {
+        static void Postfix(PLShipComponent __instance)
+        {
+            if (__instance is PLExtractor)
+            {
+                int subtypeformodded = __instance.SubType - ExtractorModManager.Instance.VanillaExtractorMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < ExtractorModManager.Instance.ExtractorTypes.Count)
+                {
+                    ExtractorModManager.Instance.ExtractorTypes[subtypeformodded].OnWarp(__instance);
+                }
+            }
+        }
+    }
 }

@@ -119,4 +119,94 @@ namespace PulsarModLoader.Content.Components.CaptainsChair
             }
         }
     }
+    [HarmonyPatch(typeof(PLShipComponent), "AddStats")]
+    class CapitanChairAddStats
+    {
+        static void Postfix(PLShipStats inStats, PLShipComponent __instance) 
+        {
+            if(__instance is PLCaptainsChair) 
+            {
+                int subtypeformodded = __instance.SubType - CaptainsChairModManager.Instance.VanillaCaptainsChairMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < CaptainsChairModManager.Instance.CaptainsChairTypes.Count && inStats != null)
+                {
+                    CaptainsChairModManager.Instance.CaptainsChairTypes[subtypeformodded].AddStats(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "Tick")]
+    class CapitanChairTick
+    {
+        static void Postfix(PLShipComponent __instance)
+        {
+            if (__instance is PLCaptainsChair)
+            {
+                int subtypeformodded = __instance.SubType - CaptainsChairModManager.Instance.VanillaCaptainsChairMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < CaptainsChairModManager.Instance.CaptainsChairTypes.Count)
+                {
+                    CaptainsChairModManager.Instance.CaptainsChairTypes[subtypeformodded].Tick(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "FinalLateAddStats")]
+    class CapitanChairFinalLateAddStats
+    {
+        static void Postfix(PLShipStats inStats, PLShipComponent __instance)
+        {
+            if (__instance is PLCaptainsChair)
+            {
+                int subtypeformodded = __instance.SubType - CaptainsChairModManager.Instance.VanillaCaptainsChairMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < CaptainsChairModManager.Instance.CaptainsChairTypes.Count && inStats != null)
+                {
+                    CaptainsChairModManager.Instance.CaptainsChairTypes[subtypeformodded].FinalLateAddStats(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "GetStatLineLeft")]
+    class CapitanChairGetStatLineLeft
+    {
+        static void Postfix(ref string __result, PLShipComponent __instance)
+        {
+            if (__instance is PLCaptainsChair)
+            {
+                int subtypeformodded = __instance.SubType - CaptainsChairModManager.Instance.VanillaCaptainsChairMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < CaptainsChairModManager.Instance.CaptainsChairTypes.Count)
+                {
+                    __result = CaptainsChairModManager.Instance.CaptainsChairTypes[subtypeformodded].GetStatLineLeft(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "GetStatLineRight")]
+    class CapitanChairGetStatLineRight
+    {
+        static void Postfix(ref string __result, PLShipComponent __instance)
+        {
+            if (__instance is PLCaptainsChair)
+            {
+                int subtypeformodded = __instance.SubType - CaptainsChairModManager.Instance.VanillaCaptainsChairMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < CaptainsChairModManager.Instance.CaptainsChairTypes.Count)
+                {
+                    __result = CaptainsChairModManager.Instance.CaptainsChairTypes[subtypeformodded].GetStatLineRight(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "OnWarp")]
+    class CapitanChairOnWarp
+    {
+        static void Postfix(PLShipComponent __instance)
+        {
+            if (__instance is PLCaptainsChair)
+            {
+                int subtypeformodded = __instance.SubType - CaptainsChairModManager.Instance.VanillaCaptainsChairMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < CaptainsChairModManager.Instance.CaptainsChairTypes.Count)
+                {
+                    CaptainsChairModManager.Instance.CaptainsChairTypes[subtypeformodded].OnWarp(__instance);
+                }
+            }
+        }
+    }
 }

@@ -148,4 +148,64 @@ namespace PulsarModLoader.Content.Components.Hull
             }
         }
     }
+    [HarmonyPatch(typeof(PLShipComponent), "LateAddStats")]
+    class HullLateAddStatsPatch
+    {
+        static void Postfix(PLShipStats inStats, PLHull __instance)
+        {
+            if(__instance is PLHull) 
+            {
+                int subtypeformodded = __instance.SubType - HullModManager.Instance.VanillaHullMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < HullModManager.Instance.HullTypes.Count && inStats != null)
+                {
+                    HullModManager.Instance.HullTypes[subtypeformodded].LateAddStats(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "AddStats")]
+    class HullAddStats
+    {
+        static void Postfix(PLShipStats inStats, PLShipComponent __instance) 
+        {
+            if(__instance is PLHull) 
+            {
+                int subtypeformodded = __instance.SubType - HullModManager.Instance.VanillaHullMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < HullModManager.Instance.HullTypes.Count && inStats != null)
+                {
+                    HullModManager.Instance.HullTypes[subtypeformodded].AddStats(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "FinalLateAddStats")]
+    class HullFinalLateAddStats
+    {
+        static void Postfix(PLShipStats inStats, PLShipComponent __instance)
+        {
+            if (__instance is PLHull)
+            {
+                int subtypeformodded = __instance.SubType - HullModManager.Instance.VanillaHullMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < HullModManager.Instance.HullTypes.Count && inStats != null)
+                {
+                    HullModManager.Instance.HullTypes[subtypeformodded].FinalLateAddStats(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "OnWarp")]
+    class HullOnWarp
+    {
+        static void Postfix(PLShipComponent __instance)
+        {
+            if (__instance is PLHull)
+            {
+                int subtypeformodded = __instance.SubType - HullModManager.Instance.VanillaHullMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < HullModManager.Instance.HullTypes.Count)
+                {
+                    HullModManager.Instance.HullTypes[subtypeformodded].OnWarp(__instance);
+                }
+            }
+        }
+    }
 }

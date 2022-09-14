@@ -84,4 +84,109 @@ namespace PulsarModLoader.Content.Components.HullPlating
             return true;
         }
     }
+    [HarmonyPatch(typeof(PLHullPlating), "LateAddStats")]
+    class HullPlatingLateAddStatsPatch
+    {
+        static void Postfix(PLShipStats inStats, PLHullPlating __instance)
+        {
+            if(__instance is PLHullPlating) 
+            {
+                int subtypeformodded = __instance.SubType - HullPlatingModManager.Instance.VanillaHullPlatingMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < HullPlatingModManager.Instance.HullPlatingTypes.Count && inStats != null)
+                {
+                    HullPlatingModManager.Instance.HullPlatingTypes[subtypeformodded].LateAddStats(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "AddStats")]
+    class HullPlatingAddStats
+    {
+        static void Postfix(PLShipStats inStats, PLShipComponent __instance) 
+        {
+            if(__instance is PLHullPlating) 
+            {
+                int subtypeformodded = __instance.SubType - HullPlatingModManager.Instance.VanillaHullPlatingMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < HullPlatingModManager.Instance.HullPlatingTypes.Count && inStats != null)
+                {
+                    HullPlatingModManager.Instance.HullPlatingTypes[subtypeformodded].AddStats(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "Tick")]
+    class HullPlatingTick
+    {
+        static void Postfix(PLShipComponent __instance)
+        {
+            if (__instance is PLHullPlating)
+            {
+                int subtypeformodded = __instance.SubType - HullPlatingModManager.Instance.VanillaHullPlatingMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < HullPlatingModManager.Instance.HullPlatingTypes.Count)
+                {
+                    HullPlatingModManager.Instance.HullPlatingTypes[subtypeformodded].Tick(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "FinalLateAddStats")]
+    class HullPlatingFinalLateAddStats
+    {
+        static void Postfix(PLShipStats inStats, PLShipComponent __instance)
+        {
+            if (__instance is PLHullPlating)
+            {
+                int subtypeformodded = __instance.SubType - HullPlatingModManager.Instance.VanillaHullPlatingMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < HullPlatingModManager.Instance.HullPlatingTypes.Count && inStats != null)
+                {
+                    HullPlatingModManager.Instance.HullPlatingTypes[subtypeformodded].FinalLateAddStats(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "GetStatLineLeft")]
+    class HullPlatingGetStatLineLeft
+    {
+        static void Postfix(ref string __result, PLShipComponent __instance)
+        {
+            if (__instance is PLHullPlating)
+            {
+                int subtypeformodded = __instance.SubType - HullPlatingModManager.Instance.VanillaHullPlatingMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < HullPlatingModManager.Instance.HullPlatingTypes.Count)
+                {
+                    __result = HullPlatingModManager.Instance.HullPlatingTypes[subtypeformodded].GetStatLineLeft(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "GetStatLineRight")]
+    class HullPlatingGetStatLineRight
+    {
+        static void Postfix(ref string __result, PLShipComponent __instance)
+        {
+            if (__instance is PLHullPlating)
+            {
+                int subtypeformodded = __instance.SubType - HullPlatingModManager.Instance.VanillaHullPlatingMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < HullPlatingModManager.Instance.HullPlatingTypes.Count)
+                {
+                    __result = HullPlatingModManager.Instance.HullPlatingTypes[subtypeformodded].GetStatLineRight(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "OnWarp")]
+    class HullPlatingOnWarp
+    {
+        static void Postfix(PLShipComponent __instance)
+        {
+            if (__instance is PLHullPlating)
+            {
+                int subtypeformodded = __instance.SubType - HullPlatingModManager.Instance.VanillaHullPlatingMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < HullPlatingModManager.Instance.HullPlatingTypes.Count)
+                {
+                    HullPlatingModManager.Instance.HullPlatingTypes[subtypeformodded].OnWarp(__instance);
+                }
+            }
+        }
+    }
 }

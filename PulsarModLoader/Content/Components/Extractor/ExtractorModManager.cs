@@ -148,7 +148,7 @@ namespace PulsarModLoader.Content.Components.Extractor
         }
     }
     [HarmonyPatch(typeof(PLShipComponent), "AddStats")]
-    class CapitanChairAddStats
+    class ExtractorAddStats
     {
         static void Postfix(PLShipStats inStats, PLShipComponent __instance) 
         {
@@ -163,7 +163,7 @@ namespace PulsarModLoader.Content.Components.Extractor
         }
     }
     [HarmonyPatch(typeof(PLShipComponent), "Tick")]
-    class CapitanChairTick
+    class ExtractorTick
     {
         static void Postfix(PLShipComponent __instance)
         {
@@ -178,7 +178,7 @@ namespace PulsarModLoader.Content.Components.Extractor
         }
     }
     [HarmonyPatch(typeof(PLShipComponent), "FinalLateAddStats")]
-    class CapitanChairFinalLateAddStats
+    class ExtractorFinalLateAddStats
     {
         static void Postfix(PLShipStats inStats, PLShipComponent __instance)
         {
@@ -193,7 +193,7 @@ namespace PulsarModLoader.Content.Components.Extractor
         }
     }
     [HarmonyPatch(typeof(PLShipComponent), "OnWarp")]
-    class CapitanChairOnWarp
+    class ExtractorOnWarp
     {
         static void Postfix(PLShipComponent __instance)
         {

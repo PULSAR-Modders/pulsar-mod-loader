@@ -107,4 +107,109 @@ namespace PulsarModLoader.Content.Components.MissionShipComponent
             return false;
         }
     }
+    [HarmonyPatch(typeof(PLShipComponent), "LateAddStats")]
+    class MissionShipComponentLateAddStatsPatch
+    {
+        static void Postfix(PLShipStats inStats, PLShipComponent __instance)
+        {
+            if(__instance is PLMissionShipComponent)
+            {
+                int subtypeformodded = __instance.SubType - MissionShipComponentModManager.Instance.VanillaMissionShipComponentMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < MissionShipComponentModManager.Instance.MissionShipComponentTypes.Count && inStats != null)
+                {
+                    MissionShipComponentModManager.Instance.MissionShipComponentTypes[subtypeformodded].LateAddStats(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "AddStats")]
+    class MissionShipComponentAddStats
+    {
+        static void Postfix(PLShipStats inStats, PLShipComponent __instance) 
+        {
+            if(__instance is PLMissionShipComponent) 
+            {
+                int subtypeformodded = __instance.SubType - MissionShipComponentModManager.Instance.VanillaMissionShipComponentMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < MissionShipComponentModManager.Instance.MissionShipComponentTypes.Count && inStats != null)
+                {
+                    MissionShipComponentModManager.Instance.MissionShipComponentTypes[subtypeformodded].AddStats(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "Tick")]
+    class MissionShipComponentTick
+    {
+        static void Postfix(PLShipComponent __instance)
+        {
+            if (__instance is PLMissionShipComponent)
+            {
+                int subtypeformodded = __instance.SubType - MissionShipComponentModManager.Instance.VanillaMissionShipComponentMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < MissionShipComponentModManager.Instance.MissionShipComponentTypes.Count)
+                {
+                    MissionShipComponentModManager.Instance.MissionShipComponentTypes[subtypeformodded].Tick(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "FinalLateAddStats")]
+    class MissionShipComponentFinalLateAddStats
+    {
+        static void Postfix(PLShipStats inStats, PLShipComponent __instance)
+        {
+            if (__instance is PLMissionShipComponent)
+            {
+                int subtypeformodded = __instance.SubType - MissionShipComponentModManager.Instance.VanillaMissionShipComponentMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < MissionShipComponentModManager.Instance.MissionShipComponentTypes.Count && inStats != null)
+                {
+                    MissionShipComponentModManager.Instance.MissionShipComponentTypes[subtypeformodded].FinalLateAddStats(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "GetStatLineLeft")]
+    class MissionShipComponentGetStatLineLeft
+    {
+        static void Postfix(ref string __result, PLShipComponent __instance)
+        {
+            if (__instance is PLMissionShipComponent)
+            {
+                int subtypeformodded = __instance.SubType - MissionShipComponentModManager.Instance.VanillaMissionShipComponentMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < MissionShipComponentModManager.Instance.MissionShipComponentTypes.Count)
+                {
+                    __result = MissionShipComponentModManager.Instance.MissionShipComponentTypes[subtypeformodded].GetStatLineLeft(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "GetStatLineRight")]
+    class MissionShipComponentGetStatLineRight
+    {
+        static void Postfix(ref string __result, PLShipComponent __instance)
+        {
+            if (__instance is PLMissionShipComponent)
+            {
+                int subtypeformodded = __instance.SubType - MissionShipComponentModManager.Instance.VanillaMissionShipComponentMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < MissionShipComponentModManager.Instance.MissionShipComponentTypes.Count)
+                {
+                    __result = MissionShipComponentModManager.Instance.MissionShipComponentTypes[subtypeformodded].GetStatLineRight(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "OnWarp")]
+    class MissionShipComponentOnWarp
+    {
+        static void Postfix(PLShipComponent __instance)
+        {
+            if (__instance is PLMissionShipComponent)
+            {
+                int subtypeformodded = __instance.SubType - MissionShipComponentModManager.Instance.VanillaMissionShipComponentMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < MissionShipComponentModManager.Instance.MissionShipComponentTypes.Count)
+                {
+                    MissionShipComponentModManager.Instance.MissionShipComponentTypes[subtypeformodded].OnWarp(__instance);
+                }
+            }
+        }
+    }
 }

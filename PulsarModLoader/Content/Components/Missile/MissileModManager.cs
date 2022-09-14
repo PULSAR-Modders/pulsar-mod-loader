@@ -117,4 +117,109 @@ namespace PulsarModLoader.Content.Components.Missile
             return false;
         }
     }
+    [HarmonyPatch(typeof(PLShipComponent), "LateAddStats")]
+    class TrackerMissileLateAddStatsPatch
+    {
+        static void Postfix(PLShipStats inStats, PLShipComponent __instance)
+        {
+            if(__instance is PLTrackerMissile)
+            {
+                int subtypeformodded = __instance.SubType - MissileModManager.Instance.VanillaTrackerMissileMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < MissileModManager.Instance.MissileTypes.Count && inStats != null)
+                {
+                    MissileModManager.Instance.MissileTypes[subtypeformodded].LateAddStats(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "AddStats")]
+    class MissileAddStats
+    {
+        static void Postfix(PLShipStats inStats, PLShipComponent __instance) 
+        {
+            if(__instance is PLTrackerMissile) 
+            {
+                int subtypeformodded = __instance.SubType - MissileModManager.Instance.VanillaTrackerMissileMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < MissileModManager.Instance.MissileTypes.Count && inStats != null)
+                {
+                    MissileModManager.Instance.MissileTypes[subtypeformodded].AddStats(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "Tick")]
+    class MissileTick
+    {
+        static void Postfix(PLShipComponent __instance)
+        {
+            if (__instance is PLTrackerMissile)
+            {
+                int subtypeformodded = __instance.SubType - MissileModManager.Instance.VanillaTrackerMissileMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < MissileModManager.Instance.MissileTypes.Count)
+                {
+                    MissileModManager.Instance.MissileTypes[subtypeformodded].Tick(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "FinalLateAddStats")]
+    class MissileFinalLateAddStats
+    {
+        static void Postfix(PLShipStats inStats, PLShipComponent __instance)
+        {
+            if (__instance is PLTrackerMissile)
+            {
+                int subtypeformodded = __instance.SubType - MissileModManager.Instance.VanillaTrackerMissileMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < MissileModManager.Instance.MissileTypes.Count && inStats != null)
+                {
+                    MissileModManager.Instance.MissileTypes[subtypeformodded].FinalLateAddStats(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "GetStatLineLeft")]
+    class MissileGetStatLineLeft
+    {
+        static void Postfix(ref string __result, PLShipComponent __instance)
+        {
+            if (__instance is PLTrackerMissile)
+            {
+                int subtypeformodded = __instance.SubType - MissileModManager.Instance.VanillaTrackerMissileMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < MissileModManager.Instance.MissileTypes.Count)
+                {
+                    __result = MissileModManager.Instance.MissileTypes[subtypeformodded].GetStatLineLeft(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "GetStatLineRight")]
+    class MissileGetStatLineRight
+    {
+        static void Postfix(ref string __result, PLShipComponent __instance)
+        {
+            if (__instance is PLTrackerMissile)
+            {
+                int subtypeformodded = __instance.SubType - MissileModManager.Instance.VanillaTrackerMissileMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < MissileModManager.Instance.MissileTypes.Count)
+                {
+                    __result = MissileModManager.Instance.MissileTypes[subtypeformodded].GetStatLineRight(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "OnWarp")]
+    class MissileOnWarp
+    {
+        static void Postfix(PLShipComponent __instance)
+        {
+            if (__instance is PLTrackerMissile)
+            {
+                int subtypeformodded = __instance.SubType - MissileModManager.Instance.VanillaTrackerMissileMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < MissileModManager.Instance.MissileTypes.Count)
+                {
+                    MissileModManager.Instance.MissileTypes[subtypeformodded].OnWarp(__instance);
+                }
+            }
+        }
+    }
 }

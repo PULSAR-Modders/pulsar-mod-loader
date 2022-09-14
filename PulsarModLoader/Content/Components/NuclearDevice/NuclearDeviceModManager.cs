@@ -138,4 +138,79 @@ namespace PulsarModLoader.Content.Components.NuclearDevice
             }
         }
     }
+    [HarmonyPatch(typeof(PLShipComponent), "LateAddStats")]
+    class NuclearDeviceLateAddStatsPatch
+    {
+        static void Postfix(PLShipStats inStats, PLShipComponent __instance)
+        {
+            if(__instance is PLNuclearDevice)
+            {
+                int subtypeformodded = __instance.SubType - NuclearDeviceModManager.Instance.VanillaNuclearDeviceMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < NuclearDeviceModManager.Instance.NuclearDeviceTypes.Count && inStats != null)
+                {
+                    NuclearDeviceModManager.Instance.NuclearDeviceTypes[subtypeformodded].LateAddStats(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "AddStats")]
+    class CapitanChairAddStats
+    {
+        static void Postfix(PLShipStats inStats, PLShipComponent __instance) 
+        {
+            if(__instance is PLNuclearDevice) 
+            {
+                int subtypeformodded = __instance.SubType - NuclearDeviceModManager.Instance.VanillaNuclearDeviceMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < NuclearDeviceModManager.Instance.NuclearDeviceTypes.Count && inStats != null)
+                {
+                    NuclearDeviceModManager.Instance.NuclearDeviceTypes[subtypeformodded].AddStats(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "Tick")]
+    class CapitanChairTick
+    {
+        static void Postfix(PLShipComponent __instance)
+        {
+            if (__instance is PLNuclearDevice)
+            {
+                int subtypeformodded = __instance.SubType - NuclearDeviceModManager.Instance.VanillaNuclearDeviceMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < NuclearDeviceModManager.Instance.NuclearDeviceTypes.Count)
+                {
+                    NuclearDeviceModManager.Instance.NuclearDeviceTypes[subtypeformodded].Tick(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "FinalLateAddStats")]
+    class CapitanChairFinalLateAddStats
+    {
+        static void Postfix(PLShipStats inStats, PLShipComponent __instance)
+        {
+            if (__instance is PLNuclearDevice)
+            {
+                int subtypeformodded = __instance.SubType - NuclearDeviceModManager.Instance.VanillaNuclearDeviceMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < NuclearDeviceModManager.Instance.NuclearDeviceTypes.Count && inStats != null)
+                {
+                    NuclearDeviceModManager.Instance.NuclearDeviceTypes[subtypeformodded].FinalLateAddStats(__instance);
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(PLShipComponent), "OnWarp")]
+    class CapitanChairOnWarp
+    {
+        static void Postfix(PLShipComponent __instance)
+        {
+            if (__instance is PLNuclearDevice)
+            {
+                int subtypeformodded = __instance.SubType - NuclearDeviceModManager.Instance.VanillaNuclearDeviceMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < NuclearDeviceModManager.Instance.NuclearDeviceTypes.Count)
+                {
+                    NuclearDeviceModManager.Instance.NuclearDeviceTypes[subtypeformodded].OnWarp(__instance);
+                }
+            }
+        }
+    }
 }

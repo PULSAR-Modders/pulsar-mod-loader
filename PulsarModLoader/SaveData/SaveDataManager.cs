@@ -93,21 +93,19 @@ namespace PulsarModLoader.SaveData
                 try
                 {
                     PulsarModLoader.Utilities.Logger.Info($"Writing: {saveData.MyMod.HarmonyIdentifier()}::{saveData.Identifier()}");
-                    MemoryStream dataStream = saveData.SaveData();          //Collect Save data from mod
-                    int bytecount = (int)dataStream.Length;
+                    byte[] modData = saveData.SaveData();          //Collect Save data from mod
 
                     //SaveDataHeader
                     binaryWriter.Write(saveData.MyMod.HarmonyIdentifier()); //Write Mod Identifier
                     binaryWriter.Write(saveData.Identifier());              //Write PMLSaveData Identifier
                     binaryWriter.Write(saveData.VersionID);                 //Write PMLSaveData VersionID
-                    binaryWriter.Write(bytecount);                          //Write stream byte count
-                    dataStream.Position = 0;                                //Reset position of dataStream for reading
+                    binaryWriter.Write(modData.Length);                     //Write stream byte count
 
-                    byte[] buffer = new byte[bytecount];
-                    dataStream.Read(buffer, 0, bytecount);                  //move data to filestream
-                    binaryWriter.BaseStream.Write(buffer, 0, bytecount);
-
-                    dataStream.Close();
+                    //SaveData
+                    if (modData.Length > 0)
+                    {
+                        binaryWriter.Write(modData);                        //write modData to filestream
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -167,7 +165,7 @@ namespace PulsarModLoader.SaveData
                 string SavDatIdent = binaryReader.ReadString();  //SaveDataIdentifier
                 uint VersionID = binaryReader.ReadUInt32();      //VersionID
                 int bytecount = binaryReader.ReadInt32();        //ByteCount
-                PulsarModLoader.Utilities.Logger.Info($"Reading SaveData: {harmonyIdent}::{SavDatIdent} SaveDataVersion: {VersionID} bytecount: {bytecount} Pos: {binaryReader.BaseStream.Position}");
+                Logger.Info($"Reading SaveData: {harmonyIdent}::{SavDatIdent} SaveDataVersion: {VersionID} bytecount: {bytecount} Pos: {binaryReader.BaseStream.Position}");
                 readMods += "\n" + harmonyIdent;
 
 
@@ -181,22 +179,15 @@ namespace PulsarModLoader.SaveData
                             Logger.Info($"Mismatched SaveData VersionID. Read: {VersionID} SaveData: {savedata.VersionID}");
                             VersionMismatchedMods += "\n" + harmonyIdent;
                         }
-                        MemoryStream stream = new MemoryStream();               //initialize new memStream
 
-                        byte[] buffer = new byte[bytecount];
-                        binaryReader.BaseStream.Read(buffer, 0, bytecount);     //move data to memStream
-                        stream.Write(buffer, 0, bytecount);
-
-                        stream.Position = 0;                                    //Reset position
                         try
                         {
-                            savedata.LoadData(stream, VersionID);               //Send memStream to PMLSaveData
+                            savedata.LoadData(binaryReader.ReadBytes(bytecount), VersionID);               //Send modData to PMLSaveData
                         }
                         catch (Exception ex)
                         {
                             Logger.Info($"Failed to load {harmonyIdent}::{SavDatIdent}\n{ex.Message}");
                         }
-                        stream.Close();
                         foundReader = true;
                     }
                 }

@@ -1,9 +1,11 @@
 ﻿using HarmonyLib;
+using PulsarModLoader.Patches;
 using PulsarModLoader.Utilities;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection.Emit;
 
 namespace PulsarModLoader.SaveData
 {
@@ -55,39 +57,19 @@ namespace PulsarModLoader.SaveData
             }
         }
 
-        public static string getPMLSaveFileName(string inFileName)
+        public BinaryWriter SaveDatas(BinaryWriter writer)
         {
-            if (inFileName.EndsWith("LastRecoveredSave.plsave")) //Fix LastRecoveredSave
-            {
-                return inFileName.Replace("LastRecoveredSave.plsave", "LastRecoveredMSave.pmlsave");
-            }
-            return inFileName.Replace(".plsave", ".pmlsave");
-        }
-
-        public void SaveDatas(string inFileName)
-        {
-            //Stop if no save configs to save. Additionally check for older .pmlsave file under the same name and delete.
-            string fileName = getPMLSaveFileName(inFileName);
+            //Stop if no save configs to save.
             if (SaveCount == 0)
             {
-                if (File.Exists(fileName))
-                {
-                    Logger.Info("Old PMLSave found with no new data to save. Deleting old data.");
-                    File.Delete(fileName);
-                }
-                return;
+                return writer;
             }
 
-            //Start Saving, create temp file
-            string tempText = fileName + "_temp";
-            FileStream fileStream = File.Create(tempText);
-            BinaryWriter binaryWriter = new BinaryWriter(fileStream);
-
             //Save VersionID for later, starting with 0
-            binaryWriter.Write((uint)0);
+            writer.Write((uint)0);
 
             //save for mods
-            binaryWriter.Write(SaveCount);                      //int32 representing total configs
+            writer.Write(SaveCount);                      //int32 representing total configs
             foreach (PMLSaveData saveData in SaveConfigs)
             {
                 try
@@ -96,15 +78,15 @@ namespace PulsarModLoader.SaveData
                     byte[] modData = saveData.SaveData();          //Collect Save data from mod
 
                     //SaveDataHeader
-                    binaryWriter.Write(saveData.MyMod.HarmonyIdentifier()); //Write Mod Identifier
-                    binaryWriter.Write(saveData.Identifier());              //Write PMLSaveData Identifier
-                    binaryWriter.Write(saveData.VersionID);                 //Write PMLSaveData VersionID
-                    binaryWriter.Write(modData.Length);                     //Write stream byte count
+                    writer.Write(saveData.MyMod.HarmonyIdentifier()); //Write Mod Identifier
+                    writer.Write(saveData.Identifier());              //Write PMLSaveData Identifier
+                    writer.Write(saveData.VersionID);                 //Write PMLSaveData VersionID
+                    writer.Write(modData.Length);                     //Write stream byte count
 
                     //SaveData
                     if (modData.Length > 0)
                     {
-                        binaryWriter.Write(modData);                        //write modData to filestream
+                        writer.Write(modData);                        //write modData to filestream
                     }
                 }
                 catch (Exception ex)
@@ -112,60 +94,32 @@ namespace PulsarModLoader.SaveData
                     Logger.Info($"Failed to save a mod data.\n{ex.Message}");
                 }
             }
-
-            //Finish Saving, close and save file to actual location
-            binaryWriter.Close();
-            fileStream.Close();
-            if (File.Exists(fileName))
-            {
-                File.Delete(fileName);
-            }
-            File.Move(tempText, fileName);
-            string relativeFileName = PLNetworkManager.Instance.FileNameToRelative(fileName);
-            Logger.Info("PMLSaveManager has saved file: " + relativeFileName);
-
-
-            //Save to Steam
-            /*bool localFile = false;
-            if (relativeFileName.StartsWith(LocalSaveDir))
-            {
-                localFile = true;
-            }
-            if (!PLServer.Instance.IronmanModeIsActive && !localFile)
-            {
-                Logger.Info("Should be saving file to steam cloud");
-                PLNetworkManager.Instance.SteamCloud_WriteFileName(relativeFileName, delegate (RemoteStorageFileWriteAsyncComplete_t pCallback, bool bIOFailure)
-                {
-                    OnRemoteFileWriteAsyncComplete(pCallback, bIOFailure, relativeFileName);
-                });
-            }*/
+            writer.Write(ulong.MaxValue);
+            return writer;
         }
 
-        public void LoadDatas(string inFileName)
+        public BinaryReader LoadDatas(BinaryReader reader)
         {
-            //start reading
-            string fileName = getPMLSaveFileName(inFileName);
-            if (!File.Exists(fileName))
+            //Stop reading if nothing to read 
+            if(reader.BaseStream.Position + 1 < reader.BaseStream.Length)
             {
-                return;
+                return reader;
             }
-            FileStream fileStream = File.OpenRead(fileName);
-            BinaryReader binaryReader = new BinaryReader(fileStream);
 
             //read for mods
-            uint PMLSaveVersion = binaryReader.ReadUInt32();     //uint32 represnting PMLSaveVersion. This will probably be used in the future.
-            int count = binaryReader.ReadInt32();                //int32 representing total configs
+            uint PMLSaveVersion = reader.ReadUInt32();     //uint32 represnting PMLSaveVersion. This will probably be used in the future.
+            int count = reader.ReadInt32();                //int32 representing total configs
             string missingMods = "";
             string VersionMismatchedMods = "";
             string readMods = "";
             for (int i = 0; i < count; i++)
             {
                 //SaveDataHeader
-                string harmonyIdent = binaryReader.ReadString(); //HarmonyIdentifier
-                string SavDatIdent = binaryReader.ReadString();  //SaveDataIdentifier
-                uint VersionID = binaryReader.ReadUInt32();      //VersionID
-                int bytecount = binaryReader.ReadInt32();        //ByteCount
-                Logger.Info($"Reading SaveData: {harmonyIdent}::{SavDatIdent} SaveDataVersion: {VersionID} bytecount: {bytecount} Pos: {binaryReader.BaseStream.Position}");
+                string harmonyIdent = reader.ReadString(); //HarmonyIdentifier
+                string SavDatIdent = reader.ReadString();  //SaveDataIdentifier
+                uint VersionID = reader.ReadUInt32();      //VersionID
+                int bytecount = reader.ReadInt32();        //ByteCount
+                Logger.Info($"Reading SaveData: {harmonyIdent}::{SavDatIdent} SaveDataVersion: {VersionID} bytecount: {bytecount} Pos: {reader.BaseStream.Position}");
                 readMods += "\n" + harmonyIdent;
 
 
@@ -180,28 +134,29 @@ namespace PulsarModLoader.SaveData
                             VersionMismatchedMods += "\n" + harmonyIdent;
                         }
 
-                        try
+                        if (bytecount > 0)
                         {
-                            savedata.LoadData(binaryReader.ReadBytes(bytecount), VersionID);               //Send modData to PMLSaveData
-                        }
-                        catch (Exception ex)
-                        {
-                            Logger.Info($"Failed to load {harmonyIdent}::{SavDatIdent}\n{ex.Message}");
+                            try
+                            {
+                                savedata.LoadData(reader.ReadBytes(bytecount), VersionID);               //Send modData to PMLSaveData
+                            }
+                            catch (Exception ex)
+                            {
+                                Logger.Info($"Failed to load {harmonyIdent}::{SavDatIdent}\n{ex.Message}");
+                            }
                         }
                         foundReader = true;
                     }
                 }
                 if (!foundReader)
                 {
-                    binaryReader.BaseStream.Position += bytecount;
+                    reader.BaseStream.Position += bytecount;
                     missingMods += ("\n" + harmonyIdent);
                 }
             }
 
             //Finish Reading
-            binaryReader.Close();
-            fileStream.Close();
-            Logger.Info("PMLSaveManager has read file: " + PLNetworkManager.Instance.FileNameToRelative(fileName));
+            Logger.Info("PMLSaveManager has finished reading file");
             ReadMods = readMods;
 
             if (missingMods.Length > 0)
@@ -214,85 +169,59 @@ namespace PulsarModLoader.SaveData
                 PLNetworkManager.Instance.MainMenu.AddActiveMenu(new PLErrorMessageMenu($"Warning: The following mods used in this save have been updated: {VersionMismatchedMods}"));
                 Logger.Info($"Warning: The following mods used in this save have been updated: {VersionMismatchedMods}");
             }
+            return reader;
+        }
+
+        public static bool IsFileModded(string inFileName)
+        {
+            bool returnValue = false;
+            if (File.Exists(inFileName))
+            {
+                FileStream fileStream = File.OpenRead(inFileName);
+                {
+                    fileStream.Position = fileStream.Length - 8;
+                    using (BinaryReader reader = new BinaryReader(fileStream))
+                    {
+                        if (reader.ReadUInt64() == ulong.MaxValue)
+                        {
+                            returnValue = true;
+                        }
+                    }
+                }
+            }
+            return returnValue;
         }
     }
     [HarmonyPatch(typeof(PLSaveGameIO), "SaveToFile")]
     class SavePatch
     {
-        //Attempt at blocking saving of .plsave to steam when modded data exists.
-        /*static bool PatchMethod(string a)
-        {
-            if(SaveDataManager.Instance.SaveCount > 0)
-            {
-                Logger.Info("Running PatchMethod");
-                return true;
-            }
-            else
-            {
-                return a.StartsWith(SaveDataManager.LocalSaveDir);
-            }
-        }
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             List<CodeInstruction>  targetsequence = new List<CodeInstruction>()
             {
-                new CodeInstruction(OpCodes.Ldarg_0),
-                new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(PLSaveGameIO), "LocalSaveDir")),
-                new CodeInstruction(OpCodes.Call),
-                new CodeInstruction(OpCodes.Callvirt),
+                new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(BinaryReader), "Close")),
             };
             List<CodeInstruction>  injectedsequence = new List<CodeInstruction>()
             {
-                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(SavePatch), "PatchMethod")),
+                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(SaveDataManager), "SaveDatas")),
             };
-            return HarmonyHelpers.PatchBySequence(instructions, targetsequence, injectedsequence, HarmonyHelpers.PatchMode.REPLACE, HarmonyHelpers.CheckMode.NONNULL);
-        }*/
-        static void Postfix(string inFileName)
-        {
-            SaveDataManager.Instance.SaveDatas(inFileName);
+            return HarmonyHelpers.PatchBySequence(instructions, targetsequence, injectedsequence, HarmonyHelpers.PatchMode.BEFORE);
         }
     }
     [HarmonyPatch(typeof(PLSaveGameIO), "LoadFromFile")]
     class LoadPatch
     {
-        static void Postfix(string inFileName)
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
-            SaveDataManager.Instance.LoadDatas(inFileName);
-        }
-    }
-
-
-    [HarmonyPatch(typeof(PLSaveGameIO), "DeleteSaveGame")]
-    class DeletePatch
-    {
-        static void Postfix(PLSaveGameIO __instance)
-        {
-            string fileName = SaveDataManager.getPMLSaveFileName(__instance.LatestSaveGameFileName);
-            if (fileName != "")
+            List<CodeInstruction> targetsequence = new List<CodeInstruction>()
             {
-                try
-                {
-                    Logger.Info("DeleteSaveGame  " + fileName);
-                    File.Delete(__instance.LatestSaveGameFileName);
-                }
-                catch (Exception ex)
-                {
-                    Logger.Info("DeleteSaveGame EXCEPTION: " + ex.Message + ": Could not delete save file!");
-                }
-            }
-        }
-    }
-
-    [HarmonyPatch(typeof(PLUILoadMenu), "OnClickDeleteSaveFile")]
-    class LoadMenuDeletePatch
-    {
-        static void Postfix(string inFileName)
-        {
-            if (inFileName.EndsWith(".plsave"))
+                new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(BinaryWriter), "Close")),
+            };
+            List<CodeInstruction> injectedsequence = new List<CodeInstruction>()
             {
-                string PMLname = SaveDataManager.getPMLSaveFileName(inFileName);
-                typeof(PLUILoadMenu).GetMethod("OnClickDeleteSaveFile", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).Invoke(PLUILoadMenu.Instance, new object[] { PMLname });
-            }
+                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(SaveDataManager), "LoadDatas")),
+            };
+            return HarmonyHelpers.PatchBySequence(instructions, targetsequence, injectedsequence, HarmonyHelpers.PatchMode.BEFORE);
         }
     }
 }

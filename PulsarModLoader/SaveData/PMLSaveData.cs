@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-namespace PulsarModLoader.SaveData
+﻿namespace PulsarModLoader.SaveData
 {
     public abstract class PMLSaveData
     {

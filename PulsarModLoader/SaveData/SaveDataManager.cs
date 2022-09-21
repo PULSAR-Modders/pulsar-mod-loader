@@ -62,6 +62,7 @@ namespace PulsarModLoader.SaveData
             //Stop if no save configs to save.
             if (SaveCount == 0)
             {
+                writer.Close();
                 return;
             }
             //Save VersionID for later, starting with 0
@@ -102,6 +103,7 @@ namespace PulsarModLoader.SaveData
             //Stop reading if nothing to read 
             if (reader.BaseStream.Length <= reader.BaseStream.Position + 1 || !ldarg3)
             {
+                reader.Close();
                 return;
             }
 

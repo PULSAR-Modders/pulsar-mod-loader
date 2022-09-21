@@ -76,12 +76,15 @@ namespace PulsarModLoader.SaveData
             foreach(SaveGameDataBasic saveDataBasic in PLSaveGameIO.Instance.SaveGamesBasic)
             {
                 string Cachedname = saveDataBasic.FileName;
-                Cachedname = PLNetworkManager.Instance.FileNameToRelative(Cachedname);
-                if (Cachedname.StartsWith("Saves/"))
+                if (SaveDataManager.IsFileModded(Cachedname))
                 {
-                    Cachedname = Cachedname.Remove(0, 6);
+                    Cachedname = PLNetworkManager.Instance.FileNameToRelative(Cachedname);
+                    if (Cachedname.StartsWith("Saves/"))
+                    {
+                        Cachedname = Cachedname.Remove(0, 6);
+                    }
+                    MFiles.Add(Cachedname);
                 }
-                MFiles.Add(Cachedname);
             }
             DisplayModdedSavePatch.MFileNames = MFiles;
         }

@@ -57,14 +57,13 @@ namespace PulsarModLoader.SaveData
             }
         }
 
-        public BinaryWriter SaveDatas(BinaryWriter writer)
+        public void SaveDatas(BinaryWriter writer)
         {
             //Stop if no save configs to save.
             if (SaveCount == 0)
             {
-                return writer;
+                return;
             }
-
             //Save VersionID for later, starting with 0
             writer.Write((uint)0);
 
@@ -74,7 +73,7 @@ namespace PulsarModLoader.SaveData
             {
                 try
                 {
-                    PulsarModLoader.Utilities.Logger.Info($"Writing: {saveData.MyMod.HarmonyIdentifier()}::{saveData.Identifier()}");
+                    PulsarModLoader.Utilities.Logger.Info($"Writing: {saveData.MyMod.HarmonyIdentifier()}::{saveData.Identifier()} pos: {writer.BaseStream.Position}");
                     byte[] modData = saveData.SaveData();          //Collect Save data from mod
 
                     //SaveDataHeader
@@ -95,16 +94,17 @@ namespace PulsarModLoader.SaveData
                 }
             }
             writer.Write(ulong.MaxValue);
-            return writer;
+            writer.Close();
         }
 
-        public BinaryReader LoadDatas(BinaryReader reader)
+        public void LoadDatas(BinaryReader reader, bool ldarg3)
         {
             //Stop reading if nothing to read 
-            if(reader.BaseStream.Position + 1 < reader.BaseStream.Length)
+            if (reader.BaseStream.Length <= reader.BaseStream.Position + 1 || !ldarg3)
             {
-                return reader;
+                return;
             }
+
 
             //read for mods
             uint PMLSaveVersion = reader.ReadUInt32();     //uint32 represnting PMLSaveVersion. This will probably be used in the future.
@@ -153,23 +153,23 @@ namespace PulsarModLoader.SaveData
                     reader.BaseStream.Position += bytecount;
                     missingMods += ("\n" + harmonyIdent);
                 }
-            }
 
-            //Finish Reading
-            Logger.Info("PMLSaveManager has finished reading file");
-            ReadMods = readMods;
+                //Finish Reading
+                reader.Close();
+                Logger.Info("PMLSaveManager has finished reading file");
+                ReadMods = readMods;
 
-            if (missingMods.Length > 0)
-            {
-                PLNetworkManager.Instance.MainMenu.AddActiveMenu(new PLErrorMessageMenu($"Warning: Found save data for following missing mods: {missingMods}"));
-                Logger.Info($"Warning: Found save data for following missing mods: {missingMods}");
+                if (missingMods.Length > 0)
+                {
+                    PLNetworkManager.Instance.MainMenu.AddActiveMenu(new PLErrorMessageMenu($"Warning: Found save data for following missing mods: {missingMods}"));
+                    Logger.Info($"Warning: Found save data for following missing mods: {missingMods}");
+                }
+                if (!string.IsNullOrEmpty(VersionMismatchedMods))
+                {
+                    PLNetworkManager.Instance.MainMenu.AddActiveMenu(new PLErrorMessageMenu($"Warning: The following mods used in this save have been updated: {VersionMismatchedMods}"));
+                    Logger.Info($"Warning: The following mods used in this save have been updated: {VersionMismatchedMods}");
+                }
             }
-            if (!string.IsNullOrEmpty(VersionMismatchedMods))
-            {
-                PLNetworkManager.Instance.MainMenu.AddActiveMenu(new PLErrorMessageMenu($"Warning: The following mods used in this save have been updated: {VersionMismatchedMods}"));
-                Logger.Info($"Warning: The following mods used in this save have been updated: {VersionMismatchedMods}");
-            }
-            return reader;
         }
 
         public static bool IsFileModded(string inFileName)
@@ -197,13 +197,16 @@ namespace PulsarModLoader.SaveData
     {
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
-            List<CodeInstruction>  targetsequence = new List<CodeInstruction>()
+            List<CodeInstruction> targetsequence = new List<CodeInstruction>()
             {
-                new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(BinaryReader), "Close")),
+                new CodeInstruction(OpCodes.Ldloc_3),
+                new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(BinaryWriter), "Close")),
             };
-            List<CodeInstruction>  injectedsequence = new List<CodeInstruction>()
+            List<CodeInstruction> injectedsequence = new List<CodeInstruction>()
             {
-                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(SaveDataManager), "SaveDatas")),
+                new CodeInstruction(OpCodes.Ldsfld, AccessTools.Field(typeof(SaveDataManager), "Instance")),
+                new CodeInstruction(OpCodes.Ldloc_3),
+                new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(SaveDataManager), "SaveDatas")),
             };
             return HarmonyHelpers.PatchBySequence(instructions, targetsequence, injectedsequence, HarmonyHelpers.PatchMode.BEFORE);
         }
@@ -215,13 +218,17 @@ namespace PulsarModLoader.SaveData
         {
             List<CodeInstruction> targetsequence = new List<CodeInstruction>()
             {
-                new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(BinaryWriter), "Close")),
+                new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(BinaryReader), "Close"))
             };
             List<CodeInstruction> injectedsequence = new List<CodeInstruction>()
             {
-                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(SaveDataManager), "LoadDatas")),
+                new CodeInstruction(OpCodes.Pop),
+                new CodeInstruction(OpCodes.Ldsfld, AccessTools.Field(typeof(SaveDataManager), "Instance")),
+                new CodeInstruction(OpCodes.Ldloc_1),
+                new CodeInstruction(OpCodes.Ldarg_3),
+                new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(SaveDataManager), "LoadDatas")),
             };
-            return HarmonyHelpers.PatchBySequence(instructions, targetsequence, injectedsequence, HarmonyHelpers.PatchMode.BEFORE);
+            return HarmonyHelpers.PatchBySequence(instructions, targetsequence, injectedsequence, HarmonyHelpers.PatchMode.REPLACE);
         }
     }
 }

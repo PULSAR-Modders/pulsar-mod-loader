@@ -1,7 +1,6 @@
 ﻿using HarmonyLib;
 using PulsarModLoader.Patches;
 using System.Collections.Generic;
-using System.IO;
 using System.Reflection.Emit;
 
 namespace PulsarModLoader.SaveData
@@ -77,8 +76,7 @@ namespace PulsarModLoader.SaveData
             foreach(SaveGameDataBasic saveDataBasic in PLSaveGameIO.Instance.SaveGamesBasic)
             {
                 string Cachedname = saveDataBasic.FileName;
-                string moddedFileName = SaveDataManager.getPMLSaveFileName(Cachedname);
-                if (File.Exists(moddedFileName))
+                if (SaveDataManager.IsFileModded(Cachedname))
                 {
                     Cachedname = PLNetworkManager.Instance.FileNameToRelative(Cachedname);
                     if (Cachedname.StartsWith("Saves/"))

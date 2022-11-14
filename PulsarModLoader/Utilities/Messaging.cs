@@ -135,6 +135,7 @@ namespace PulsarModLoader.Utilities
                 return;
             }
 
+
             PLServer.Instance.photonView.RPC("AddNotification", targets, new object[] {
                 message,
                 subjectPlayerId,

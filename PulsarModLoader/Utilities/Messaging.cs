@@ -208,7 +208,7 @@ namespace PulsarModLoader.Utilities
 
             Logger.Info($"NullReferenceException! Target -> {targetMethod.Name}({args}); Caller -> {who?.ReflectedType?.FullName}.{who?.Name}({who?.GetParameters()?.ToStringFull()});");
 
-            if (Chat.Commands.DebugModeCommand.DebugMode)
+            if (PMLConfig.DebugMode)
                 Messaging.Notification("NullReferenceException! Check the logs!");
         }
 

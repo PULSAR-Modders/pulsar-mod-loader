@@ -18,7 +18,7 @@ namespace PulsarModLoader.Utilities
             {
                 string id = String.Format("{0:X}", DateTime.UtcNow.GetHashCode()).Substring(0, 7).ToUpper();
                 string msg = $"<color='#{ColorUtility.ToHtmlStringRGB(Color.red)}'>Exception!</color> {id}";
-                if (DebugModeCommand.DebugMode)
+                if (PMLConfig.DebugMode)
                 {
                     Messaging.Notification(msg);
                 }

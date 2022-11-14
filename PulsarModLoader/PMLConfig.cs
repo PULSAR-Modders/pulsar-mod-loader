@@ -1,9 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Text.RegularExpressions;
-using UnityEngine;
-using Valve.Newtonsoft.Json;
-using Valve.Newtonsoft.Json.Converters;
+﻿using UnityEngine;
 
 namespace PulsarModLoader
 {
@@ -11,6 +6,8 @@ namespace PulsarModLoader
     {
         public static SaveValue<UnityEngine.TextAnchor> ModInfoTextAnchor =
 	        new SaveValue<TextAnchor>("ModInfoTextAnchor", TextAnchor.UpperLeft);
+
+        public static SaveValue<bool> DebugMode = new SaveValue<bool>("DebugMode", false);
 
         public static void SetDefault()
         {

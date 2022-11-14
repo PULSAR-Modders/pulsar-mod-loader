@@ -117,6 +117,7 @@ namespace PulsarModLoader.SaveData
             for (int i = 0; i < count; i++)
             {
                 //SaveDataHeader
+                Logger.Info($"{reader.BaseStream.Position}");
                 string harmonyIdent = reader.ReadString(); //HarmonyIdentifier
                 string SavDatIdent = reader.ReadString();  //SaveDataIdentifier
                 uint VersionID = reader.ReadUInt32();      //VersionID

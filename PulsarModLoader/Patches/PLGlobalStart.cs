@@ -1,6 +1,5 @@
 ﻿using HarmonyLib;
 using System.IO;
-using System.Reflection;
 using UnityEngine;
 
 namespace PulsarModLoader.Patches
@@ -14,22 +13,18 @@ namespace PulsarModLoader.Patches
         {
             if (!modsLoaded)
             {
-                //DebugModeSetting
-                if (bool.TryParse(PLXMLOptionsIO.Instance.CurrentOptions.GetStringValue("PMLDebugMode"), out bool result))
-                {
-                    Chat.Commands.DebugModeCommand.DebugMode = result;
-                }
-
-                //PML Config
-                //string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "/PulsarModLoaderConfig.json";
-                //if (!File.Exists(path)) PMLConfig.CreateDefaultConfig(path, true);
-                //else PMLConfig.CreateConfigFromFile(path);
-
                 //Modmanager GUI Init.
                 new GameObject("ModManager", typeof(CustomGUI.GUIMain)) { hideFlags = HideFlags.HideAndDontSave };
 
                 //SaveDataManager Init()
                 new SaveData.SaveDataManager();
+
+                //Create ModConfigs Directory for SaveValue class
+                string ModConfigDir = SaveValueManager.GetConfigFolder();
+                if (!Directory.Exists(ModConfigDir))
+                {
+                    Directory.CreateDirectory(ModConfigDir);
+                }
 
                 //ModLoading
                 string modsDir = Path.Combine(Directory.GetCurrentDirectory(), "Mods");

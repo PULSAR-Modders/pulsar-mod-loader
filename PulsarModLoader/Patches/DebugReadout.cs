@@ -10,7 +10,7 @@ namespace PulsarModLoader.Patches
     {
         static void Postfix(PLInGameUI __instance)
         {
-            if (DebugModeCommand.DebugMode && PLServer.Instance != null && PLEncounterManager.Instance != null && PLNetworkManager.Instance != null && GameVersion.Version != string.Empty)
+            if (PMLConfig.DebugMode && PLServer.Instance != null && PLEncounterManager.Instance != null && PLNetworkManager.Instance != null && GameVersion.Version != string.Empty)
             {
                 Vector3 pos;
                 if (PLNetworkManager.Instance.LocalPlayer != null)

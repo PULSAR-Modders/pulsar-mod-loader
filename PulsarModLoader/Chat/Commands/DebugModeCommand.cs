@@ -5,8 +5,6 @@ namespace PulsarModLoader.Chat.Commands
 {
     class DebugModeCommand : ChatCommand
     {
-        public static bool DebugMode = false;
-
         public override string[] CommandAliases()
         {
             return new string[] { "debugmode", "dbm" };
@@ -20,15 +18,12 @@ namespace PulsarModLoader.Chat.Commands
         public override void Execute(string arguments)
         {
             //Toggle DebugMode value
-            DebugMode = !DebugMode;
-
-            //Write new DebugMode value to settings xml file
-            PLXMLOptionsIO.Instance.CurrentOptions.SetStringValue("PMLDebugMode", DebugMode.ToString());
+            PMLConfig.DebugMode.Value = !PMLConfig.DebugMode.Value;
 
             //notify player of new DebugMode value
-            Messaging.Notification($"PMLDebugMode is now {DebugMode}");
+            Messaging.Notification($"PMLDebugMode is now {PMLConfig.DebugMode}");
 
-            if (!DebugMode)
+            if (!PMLConfig.DebugMode)
                 PLInGameUI.Instance.CurrentVersionLabel.text = PulsarModLoader.Patches.GameVersion.Version;
         }
 

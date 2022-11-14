@@ -13,6 +13,16 @@ namespace PulsarModLoader.CustomGUI
         public override string Name() => "PulsarModLoader";
         public override void Draw()
         {
+            if (Button("Debug Mode: " + (PMLConfig.DebugMode ? "Enabled" : "Disabled")))
+            {
+                PMLConfig.DebugMode.Value = !PMLConfig.DebugMode.Value;
+
+                if (!PMLConfig.DebugMode)
+                {
+                    PLInGameUI.Instance.CurrentVersionLabel.text = PulsarModLoader.Patches.GameVersion.Version;
+                }
+            }
+
             GUI.skin.label.alignment = TextAnchor.UpperLeft;
             BeginHorizontal();
             {

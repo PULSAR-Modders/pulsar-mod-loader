@@ -1,17 +1,19 @@
-﻿using System;
+﻿using HarmonyLib;
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Reflection;
-using HarmonyLib;
-using PulsarModLoader.Utilities;
 using Valve.Newtonsoft.Json;
-using Valve.Newtonsoft.Json.Converters;
 
 namespace PulsarModLoader
 {
-	internal class SaveValueManager
+    internal class SaveValueManager
 	{
+		public static string GetConfigFolder()
+		{
+			return Path.Combine(Directory.GetCurrentDirectory(), "ModConfigs");
+		}
+
 		private static JsonSerializerSettings serializerSettings;
 		static SaveValueManager()
 		{
@@ -55,7 +57,7 @@ namespace PulsarModLoader
 		private static string GetConfigFile(Assembly mod)
 		{
 			if (ModToConfigFile.ContainsKey(mod)) return ModToConfigFile[mod];
-			string newFile = mod.Location.Replace(".dll", ".json");
+			string newFile = Path.Combine(GetConfigFolder(), mod.GetName().Name + ".json");
 			ModToConfigFile.Add(mod, newFile);
 			if (!ModToCacheValues.ContainsKey(mod) && File.Exists(newFile))
 				ModToCacheValues.Add(mod, JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(newFile)));

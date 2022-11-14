@@ -31,7 +31,7 @@ namespace PulsarModLoader.Utilities
             }
 
             string line;
-            if (Chat.Commands.DebugModeCommand.DebugMode)
+            if (PMLConfig.DebugMode)
             {
                 MethodBase invoker = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod();
                 string type = invoker.DeclaringType.ToString();

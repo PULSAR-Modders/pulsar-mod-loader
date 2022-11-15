@@ -91,7 +91,11 @@ namespace PulsarModLoader.SaveData
                 }
                 catch (Exception ex)
                 {
-                    Logger.Info($"Failed to save a mod data.\n{ex.Message}");
+                    writer.Write("PMLSaveDataManager.DataCorruptionWarning");
+                    writer.Write("DataCorruptionWarning");
+                    writer.Write((uint)0);
+                    writer.Write(0);
+                    Logger.Info($"Failed to save a mod data.\n{ex.Message}\n");
                 }
             }
             writer.Write(ulong.MaxValue);
@@ -117,7 +121,6 @@ namespace PulsarModLoader.SaveData
             for (int i = 0; i < count; i++)
             {
                 //SaveDataHeader
-                Logger.Info($"{reader.BaseStream.Position}");
                 string harmonyIdent = reader.ReadString(); //HarmonyIdentifier
                 string SavDatIdent = reader.ReadString();  //SaveDataIdentifier
                 uint VersionID = reader.ReadUInt32();      //VersionID
@@ -156,22 +159,22 @@ namespace PulsarModLoader.SaveData
                     reader.BaseStream.Position += bytecount;
                     missingMods += ("\n" + harmonyIdent);
                 }
+            }
 
-                //Finish Reading
-                reader.Close();
-                Logger.Info("PMLSaveManager has finished reading file");
-                ReadMods = readMods;
+            //Finish Reading
+            reader.Close();
+            Logger.Info("PMLSaveManager has finished reading file");
+            ReadMods = readMods;
 
-                if (missingMods.Length > 0)
-                {
-                    PLNetworkManager.Instance.MainMenu.AddActiveMenu(new PLErrorMessageMenu($"Warning: Found save data for following missing mods: {missingMods}"));
-                    Logger.Info($"Warning: Found save data for following missing mods: {missingMods}");
-                }
-                if (!string.IsNullOrEmpty(VersionMismatchedMods))
-                {
-                    PLNetworkManager.Instance.MainMenu.AddActiveMenu(new PLErrorMessageMenu($"Warning: The following mods used in this save have been updated: {VersionMismatchedMods}"));
-                    Logger.Info($"Warning: The following mods used in this save have been updated: {VersionMismatchedMods}");
-                }
+            if (missingMods.Length > 0)
+            {
+                PLNetworkManager.Instance.MainMenu.AddActiveMenu(new PLErrorMessageMenu($"Warning: Found save data for following missing mods: {missingMods}"));
+                Logger.Info($"Warning: Found save data for following missing mods: {missingMods}");
+            }
+            if (!string.IsNullOrEmpty(VersionMismatchedMods))
+            {
+                PLNetworkManager.Instance.MainMenu.AddActiveMenu(new PLErrorMessageMenu($"Warning: The following mods used in this save have been updated: {VersionMismatchedMods}"));
+                Logger.Info($"Warning: The following mods used in this save have been updated: {VersionMismatchedMods}");
             }
         }
 

@@ -78,6 +78,7 @@ namespace PulsarModLoader.Content.Components.MegaTurret
             {
                 Logger.Info("Creating MegaTurret from list info");
                 __result = MegaTurretModManager.Instance.MegaTurretTypes[subtypeformodded].PLMegaTurret;
+                __result.SubType = inSubType;
                 __result.Level = inLevel;
                 return false;
             }

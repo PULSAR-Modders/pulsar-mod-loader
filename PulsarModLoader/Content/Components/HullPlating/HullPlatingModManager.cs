@@ -78,6 +78,7 @@ namespace PulsarModLoader.Content.Components.HullPlating
             {
                 Logger.Info("Creating HullPlating from list info");
                 __result = HullPlatingModManager.Instance.HullPlatingTypes[subtypeformodded].PLHullPlating;
+                __result.SubType = inSubType;
                 __result.Level = inLevel;
                 return false;
             }

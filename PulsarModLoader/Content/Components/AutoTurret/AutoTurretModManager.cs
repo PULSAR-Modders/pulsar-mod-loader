@@ -78,6 +78,7 @@ namespace PulsarModLoader.Content.Components.AutoTurret
             {
                 Logger.Info("Creating AutoTurret from list info");
                 __result = AutoTurretModManager.Instance.AutoTurretTypes[subtypeformodded].PLAutoTurret;
+                __result.SubType = inSubType;
                 __result.Level = inLevel;
                 return false;
             }

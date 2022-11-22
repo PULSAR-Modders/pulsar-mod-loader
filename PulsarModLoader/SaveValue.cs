@@ -11,8 +11,13 @@ namespace PulsarModLoader
 	{
 		public static string GetConfigFolder()
 		{
-			return Path.Combine(Directory.GetCurrentDirectory(), "ModConfigs");
-		}
+			string ModConfigDir = Path.Combine(Directory.GetCurrentDirectory(), "ModConfigs");
+            if (!Directory.Exists(ModConfigDir))
+            {
+                Directory.CreateDirectory(ModConfigDir);
+            }
+			return ModConfigDir;
+        }
 
 		private static JsonSerializerSettings serializerSettings;
 		static SaveValueManager()
@@ -56,15 +61,8 @@ namespace PulsarModLoader
 
 		private static string GetConfigFile(Assembly mod)
 		{
-            //Create ModConfigs Directory for SaveValue class
-            string ModConfigDir = GetConfigFolder();
-			if (!Directory.Exists(ModConfigDir))
-			{
-				Directory.CreateDirectory(ModConfigDir);
-			}
-
 			if (ModToConfigFile.ContainsKey(mod)) return ModToConfigFile[mod];
-			string newFile = Path.Combine(ModConfigDir, mod.GetName().Name + ".json");
+			string newFile = Path.Combine(GetConfigFolder(), mod.GetName().Name + ".json");
 			ModToConfigFile.Add(mod, newFile);
 			if (!ModToCacheValues.ContainsKey(mod) && File.Exists(newFile))
 				ModToCacheValues.Add(mod, JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(newFile)));

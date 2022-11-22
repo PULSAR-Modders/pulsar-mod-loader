@@ -6,6 +6,6 @@
         public abstract string Identifier();
         public virtual uint VersionID => 0;
         public abstract byte[] SaveData();
-        public abstract void LoadData(byte[] Aata, uint VersionID);
+        public abstract void LoadData(byte[] Data, uint VersionID);
     }
 }

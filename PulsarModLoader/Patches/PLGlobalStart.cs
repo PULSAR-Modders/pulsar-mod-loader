@@ -19,13 +19,6 @@ namespace PulsarModLoader.Patches
                 //SaveDataManager Init()
                 new SaveData.SaveDataManager();
 
-                //Create ModConfigs Directory for SaveValue class
-                string ModConfigDir = SaveValueManager.GetConfigFolder();
-                if (!Directory.Exists(ModConfigDir))
-                {
-                    Directory.CreateDirectory(ModConfigDir);
-                }
-
                 //ModLoading
                 string modsDir = Path.Combine(Directory.GetCurrentDirectory(), "Mods");
                 ModManager.Instance.LoadModsDirectory(modsDir);

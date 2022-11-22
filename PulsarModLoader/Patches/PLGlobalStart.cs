@@ -19,6 +19,9 @@ namespace PulsarModLoader.Patches
                 //SaveDataManager Init()
                 new SaveData.SaveDataManager();
 
+                //KeybindManager Init()
+                _ = PulsarModLoader.Keybinds.KeybindManager.Instance;
+
                 //ModLoading
                 string modsDir = Path.Combine(Directory.GetCurrentDirectory(), "Mods");
                 ModManager.Instance.LoadModsDirectory(modsDir);

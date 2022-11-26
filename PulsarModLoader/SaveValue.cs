@@ -111,7 +111,12 @@ namespace PulsarModLoader
 		public bool Equals(T other) => _value.Equals(other);
 
 		public override string ToString() => _value.ToString();
-	}
+
+        public override int GetHashCode()
+        {
+            return _value.GetHashCode();
+        }
+    }
 
 	// Example Usage
 	//public static class MyCfg {

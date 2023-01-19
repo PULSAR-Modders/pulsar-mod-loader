@@ -67,12 +67,12 @@ namespace PulsarModLoader.Content.Components.WarpDrive
             }
             return -1;
         }
-        public static PLWarpDrive CreateWarpDrive(int Subtype, int level)
+        public static PLWarpDrive CreateWarpDrive(int Subtype, int level, short SubTypeData)
         {
             PLWarpDrive InWarpDrive;
             if (Subtype >= Instance.VanillaWarpDriveMaxType)
             {
-                InWarpDrive = new PLWarpDrive(EWarpDriveType.E_MAX, level);
+                InWarpDrive = new PLWarpDrive(EWarpDriveType.E_MAX, level, SubTypeData);
                 int subtypeformodded = Subtype - Instance.VanillaWarpDriveMaxType;
                 if (subtypeformodded <= Instance.WarpDriveTypes.Count && subtypeformodded > -1)
                 {
@@ -97,7 +97,7 @@ namespace PulsarModLoader.Content.Components.WarpDrive
             }
             else
             {
-                InWarpDrive = new PLWarpDrive((EWarpDriveType)Subtype, level);
+                InWarpDrive = new PLWarpDrive((EWarpDriveType)Subtype, level,SubTypeData);
             }
             return InWarpDrive;
         }
@@ -106,9 +106,9 @@ namespace PulsarModLoader.Content.Components.WarpDrive
     [HarmonyPatch(typeof(PLWarpDrive), "CreateWarpDriveFromHash")]
     class WarpDriveHashFix
     {
-        static bool Prefix(int inSubType, int inLevel, ref PLShipComponent __result)
+        static bool Prefix(int inSubType, int inLevel, short inSubTypeData, ref PLShipComponent __result)
         {
-            __result = WarpDriveModManager.CreateWarpDrive(inSubType, inLevel);
+            __result = WarpDriveModManager.CreateWarpDrive(inSubType, inLevel, inSubTypeData);
             return false;
         }
     }

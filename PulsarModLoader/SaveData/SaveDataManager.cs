@@ -68,6 +68,10 @@ namespace PulsarModLoader.SaveData
             //Save VersionID for later, starting with 0
             writer.Write((uint)0);
 
+            //Bytecount for log
+            int TotalBytes = 0;
+
+
             //save for mods
             writer.Write(SaveCount);                      //int32 representing total configs
             foreach (PMLSaveData saveData in SaveConfigs)
@@ -82,6 +86,7 @@ namespace PulsarModLoader.SaveData
                     writer.Write(saveData.Identifier());              //Write PMLSaveData Identifier
                     writer.Write(saveData.VersionID);                 //Write PMLSaveData VersionID
                     writer.Write(modData.Length);                     //Write stream byte count
+                    TotalBytes += modData.Length;                     //Add bytecount to log
 
                     //SaveData
                     if (modData.Length > 0)
@@ -100,6 +105,7 @@ namespace PulsarModLoader.SaveData
             }
             writer.Write(ulong.MaxValue);
             writer.Close();
+            Logger.Info($"PMLSaveManager has finished saving file. Bytes: {TotalBytes}");
         }
 
         public void LoadDatas(BinaryReader reader, bool ldarg3)
@@ -118,6 +124,8 @@ namespace PulsarModLoader.SaveData
             string missingMods = "";
             string VersionMismatchedMods = "";
             string readMods = "";
+            int TotalBytes = 0;
+
             for (int i = 0; i < count; i++)
             {
                 //SaveDataHeader
@@ -127,6 +135,7 @@ namespace PulsarModLoader.SaveData
                 int bytecount = reader.ReadInt32();        //ByteCount
                 Logger.Info($"Reading SaveData: {harmonyIdent}::{SavDatIdent} SaveDataVersion: {VersionID} bytecount: {bytecount} Pos: {reader.BaseStream.Position}");
                 readMods += "\n" + harmonyIdent;
+                TotalBytes += bytecount;
 
 
                 bool foundReader = false;
@@ -163,7 +172,7 @@ namespace PulsarModLoader.SaveData
 
             //Finish Reading
             reader.Close();
-            Logger.Info("PMLSaveManager has finished reading file");
+            Logger.Info($"PMLSaveManager has finished reading file. Bytes: {TotalBytes}");
             ReadMods = readMods;
 
             if (missingMods.Length > 0)

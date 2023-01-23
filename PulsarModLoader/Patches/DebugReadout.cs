@@ -1,7 +1,5 @@
 ﻿using HarmonyLib;
-using PulsarModLoader.Chat.Commands;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace PulsarModLoader.Patches
 {

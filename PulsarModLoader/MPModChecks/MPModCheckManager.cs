@@ -305,7 +305,7 @@ namespace PulsarModLoader.MPModChecks
             MPUserDataBlock HostModData = GetHostModList(room);
             if (HostModData.PMLVersion == string.Empty)
             {
-                if (HighestLevelOfMPMods >= (int)MPRequirement.Host)
+                if (HighestLevelOfMPMods == (int)MPRequirement.Host || HighestLevelOfMPMods == (int)MPRequirement.All)
                 {
                     PLNetworkManager.Instance.MainMenu.AddActiveMenu(new PLErrorMessageMenu($"<color=red>FAILED TO JOIN CREW!</color>\nMods requiring host installation or higher have been installed locally"));
 
@@ -342,14 +342,14 @@ namespace PulsarModLoader.MPModChecks
                 }
                 if (!found)
                 {   //didn't find mod in host list, checking if mod function mandates host installation
-                    if (MyModList[a].MPRequirement >= MPRequirement.Host)
+                    if (MyModList[a].MPRequirement == MPRequirement.Host || MyModList[a].MPRequirement == MPRequirement.All)
                     {
                         localMPLimitedMods += $"\n{MyModList[a].ModName}";
                     }
                 }
                 else
                 {   //found mod in host list, checking if mod versions match.
-                    if (MyModList[a].Version != HostModList[b].Version)
+                    if (MyModList[a].MPRequirement != MPRequirement.None && MyModList[a].Version != HostModList[b].Version)
                     {
                         outdatedMods += $"\nLocal: {MyModList[a].ModName} {MyModList[a].Version} Host: {HostModList[b].ModName} {HostModList[b].Version}";
                     }

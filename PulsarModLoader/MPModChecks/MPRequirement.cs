@@ -2,6 +2,9 @@
 
 namespace PulsarModLoader
 {
+    /// <summary>
+    /// Distinctly organizes MPRequirements.
+    /// </summary>
     [Obsolete]
     public enum MPFunction
     {
@@ -25,6 +28,9 @@ namespace PulsarModLoader
 }
 namespace PulsarModLoader.MPModChecks
 {
+    /// <summary>
+    /// Distinctly organizes MPRequirements
+    /// </summary>
     public enum MPRequirement
     {
         /// <summary>
@@ -42,6 +48,10 @@ namespace PulsarModLoader.MPModChecks
         /// <summary>
         /// All clients must have installed
         /// </summary>
-        All                     //3 All clients must have installed
+        All,                    //3 All clients must have installed
+        /// <summary>
+        /// No Requirements, Versions must match between clients
+        /// </summary>
+        MatchVersion            //4 No MP requirements, ensure versions match between clients
     }
 }

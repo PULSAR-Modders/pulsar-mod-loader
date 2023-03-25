@@ -10,6 +10,9 @@ using System.Runtime.CompilerServices;
 
 namespace PulsarModLoader
 {
+    /// <summary>
+    /// Manages all mods.
+    /// </summary>
     public class ModManager
     {
         public static bool IsOldVersion;
@@ -29,6 +32,9 @@ namespace PulsarModLoader
 
         private static ModManager _instance = null;
 
+        /// <summary>
+        /// Static instance of the mod manager.
+        /// </summary>
         public static ModManager Instance
         {
             get
@@ -42,6 +48,9 @@ namespace PulsarModLoader
             }
         }
 
+        /// <summary>
+        /// Manages all mods.
+        /// </summary>
         public ModManager()
         {
             Logger.Info($"Starting {PMLVersionInfo.ProductName} v{PMLVersionInfo.FileVersion}");
@@ -77,6 +86,11 @@ namespace PulsarModLoader
 #endif
         }
 
+        /// <summary>
+        /// Gets the PulsarMod Class of the given mod.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns>True if Loaded</returns>
         public PulsarMod GetMod(string name)
         {
             if (activeMods.TryGetValue(name, out PulsarMod mod))
@@ -89,16 +103,29 @@ namespace PulsarModLoader
             }
         }
 
+        /// <summary>
+        /// Checks if given mod is loaded.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns>Returns true if loaded</returns>
         public bool IsModLoaded(string name)
         {
             return activeMods.ContainsKey(name);
         }
 
+        /// <summary>
+        /// Returns an IEnumerable of all loaded PulsarMods.
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<PulsarMod> GetAllMods()
         {
             return activeMods.Values;
         }
 
+        /// <summary>
+        /// Loads all mods found in the given directory
+        /// </summary>
+        /// <param name="modsDir"></param>
         public void LoadModsDirectory(string modsDir)
         {
             OnModSuccessfullyLoaded += Events.EventHelper.RegisterEventHandlers;
@@ -166,6 +193,12 @@ namespace PulsarModLoader
             return null;
         }
 
+        /// <summary>
+        /// Loads a mod by assemblypath.
+        /// </summary>
+        /// <param name="assemblyPath"></param>
+        /// <returns>PulsarMod of loaded mod</returns>
+        /// <exception cref="IOException"></exception>
         public PulsarMod LoadMod(string assemblyPath)
         {
 

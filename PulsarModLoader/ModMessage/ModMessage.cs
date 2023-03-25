@@ -1,5 +1,8 @@
 ﻿namespace PulsarModLoader
 {
+    /// <summary>
+    /// Abstract class for ModMessages.
+    /// </summary>
     public abstract class ModMessage
     {
         /// <summary>

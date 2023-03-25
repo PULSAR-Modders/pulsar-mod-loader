@@ -6,10 +6,21 @@ using System.Reflection;
 
 namespace PulsarModLoader
 {
+    /// <summary>
+    /// Used by PML to signify a mod. Must have a unique harmonyID
+    /// </summary>
     public abstract class PulsarMod
     {
         private FileVersionInfo VersionInfo;
+
+        /// <summary>
+        /// 
+        /// </summary>
         protected Harmony harmony;
+
+        /// <summary>
+        /// Mod enabled/disabled.
+        /// </summary>
         protected bool enabled = true;
 
         /// <summary>
@@ -32,8 +43,8 @@ namespace PulsarModLoader
         public virtual void Unload() => ModManager.Instance.UnloadMod(this, ref harmony);
 
         /// <summary>
-        /// Unique mod identifier used by Harmony to differentiate between mods.<br/>
-        /// Reverse domain notation recommended (e.g., com.example.pulsar.mods)
+        /// Unique mod identifier used by Harmony and PML to differentiate between mods.<br/>
+        /// Combination of AuthorName and ModName recommended. (Ex: ExampleAuthor403.ExampleMod)
         /// </summary>
         /// <returns></returns>
         public abstract string HarmonyIdentifier();
@@ -93,7 +104,7 @@ namespace PulsarModLoader
             }
         }
 
-        [Obsolete]
+        [Obsolete]//Legacy support
         public virtual int MPFunctionality
         {
             get
@@ -112,7 +123,7 @@ namespace PulsarModLoader
         {
             get
             {
-                if (MPFunctionality >= (int)MPRequirement.Host)
+                if (MPFunctionality >= (int)MPRequirement.Host)//Legacy Support if statement
                 {
                     return MPFunctionality;
                 }

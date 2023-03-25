@@ -32,7 +32,7 @@ namespace PulsarModLoader.Chat.Commands
                 new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(ChatCommandRouter), "FindAndExecute", null, null)),
                 new CodeInstruction(OpCodes.Brtrue, afterIf),
                 new CodeInstruction(OpCodes.Ldarg_0),
-                new CodeInstruction(OpCodes.Ldsfld, AccessTools.Field(typeof(String), "Empty")),
+                new CodeInstruction(OpCodes.Ldsfld, AccessTools.Field(typeof(string), "Empty")),
                 new CodeInstruction(OpCodes.Stfld, AccessTools.Field(typeof(PLNetworkManager), "CurrentChatText")),
                 new CodeInstruction(OpCodes.Nop),
             };

@@ -14,8 +14,14 @@ using Logger = PulsarModLoader.Utilities.Logger;
 
 namespace PulsarModLoader.MPModChecks
 {
+    /// <summary>
+    /// Manages Mod Checks.
+    /// </summary>
     public class MPModCheckManager
     {
+        /// <summary>
+        /// Instantiates the ModCheckManager.
+        /// </summary>
         public MPModCheckManager()
         {
             Instance = this;
@@ -23,6 +29,10 @@ namespace PulsarModLoader.MPModChecks
             ModManager.Instance.OnModUnloaded += RefreshData;
         }
 
+        /// <summary>
+        /// Updates modlists
+        /// </summary>
+        /// <param name="mod"></param>
         public void RefreshData(PulsarMod mod = null)
         {
             UpdateMyModList();
@@ -40,16 +50,27 @@ namespace PulsarModLoader.MPModChecks
             }
         }
 
+        /// <summary>
+        /// Static instance of the ModCheckManager
+        /// </summary>
         public static MPModCheckManager Instance = null;
 
         private MPModDataBlock[] MyModList = null;
 
+        /// <summary>
+        /// List of clients that have requested mod lists of other clients.
+        /// </summary>
         public List<PhotonPlayer> RequestedModLists = new List<PhotonPlayer>();
 
         private Dictionary<PhotonPlayer, MPUserDataBlock> NetworkedPeersModLists = new Dictionary<PhotonPlayer, MPUserDataBlock>();
 
         private int HighestLevelOfMPMods = 0;
 
+        /// <summary>
+        /// Gets full mod list of Networked Peer.
+        /// </summary>
+        /// <param name="Photonplayer"></param>
+        /// <returns></returns>
         public MPUserDataBlock GetNetworkedPeerMods(PhotonPlayer Photonplayer)
         {
             if (NetworkedPeersModLists.TryGetValue(Photonplayer, out MPUserDataBlock value))
@@ -62,6 +83,12 @@ namespace PulsarModLoader.MPModChecks
             }
         }
         
+        /// <summary>
+        /// Checks if given player has mod, checked by HarmonyID
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="HarmonyIdentifier"></param>
+        /// <returns>Returns true if player has mod</returns>
         public bool NetworkedPeerHasMod(PhotonPlayer player, string HarmonyIdentifier)
         {
             MPUserDataBlock userData = GetNetworkedPeerMods(player);
@@ -78,6 +105,11 @@ namespace PulsarModLoader.MPModChecks
             return false;
         }
 
+        /// <summary>
+        /// Finds all Networked Peers with a given harmony ID
+        /// </summary>
+        /// <param name="HarmonyIdentifier"></param>
+        /// <returns>NetworkedPeers using given mod</returns>
         public List<PhotonPlayer> NetworkedPeersWithMod(string HarmonyIdentifier)
         {
             List<PhotonPlayer> playerList = new List<PhotonPlayer>();
@@ -94,6 +126,11 @@ namespace PulsarModLoader.MPModChecks
             return playerList;
         }
 
+        /// <summary>
+        /// Adds a player's mod list to the local NetworkedPeersModLists
+        /// </summary>
+        /// <param name="Photonplayer"></param>
+        /// <param name="modList"></param>
         public void AddNetworkedPeerMods(PhotonPlayer Photonplayer, MPUserDataBlock modList)
         {
             if (NetworkedPeersModLists.ContainsKey(Photonplayer))
@@ -104,6 +141,10 @@ namespace PulsarModLoader.MPModChecks
             NetworkedPeersModLists.Add(Photonplayer, modList);
         }
 
+        /// <summary>
+        /// Clears player from NetworkedPeersModLists
+        /// </summary>
+        /// <param name="Photonplayer"></param>
         public void RemoveNetworkedPeerMods(PhotonPlayer Photonplayer)
         {
             NetworkedPeersModLists.Remove(Photonplayer);
@@ -152,6 +193,10 @@ namespace PulsarModLoader.MPModChecks
             Logger.Info("Finished Building MyModList, time elapsted: " + stopwatch.ElapsedMilliseconds.ToString());
         }
 
+        /// <summary>
+        /// Serilizes user data into a byte array for network transfer. Does not contain a hash
+        /// </summary>
+        /// <returns>Serilized User data (Hashless)</returns>
         public byte[] SerializeHashlessUserData()
         {
             MemoryStream dataStream = new MemoryStream();
@@ -172,7 +217,11 @@ namespace PulsarModLoader.MPModChecks
             }
             return dataStream.ToArray();
         }
-
+        
+        /// <summary>
+        /// Serilizes user data into a byte array for network transfer. Contains a hash.
+        /// </summary>
+        /// <returns>Serilized User data (Hashfull)</returns>
         public byte[] SerializeHashfullUserData()
         {
             MemoryStream dataStream = new MemoryStream();
@@ -195,6 +244,11 @@ namespace PulsarModLoader.MPModChecks
             return dataStream.ToArray();
         }
 
+        /// <summary>
+        /// Deserializes bytes representing a serialized MPUserDataBlock which does not contain a hash.
+        /// </summary>
+        /// <param name="byteData"></param>
+        /// <returns>MPUserDataBlock (Hashless)</returns>
         public static MPUserDataBlock DeserializeHashlessMPUserData(byte[] byteData)
         {
             MemoryStream memoryStream = new MemoryStream(byteData);
@@ -227,6 +281,11 @@ namespace PulsarModLoader.MPModChecks
             }
         }
 
+        /// <summary>
+        /// Deserializes bytes representing a serialized MPUserDataBlock containing a hash.
+        /// </summary>
+        /// <param name="byteData"></param>
+        /// <returns>MPUserDataBlock (Hashfull)</returns>
         public static MPUserDataBlock DeserializeHashfullMPUserData(byte[] byteData)
         {
             MemoryStream memoryStream = new MemoryStream(byteData);
@@ -260,6 +319,11 @@ namespace PulsarModLoader.MPModChecks
 
         }
 
+        /// <summary>
+        /// Converts a ModDataBlock array to a string list, Ussually for logging purposes.
+        /// </summary>
+        /// <param name="ModDatas"></param>
+        /// <returns>Converts ModDataBLocks to a string list.</returns>
         public static string GetModListAsString(MPModDataBlock[] ModDatas)
         {
             string ModList = string.Empty;
@@ -296,10 +360,10 @@ namespace PulsarModLoader.MPModChecks
         }
 
         /// <summary>
-        /// overall basic description: checks if it is possible to join room based on mods installed locally and on the server
+        /// Upon attempting to join a room, the client checks if it is allowed to join based on mods installed locally and on the server
         /// </summary>
         /// <param name="room"></param>
-        /// <returns></returns>
+        /// <returns>Returns true if client can connect to host.</returns>
         public bool ClientClickJoinRoom(RoomInfo room)
         {
             MPUserDataBlock HostModData = GetHostModList(room);
@@ -401,6 +465,11 @@ namespace PulsarModLoader.MPModChecks
             }
         }
 
+        /// <summary>
+        /// Run by host on client connect to compare mod info.
+        /// </summary>
+        /// <param name="Player"></param>
+        /// <returns>Returns true if client should be allowed to join.</returns>
         public bool HostOnClientJoined(PhotonPlayer Player)
         {
             MPModDataBlock[] ClientMods = null;

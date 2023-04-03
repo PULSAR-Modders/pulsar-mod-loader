@@ -104,6 +104,7 @@ namespace PulsarModLoader
             }
         }
 
+        #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
         [Obsolete]//Legacy support
         public virtual int MPFunctionality
         {
@@ -112,6 +113,10 @@ namespace PulsarModLoader
                 return (int)MPRequirement.None;
             }
         }
+        #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
+
+
+        #pragma warning disable CS0612 // Type or member is obsolete
         /// <summary>
         /// Mod's multiplayer requirements. use MPModChecks.MPRequirement.<br/>
         /// None: No requirement<br/>
@@ -133,6 +138,7 @@ namespace PulsarModLoader
                 }
             }
         }
+        #pragma warning restore CS0612 // Type or member is obsolete
         
         /// <summary>
         /// Up to the modder to implement

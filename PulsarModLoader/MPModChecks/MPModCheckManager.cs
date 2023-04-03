@@ -320,7 +320,7 @@ namespace PulsarModLoader.MPModChecks
         }
 
         /// <summary>
-        /// Converts a ModDataBlock array to a string list, Ussually for logging purposes.
+        /// Converts a ModDataBlock array to a string list, Usually for logging purposes. Starts with a new line
         /// </summary>
         /// <param name="ModDatas"></param>
         /// <returns>Converts ModDataBLocks to a string list.</returns>
@@ -383,16 +383,20 @@ namespace PulsarModLoader.MPModChecks
             }
             MPModDataBlock[] HostModList = HostModData.ModData;
 
+            //Debug Logging
             string HostModListString = GetModListAsString(HostModList);
             string LocalModListString = GetModListAsString(MyModList);
             Logger.Info($"Joining room: {room.Name} ServerPMLVersion: {HostModData.PMLVersion}\n--Hostmodlist: {HostModListString}\n--Localmodlist: {LocalModListString}");
 
-            string missingMods = string.Empty;
+            //Variable Initiallization
+            string hostMPLimitedMods = string.Empty;
             string localMPLimitedMods = string.Empty;
             string outdatedMods = string.Empty;
-            int MyModListLength = MyModList.Length;
+            int LocalModListLength = MyModList.Length;
             int HostModListLength = HostModList.Length;
-            for (int a = 0; a < MyModListLength; a++)
+
+            //Check all local mods and compare against host mods
+            for (int a = 0; a < LocalModListLength; a++)
             {
                 bool found = false;
                 int b = 0;
@@ -404,25 +408,30 @@ namespace PulsarModLoader.MPModChecks
                         break;
                     }
                 }
+
+                //Mod not found in host list, Check if mod mandates host installation via Host, All.
                 if (!found)
-                {   //didn't find mod in host list, checking if mod function mandates host installation
+                {
                     if (MyModList[a].MPRequirement == MPRequirement.Host || MyModList[a].MPRequirement == MPRequirement.All)
                     {
                         localMPLimitedMods += $"\n{MyModList[a].ModName}";
                     }
                 }
+                //Mod found in host list, check if mod versions match. -Should only reach this if mod was found in both lists. -Catches MPRequirements Host, All, or MatchVersion.
                 else
-                {   //found mod in host list, checking if mod versions match.
+                {
                     if (MyModList[a].MPRequirement != MPRequirement.None && MyModList[a].Version != HostModList[b].Version)
                     {
                         outdatedMods += $"\nLocal: {MyModList[a].ModName} {MyModList[a].Version} Host: {HostModList[b].ModName} {HostModList[b].Version}";
                     }
                 }
             }
+
+            //Check all host mods and compare against local mods (Ensures the host doesn't have a mod requiring client installation)
             for (int a = 0; a < HostModListLength; a++)
             {
                 bool found = false;
-                for (int b = 0; b < MyModListLength; b++)
+                for (int b = 0; b < LocalModListLength; b++)
                 {
                     if (HostModList[a].HarmonyIdentifier == MyModList[b].HarmonyIdentifier)
                     {
@@ -434,14 +443,14 @@ namespace PulsarModLoader.MPModChecks
                 {
                     if (HostModList[a].MPRequirement == MPRequirement.All)
                     {   //Host MP mod not found locally
-                        missingMods += $"\n{HostModList[a].ModName}";
+                        hostMPLimitedMods += $"\n{HostModList[a].ModName}";
                     }
                 }
             }
             string message = string.Empty;
-            if (missingMods != string.Empty)
+            if (hostMPLimitedMods != string.Empty)
             {
-                message += $"\n<color=yellow>YOU ARE MISSING THE FOLLOWING REQUIRED MODS</color>{missingMods}";
+                message += $"\n<color=yellow>YOU ARE MISSING THE FOLLOWING REQUIRED MODS</color>{hostMPLimitedMods}";
             }
             if (localMPLimitedMods != string.Empty)
             {

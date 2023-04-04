@@ -15,16 +15,47 @@ namespace PulsarModLoader
     /// </summary>
     public class ModManager
     {
+        /// <summary>
+        /// Not Implemented.
+        /// </summary>
         public static bool IsOldVersion;
 
+        /// <summary>
+        /// Called on mod load.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="mod"></param>
         public delegate void ModLoaded(string name, PulsarMod mod);
+
+        /// <summary>
+        /// Called on mod unload
+        /// </summary>
+        /// <param name="mod"></param>
         public delegate void ModUnloaded(PulsarMod mod);
+
+        /// <summary>
+        /// Called after all mods loaded
+        /// </summary>
         public delegate void AllModsLoaded();
 
+        /// <summary>
+        /// Called on successfull mod load.
+        /// </summary>
         public event ModLoaded OnModSuccessfullyLoaded;
+
+        /// <summary>
+        /// Called on mod unload
+        /// </summary>
         public event ModUnloaded OnModUnloaded;
+
+        /// <summary>
+        /// Called after all mods loaded
+        /// </summary>
         public event AllModsLoaded OnAllModsLoaded;
 
+        /// <summary>
+        /// PMLVersionInfo
+        /// </summary>
         public FileVersionInfo PMLVersionInfo = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location);
 
         private readonly Dictionary<string, PulsarMod> activeMods;
@@ -87,10 +118,10 @@ namespace PulsarModLoader
         }
 
         /// <summary>
-        /// Gets the PulsarMod Class of the given mod.
+        /// Gets the PulsarMod Class of the given mod name.
         /// </summary>
         /// <param name="name"></param>
-        /// <returns>True if Loaded</returns>
+        /// <returns>Returns PulsarMod of mod.</returns>
         public PulsarMod GetMod(string name)
         {
             if (activeMods.TryGetValue(name, out PulsarMod mod))
@@ -104,13 +135,47 @@ namespace PulsarModLoader
         }
 
         /// <summary>
-        /// Checks if given mod is loaded.
+        /// Gets the PulsarMod Class of the given mod via the HarmonyID.
+        /// </summary>
+        /// <param name="HarmonyID"></param>
+        /// <returns>Returns PulsarMod of mod.</returns>
+        public PulsarMod GetModByHarmonyID(string HarmonyID)
+        {
+            foreach (PulsarMod mod in activeMods.Values ) 
+            { 
+                if(mod.HarmonyIdentifier() == HarmonyID)
+                {
+                    return mod;
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Checks if mod with mod name is loaded.
         /// </summary>
         /// <param name="name"></param>
         /// <returns>Returns true if loaded</returns>
         public bool IsModLoaded(string name)
         {
             return activeMods.ContainsKey(name);
+        }
+
+        /// <summary>
+        /// Checks if mod with HarmonyID is loaded.
+        /// </summary>
+        /// <param name="HarmonyID"></param>
+        /// <returns>Returns true if loaded</returns>
+        public bool IsModLoadedByHarmonyID(string HarmonyID)
+        {
+            foreach (PulsarMod mod in activeMods.Values)
+            {
+                if (mod.HarmonyIdentifier() == HarmonyID)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         /// <summary>

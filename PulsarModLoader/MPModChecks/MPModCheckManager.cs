@@ -158,7 +158,7 @@ namespace PulsarModLoader.MPModChecks
             {
                 if (mod.MPRequirements != (int)MPRequirement.HideFromServerList)
                 {
-                    if (mod.MPRequirements >= (int)MPRequirement.Host && mod.MPRequirements > HighestLevelOfMPMods)
+                    if (mod.MPRequirements == (int)MPRequirement.Host || mod.MPRequirements == (int)MPRequirement.All && mod.MPRequirements > HighestLevelOfMPMods)
                     {
                         HighestLevelOfMPMods = (mod.MPRequirements);
                     }
@@ -556,7 +556,7 @@ namespace PulsarModLoader.MPModChecks
                     }
                     if (!found) //if client mod not installed locally requires host to have installed.
                     {
-                        if (ClientMods[b].MPRequirement >= MPRequirement.Host)
+                        if (ClientMods[b].MPRequirement == MPRequirement.Host || ClientMods[b].MPRequirement == MPRequirement.All)
                         {
                             clientMPLimitedMods += $"\n{ClientMods[b].ModName}";
                         }

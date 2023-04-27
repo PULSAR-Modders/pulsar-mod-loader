@@ -395,6 +395,9 @@ namespace PulsarModLoader.MPModChecks
             int LocalModListLength = MyModList.Length;
             int HostModListLength = HostModList.Length;
 
+
+
+
             //Check all local mods and compare against host mods
             for (int a = 0; a < LocalModListLength; a++)
             {
@@ -417,6 +420,7 @@ namespace PulsarModLoader.MPModChecks
                         localMPLimitedMods += $"\n{MyModList[a].ModName}";
                     }
                 }
+
                 //Mod found in host list, check if mod versions match. -Should only reach this if mod was found in both lists. -Catches MPRequirements Host, All, or MatchVersion.
                 else
                 {
@@ -426,6 +430,9 @@ namespace PulsarModLoader.MPModChecks
                     }
                 }
             }
+
+
+
 
             //Check all host mods and compare against local mods (Ensures the host doesn't have a mod requiring client installation)
             for (int a = 0; a < HostModListLength; a++)
@@ -447,6 +454,10 @@ namespace PulsarModLoader.MPModChecks
                     }
                 }
             }
+
+
+
+
             string message = string.Empty;
             if (hostMPLimitedMods != string.Empty)
             {
@@ -460,6 +471,8 @@ namespace PulsarModLoader.MPModChecks
             {
                 message += $"\n<color=yellow>THE FOLLOWING MOD VERSIONS DO NOT MATCH</color>{outdatedMods}";
             }
+
+
             if (message != string.Empty)
             {
                 PLNetworkManager.Instance.MainMenu.AddActiveMenu(new PLErrorMessageMenu($"<color=red>Failed to join crew!</color>{message}"));
@@ -570,7 +583,7 @@ namespace PulsarModLoader.MPModChecks
                 }
                 if (clientMPLimitedMods != string.Empty)
                 {
-                    message += $"\n<color=yellow>You cannot join without the following mods installed</color>{clientMPLimitedMods}";
+                    message += $"\n<color=yellow>You cannot join with the following mods installed</color>{clientMPLimitedMods}";
                 }
                 if (outdatedMods != string.Empty)
                 {

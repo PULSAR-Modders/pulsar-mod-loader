@@ -1,9 +1,12 @@
 ﻿namespace PulsarModLoader.Utilities
 {
+    /// <summary>
+    /// A collection of usefull methods, mostly targetted towards user string input.
+    /// </summary>
     public static class HelperMethods
     {
         /// <summary>
-        /// Attempts GetPlayerFromPlayerID, GetPlayerFromClassName, then GetPlayerFromPlayerName. Returns the first player found, or null if no player matches.
+        /// Attempts GetPlayerFromPlayerID, GetPlayerFromClassName if the string length is 1, then GetPlayerFromPlayerName. Returns the first player found, or null if no player matches.
         /// </summary>
         /// <param name="argument"></param>
         /// <returns></returns>
@@ -94,6 +97,12 @@
         /// <returns></returns>
         public static int GetClassIDFromClassName(string ClassName, out bool Successfull)
         {
+            if(ClassName == string.Empty)
+            {
+                Successfull = false;
+                return -1;
+            }
+
             Successfull = true;
             switch (ClassName.Substring(0, 1).ToLower())
             {

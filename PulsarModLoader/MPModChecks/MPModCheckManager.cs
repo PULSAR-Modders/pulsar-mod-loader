@@ -156,9 +156,9 @@ namespace PulsarModLoader.MPModChecks
             List<PulsarMod> modList = new List<PulsarMod>();
             foreach (PulsarMod mod in ModManager.Instance.GetAllMods())
             {
-                if (mod.MPRequirements != (int)MPRequirement.HideFromServerList && mod.MPRequirements != (int)MPRequirement.MatchVersion)
+                if (mod.MPRequirements != (int)MPRequirement.HideFromServerList)
                 {
-                    if ((mod.MPRequirements == (int)MPRequirement.Host || mod.MPRequirements == (int)MPRequirement.All) && mod.MPRequirements > HighestLevelOfMPMods)
+                    if (mod.MPRequirements != (int)MPRequirement.MatchVersion && (mod.MPRequirements == (int)MPRequirement.Host || mod.MPRequirements == (int)MPRequirement.All) && mod.MPRequirements > HighestLevelOfMPMods)
                     {
                         HighestLevelOfMPMods = (mod.MPRequirements);
                     }

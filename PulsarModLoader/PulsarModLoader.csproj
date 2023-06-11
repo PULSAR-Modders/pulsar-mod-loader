@@ -244,6 +244,7 @@
     <Compile Include="Utilities\ExceptionWarningPatch.cs" />
     <Compile Include="Utilities\Logger.cs" />
     <Compile Include="Utilities\Messaging.cs" />
+    <Compile Include="Utilities\ModUpdateCheck.cs" />
     <Compile Include="Utilities\Uploaders\IUploader.cs" />
     <Compile Include="Utilities\Uploaders\TransferShUploader.cs" />
   </ItemGroup>

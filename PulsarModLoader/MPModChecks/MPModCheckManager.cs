@@ -184,7 +184,7 @@ namespace PulsarModLoader.MPModChecks
                     {
                         MyStream.Position = 0;
                         byte[] Hash = MyHasher.ComputeHash(MyStream);
-                        ProcessedMods[i] = new MPModDataBlock(currentMod.HarmonyIdentifier(), currentMod.Name, currentMod.Version, (MPRequirement)currentMod.MPRequirements, currentMod.ModID, Hash);
+                        ProcessedMods[i] = new MPModDataBlock(currentMod.HarmonyIdentifier(), currentMod.Name, currentMod.Version, (MPRequirement)currentMod.MPRequirements, currentMod.VersionLink, Hash);
                     }
                 }
             }

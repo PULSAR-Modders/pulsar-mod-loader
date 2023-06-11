@@ -61,6 +61,8 @@ namespace PulsarModLoader
         private readonly Dictionary<string, PulsarMod> activeMods;
         private readonly HashSet<string> modDirectories;
 
+        internal List<ModUpdateCheck.UpdateModInfo> UpdatesAviable = new List<ModUpdateCheck.UpdateModInfo>(2);
+
         private static ModManager _instance = null;
 
         /// <summary>
@@ -98,7 +100,10 @@ namespace PulsarModLoader
             IsOldVersion = false;
 
 #if !DEBUG
-            try
+            if ((PMLConfig.LastPMLUpdateCheck.Value.Day - DateTime.Today.Day) == 0) return;
+			PMLConfig.LastPMLUpdateCheck.Value = DateTime.Today;
+
+			try
             {
                 using (var web = new System.Net.WebClient())
                 {
@@ -266,7 +271,6 @@ namespace PulsarModLoader
         /// <exception cref="IOException"></exception>
         public PulsarMod LoadMod(string assemblyPath)
         {
-
             if (!File.Exists(assemblyPath))
             {
                 throw new IOException($"Couldn't find file: {assemblyPath}");
@@ -274,16 +278,21 @@ namespace PulsarModLoader
 
             try
             {
-                Assembly asm = Assembly.LoadFile(assemblyPath);
-                Type modType = asm.GetTypes().FirstOrDefault(t => t.IsSubclassOf(typeof(PulsarMod)));
+                Assembly asm = Assembly.Load(File.ReadAllBytes(assemblyPath)); // load as bytes to avoid locking the file
+				Type modType = asm.GetTypes().FirstOrDefault(t => t.IsSubclassOf(typeof(PulsarMod)));
 
                 if (modType != null)
                 {
                     PulsarMod mod = Activator.CreateInstance(modType) as PulsarMod;
-                    activeMods.Add(mod.Name, mod);
+					mod.VersionInfo = FileVersionInfo.GetVersionInfo(assemblyPath);
+					activeMods.Add(mod.Name, mod);
                     OnModSuccessfullyLoaded?.Invoke(mod.Name, mod);
 
                     Logger.Info($"Loaded mod: {mod.Name} Version {mod.Version} Author: {mod.Author}");
+
+                    if (ModUpdateCheck.IsUpdateAviable(mod))
+                        Logger.Info($"↑ ↑ ↑ !This mod is outdated! ↑ ↑ ↑");
+
                     return mod;
                 }
                 else

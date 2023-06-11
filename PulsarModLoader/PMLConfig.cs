@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace PulsarModLoader
 {
@@ -9,7 +10,9 @@ namespace PulsarModLoader
 
         public static SaveValue<bool> DebugMode = new SaveValue<bool>("DebugMode", false);
 
-        public static void SetDefault()
+        public static SaveValue<DateTime> LastPMLUpdateCheck = new SaveValue<DateTime>("LastPMLUpdateCheck", DateTime.Today.AddDays(-2));
+
+		public static void SetDefault()
         {
 	        ModInfoTextAnchor.Value = TextAnchor.UpperLeft;
         }

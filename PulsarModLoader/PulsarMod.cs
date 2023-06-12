@@ -11,7 +11,7 @@ namespace PulsarModLoader
     /// </summary>
     public abstract class PulsarMod
     {
-        private FileVersionInfo VersionInfo;
+        internal FileVersionInfo VersionInfo;
 
         /// <summary>
         /// 
@@ -31,7 +31,6 @@ namespace PulsarModLoader
             // Can't use Assembly.GetExecutingAssembly() or it grabs this assembly instead of the mod's!
             // Executing assembly is technically PML's during base class methods.
             Assembly asm = GetType().Assembly;
-            VersionInfo = FileVersionInfo.GetVersionInfo(asm.Location);
 
             harmony = new Harmony(HarmonyIdentifier());
             harmony.PatchAll(asm);
@@ -176,10 +175,10 @@ namespace PulsarModLoader
             enabled = true;
         }
 
-        /// <summary>
-        /// Mod ID for future feature involving download IDs for a public webserver
-        /// </summary>
-        public virtual string ModID
+		/// <summary>
+		/// A link to the version file containing information about the latest version of the mod. Null if there is no link for this mod.
+		/// </summary>
+		public virtual string VersionLink
         {
             get
             {

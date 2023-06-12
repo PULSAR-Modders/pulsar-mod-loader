@@ -4,6 +4,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using HarmonyLib;
+using PulsarModLoader.Utilities;
+using Steamworks;
 using UnityEngine;
 using static UnityEngine.GUILayout;
 
@@ -95,8 +97,14 @@ namespace PulsarModLoader.CustomGUI
                         ModListScroll = BeginScrollView(ModListScroll);
                         {
                             for (ushort p = 0; p < mods.Count; p++)
-                                if (Button(mods[p].Name))
-                                    selectedMod = p;
+                            {
+                                var mod = mods[p];
+                                var name = mods[p].Name;
+                                if (ModManager.Instance.UpdatesAviable.Any(m => m.Mod == mod))
+                                    name = "(!) " + name;
+								if (Button(name))
+									selectedMod = p;
+							}
                         }
                         EndScrollView();
                     }
@@ -122,6 +130,15 @@ namespace PulsarModLoader.CustomGUI
                                 if (mod.LongDescription != string.Empty)
                                     Label($"Long Description: {mod.LongDescription}");
                                 Label($"MPRequirement: {((MPModChecks.MPRequirement)mod.MPRequirements).ToString()}");
+                                Space(1f);
+                                var result = ModManager.Instance.UpdatesAviable.FirstOrDefault(av => av.Mod == mod);
+								if (result != null)
+                                {
+                                    if (result.IsUpdated)
+                                        Label("Restart the game to apply the changes!");
+									else if(Button($"Update this mod to version {result.Data.Version}?"))
+                                            ModUpdateCheck.UpdateMod(result);
+								}
                             }
                             EndScrollView();
                         }

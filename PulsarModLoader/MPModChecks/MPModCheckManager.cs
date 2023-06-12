@@ -180,7 +180,7 @@ namespace PulsarModLoader.MPModChecks
                 for (int i = 0; i < UnprocessedMods.Count; i++)
                 {
                     PulsarMod currentMod = UnprocessedMods[i];
-                    using (FileStream MyStream = File.OpenRead(currentMod.GetType().Assembly.Location))
+                    using (FileStream MyStream = File.OpenRead(currentMod.VersionInfo.FileName))
                     {
                         MyStream.Position = 0;
                         byte[] Hash = MyHasher.ComputeHash(MyStream);
@@ -204,18 +204,19 @@ namespace PulsarModLoader.MPModChecks
             {
                 //Datastream storage structure:
                 writer.Write(Patches.GameVersion.PMLVersion);   //--Header--
-                writer.Write(MyModList.Length);                 //string PMLVersion
+				writer.Write(MyModList.Length);                 //string PMLVersion
                 for (int i = 0; i < MyModList.Length; i++)      //int    modcount
                 {                                               //
                     MPModDataBlock dataBlock = MyModList[i];    //--ModData--
-                    writer.Write(dataBlock.ModName);            //string mod name
+					writer.Write(dataBlock.ModName);            //string mod name
                     writer.Write(dataBlock.HarmonyIdentifier);  //string harmony ident
                     writer.Write(dataBlock.Version);            //string mod version
                     writer.Write((byte)dataBlock.MPRequirement);//byte   MPRequirement
                     writer.Write(dataBlock.ModID);              //string ModID
                 }
             }
-            return dataStream.ToArray();
+
+			return dataStream.ToArray();
         }
         
         /// <summary>

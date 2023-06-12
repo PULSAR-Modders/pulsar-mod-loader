@@ -55,7 +55,7 @@ namespace PulsarModLoader
         {
             get
             {
-                return VersionInfo.FileVersion;
+                return VersionInfo?.FileVersion;
             }
         }
 
@@ -66,7 +66,7 @@ namespace PulsarModLoader
         {
             get
             {
-                return VersionInfo.CompanyName;
+                return VersionInfo?.CompanyName;
             }
         }
 
@@ -77,7 +77,7 @@ namespace PulsarModLoader
         {
             get
             {
-                return VersionInfo.FileDescription;
+                return VersionInfo?.FileDescription;
             }
         }
 
@@ -99,7 +99,7 @@ namespace PulsarModLoader
         {
             get
             {
-                return VersionInfo.ProductName;
+                return VersionInfo?.ProductName;
             }
         }
 

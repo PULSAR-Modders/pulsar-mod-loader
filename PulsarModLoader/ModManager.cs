@@ -288,7 +288,7 @@ namespace PulsarModLoader
 					activeMods.Add(mod.Name, mod);
                     OnModSuccessfullyLoaded?.Invoke(mod.Name, mod);
 
-                    Logger.Info($"Loaded mod: {mod.Name} Version {mod.Version} Author: {mod.Author}");
+                    Logger.Info($"Loaded Mod: {mod.Name}, Version: {mod.Version}, Author: {mod.Author}, License: {mod.License}");
 
                     if (ModUpdateCheck.IsUpdateAviable(mod))
                         Logger.Info($"↑ ↑ ↑ !This mod is outdated! ↑ ↑ ↑");

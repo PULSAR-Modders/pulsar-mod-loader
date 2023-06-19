@@ -48,6 +48,17 @@ namespace PulsarModLoader
         /// <returns></returns>
         public abstract string HarmonyIdentifier();
 
+        /// <License>
+        /// License of the mod.
+        /// </License>
+        public virtual string License
+        {
+            get
+            {
+                return String.Empty;
+            }
+        }
+
         /// <summary>
         /// Version of mod.  Displayed in mod list.
         /// </summary>

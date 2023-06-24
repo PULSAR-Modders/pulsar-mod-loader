@@ -55,7 +55,7 @@ namespace PulsarModLoader
         {
             get
             {
-                return String.Empty;
+                return null; //This has to be null to allow the Coalcase to work later on
             }
         }
 

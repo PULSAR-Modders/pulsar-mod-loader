@@ -5,9 +5,7 @@ using System.Linq;
 using System.Reflection;
 using HarmonyLib;
 using PulsarModLoader.Utilities;
-using Steamworks;
 using UnityEngine;
-using static System.Net.WebRequestMethods;
 using static UnityEngine.GUILayout;
 using System.Net.Http;
 using System.Collections.Specialized;
@@ -16,6 +14,8 @@ namespace PulsarModLoader.CustomGUI
 {
     internal class GUIMain : MonoBehaviour
     {
+        NameValueCollection Readme = new NameValueCollection();
+
         public static GUIMain Instance = null;
         public bool GUIActive = false;
         static float Height = .40f;
@@ -76,7 +76,7 @@ namespace PulsarModLoader.CustomGUI
                 Window = GUI.Window(999910, Window, WindowFunction, "ModManager");
             }
         }
-        NameValueCollection Readme = new NameValueCollection();
+        
         async void WindowFunction(int WindowID)
         {
             
@@ -144,8 +144,6 @@ namespace PulsarModLoader.CustomGUI
                                             ModUpdateCheck.UpdateMod(result);
 								}
 
-
-
                                 if (mod.ReadmeURL != string.Empty) 
                                 {
                                     if(Readme[mod.Name] == null)
@@ -161,9 +159,7 @@ namespace PulsarModLoader.CustomGUI
                                     {
                                         Label($"Readme:\n{Readme[mod.Name]}");
                                     }
-                                    
                                 }
-
                             }
                             EndScrollView();
                         }

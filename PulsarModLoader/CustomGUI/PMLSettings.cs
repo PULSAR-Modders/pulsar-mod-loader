@@ -13,6 +13,10 @@ namespace PulsarModLoader.CustomGUI
         public override string Name() => "PulsarModLoader";
         public override void Draw()
         {
+            if (Button($"Auto Download Readme: {PMLConfig.AutoPullReadme}"))
+            {
+                PMLConfig.AutoPullReadme.Value = !PMLConfig.AutoPullReadme.Value;
+            }
             if (Button("Debug Mode: " + (PMLConfig.DebugMode ? "Enabled" : "Disabled")))
             {
                 PMLConfig.DebugMode.Value = !PMLConfig.DebugMode.Value;

@@ -59,6 +59,17 @@ namespace PulsarModLoader
             }
         }
 
+        /// <ReadmeURL>
+        /// URL To the readme of the mod.
+        /// </ReadmeURL>
+        public virtual string ReadmeURL
+        {
+            get
+            {
+                return string.Empty;
+            }
+        }
+
         /// <summary>
         /// Version of mod.  Displayed in mod list.
         /// </summary>

@@ -7,7 +7,10 @@ using HarmonyLib;
 using PulsarModLoader.Utilities;
 using Steamworks;
 using UnityEngine;
+using static System.Net.WebRequestMethods;
 using static UnityEngine.GUILayout;
+using System.Net.Http;
+using System.Collections.Specialized;
 
 namespace PulsarModLoader.CustomGUI
 {
@@ -73,8 +76,8 @@ namespace PulsarModLoader.CustomGUI
                 Window = GUI.Window(999910, Window, WindowFunction, "ModManager");
             }
         }
-        
-        void WindowFunction(int WindowID)
+        NameValueCollection Readme = new NameValueCollection();
+        async void WindowFunction(int WindowID)
         {
             
             BeginHorizontal(); // TAB Start
@@ -140,6 +143,27 @@ namespace PulsarModLoader.CustomGUI
 									else if(Button($"Update this mod to version {result.Data.Version}?"))
                                             ModUpdateCheck.UpdateMod(result);
 								}
+
+
+
+                                if (mod.ReadmeURL != string.Empty) 
+                                {
+                                    if(Readme[mod.Name] == null)
+                                    {
+                                        if (Button("Load Readme"))
+                                        {
+                                            var Client = new HttpClient();
+                                            HttpResponseMessage response = await Client.GetAsync(mod.ReadmeURL);
+                                            Readme.Add(mod.Name, response.Content.ReadAsStringAsync().Result);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Label($"Readme:\n{Readme[mod.Name]}");
+                                    }
+                                    
+                                }
+
                             }
                             EndScrollView();
                         }

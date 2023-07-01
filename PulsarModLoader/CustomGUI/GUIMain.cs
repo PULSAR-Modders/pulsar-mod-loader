@@ -76,8 +76,17 @@ namespace PulsarModLoader.CustomGUI
                 Window = GUI.Window(999910, Window, WindowFunction, "ModManager");
             }
         }
-        
-        async void WindowFunction(int WindowID)
+
+        async void GetReadme(string ModName, string ModURL)
+        {
+            var Client = new HttpClient();
+            HttpResponseMessage response = await Client.GetAsync(ModURL);
+            if (Readme[ModName] == null)
+            {
+                Readme.Add(ModName, await response.Content.ReadAsStringAsync());
+            }
+        }
+        void WindowFunction(int WindowID)
         {
             
             BeginHorizontal(); // TAB Start
@@ -144,15 +153,23 @@ namespace PulsarModLoader.CustomGUI
                                             ModUpdateCheck.UpdateMod(result);
 								}
 
+                                //Get Readme from URL
                                 if (mod.ReadmeURL != string.Empty) 
                                 {
-                                    if(Readme[mod.Name] == null)
+                                    if (Readme[mod.Name] == null )
                                     {
-                                        if (Button("Load Readme"))
+                                        if (PMLConfig.AutoPullReadme.Value)
                                         {
-                                            var Client = new HttpClient();
-                                            HttpResponseMessage response = await Client.GetAsync(mod.ReadmeURL);
-                                            Readme.Add(mod.Name, response.Content.ReadAsStringAsync().Result);
+                                            Label("Readme:\nPulling readme, Please wait...");
+                                            GetReadme(mod.Name, mod.ReadmeURL);
+                                            //Label(Readme[mod.Name]);
+                                        }
+                                        else
+                                        {
+                                            if (Button("Load Readme"))
+                                            {
+                                                GetReadme(mod.Name, mod.ReadmeURL);
+                                            }
                                         }
                                     }
                                     else

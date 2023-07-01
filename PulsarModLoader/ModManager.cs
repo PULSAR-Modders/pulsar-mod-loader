@@ -210,12 +210,8 @@ namespace PulsarModLoader
             modDirectories.Add(modsDir);
 
             //Unzip mods
-            Logger.Info("ZipMods");
-            Logger.Info((Directory.GetFiles(modsDir, "*.zip")).ToString());
             foreach (string ZipPath in Directory.GetFiles(modsDir, "*.zip"))
             {
-                Logger.Info($"Found: {ZipPath}");
-
                 //Get the full path from the mods dir path
                 string ZipExtractPath = Path.GetFullPath(modsDir);
 
@@ -225,6 +221,7 @@ namespace PulsarModLoader
                 {
                     ZipExtractPath += Path.DirectorySeparatorChar;
                 }
+
                 //Open zip file index and extract only dll files
                 using (ZipArchive Archive = ZipFile.OpenRead(ZipPath))
                 {
@@ -237,7 +234,6 @@ namespace PulsarModLoader
                             //If the mod exists, delete it and replace with this one.
                             if (File.Exists(DestinationPath))
                             {
-                                Logger.Info($"Delete Old: {DestinationPath}");
                                 File.Delete(DestinationPath);
                             }
 
@@ -252,7 +248,6 @@ namespace PulsarModLoader
 
                 //Delete Zip archive once we are done as we have the DLL's now
                 File.Delete(ZipPath);
-                
             }
 
             // Load mods

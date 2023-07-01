@@ -76,14 +76,8 @@ namespace PulsarModLoader.CustomGUI
                 Window = GUI.Window(999910, Window, WindowFunction, "ModManager");
             }
         }
-
-        async void GetReadme(string ModName, string ModURL)
-        {
-            var Client = new HttpClient();
-            HttpResponseMessage response = await Client.GetAsync(ModURL);
-            Readme.Add(ModName, await response.Content.ReadAsStringAsync());
-        }
-        void WindowFunction(int WindowID)
+        
+        async void WindowFunction(int WindowID)
         {
             
             BeginHorizontal(); // TAB Start
@@ -150,25 +144,15 @@ namespace PulsarModLoader.CustomGUI
                                             ModUpdateCheck.UpdateMod(result);
 								}
 
-                                //Readme bit
                                 if (mod.ReadmeURL != string.Empty) 
                                 {
-                                    //Only run this bit if the readme is downloaded
-                                    if (Readme[mod.Name] == null )
+                                    if(Readme[mod.Name] == null)
                                     {
-                                        //If we should auto download readme do that
-                                        if (PMLConfig.AutoPullReadme.Value)
+                                        if (Button("Load Readme"))
                                         {
-                                            Label("Readme:\nPulling readme, Please wait...");
-                                            GetReadme(mod.Name, mod.ReadmeURL);
-                                        }
-                                        else
-                                        {
-                                            //else display a button and download if asked
-                                            if (Button("Load Readme"))
-                                            {
-                                                GetReadme(mod.Name, mod.ReadmeURL);
-                                            }
+                                            var Client = new HttpClient();
+                                            HttpResponseMessage response = await Client.GetAsync(mod.ReadmeURL);
+                                            Readme.Add(mod.Name, response.Content.ReadAsStringAsync().Result);
                                         }
                                     }
                                     else

@@ -81,7 +81,10 @@ namespace PulsarModLoader.CustomGUI
         {
             var Client = new HttpClient();
             HttpResponseMessage response = await Client.GetAsync(ModURL);
-            Readme.Add(ModName, await response.Content.ReadAsStringAsync());
+            if (Readme[ModName] == null)
+            {
+                Readme.Add(ModName, await response.Content.ReadAsStringAsync());
+            }
         }
         void WindowFunction(int WindowID)
         {
@@ -150,21 +153,19 @@ namespace PulsarModLoader.CustomGUI
                                             ModUpdateCheck.UpdateMod(result);
 								}
 
-                                //Readme bit
+                                //Get Readme from URL
                                 if (mod.ReadmeURL != string.Empty) 
                                 {
-                                    //Only run this bit if the readme is downloaded
                                     if (Readme[mod.Name] == null )
                                     {
-                                        //If we should auto download readme do that
                                         if (PMLConfig.AutoPullReadme.Value)
                                         {
                                             Label("Readme:\nPulling readme, Please wait...");
                                             GetReadme(mod.Name, mod.ReadmeURL);
+                                            //Label(Readme[mod.Name]);
                                         }
                                         else
                                         {
-                                            //else display a button and download if asked
                                             if (Button("Load Readme"))
                                             {
                                                 GetReadme(mod.Name, mod.ReadmeURL);

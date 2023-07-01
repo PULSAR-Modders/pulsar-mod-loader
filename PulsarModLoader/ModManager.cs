@@ -210,44 +210,50 @@ namespace PulsarModLoader
             modDirectories.Add(modsDir);
 
             //Unzip mods
-            foreach (string ZipPath in Directory.GetFiles(modsDir, "*.zip"))
+            if (PMLConfig.ZipModLoad)
             {
-                //Get the full path from the mods dir path
-                string ZipExtractPath = Path.GetFullPath(modsDir);
-
-                //Ensure that the mods dir path has a path seperator else add it.
-                //This stops a path traversal attack from the zip file
-                if (!ZipExtractPath.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.Ordinal))
+                foreach (string ZipPath in Directory.GetFiles(modsDir, "*.zip"))
                 {
-                    ZipExtractPath += Path.DirectorySeparatorChar;
-                }
+                    //Get the full path from the mods dir path
+                    string ZipExtractPath = Path.GetFullPath(modsDir);
 
-                //Open zip file index and extract only dll files
-                using (ZipArchive Archive = ZipFile.OpenRead(ZipPath))
-                {
-                    foreach (ZipArchiveEntry Entry in Archive.Entries)
+                    //Ensure that the mods dir path has a path seperator else add it.
+                    //This stops a path traversal attack from the zip file
+                    if (!ZipExtractPath.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.Ordinal))
                     {
-                        if (Entry.FullName.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
+                        ZipExtractPath += Path.DirectorySeparatorChar;
+                    }
+
+                    //Open zip file index and extract only dll files
+                    using (ZipArchive Archive = ZipFile.OpenRead(ZipPath))
+                    {
+                        foreach (ZipArchiveEntry Entry in Archive.Entries)
                         {
-                            string DestinationPath = Path.GetFullPath(Path.Combine(modsDir, Entry.Name));
-
-                            //If the mod exists, delete it and replace with this one.
-                            if (File.Exists(DestinationPath))
+                            if (Entry.FullName.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
                             {
-                                File.Delete(DestinationPath);
-                            }
+                                string DestinationPath = Path.GetFullPath(Path.Combine(modsDir, Entry.Name));
 
-                            //Check the Destination is in the mods dir, then extract
-                            if (DestinationPath.StartsWith(modsDir, StringComparison.Ordinal))
-                            {
-                                Entry.ExtractToFile(DestinationPath);
+                                //If the mod exists, delete it and replace with this one.
+                                if (File.Exists(DestinationPath))
+                                {
+                                    File.Delete(DestinationPath);
+                                }
+
+                                //Check the Destination is in the mods dir, then extract
+                                if (DestinationPath.StartsWith(modsDir, StringComparison.Ordinal))
+                                {
+                                    Entry.ExtractToFile(DestinationPath);
+                                }
                             }
                         }
                     }
-                }
 
-                //Delete Zip archive once we are done as we have the DLL's now
-                File.Delete(ZipPath);
+                    //Delete Zip archive once we are done as we have the DLL's now
+                    if (PMLConfig.ZipModMode)
+                    {
+                        File.Delete(ZipPath);
+                    }
+                }
             }
 
             // Load mods

@@ -54,7 +54,7 @@ namespace PulsarModLoader.CustomGUI
 
             EndHorizontal();
             BeginHorizontal();
-            Label($"Keep Zips After Load: {PMLConfig.ZipModMode}");
+            Label($"Delete Zips After Load: {PMLConfig.ZipModMode}");
             if (Button("Toggle Zip Mod Mode"))
             {
                 PMLConfig.ZipModMode.Value = !PMLConfig.ZipModMode.Value;

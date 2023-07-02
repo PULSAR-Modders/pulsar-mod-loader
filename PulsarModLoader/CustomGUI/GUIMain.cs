@@ -9,12 +9,21 @@ using UnityEngine;
 using static UnityEngine.GUILayout;
 using System.Net.Http;
 using System.Collections.Specialized;
+using System.Globalization;
+using System.IO;
+using System.IO.Compression;
+using Logger = PulsarModLoader.Utilities.Logger;
+using System.Threading.Tasks;
+using System.Threading;
+using static UnityEngine.UI.GridLayoutGroup;
 
 namespace PulsarModLoader.CustomGUI
 {
     internal class GUIMain : MonoBehaviour
     {
         NameValueCollection Readme = new NameValueCollection();
+        NameValueCollection ReadmeLock = new NameValueCollection(); //fuck you
+
 
         public static GUIMain Instance = null;
         public bool GUIActive = false;
@@ -77,13 +86,43 @@ namespace PulsarModLoader.CustomGUI
             }
         }
 
-        async void GetReadme(string ModName, string ModURL)
+        readonly CultureInfo ci;
+        private void GetReadme(string ModName, string ModURL)
         {
-            var Client = new HttpClient();
-            HttpResponseMessage response = await Client.GetAsync(ModURL);
-            if (Readme[ModName] == null)
+            //                            \/ Fuck you in particular \/
+            if (Readme[ModName] == null && ReadmeLock[ModName] == null)
             {
-                Readme.Add(ModName, await response.Content.ReadAsStringAsync());
+                ReadmeLock.Add(ModName, String.Empty);
+
+                if (ModURL.StartsWith("file://", false, ci))
+                {
+                    string ModZip = Path.Combine(Directory.GetCurrentDirectory(), "Mods", ModName + ".zip");
+                    if (PMLConfig.ZipModLoad && !PMLConfig.ZipModMode && File.Exists(ModZip))
+                    {
+                        using (ZipArchive Archive = ZipFile.OpenRead(ModZip))
+                        {
+                            foreach (ZipArchiveEntry Entry in Archive.Entries)
+                            {
+                                if (Entry.FullName.EndsWith(ModURL.Replace("file://", String.Empty).Trim('/'), StringComparison.OrdinalIgnoreCase))
+                                {
+                                    StreamReader StreamReadme = new StreamReader(Entry.Open());
+                                    Readme.Add(ModName, StreamReadme.ReadToEnd());
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Readme.Add(ModName, "Readme not found.");
+                    }
+                }
+                else
+                {
+                    var Client = new HttpClient();
+                    HttpResponseMessage response = Client.GetAsync(ModURL).Result;
+                    Readme.Add(ModName, response.Content.ReadAsStringAsync().Result);
+                }
             }
         }
         void WindowFunction(int WindowID)
@@ -158,18 +197,10 @@ namespace PulsarModLoader.CustomGUI
                                 {
                                     if (Readme[mod.Name] == null )
                                     {
-                                        if (PMLConfig.AutoPullReadme.Value)
+                                        if (PMLConfig.AutoPullReadme.Value || Button("Load Readme"))
                                         {
                                             Label("Readme:\nPulling readme, Please wait...");
-                                            GetReadme(mod.Name, mod.ReadmeURL);
-                                            //Label(Readme[mod.Name]);
-                                        }
-                                        else
-                                        {
-                                            if (Button("Load Readme"))
-                                            {
-                                                GetReadme(mod.Name, mod.ReadmeURL);
-                                            }
+                                            new Thread(() => { GetReadme(mod.Name, mod.ReadmeURL); }).Start();
                                         }
                                     }
                                     else

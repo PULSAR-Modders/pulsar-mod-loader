@@ -18,50 +18,47 @@ namespace PulsarInjector
         {
             string targetAssemblyPath = null;
 
+            //Attempt install to argument path
             if (args.Length > 0)
             {
                 targetAssemblyPath = args[0];
-            }
-            else
-            {
-                string steamPath = FindSteam();
-                if (steamPath != null)
+                if (AttemptInstallModLoader(targetAssemblyPath))
                 {
-                    Logger.Info("Found Steam at " + steamPath);
-                    string pulsarPath = GetPulsarPath(steamPath);
-                    if (pulsarPath != null)
-                    {
-                        Logger.Info("Found Pulsar at " + pulsarPath);
-                        targetAssemblyPath = pulsarPath + Path.DirectorySeparatorChar + "PULSAR_LostColony_Data" +
-                            Path.DirectorySeparatorChar + "Managed" + Path.DirectorySeparatorChar + "Assembly-CSharp.dll";
-                    }
-                }
-            }
-
-            Logger.Info("Searching for " + targetAssemblyPath);
-
-            if (File.Exists(targetAssemblyPath))
-            {
-                if (args.Length > 0)
-                {
-                    InstallModLoader(targetAssemblyPath);
                     return;
                 }
-                else
+            }
+
+            //Attempt install to steam
+            Logger.Info("Searching for Steam installation.");
+            string steamPath = FindSteam();
+            if (steamPath != null)
+            {
+                Logger.Info("Found Steam at " + steamPath);
+                targetAssemblyPath = GetPulsarPathFromSteam(steamPath); 
+                //^^^ writes it's own lines to the console.
+                //If found:
+                //Logger.Info("Found Pulsar: Lost Colony Installation at " + pulsarPath);
+
+                if (targetAssemblyPath != null)
                 {
-                    Logger.Info("File found. Install the mod loader here?");
+                    Logger.Info("Install the mod loader here?");
                     Logger.Info("(Y/N)");
                     string answer = Console.ReadLine();
-                    if (answer.ToLower().StartsWith("y"))
+                    if (answer.ToLower().StartsWith("y") && AttemptInstallModLoader(targetAssemblyPath))
                     {
-                        InstallModLoader(targetAssemblyPath);
                         return;
                     }
                 }
             }
-            
+            else
+            {
+                Logger.Info("Steam Installation not found.");
+            }
+
+            //Attempt install from windows OFD
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
+                Logger.Info("Setting up OFD for windows. Please select a pulsar directory.");
                 OpenFileDialog ofd = new OpenFileDialog
                 {
                     InitialDirectory = "c:\\",
@@ -72,22 +69,32 @@ namespace PulsarInjector
                 {
                     targetAssemblyPath = ofd.FileName;
                     Logger.Info("Selected " + targetAssemblyPath);
-                    if (File.Exists(targetAssemblyPath))
+                    if (AttemptInstallModLoader(targetAssemblyPath))
                     {
-                        InstallModLoader(targetAssemblyPath);
                         return;
                     }
                 }
+                else
+                {
+                    Logger.Info("OFD failed.");
+                }
             }
 
-            Logger.Info("Unable to find file");
+            //Previous install attempts unsuccessfull, finishing dialogue.
+
+            Console.ForegroundColor = ConsoleColor.Red;
+            Logger.Info("Unable to find file.");
+            Console.ForegroundColor = ConsoleColor.Yellow;
             Logger.Info("Please specify an assembly to inject (e.g., PULSARLostColony/PULSAR_LostColony_Data/Managed/Assembly-CSharp.dll)");
+            Logger.Info("Ensure you have a mono branch copy of Pulsar: Lost Colony.");
+            Logger.Info("Steam Users: Library > Pulsar: Lost Colony > Properties > Betas > 'mono - Mono branch'");
+            Console.ForegroundColor = ConsoleColor.Gray;
 
             Logger.Info("Press any key to continue...");
             Console.ReadKey();
         }
 
-        public static string FindSteam()
+        static string FindSteam()
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
@@ -111,7 +118,7 @@ namespace PulsarInjector
             return null;
         }
 
-        public static string GetPulsarPath(string steamDir)
+        static string GetPulsarPathFromSteam(string steamDir)
         {
             string libraryFolders = steamDir + Path.DirectorySeparatorChar + "steamapps" + Path.DirectorySeparatorChar + "libraryfolders.vdf";
             if (!File.Exists(libraryFolders))
@@ -126,24 +133,70 @@ namespace PulsarInjector
             {
                 int index = fileContents.IndexOf("\"path\"\t\t\"") + 9;
                 int index2;
-                for (index2 = index; fileContents[index2] != '"'; index2++);
+                for (index2 = index; fileContents[index2] != '"'; index2++) ;
                 paths.Add(fileContents.Substring(index, index2 - index));
                 fileContents = fileContents.Substring(index2);
             }
+
+            string pulsarPath = null;
             foreach (string path in paths)
             {
-                string pulsarPath = path + Path.DirectorySeparatorChar + "steamapps" + Path.DirectorySeparatorChar + "common" + Path.DirectorySeparatorChar + "PULSARLostColony";
+                pulsarPath = path + Path.DirectorySeparatorChar + "steamapps" + Path.DirectorySeparatorChar + "common" + Path.DirectorySeparatorChar + "PULSARLostColony";
                 Logger.Info("Checking " + pulsarPath);
                 if (Directory.Exists(pulsarPath))
                 {
-                    return pulsarPath;
+                    Logger.Info("Found Pulsar: Lost Colony Installation at " + pulsarPath);
+                    return pulsarPath + Path.DirectorySeparatorChar + "PULSAR_LostColony_Data" + Path.DirectorySeparatorChar + "Managed" + Path.DirectorySeparatorChar + "Assembly-CSharp.dll";
                 }
             }
-
+            Logger.Info("Could not find Pulsar: Lost Colony installation in steam");
             return null;
         }
 
-        public static void InstallModLoader(string targetAssemblyPath)
+        static bool AttemptInstallModLoader(string inputDir)
+        {
+            Logger.Info("Checking file at " + inputDir);
+            if (!inputDir.EndsWith("Assembly-CSharp.dll") && inputDir.Contains("PULSARLostColony"))
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Logger.Info("Path contains game directory, but isn't pointing to 'Assembly-CSharp.dll'");
+                Logger.Info("Attempting to fix path.");
+                Console.ForegroundColor = ConsoleColor.Gray;
+
+                if (inputDir.Contains("PULSAR_LostColony_Data"))
+                {
+                    int Index = inputDir.LastIndexOf("PULSAR_LostColony_Data");
+                    inputDir = inputDir.Remove(Index);
+                    inputDir += "PULSARLostColony" + Path.DirectorySeparatorChar + "PULSAR_LostColony_Data" + Path.DirectorySeparatorChar + "Managed" + Path.DirectorySeparatorChar + "Assembly-CSharp.dll";
+                }
+                else
+                {
+                    int Index = inputDir.LastIndexOf("PULSARLostColony");
+                    inputDir = inputDir.Remove(Index);
+                    inputDir += "PULSARLostColony" + Path.DirectorySeparatorChar + "PULSAR_LostColony_Data" + Path.DirectorySeparatorChar + "Managed" + Path.DirectorySeparatorChar + "Assembly-CSharp.dll";
+                }
+            }
+            if (inputDir.EndsWith("Assembly-CSharp.dll") && File.Exists(inputDir))
+            {
+                Logger.Info("File valid, Attempting installation at " + inputDir);
+                InstallModLoader(inputDir);
+                return true;
+            }
+
+            if (!File.Exists(inputDir) && inputDir.Contains("PULSARLostColony"))
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Logger.Info("A Pulsar: Lost Colony installation was detected but doesn't contain Mono branch files.");
+                Console.ForegroundColor = ConsoleColor.Gray;
+            }
+
+            Console.ForegroundColor = ConsoleColor.Red;
+            Logger.Info("File not valid.");
+            Console.ForegroundColor = ConsoleColor.Gray;
+            return false;
+        }
+
+        static void InstallModLoader(string targetAssemblyPath)
         {
             Logger.Info("=== Backups ===");
             string backupPath = Path.ChangeExtension(targetAssemblyPath, "bak");
@@ -197,7 +250,7 @@ namespace PulsarInjector
             Console.ReadKey();
         }
 
-        public static void CopyAssemblies(string targetAssemblyDir)
+        static void CopyAssemblies(string targetAssemblyDir)
         {
             string PulsarModLoaderDll = CheckForUpdates(typeof(PulsarModLoader.PulsarMod).Assembly.Location);
 
@@ -224,7 +277,7 @@ namespace PulsarInjector
             };
         }
 
-        public static string CheckForUpdates(string CurrentPMLDll)
+        static string CheckForUpdates(string CurrentPMLDll)
         {
             string version = System.Diagnostics.FileVersionInfo.GetVersionInfo(CurrentPMLDll).FileVersion;
             bool useOtherDll = false;
@@ -244,7 +297,7 @@ namespace PulsarInjector
                         useOtherDll = true;
                         break;
                     }
-                    else if (UpdatedVersionAsNum[i] < versionAsNum[i]) 
+                    else if (UpdatedVersionAsNum[i] < versionAsNum[i])
                     {
                         break;
                     }

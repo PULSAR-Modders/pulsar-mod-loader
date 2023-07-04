@@ -13,10 +13,20 @@ namespace PulsarInjector
 {
     class Injector
     {
+        static bool QuietMode = false;
         [STAThread] //Required for file dialog to work
         static void Main(string[] args)
         {
             string targetAssemblyPath = null;
+
+            foreach (string arg in args)
+            {
+                if (arg.ToLower().Contains("-q") && !arg.Contains(Path.DirectorySeparatorChar))
+                {
+                    QuietMode = true;
+                    break;
+                }
+            }
 
             //Attempt install to argument path
             if (args.Length > 0)
@@ -41,6 +51,11 @@ namespace PulsarInjector
 
                 if (targetAssemblyPath != null)
                 {
+                    if(QuietMode && AttemptInstallModLoader(targetAssemblyPath))
+                    {
+                        return;
+                    }
+
                     Logger.Info("Install the mod loader here?");
                     Logger.Info("(Y/N)");
                     string answer = Console.ReadLine();
@@ -279,6 +294,11 @@ namespace PulsarInjector
 
         static string CheckForUpdates(string CurrentPMLDll)
         {
+            if(QuietMode)
+            {
+                return CurrentPMLDll;
+            }
+
             string version = System.Diagnostics.FileVersionInfo.GetVersionInfo(CurrentPMLDll).FileVersion;
             bool useOtherDll = false;
 

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using UnityEngine;
 using static UnityEngine.GUILayout;
 
@@ -10,7 +9,6 @@ namespace PulsarModLoader.CustomGUI
 {
     class PMLSettings : ModSettingsMenu
     {
-
         public override string Name() => "PulsarModLoader";
         public override void Draw()
         {
@@ -40,7 +38,11 @@ namespace PulsarModLoader.CustomGUI
 
             //Zip Mod Settings
             HorizontalSlider(0, 100, 100);
+            BeginHorizontal();
+            FlexibleSpace();
             Label("Zip Mods");
+            FlexibleSpace();
+            EndHorizontal();
             BeginHorizontal();
             Label($"Load Mods From Zips: {PMLConfig.ZipModLoad.Value}");
             if (Button("Toggle Loading Of Zip Mods"))
@@ -50,13 +52,47 @@ namespace PulsarModLoader.CustomGUI
 
             EndHorizontal();
             BeginHorizontal();
-            Label($"Keep Zips After Load: {PMLConfig.ZipModMode}");
+            Label($"Delete Zips After Load: {PMLConfig.ZipModMode}");
             if (Button("Toggle Zip Mod Mode"))
             {
                 PMLConfig.ZipModMode.Value = !PMLConfig.ZipModMode.Value;
             }
             EndHorizontal();
+
+            //Max Load Size Settings
             HorizontalSlider(0, 100, 100);
+            BeginHorizontal();
+            FlexibleSpace();
+            Label($"File Size Loading Limits\nCurrent Size: {PMLConfig.MaxLoadSizeBytes.Value / 1048576}MiB");
+            FlexibleSpace();
+            EndHorizontal();
+            BeginHorizontal();
+            if(Button("-10MiB") && PMLConfig.MaxLoadSizeBytes.Value > PMLConfig.DefaultMaxLoadSizeBytes)
+            {
+                PMLConfig.MaxLoadSizeBytes.Value = PMLConfig.MaxLoadSizeBytes.Value - PMLConfig.DefaultMaxLoadSizeBytes;
+            }
+            if(Button("Default"))
+            {
+                PMLConfig.MaxLoadSizeBytes.Value = PMLConfig.DefaultMaxLoadSizeBytes;
+            }
+            if (Button("+10MiB") && PMLConfig.MaxLoadSizeBytes.Value <= (uint.MaxValue - PMLConfig.DefaultMaxLoadSizeBytes))
+            {
+                PMLConfig.MaxLoadSizeBytes.Value = PMLConfig.MaxLoadSizeBytes.Value + PMLConfig.DefaultMaxLoadSizeBytes;
+            }
+            EndHorizontal();
+            Label("Dont Change This Unless You Understand What It Does");
+
+            //Readme Loading Settings
+            HorizontalSlider(0, 0, 0);
+            BeginHorizontal();
+            FlexibleSpace();
+            Label("Readme Settings");
+            FlexibleSpace();
+            EndHorizontal();
+            if (Button($"Readmes Will be loaded: {(PMLConfig.AutoPullReadme.Value ? "Automatically" : "Manually")}"))
+            {
+                PMLConfig.AutoPullReadme.Value = !PMLConfig.AutoPullReadme.Value;
+            }
         }
     }
 }

@@ -167,7 +167,7 @@ namespace PulsarInjector
                 {
                     int Index = inputDir.LastIndexOf("PULSAR_LostColony_Data");
                     inputDir = inputDir.Remove(Index);
-                    inputDir += "PULSARLostColony" + Path.DirectorySeparatorChar + "PULSAR_LostColony_Data" + Path.DirectorySeparatorChar + "Managed" + Path.DirectorySeparatorChar + "Assembly-CSharp.dll";
+                    inputDir += "PULSAR_LostColony_Data" + Path.DirectorySeparatorChar + "Managed" + Path.DirectorySeparatorChar + "Assembly-CSharp.dll";
                 }
                 else
                 {

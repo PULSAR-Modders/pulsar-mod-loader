@@ -14,6 +14,9 @@ namespace PulsarModLoader
         public static SaveValue<bool> ZipModLoad = new SaveValue<bool>("ZipModLoad", true);
         public static SaveValue<bool> ZipModMode = new SaveValue<bool>("ZipModMode", false);
 
+        public static uint DefaultMaxLoadSizeBytes = 10485760;
+        public static SaveValue<uint> MaxLoadSizeBytes = new SaveValue<uint>("MaxLoadSizeBytes", DefaultMaxLoadSizeBytes);
+
         public static SaveValue<DateTime> LastPMLUpdateCheck = new SaveValue<DateTime>("LastPMLUpdateCheck", DateTime.Today.AddDays(-2));
 
 		public static void SetDefault()

@@ -8,23 +8,17 @@ using PulsarModLoader.Utilities;
 using UnityEngine;
 using static UnityEngine.GUILayout;
 using System.Net.Http;
-using System.Collections.Specialized;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
-using Logger = PulsarModLoader.Utilities.Logger;
-using System.Threading.Tasks;
 using System.Threading;
-using static UnityEngine.UI.GridLayoutGroup;
 
 namespace PulsarModLoader.CustomGUI
 {
     internal class GUIMain : MonoBehaviour
     {
-        NameValueCollection Readme = new NameValueCollection();
-        NameValueCollection ReadmeLock = new NameValueCollection(); //fuck you
-
-
+        Dictionary<string, string> Readme = new Dictionary<string, string>();
+        readonly CultureInfo ci;
         public static GUIMain Instance = null;
         public bool GUIActive = false;
         static float Height = .40f;
@@ -86,14 +80,12 @@ namespace PulsarModLoader.CustomGUI
             }
         }
 
-        readonly CultureInfo ci;
         private void GetReadme(string ModName, string ModURL)
         {
-            //                            \/ Fuck you in particular \/
-            if (Readme[ModName] == null && ReadmeLock[ModName] == null)
+            bool ReadmeLocked = Readme.ContainsKey(ModName);
+            if (!ReadmeLocked)
             {
-                ReadmeLock.Add(ModName, String.Empty);
-
+                Readme.Add(ModName, String.Empty);
                 if (ModURL.StartsWith("file://", false, ci))
                 {
                     string ModZip = Path.Combine(Directory.GetCurrentDirectory(), "Mods", ModName + ".zip");
@@ -105,8 +97,15 @@ namespace PulsarModLoader.CustomGUI
                             {
                                 if (Entry.FullName.EndsWith(ModURL.Replace("file://", String.Empty).Trim('/'), StringComparison.OrdinalIgnoreCase))
                                 {
-                                    StreamReader StreamReadme = new StreamReader(Entry.Open());
-                                    Readme.Add(ModName, StreamReadme.ReadToEnd());
+                                    if (Entry.Length > PMLConfig.MaxLoadSizeBytes.Value)
+                                    {
+                                        StreamReader StreamReadme = new StreamReader(Entry.Open());
+                                        Readme[ModName] = StreamReadme.ReadToEnd();
+                                    }
+                                    else
+                                    {
+                                        Readme[ModName] = $"Error: Readme is too large.";
+                                    }
                                     break;
                                 }
                             }
@@ -114,17 +113,32 @@ namespace PulsarModLoader.CustomGUI
                     }
                     else
                     {
-                        Readme.Add(ModName, "Readme not found.");
+                        Readme[ModName] = "Error: Readme not found.";
                     }
                 }
                 else
                 {
-                    var Client = new HttpClient();
-                    HttpResponseMessage response = Client.GetAsync(ModURL).Result;
-                    Readme.Add(ModName, response.Content.ReadAsStringAsync().Result);
+                    using (var Client = new HttpClient())
+                    {
+                        Client.MaxResponseContentBufferSize = PMLConfig.MaxLoadSizeBytes.Value;
+                        using (HttpResponseMessage Response = Client.GetAsync(ModURL).Result)
+                        {
+                            if (Response.IsSuccessStatusCode)
+                            {
+                                //Readme.Add(ModName, Response.Content.ReadAsStringAsync().Result); //Since we lock using string.empty, we must replace the value. 
+                                Readme[ModName] = Response.Content.ReadAsStringAsync().Result;
+                            }
+                            else
+                            {
+                                Readme[ModName] = $"Error: HTTP Code {Response.StatusCode}.";
+                            }
+
+                        }
+                    }
                 }
             }
         }
+
         void WindowFunction(int WindowID)
         {
             
@@ -193,20 +207,22 @@ namespace PulsarModLoader.CustomGUI
 								}
 
                                 //Get Readme from URL
-                                if (mod.ReadmeURL != string.Empty) 
+                                if (!string.IsNullOrEmpty(mod.ReadmeURL)) 
                                 {
-                                    if (Readme[mod.Name] == null )
+                                    bool ReadmeLocked = Readme.TryGetValue(mod.Name, out string ReadmeValue);
+                                    bool ReadmeEmpty = string.IsNullOrEmpty(ReadmeValue);
+//                                    Logger.Info($"locked,empty:{ReadmeLocked},{ReadmeEmpty}");
+                                    if (ReadmeEmpty && !ReadmeLocked)
                                     {
                                         if (PMLConfig.AutoPullReadme.Value || Button("Load Readme"))
                                         {
-                                            Label("Readme:\nPulling readme, Please wait...");
                                             new Thread(() => { GetReadme(mod.Name, mod.ReadmeURL); }).Start();
                                         }
                                     }
-                                    else
-                                    {
-                                        Label($"Readme:\n{Readme[mod.Name]}");
-                                    }
+                                   else
+                                   {
+                                        Label($"Readme:\n\n{Readme[mod.Name]}");
+                                   }
                                 }
                             }
                             EndScrollView();

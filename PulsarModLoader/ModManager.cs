@@ -214,7 +214,6 @@ namespace PulsarModLoader
             {
                 foreach (string ZipPath in Directory.GetFiles(modsDir, "*.zip"))
                 {
-                    //Get the full path from the mods dir path
                     string ZipExtractPath = Path.GetFullPath(modsDir);
 
                     //Ensure that the mods dir path has a path seperator else add it.
@@ -231,24 +230,30 @@ namespace PulsarModLoader
                         {
                             if (Entry.FullName.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
                             {
+                                if (Entry.Length < PMLConfig.MaxLoadSizeBytes.Value)
+                                {
+                                    Logger.Info($"Error: Extraction of {Entry.Name} failed, Too Large!)");
+                                    break;
+                                }
+
                                 string DestinationPath = Path.GetFullPath(Path.Combine(modsDir, Entry.Name));
 
-                                //If the mod exists, delete it and replace with this one.
                                 if (File.Exists(DestinationPath))
                                 {
                                     File.Delete(DestinationPath);
                                 }
 
-                                //Check the Destination is in the mods dir, then extract
-                                if (DestinationPath.StartsWith(modsDir, StringComparison.Ordinal))
+                                if (!DestinationPath.StartsWith(modsDir, StringComparison.Ordinal))
                                 {
-                                    Entry.ExtractToFile(DestinationPath);
+                                    Logger.Info($"Extraction Path for {Entry.Name} !modsDir");
+                                    break;
                                 }
+
+                                Entry.ExtractToFile(DestinationPath);
                             }
                         }
                     }
 
-                    //Delete Zip archive once we are done as we have the DLL's now
                     if (PMLConfig.ZipModMode)
                     {
                         File.Delete(ZipPath);

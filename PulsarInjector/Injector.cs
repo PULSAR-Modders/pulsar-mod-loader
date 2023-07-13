@@ -3,6 +3,7 @@ using PulsarModLoader.Injections;
 using PulsarModLoader.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -261,8 +262,18 @@ namespace PulsarInjector
 
             Logger.Info("Success!  You may now run the game normally.");
 
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                Logger.Info("The mods folder will be opened when you continue.");
+            }
+
             Logger.Info("Press any key to continue...");
             Console.ReadKey();
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                Process.Start("explorer.exe", Modsdir);
+            }
         }
 
         static void CopyAssemblies(string targetAssemblyDir)

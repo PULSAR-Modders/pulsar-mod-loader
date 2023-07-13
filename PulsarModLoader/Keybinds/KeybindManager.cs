@@ -44,6 +44,10 @@ namespace PulsarModLoader.Keybinds
         {
             return PLInput.Instance.GetButtonDown(inID);
         }
+        public bool GetButton(string inID)
+        {
+            return PLInput.Instance.GetButton(inID);
+        }
 
         public void NewBind(string inName, string inID, string inCategory, string inKey)
         {

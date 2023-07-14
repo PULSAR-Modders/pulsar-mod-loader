@@ -3,6 +3,7 @@ using PulsarModLoader.Injections;
 using PulsarModLoader.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -256,10 +257,16 @@ namespace PulsarInjector
             Logger.Info("=== Injecting Harmony Initialization ===");
             InjectionTools.PatchMethod(targetAssemblyPath, "PLGlobal", "Awake", typeof(HarmonyInjector), "InitializeHarmony");
 
-            Logger.Info("=== Copying Assemblies ===");
+            //CopyAssemblies. Has loggers in method.
             CopyAssemblies(Path.GetDirectoryName(targetAssemblyPath));
 
             Logger.Info("Success!  You may now run the game normally.");
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                Logger.Info("The mods folder is being opened.");
+                Process.Start("explorer.exe", Modsdir);
+            }
 
             Logger.Info("Press any key to continue...");
             Console.ReadKey();
@@ -269,6 +276,7 @@ namespace PulsarInjector
         {
             string PulsarModLoaderDll = CheckForUpdates(typeof(PulsarModLoader.PulsarMod).Assembly.Location);
 
+            Logger.Info("=== Copying Assemblies ===");
             /* Copy important assemblies to target assembly's directory */
             string sourceDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             string[] copyables = new string[] {
@@ -310,6 +318,7 @@ namespace PulsarInjector
                 short[] UpdatedVersionAsNum = UpdatedVersion.Split('.').Select(s => short.Parse(s)).ToArray();
 
                 for (byte i = 0; i < 4; i++)
+                {
                     if (UpdatedVersionAsNum[i] > versionAsNum[i])
                     {
                         CurrentPMLDll = UpdatedPMLDll;
@@ -321,14 +330,15 @@ namespace PulsarInjector
                     {
                         break;
                     }
+                }
             }
 
             Logger.Info("=== Updates ===");
-            Logger.Info("Check for a newer version of PML?");
-            Logger.Info("(Y/N)");
-
-            if (Console.ReadLine().ToUpper() == "N")
-                return CurrentPMLDll;
+            Logger.Info("Checking for a newer version of PML...");
+            //Logger.Info("(Y/N)");
+            //
+            //if (Console.ReadLine().ToUpper() == "N")
+            //    return CurrentPMLDll;
 
             using (var web = new System.Net.WebClient())
             {
@@ -342,7 +352,7 @@ namespace PulsarInjector
                 if (version.StartsWith(versionFromInfo))
                     return CurrentPMLDll;
 
-                Logger.Info($"New update available! Download {versionFromInfo}?");
+                Logger.Info($"New update available! Download {versionFromInfo}? (Current Verson: {version})");
                 Logger.Info("(Y/N)");
 
                 if (Console.ReadLine().ToUpper() == "N")

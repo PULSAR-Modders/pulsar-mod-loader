@@ -190,7 +190,11 @@ namespace PulsarModLoader.CustomGUI
                                 Label($"Author: {mod.Author}");
                                 Label($"Name: {mod.Name}");
                                 Label($"Version: {mod.Version}");
-                                Label($"License: {mod.License ?? "Proprietary"}");
+                                Label($"License: {mod.License}");
+                                if(!string.IsNullOrEmpty(mod.SourceURL))
+                                {
+                                    Label($"SourceURL: {mod.SourceURL}");
+                                }
                                 if (mod.ShortDescription != string.Empty)
                                     Label($"Short Description: {mod.ShortDescription}");
                                 if (mod.LongDescription != string.Empty)

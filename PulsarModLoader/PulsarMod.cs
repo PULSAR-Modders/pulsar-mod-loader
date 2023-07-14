@@ -55,7 +55,7 @@ namespace PulsarModLoader
         {
             get
             {
-                return null; //This has to be null to allow the Coalcase to work later on
+                return "Proprietary";
             }
         }
 
@@ -63,6 +63,17 @@ namespace PulsarModLoader
         /// URL To the readme of the mod.
         /// </ReadmeURL>
         public virtual string ReadmeURL
+        {
+            get
+            {
+                return string.Empty;
+            }
+        }
+
+        /// <SourceURL>
+        /// Sourcecode for the mod.
+        /// </SourceURL>
+        public virtual string SourceURL
         {
             get
             {

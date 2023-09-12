@@ -230,7 +230,7 @@ namespace PulsarModLoader
                         {
                             if (Entry.FullName.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
                             {
-                                if (Entry.Length < PMLConfig.MaxLoadSizeBytes.Value)
+                                if (Entry.Length > PMLConfig.MaxLoadSizeBytes.Value)
                                 {
                                     Logger.Info($"Error: Extraction of {Entry.Name} failed, Too Large!)");
                                     break;
@@ -241,12 +241,6 @@ namespace PulsarModLoader
                                 if (File.Exists(DestinationPath))
                                 {
                                     File.Delete(DestinationPath);
-                                }
-
-                                if (!DestinationPath.StartsWith(modsDir, StringComparison.Ordinal))
-                                {
-                                    Logger.Info($"Extraction Path for {Entry.Name} !modsDir");
-                                    break;
                                 }
 
                                 Entry.ExtractToFile(DestinationPath);

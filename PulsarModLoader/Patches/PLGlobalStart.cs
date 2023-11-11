@@ -22,12 +22,12 @@ namespace PulsarModLoader.Patches
                 //KeybindManager Init()
                 _ = PulsarModLoader.Keybinds.KeybindManager.Instance;
 
+                //MP Mod Checks
+                new MPModChecks.MPModCheckManager();
+
                 //ModLoading
                 string modsDir = Path.Combine(Directory.GetCurrentDirectory(), "Mods");
                 ModManager.Instance.LoadModsDirectory(modsDir);
-
-                //MP Mod Checks
-                new MPModChecks.MPModCheckManager();
 
                 modsLoaded = true;
             }

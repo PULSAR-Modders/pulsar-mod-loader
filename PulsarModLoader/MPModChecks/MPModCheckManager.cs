@@ -2,7 +2,6 @@
 using PulsarModLoader.Patches;
 using Steamworks;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -25,18 +24,51 @@ namespace PulsarModLoader.MPModChecks
         public MPModCheckManager()
         {
             Instance = this;
-            RefreshData();
             ModManager.Instance.OnModUnloaded += RefreshData;
+            ModManager.Instance.OnModSuccessfullyLoaded += RefreshData;
+            ModManager.Instance.OnAllModsLoaded += RefreshData;
         }
+
+        /// <summary>
+        /// Delays Refreshing of MPModList until all mods have been loaded.
+        /// </summary>
+        public void HoldMPModListRefresh()
+        {
+            HoldRefreshUntilAllModsLoaded = true;
+        }
+
+        private bool HoldRefreshUntilAllModsLoaded = false;
 
         /// <summary>
         /// Updates modlists
         /// </summary>
-        /// <param name="mod"></param>
-        public void RefreshData(PulsarMod mod = null)
+        public void RefreshData()
         {
+            HoldRefreshUntilAllModsLoaded = true;
             UpdateMyModList();
             UpdateLobbyModList();
+        }
+
+        /// <summary>
+        /// Calls normal RefreshData
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="mod"></param>
+        private void RefreshData(string name, PulsarMod mod)
+        {
+            if (HoldRefreshUntilAllModsLoaded)
+            {
+                RefreshData();
+            }
+        }
+
+        /// <summary>
+        /// Calls normal RefreshData
+        /// </summary>
+        /// <param name="mod"></param>
+        private void RefreshData(PulsarMod mod = null)
+        {
+            RefreshData();
         }
 
         private void UpdateLobbyModList()  //Update Photon Lobby Listing with mod list
@@ -56,6 +88,27 @@ namespace PulsarModLoader.MPModChecks
         public static MPModCheckManager Instance = null;
 
         private MPModDataBlock[] MyModList = null;
+
+        /// <summary>
+        /// Called after all mod checks finished HostSide
+        /// </summary>
+        public delegate void ModChecksFinishedHost(PhotonPlayer JoiningPhotonPlayer);
+
+        /// <summary>
+        /// Called after all mod checks finished HostSide
+        /// </summary>
+        public event ModChecksFinishedHost OnModChecksFinishedHost;
+
+        /*
+        /// <summary>
+        /// Called after all mod checks finished ClientSide
+        /// </summary>
+        //public delegate void ModChecksFinishedClient();
+
+        /// <summary>
+        /// Called after all mod checks finished ClientSide
+        /// </summary>
+        //public event ModChecksFinishedClient OnModChecksFinishedClient;*/
 
         /// <summary>
         /// List of clients that have requested mod lists of other clients.
@@ -600,6 +653,7 @@ namespace PulsarModLoader.MPModChecks
                 }
                 else
                 {
+                    OnModChecksFinishedHost?.Invoke(Player);
                     Logger.Info("Modcheck passed, proceding onwards");
                 }
             }

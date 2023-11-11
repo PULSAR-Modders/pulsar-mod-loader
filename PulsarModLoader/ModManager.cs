@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.IO.Compression;
+using PulsarModLoader.MPModChecks;
 
 namespace PulsarModLoader
 {
@@ -199,6 +200,10 @@ namespace PulsarModLoader
         /// <param name="modsDir"></param>
         public void LoadModsDirectory(string modsDir)
         {
+            //Delays MPModListRefresh
+            MPModCheckManager.Instance.HoldMPModListRefresh();
+
+
             OnModSuccessfullyLoaded += Events.EventHelper.RegisterEventHandlers;
             Logger.Info($"Attempting to load mods from {modsDir}");
 

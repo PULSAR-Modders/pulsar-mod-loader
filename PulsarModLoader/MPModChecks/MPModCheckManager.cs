@@ -56,7 +56,7 @@ namespace PulsarModLoader.MPModChecks
         /// <param name="mod"></param>
         private void RefreshData(string name, PulsarMod mod)
         {
-            if (HoldRefreshUntilAllModsLoaded)
+            if (!HoldRefreshUntilAllModsLoaded)
             {
                 RefreshData();
             }

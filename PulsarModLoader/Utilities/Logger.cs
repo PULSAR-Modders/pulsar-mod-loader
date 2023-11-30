@@ -5,9 +5,12 @@ using System.Reflection;
 
 namespace PulsarModLoader.Utilities
 {
+    /// <summary>
+    /// Adds lines to the player.log file
+    /// </summary>
     public static class Logger
     {
-        private static readonly string LogPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Log.txt");
+        private static readonly string LogPath = Path.Combine(Directory.GetCurrentDirectory(), "PMLLog.txt");
         private static StreamWriter Stream;
 
         static Logger()
@@ -22,6 +25,10 @@ namespace PulsarModLoader.Utilities
             }
         }
 
+        /// <summary>
+        /// Adds lines to the player.log file
+        /// </summary>
+        /// <param name="message"></param>
         public static void Info(string message)
         {
             if (message == null)

@@ -125,6 +125,15 @@ namespace PulsarModLoader
         }
 
         /// <summary>
+        /// Gets mods directory
+        /// </summary>
+        /// <returns>Mods Directory Path</returns>
+        public static string GetModsDir()
+        {
+            return Path.Combine(Directory.GetCurrentDirectory(), "Mods");
+        }
+
+        /// <summary>
         /// Gets the PulsarMod Class of the given mod name.
         /// </summary>
         /// <param name="name"></param>
@@ -203,8 +212,6 @@ namespace PulsarModLoader
             //Delays MPModListRefresh
             MPModCheckManager.Instance.HoldMPModListRefresh();
 
-
-            OnModSuccessfullyLoaded += Events.EventHelper.RegisterEventHandlers;
             Logger.Info($"Attempting to load mods from {modsDir}");
 
             // Manage directories

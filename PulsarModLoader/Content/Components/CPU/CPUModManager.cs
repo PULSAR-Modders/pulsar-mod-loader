@@ -7,11 +7,18 @@ using PulsarModLoader.Utilities;
 
 namespace PulsarModLoader.Content.Components.CPU
 {
+    /// <summary>
+    /// Manages Modded CPUs
+    /// </summary>
     public class CPUModManager
     {
-        public readonly int VanillaCPUMaxType = 0;
+        readonly int VanillaCPUMaxType = 0;
         private static CPUModManager m_instance = null;
-        public readonly List<CPUMod> CPUTypes = new List<CPUMod>();
+        readonly List<CPUMod> CPUTypes = new List<CPUMod>();
+
+        /// <summary>
+        /// Static Manager Instance
+        /// </summary>
         public static CPUModManager Instance
         {
             get
@@ -67,6 +74,13 @@ namespace PulsarModLoader.Content.Components.CPU
             }
             return -1;
         }
+
+        /// <summary>
+        /// Creates a CPU based on input parameters.
+        /// </summary>
+        /// <param name="Subtype"></param>
+        /// <param name="level"></param>
+        /// <returns></returns>
         public static PLCPU CreateCPU(int Subtype, int level)
         {
             PLCPU InCPU;
@@ -101,86 +115,87 @@ namespace PulsarModLoader.Content.Components.CPU
             }
             return InCPU;
         }
-    }
-    //Converts hashes to CPUs.
-    [HarmonyPatch(typeof(PLCPU), "CreateCPUFromHash")]
-    class CPUHashFix
-    {
-        static bool Prefix(int inSubType, int inLevel, ref PLShipComponent __result)
+
+        //Converts hashes to CPUs.
+        [HarmonyPatch(typeof(PLCPU), "CreateCPUFromHash")]
+        class CPUHashFix
         {
-            __result = CPUModManager.CreateCPU(inSubType, inLevel);
-            return false;
-        }
-    }
-    [HarmonyPatch(typeof(PLCPU), "FinalLateAddStats")]
-    class CPUFinalLateAddStatsPatch
-    {
-        static void Postfix(PLCPU __instance)
-        {
-            int subtypeformodded = __instance.SubType - CPUModManager.Instance.VanillaCPUMaxType;
-            if (subtypeformodded > -1 && subtypeformodded < CPUModManager.Instance.CPUTypes.Count)
+            static bool Prefix(int inSubType, int inLevel, ref PLShipComponent __result)
             {
-                CPUModManager.Instance.CPUTypes[subtypeformodded].FinalLateAddStats(__instance);
+                __result = CPUModManager.CreateCPU(inSubType, inLevel);
+                return false;
             }
         }
-    }
-    [HarmonyPatch(typeof(PLCPU), "WhenProgramIsRun")]
-    class CPWhenProgramIsRunPatch
-    {
-        static void Postfix(PLWarpDriveProgram inProgram, PLCPU __instance)
+        [HarmonyPatch(typeof(PLCPU), "FinalLateAddStats")]
+        class CPUFinalLateAddStatsPatch
         {
-            int subtypeformodded = __instance.SubType - CPUModManager.Instance.VanillaCPUMaxType;
-            if (subtypeformodded > -1 && subtypeformodded < CPUModManager.Instance.CPUTypes.Count && inProgram != null)
+            static void Postfix(PLCPU __instance)
             {
-                CPUModManager.Instance.CPUTypes[subtypeformodded].WhenProgramIsRun(inProgram);
+                int subtypeformodded = __instance.SubType - CPUModManager.Instance.VanillaCPUMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < CPUModManager.Instance.CPUTypes.Count)
+                {
+                    CPUModManager.Instance.CPUTypes[subtypeformodded].FinalLateAddStats(__instance);
+                }
             }
         }
-    }
-    [HarmonyPatch(typeof(PLCPU), "AddStats")]
-    class CPUAddStatsPatch
-    {
-        static void Postfix(PLCPU __instance)
+        [HarmonyPatch(typeof(PLCPU), "WhenProgramIsRun")]
+        class CPWhenProgramIsRunPatch
         {
-            int subtypeformodded = __instance.SubType - CPUModManager.Instance.VanillaCPUMaxType;
-            if (subtypeformodded > -1 && subtypeformodded < CPUModManager.Instance.CPUTypes.Count)
+            static void Postfix(PLWarpDriveProgram inProgram, PLCPU __instance)
             {
-                CPUModManager.Instance.CPUTypes[subtypeformodded].AddStats(__instance);
+                int subtypeformodded = __instance.SubType - CPUModManager.Instance.VanillaCPUMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < CPUModManager.Instance.CPUTypes.Count && inProgram != null)
+                {
+                    CPUModManager.Instance.CPUTypes[subtypeformodded].WhenProgramIsRun(inProgram);
+                }
             }
         }
-    }
-    [HarmonyPatch(typeof(PLCPU), "Tick")]
-    class CPUTickPatch
-    {
-        static void Postfix(PLCPU __instance)
+        [HarmonyPatch(typeof(PLCPU), "AddStats")]
+        class CPUAddStatsPatch
         {
-            int subtypeformodded = __instance.SubType - CPUModManager.Instance.VanillaCPUMaxType;
-            if (subtypeformodded > -1 && subtypeformodded < CPUModManager.Instance.CPUTypes.Count)
+            static void Postfix(PLCPU __instance)
             {
-                CPUModManager.Instance.CPUTypes[subtypeformodded].Tick(__instance);
+                int subtypeformodded = __instance.SubType - CPUModManager.Instance.VanillaCPUMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < CPUModManager.Instance.CPUTypes.Count)
+                {
+                    CPUModManager.Instance.CPUTypes[subtypeformodded].AddStats(__instance);
+                }
             }
         }
-    }
-    [HarmonyPatch(typeof(PLCPU), "GetStatLineRight")]
-    class CPUGetStatLineRightPatch
-    {
-        static void Postfix(PLCPU __instance, ref string __result)
+        [HarmonyPatch(typeof(PLCPU), "Tick")]
+        class CPUTickPatch
         {
-            int subtypeformodded = __instance.SubType - CPUModManager.Instance.VanillaCPUMaxType;
-            if (subtypeformodded > -1 && subtypeformodded < CPUModManager.Instance.CPUTypes.Count)
+            static void Postfix(PLCPU __instance)
             {
-                __result = CPUModManager.Instance.CPUTypes[subtypeformodded].GetStatLineRight(__instance);
+                int subtypeformodded = __instance.SubType - CPUModManager.Instance.VanillaCPUMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < CPUModManager.Instance.CPUTypes.Count)
+                {
+                    CPUModManager.Instance.CPUTypes[subtypeformodded].Tick(__instance);
+                }
             }
         }
-    }
-    [HarmonyPatch(typeof(PLCPU), "GetStatLineLeft")]
-    class CPUGetStatLineLeftPatch
-    {
-        static void Postfix(PLCPU __instance, ref string __result)
+        [HarmonyPatch(typeof(PLCPU), "GetStatLineRight")]
+        class CPUGetStatLineRightPatch
         {
-            int subtypeformodded = __instance.SubType - CPUModManager.Instance.VanillaCPUMaxType;
-            if (subtypeformodded > -1 && subtypeformodded < CPUModManager.Instance.CPUTypes.Count)
+            static void Postfix(PLCPU __instance, ref string __result)
             {
-                __result = CPUModManager.Instance.CPUTypes[subtypeformodded].GetStatLineLeft(__instance);
+                int subtypeformodded = __instance.SubType - CPUModManager.Instance.VanillaCPUMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < CPUModManager.Instance.CPUTypes.Count)
+                {
+                    __result = CPUModManager.Instance.CPUTypes[subtypeformodded].GetStatLineRight(__instance);
+                }
+            }
+        }
+        [HarmonyPatch(typeof(PLCPU), "GetStatLineLeft")]
+        class CPUGetStatLineLeftPatch
+        {
+            static void Postfix(PLCPU __instance, ref string __result)
+            {
+                int subtypeformodded = __instance.SubType - CPUModManager.Instance.VanillaCPUMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < CPUModManager.Instance.CPUTypes.Count)
+                {
+                    __result = CPUModManager.Instance.CPUTypes[subtypeformodded].GetStatLineLeft(__instance);
+                }
             }
         }
     }

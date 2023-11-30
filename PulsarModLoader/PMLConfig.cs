@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 namespace PulsarModLoader
 {
     public static class PMLConfig
@@ -25,3 +26,4 @@ namespace PulsarModLoader
         }
     }
 }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member

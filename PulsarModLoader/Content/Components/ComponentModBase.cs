@@ -2,6 +2,9 @@
 
 namespace PulsarModLoader.Content.Components
 {
+    /// <summary>
+    /// Base Abstraction for Modded Components
+    /// </summary>
     public abstract class ComponentModBase
     {
         public virtual string Name

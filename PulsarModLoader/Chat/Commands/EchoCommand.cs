@@ -1,6 +1,8 @@
 ﻿using PulsarModLoader.Chat.Commands.CommandRouter;
 using PulsarModLoader.Utilities;
 
+
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 namespace PulsarModLoader.Chat.Commands
 {
     public class EchoCommand : ChatCommand
@@ -25,4 +27,5 @@ namespace PulsarModLoader.Chat.Commands
             Messaging.Echo(PLNetworkManager.Instance.LocalPlayer.GetPhotonPlayer(), $"Echo: {arguments}");
         }
     }
+#pragma warning restore CS1591
 }

@@ -3,6 +3,9 @@ using System.Text;
 
 namespace PulsarModLoader.Chat.Commands.CommandRouter
 {
+    /// <summary>
+    /// Handles a public command instance for in-game chat
+    /// </summary>
     public abstract class PublicCommand
     {
         /// <summary>

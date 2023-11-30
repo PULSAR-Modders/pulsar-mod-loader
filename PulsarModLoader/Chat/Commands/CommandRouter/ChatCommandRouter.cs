@@ -8,10 +8,16 @@ using System.Reflection;
 
 namespace PulsarModLoader.Chat.Commands
 {
+    /// <summary>
+    /// Loads and handles chat commands
+    /// </summary>
     public class ChatCommandRouter
     {
         private static ChatCommandRouter _instance = null;
 
+        /// <summary>
+        /// Static Instance of the command router
+        /// </summary>
         public static ChatCommandRouter Instance
         {
             get

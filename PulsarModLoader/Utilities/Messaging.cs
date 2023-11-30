@@ -3,8 +3,17 @@ using UnityEngine;
 
 namespace PulsarModLoader.Utilities
 {
+    /// <summary>
+    /// Handles messages for local and other clients.
+    /// </summary>
     public static class Messaging
     {
+        /// <summary>
+        /// Inserts a line to text chat based on input params with sending player prefix
+        /// </summary>
+        /// <param name="recipient"></param>
+        /// <param name="message"></param>
+        /// <param name="sendingPlayerId"></param>
         public static void ChatMessage(PLPlayer recipient, string message, int sendingPlayerId = -1)
         {
             if (recipient == null || message == null)
@@ -19,6 +28,12 @@ namespace PulsarModLoader.Utilities
             ChatMessage(recipient.GetPhotonPlayer(), message, sendingPlayerId);
         }
 
+        /// <summary>
+        /// Inserts a line to text chat based on input params with sending player prefix
+        /// </summary>
+        /// <param name="recipient"></param>
+        /// <param name="message"></param>
+        /// <param name="sendingPlayerId"></param>
         public static void ChatMessage(PhotonPlayer recipient, string message, int sendingPlayerId = -1)
         {
             if (recipient == null || message == null)
@@ -37,6 +52,12 @@ namespace PulsarModLoader.Utilities
             });
         }
 
+        /// <summary>
+        /// Inserts a line to text chat based on input params with sending player prefix
+        /// </summary>
+        /// <param name="targets"></param>
+        /// <param name="message"></param>
+        /// <param name="sendingPlayerId"></param>
         public static void ChatMessage(PhotonTargets targets, string message, int sendingPlayerId = -1)
         {
             if (message == null)
@@ -55,6 +76,11 @@ namespace PulsarModLoader.Utilities
             });
         }
 
+        /// <summary>
+        /// Inserts a line to text chat based on input params
+        /// </summary>
+        /// <param name="recipient"></param>
+        /// <param name="message"></param>
         public static void Echo(PLPlayer recipient, string message)
         {
             if (recipient == null || message == null)
@@ -66,6 +92,11 @@ namespace PulsarModLoader.Utilities
             Echo(recipient.GetPhotonPlayer(), message);
         }
 
+        /// <summary>
+        /// Inserts a line to text chat based on input params
+        /// </summary>
+        /// <param name="recipient"></param>
+        /// <param name="message"></param>
         public static void Echo(PhotonPlayer recipient, string message)
         {
             if (recipient == null || message == null)
@@ -79,6 +110,11 @@ namespace PulsarModLoader.Utilities
             });
         }
 
+        /// <summary>
+        /// Inserts a line to text chat based on input params
+        /// </summary>
+        /// <param name="targets"></param>
+        /// <param name="message"></param>
         public static void Echo(PhotonTargets targets, string message)
         {
             if (message == null)
@@ -91,6 +127,15 @@ namespace PulsarModLoader.Utilities
                 message
             });
         }
+
+        /// <summary>
+        /// Adds a Notification to the left side of the screen based on input params
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="recipient"></param>
+        /// <param name="subjectPlayerId"></param>
+        /// <param name="durationMs"></param>
+        /// <param name="addToShipLog"></param>
         public static void Notification(string message, PLPlayer recipient = null, int subjectPlayerId = 0, int durationMs = 6000, bool addToShipLog = false)
         {
             if (recipient == null && PLNetworkManager.Instance != null)
@@ -99,6 +144,15 @@ namespace PulsarModLoader.Utilities
             }
             Notification(message, recipient.GetPhotonPlayer(), subjectPlayerId, durationMs, addToShipLog);
         }
+
+        /// <summary>
+        /// Adds a Notification to the left side of the screen based on input params
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="recipient"></param>
+        /// <param name="subjectPlayerId"></param>
+        /// <param name="durationMs"></param>
+        /// <param name="addToShipLog"></param>
         public static void Notification(string message, PhotonPlayer recipient, int subjectPlayerId = 0, int durationMs = 6000, bool addToShipLog = false)
         {
             if (PLServer.Instance == null)
@@ -121,6 +175,14 @@ namespace PulsarModLoader.Utilities
             });
         }
 
+        /// <summary>
+        /// Adds a Notification to the left side of the screen based on input params
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="targets"></param>
+        /// <param name="subjectPlayerId"></param>
+        /// <param name="durationMs"></param>
+        /// <param name="addToShipLog"></param>
         public static void Notification(string message, PhotonTargets targets, int subjectPlayerId = 0, int durationMs = 6000, bool addToShipLog = false)
         {
             if (PLServer.Instance == null)
@@ -144,6 +206,14 @@ namespace PulsarModLoader.Utilities
             });
         }
 
+        /// <summary>
+        /// Adds a CenterPrint Message to the top of the screen based on input params
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="recipient"></param>
+        /// <param name="tag"></param>
+        /// <param name="color"></param>
+        /// <param name="type"></param>
         public static void Centerprint(string message, PLPlayer recipient, string tag = "msg", Color color = new Color(), EWarningType type = EWarningType.E_NORMAL)
         {
             if (recipient == null || message == null || tag == null)
@@ -155,6 +225,14 @@ namespace PulsarModLoader.Utilities
             Centerprint(message, recipient.GetPhotonPlayer(), tag, color, type);
         }
 
+        /// <summary>
+        /// Adds a CenterPrint Message to the top of the screen based on input params
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="recipient"></param>
+        /// <param name="tag"></param>
+        /// <param name="color"></param>
+        /// <param name="type"></param>
         public static void Centerprint(string message, PhotonPlayer recipient, string tag = "msg", Color color = new Color(), EWarningType type = EWarningType.E_NORMAL)
         {
             if (recipient == null || message == null || tag == null)
@@ -171,6 +249,14 @@ namespace PulsarModLoader.Utilities
             });
         }
 
+        /// <summary>
+        /// Adds a CenterPrint Message to the top of the screen based on input params
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="targets"></param>
+        /// <param name="tag"></param>
+        /// <param name="color"></param>
+        /// <param name="type"></param>
         public static void Centerprint(string message, PhotonTargets targets, string tag = "msg", Color color = new Color(), EWarningType type = EWarningType.E_NORMAL)
         {
             if (message == null || tag == null)
@@ -187,6 +273,17 @@ namespace PulsarModLoader.Utilities
             });
         }
 
+        /// <summary>
+        /// Adds entry to ship log based on input params
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="tag"></param>
+        /// <param name="color"></param>
+        /// <param name="addOnlyLocally"></param>
+        /// <param name="source"></param>
+        /// <param name="destination"></param>
+        /// <param name="turretID"></param>
+        /// <param name="damage"></param>
         public static void ShipLog(string message, string tag = "msg", Color color = new Color(), bool addOnlyLocally = false, PLShipInfoBase source = null, PLShipInfoBase destination = null, int turretID = -1, int damage = 0)
         {
             if (PhotonNetwork.isMasterClient)

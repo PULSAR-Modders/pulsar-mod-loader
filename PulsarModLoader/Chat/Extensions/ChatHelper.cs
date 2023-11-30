@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 namespace PulsarModLoader.Chat.Extensions
 {
     public class ChatHelper
@@ -354,3 +355,4 @@ namespace PulsarModLoader.Chat.Extensions
         }
     }
 }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member

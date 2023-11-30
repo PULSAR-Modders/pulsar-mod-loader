@@ -8,8 +8,22 @@ using System.Text;
 
 namespace PulsarModLoader.Patches
 {
+    /// <summary>
+    /// Provides helper functions for Harmony Transpilers.
+    /// </summary>
     public static class HarmonyHelpers
     {
+        /// <summary>
+        /// Modifies instructions targetSequence with patchSequence based on input PatchMode and CheckMode.
+        /// </summary>
+        /// <param name="instructions">Input pre-modified Transpiler Instructions here</param>
+        /// <param name="targetSequence">Targeted Instructions collection</param>
+        /// <param name="patchSequence">Inserted Instructions collection</param>
+        /// <param name="patchMode"></param>
+        /// <param name="checkMode"></param>
+        /// <param name="showDebugOutput"></param>
+        /// <returns>Modified instructions based on input values</returns>
+        /// <exception cref="ArgumentException"></exception>
         public static IEnumerable<CodeInstruction> PatchBySequence(IEnumerable<CodeInstruction> instructions, IEnumerable<CodeInstruction> targetSequence, IEnumerable<CodeInstruction> patchSequence, PatchMode patchMode = PatchMode.AFTER, CheckMode checkMode = CheckMode.ALWAYS, bool showDebugOutput = false)
         {
             List<CodeInstruction> Instructions = instructions.ToList(); //create new list to be modified and returned.

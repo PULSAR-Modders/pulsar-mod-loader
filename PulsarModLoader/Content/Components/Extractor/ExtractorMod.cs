@@ -1,6 +1,9 @@
 ﻿using System.Reflection;
 namespace PulsarModLoader.Content.Components.Extractor
 {
+    /// <summary>
+    /// Extractor Modded Component Abstraction
+    /// </summary>
     public abstract class ExtractorMod : ComponentModBase
     {
         public ExtractorMod()

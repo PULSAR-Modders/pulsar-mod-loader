@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 namespace PulsarModLoader.Utilities
 {
     public static class Clipboard
@@ -15,3 +16,4 @@ namespace PulsarModLoader.Utilities
         }
     }
 }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member

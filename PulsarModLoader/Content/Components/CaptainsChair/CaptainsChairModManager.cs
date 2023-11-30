@@ -7,11 +7,18 @@ using PulsarModLoader.Utilities;
 
 namespace PulsarModLoader.Content.Components.CaptainsChair
 {
+    /// <summary>
+    /// Manages Modded Captains Chairs
+    /// </summary>
     public class CaptainsChairModManager
     {
-        public readonly int VanillaCaptainsChairMaxType = 0;
+        readonly int VanillaCaptainsChairMaxType = 0;
         private static CaptainsChairModManager m_instance = null;
-        public readonly List<CaptainsChairMod> CaptainsChairTypes = new List<CaptainsChairMod>();
+        readonly List<CaptainsChairMod> CaptainsChairTypes = new List<CaptainsChairMod>();
+
+        /// <summary>
+        /// Static Manager Instance.
+        /// </summary>
         public static CaptainsChairModManager Instance
         {
             get
@@ -96,26 +103,27 @@ namespace PulsarModLoader.Content.Components.CaptainsChair
             }
             return InCaptainsChair;
         }
-    }
-    //Converts hashes to CaptainsChairs.
-    [HarmonyPatch(typeof(PLCaptainsChair), "CreateCaptainsChairFromHash")]
-    class CaptainsChairHashFix
-    {
-        static bool Prefix(int inSubType, int inLevel, ref PLShipComponent __result)
+
+        //Converts hashes to CaptainsChairs.
+        [HarmonyPatch(typeof(PLCaptainsChair), "CreateCaptainsChairFromHash")]
+        class CaptainsChairHashFix
         {
-            __result = CaptainsChairModManager.CreateCaptainsChair(inSubType, inLevel);
-            return false;
-        }
-    }
-    [HarmonyPatch(typeof(PLCaptainsChair), "LateAddStats")]
-    class CaptainsChairLateAddStatsPatch
-    {
-        static void Postfix(PLShipStats inStats, PLCaptainsChair __instance)
-        {
-            int subtypeformodded = __instance.SubType - CaptainsChairModManager.Instance.VanillaCaptainsChairMaxType;
-            if (subtypeformodded > -1 && subtypeformodded < CaptainsChairModManager.Instance.CaptainsChairTypes.Count && inStats != null)
+            static bool Prefix(int inSubType, int inLevel, ref PLShipComponent __result)
             {
-                CaptainsChairModManager.Instance.CaptainsChairTypes[subtypeformodded].LateAddStats(__instance);
+                __result = CaptainsChairModManager.CreateCaptainsChair(inSubType, inLevel);
+                return false;
+            }
+        }
+        [HarmonyPatch(typeof(PLCaptainsChair), "LateAddStats")]
+        class CaptainsChairLateAddStatsPatch
+        {
+            static void Postfix(PLShipStats inStats, PLCaptainsChair __instance)
+            {
+                int subtypeformodded = __instance.SubType - CaptainsChairModManager.Instance.VanillaCaptainsChairMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < CaptainsChairModManager.Instance.CaptainsChairTypes.Count && inStats != null)
+                {
+                    CaptainsChairModManager.Instance.CaptainsChairTypes[subtypeformodded].LateAddStats(__instance);
+                }
             }
         }
     }

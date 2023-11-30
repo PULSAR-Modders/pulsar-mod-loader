@@ -1,5 +1,8 @@
 ﻿namespace PulsarModLoader.Content.Components.AutoTurret
 {
+    /// <summary>
+    /// Implements an AutoTurret to be loaded.
+    /// </summary>
     public abstract class AutoTurretMod
     {
         public AutoTurretMod()

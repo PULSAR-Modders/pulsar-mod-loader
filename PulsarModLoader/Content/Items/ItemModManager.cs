@@ -55,6 +55,8 @@ namespace PulsarModLoader.Content.Items
         /// Finds Item type equivilent to given name and returns MainType ID and SubType ID needed to spawn. Returns -1 if couldn't find Item.
         /// </summary>
         /// <param name="ItemName">modded item's Name set in ItemMod.name</param>
+        /// <param name="MainType"></param>
+        /// <param name="SubType"></param>
         /// <returns>Maintype and Subtype</returns>
         public void GetItemIDsFromName(string ItemName, out int MainType, out int SubType)
         {

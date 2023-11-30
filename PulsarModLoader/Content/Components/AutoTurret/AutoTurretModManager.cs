@@ -6,11 +6,18 @@ using PulsarModLoader.Utilities;
 
 namespace PulsarModLoader.Content.Components.AutoTurret
 {
+    /// <summary>
+    /// Manages Modded AutoTurrets
+    /// </summary>
     public class AutoTurretModManager
     {
-        public readonly int VanillaAutoTurretMaxType = 0;
+        readonly int VanillaAutoTurretMaxType = 0;
         private static AutoTurretModManager m_instance = null;
-        public readonly List<AutoTurretMod> AutoTurretTypes = new List<AutoTurretMod>();
+        readonly List<AutoTurretMod> AutoTurretTypes = new List<AutoTurretMod>();
+
+        /// <summary>
+        /// Static Manager Instance
+        /// </summary>
         public static AutoTurretModManager Instance
         {
             get
@@ -66,23 +73,24 @@ namespace PulsarModLoader.Content.Components.AutoTurret
             }
             return -1;
         }
-    }
-    //Converts hashes to AutoTurrets.
-    [HarmonyPatch(typeof(PLAutoTurret), "CreateAutoTurretFromHash")]
-    class AutoTurretHashFix
-    {
-        static bool Prefix(int inSubType, int inLevel, ref PLShipComponent __result)
+
+        //Converts hashes to AutoTurrets.
+        [HarmonyPatch(typeof(PLAutoTurret), "CreateAutoTurretFromHash")]
+        class AutoTurretHashFix
         {
-            int subtypeformodded = inSubType - AutoTurretModManager.Instance.VanillaAutoTurretMaxType;
-            if (subtypeformodded <= AutoTurretModManager.Instance.AutoTurretTypes.Count && subtypeformodded > -1)
+            static bool Prefix(int inSubType, int inLevel, ref PLShipComponent __result)
             {
-                Logger.Info("Creating AutoTurret from list info");
-                __result = AutoTurretModManager.Instance.AutoTurretTypes[subtypeformodded].PLAutoTurret;
-                __result.SubType = inSubType;
-                __result.Level = inLevel;
-                return false;
+                int subtypeformodded = inSubType - AutoTurretModManager.Instance.VanillaAutoTurretMaxType;
+                if (subtypeformodded <= AutoTurretModManager.Instance.AutoTurretTypes.Count && subtypeformodded > -1)
+                {
+                    Logger.Info("Creating AutoTurret from list info");
+                    __result = AutoTurretModManager.Instance.AutoTurretTypes[subtypeformodded].PLAutoTurret;
+                    __result.SubType = inSubType;
+                    __result.Level = inLevel;
+                    return false;
+                }
+                return true;
             }
-            return true;
         }
     }
 }

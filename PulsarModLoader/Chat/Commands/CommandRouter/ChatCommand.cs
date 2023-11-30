@@ -1,8 +1,10 @@
-﻿
-using System.Text;
+﻿using System.Text;
 
 namespace PulsarModLoader.Chat.Commands.CommandRouter
 {
+    /// <summary>
+    /// Handles a command instance for use via in-game chat.
+    /// </summary>
     public abstract class ChatCommand
     {
         /// <summary>

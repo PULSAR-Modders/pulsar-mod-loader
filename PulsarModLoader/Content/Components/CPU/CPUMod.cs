@@ -2,6 +2,9 @@
 
 namespace PulsarModLoader.Content.Components.CPU
 {
+    /// <summary>
+    /// Implements a CPU to be loaded.
+    /// </summary>
     public abstract class CPUMod : ComponentModBase
     {
         public CPUMod()

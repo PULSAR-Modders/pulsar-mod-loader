@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 namespace PulsarModLoader.Chat.Extensions
 {
     [HarmonyPatch(typeof(PLInGameUI), "ColoredMsg")]
@@ -43,3 +44,4 @@ namespace PulsarModLoader.Chat.Extensions
         }
     }
 }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member

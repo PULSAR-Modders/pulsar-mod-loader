@@ -29,8 +29,7 @@ namespace PulsarModLoader.Patches
                 new MPModChecks.MPModCheckManager();
 
                 //ModLoading
-                string modsDir = Path.Combine(Directory.GetCurrentDirectory(), "Mods");
-                ModManager.Instance.LoadModsDirectory(modsDir);
+                ModManager.Instance.LoadModsDirectory(ModManager.GetModsDir());
 
                 modsLoaded = true;
             }

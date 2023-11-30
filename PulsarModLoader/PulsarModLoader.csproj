@@ -245,6 +245,7 @@
     <Compile Include="CustomGUI\GUIMain.cs" />
     <Compile Include="CustomGUI\ModSettingsMenu.cs" />
     <Compile Include="CustomGUI\PMLSettings.cs" />
+    <Compile Include="Events.cs" />
     <Compile Include="Keybinds\IKeybind.cs" />
     <Compile Include="Keybinds\KeybindManager.cs" />
     <Compile Include="Keybinds\LoadFromXmlPatch.cs" />
@@ -254,14 +255,7 @@
     <Compile Include="ModMessage\ModMessageHelper.cs" />
     <Compile Include="MPModChecks\MPModCheckManager.cs" />
     <Compile Include="MPModChecks\MPRequirement.cs" />
-    <Compile Include="Events\PlayerAddedEvent.cs" />
-    <Compile Include="Events\Event.cs" />
-    <Compile Include="Events\EventHelper.cs" />
-    <Compile Include="Events\EventHandler.cs" />
-    <Compile Include="Events\PlayerEvent.cs" />
-    <Compile Include="Events\PlayerRemovedEvent.cs" />
     <Compile Include="Injections\AntiCheatBypass.cs" />
-    <Compile Include="Injections\EventInjector.cs" />
     <Compile Include="Injections\HarmonyInjector.cs" />
     <Compile Include="Injections\InjectionTools.cs" />
     <Compile Include="Injections\LoggingInjections.cs" />
@@ -272,7 +266,6 @@
     <Compile Include="Patches\ModdedLobbyTag.cs" />
     <Compile Include="Patches\PLGlobalStart.cs" />
     <Compile Include="Patches\PhotonProperties.cs" />
-    <Compile Include="Patches\PLServerStart.cs" />
     <Compile Include="PMLConfig.cs" />
     <Compile Include="PulsarMod.cs" />
     <Compile Include="ModManager.cs" />

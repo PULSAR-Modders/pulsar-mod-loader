@@ -1,10 +1,7 @@
 ﻿using ExitGames.Client.Photon;
 using HarmonyLib;
-using PulsarModLoader.MPModChecks;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Emit;
 
 namespace PulsarModLoader.Patches
 {
@@ -30,6 +27,9 @@ namespace PulsarModLoader.Patches
             roomOptions.CustomRoomProperties["modList"] = MPModChecks.MPModCheckManager.Instance.SerializeHashlessUserData();
         }
 
+        /// <summary>
+        /// Updates Player List for PhotonRoom Properties.
+        /// </summary>
         public static void UpdatePlayerList()
         {
             if (PhotonNetwork.isMasterClient && PhotonNetwork.inRoom && PLNetworkManager.Instance != null)
@@ -47,35 +47,6 @@ namespace PulsarModLoader.Patches
 
                 room.SetCustomProperties(customProperties);
             }
-        }
-    }
-
-    [HarmonyPatch(typeof(PLServer), "AddPlayer")]
-    class PlayerJoined
-    {
-        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
-        {
-            List<CodeInstruction> targetSequence = new List<CodeInstruction>()
-            {
-                new CodeInstruction(OpCodes.Ldarg_1),
-                new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(PLPlayer), "ResetTalentPoints")),
-            };
-
-            List<CodeInstruction> injectedSequence = new List<CodeInstruction>()
-            {
-                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(PhotonProperties), "UpdatePlayerList")),
-            };
-
-            return HarmonyHelpers.PatchBySequence(instructions, targetSequence, injectedSequence);
-        }
-    }
-
-    [HarmonyPatch(typeof(PLServer), "RemovePlayer")]
-    class PlayerQuit
-    {
-        private static void Postfix()
-        {
-            PhotonProperties.UpdatePlayerList();
         }
     }
 

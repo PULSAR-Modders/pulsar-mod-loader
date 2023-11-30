@@ -13,6 +13,9 @@ namespace PulsarModLoader.Patches
         {
             if (!modsLoaded)
             {
+                //Events Init
+                new PulsarModLoader.Events();
+
                 //Modmanager GUI Init.
                 new GameObject("ModManager", typeof(CustomGUI.GUIMain)) { hideFlags = HideFlags.HideAndDontSave };
 

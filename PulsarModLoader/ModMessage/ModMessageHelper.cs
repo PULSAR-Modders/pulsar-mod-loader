@@ -106,13 +106,17 @@ namespace PulsarModLoader
         }
 
         /// <summary>
-        /// RPC activated message popup, used for client faiures to join.
+        /// RPC activated message popup, used for client failures to join.
         /// </summary>
         /// <param name="message"></param>
+        /// <param name="pmi"></param>
         [PunRPC]
-        public void RecieveErrorMessage(string message)
+        public void RecieveErrorMessage(string message, PhotonMessageInfo pmi)
         {
-            PLNetworkManager.Instance.MainMenu.AddActiveMenu(new PLErrorMessageMenu(message));
+            if (pmi.sender.IsMasterClient)
+            {
+                PLNetworkManager.Instance.MainMenu.AddActiveMenu(new PLErrorMessageMenu(message));
+            }
         }
 
         /// <summary>
@@ -128,15 +132,8 @@ namespace PulsarModLoader
             MPModCheckManager.Instance.AddNetworkedPeerMods(pmi.sender, userDataBlock);
         }
 
-        /*[PunRPC]
-        public void ClientRecieveModListFromServer(PhotonPlayer player, byte[] recievedData, PhotonMessageInfo pmi)
-        {
-            MPUserDataBlock userDataBlock = MPModCheckManager.DeserializeHashfullMPUserData(recievedData);
-            MPModCheckManager.Instance.AddNetworkedPeerMods(player, userDataBlock);
-        }*/
-
         /// <summary>
-        /// Recieves mod list from connecting client. Use ClientRequest mod list to make a request to the host.
+        /// Recieves mod list from connecting client.
         /// </summary>
         /// <param name="recievedData"></param>
         /// <param name="pmi"></param>
@@ -145,31 +142,26 @@ namespace PulsarModLoader
         {
             MPUserDataBlock userDataBlock = MPModCheckManager.DeserializeHashlessMPUserData(recievedData);
             Logger.Info($"recieved modlist from user with the following info:\nPMLVersion: {userDataBlock.PMLVersion}\nModlist:{MPModCheckManager.GetModListAsString(userDataBlock.ModData)}");
-            MPModCheckManager.Instance.AddNetworkedPeerMods(pmi.sender, userDataBlock);
+
+            //Check if client modlist already exists, then update or add modlist.
+            if (MPModCheckManager.Instance.GetNetworkedPeerModlistExists(pmi.sender))
+            {
+                MPModCheckManager.Instance.NetworkedPeersModLists[pmi.sender] = userDataBlock;
+            }
+            else
+            {
+                MPModCheckManager.Instance.AddNetworkedPeerMods(pmi.sender, userDataBlock);
+            }
         }
 
         /// <summary>
-        /// Client sends request to the host for modlist of a client
+        /// Client sends request to the host for modlist of a client. Deprecated
         /// </summary>
         /// <param name="pmi"></param>
         [PunRPC]
         public void ClientRequestModList(PhotonMessageInfo pmi)
         {
-            if(!PhotonNetwork.isMasterClient) //stop if not host.
-            {
-                return;
-            }
-            PhotonPlayer sender = pmi.sender;
-            photonView.RPC("ClientRecieveModList", sender, new object[]
-            {
-                MPModCheckManager.Instance.SerializeHashlessUserData()
-            });
-
-            if (MPModCheckManager.Instance.GetNetworkedPeerMods(sender) == null && !MPModCheckManager.Instance.RequestedModLists.Contains(sender))
-            {
-                MPModCheckManager.Instance.RequestedModLists.Add(sender);
-                photonView.RPC("ClientRequestModList", sender, new object[] {});
-            }
+            Logger.Info("ModMessageHelper recieved modlist request. This is a deprecated RPC and is only called by older modloader versions");
         }
     }
 }

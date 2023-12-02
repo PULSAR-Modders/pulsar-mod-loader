@@ -250,7 +250,7 @@
     <Compile Include="Keybinds\KeybindManager.cs" />
     <Compile Include="Keybinds\LoadFromXmlPatch.cs" />
     <Compile Include="Keybinds\PMLKeybind.cs" />
-    <Compile Include="ModMessage\AllowPMLRPCPatch.cs" />
+    <Compile Include="Patches\AllowPMLRPCPatch.cs" />
     <Compile Include="ModMessage\ModMessage.cs" />
     <Compile Include="ModMessage\ModMessageHelper.cs" />
     <Compile Include="MPModChecks\MPModCheckManager.cs" />

@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection.Emit;
-using System.Security.Cryptography;
 using System.Text;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 using Logger = PulsarModLoader.Utilities.Logger;
@@ -71,7 +70,7 @@ namespace PulsarModLoader.MPModChecks
             RefreshData();
         }
 
-        private void UpdateLobbyModList()  //Update Photon Lobby Listing with mod list
+        internal void UpdateLobbyModList()  //Update Photon Lobby Listing with mod list
         {
             if (PhotonNetwork.isMasterClient && PhotonNetwork.inRoom && PLNetworkManager.Instance != null)
             {
@@ -115,7 +114,7 @@ namespace PulsarModLoader.MPModChecks
         /// </summary>
         public List<PhotonPlayer> RequestedModLists = new List<PhotonPlayer>();
 
-        private Dictionary<PhotonPlayer, MPUserDataBlock> NetworkedPeersModLists = new Dictionary<PhotonPlayer, MPUserDataBlock>();
+        internal Dictionary<PhotonPlayer, MPUserDataBlock> NetworkedPeersModLists = new Dictionary<PhotonPlayer, MPUserDataBlock>();
 
         private int HighestLevelOfMPMods = 0;
 
@@ -142,9 +141,9 @@ namespace PulsarModLoader.MPModChecks
         /// <param name="player"></param>
         /// <param name="HarmonyIdentifier"></param>
         /// <returns>Returns true if player has mod</returns>
-        public bool NetworkedPeerHasMod(PhotonPlayer player, string HarmonyIdentifier)
+        public bool NetworkedPeerHasMod(PhotonPlayer Player, string HarmonyIdentifier)
         {
-            MPUserDataBlock userData = GetNetworkedPeerMods(player);
+            MPUserDataBlock userData = GetNetworkedPeerMods(Player);
             if(userData != null)
             {
                 foreach(MPModDataBlock modData in userData.ModData)
@@ -182,26 +181,37 @@ namespace PulsarModLoader.MPModChecks
         /// <summary>
         /// Adds a player's mod list to the local NetworkedPeersModLists
         /// </summary>
-        /// <param name="Photonplayer"></param>
+        /// <param name="PhotonPlayer"></param>
         /// <param name="modList"></param>
-        public void AddNetworkedPeerMods(PhotonPlayer Photonplayer, MPUserDataBlock modList)
+        public void AddNetworkedPeerMods(PhotonPlayer PhotonPlayer, MPUserDataBlock modList)
         {
-            if (NetworkedPeersModLists.ContainsKey(Photonplayer))
+            if (NetworkedPeersModLists.ContainsKey(PhotonPlayer))
             {
-                NetworkedPeersModLists[Photonplayer] = modList;
+                NetworkedPeersModLists[PhotonPlayer] = modList;
                 return;
             }
-            NetworkedPeersModLists.Add(Photonplayer, modList);
+            NetworkedPeersModLists.Add(PhotonPlayer, modList);
         }
 
         /// <summary>
         /// Clears player from NetworkedPeersModLists
         /// </summary>
-        /// <param name="Photonplayer"></param>
-        public void RemoveNetworkedPeerMods(PhotonPlayer Photonplayer)
+        /// <param name="PhotonPlayer"></param>
+        public void RemoveNetworkedPeerMods(PhotonPlayer PhotonPlayer)
         {
-            NetworkedPeersModLists.Remove(Photonplayer);
+            NetworkedPeersModLists.Remove(PhotonPlayer);
         }
+
+        /// <summary>
+        /// Checks NetworkedPeersModLists 
+        /// </summary>
+        /// <param name="PhotonPlayer"></param>
+        /// <returns></returns>
+        public bool GetNetworkedPeerModlistExists(PhotonPlayer PhotonPlayer)
+        {
+            return NetworkedPeersModLists.ContainsKey(PhotonPlayer);
+        }
+
 
         private List<PulsarMod> GetMPModList()
         {
@@ -228,9 +238,9 @@ namespace PulsarModLoader.MPModChecks
             stopwatch.Start();
             List<PulsarMod> UnprocessedMods = GetMPModList();
             MPModDataBlock[] ProcessedMods = new MPModDataBlock[UnprocessedMods.Count];
-                for (int i = 0; i < UnprocessedMods.Count; i++)
-                {
-                    PulsarMod currentMod = UnprocessedMods[i];
+            for (int i = 0; i < UnprocessedMods.Count; i++)
+            {
+                PulsarMod currentMod = UnprocessedMods[i];
                 ProcessedMods[i] = new MPModDataBlock(currentMod.HarmonyIdentifier(), currentMod.Name, currentMod.Version, (MPRequirement)currentMod.MPRequirements, currentMod.VersionLink, currentMod.ModHash);
             }
             MyModList = ProcessedMods;
@@ -723,16 +733,10 @@ namespace PulsarModLoader.MPModChecks
         {
             static void Postfix(PhotonPlayer photonPlayer)
             {
-                if(PhotonNetwork.isMasterClient)
+                ModMessageHelper.Instance.photonView.RPC("ClientRecieveModList", photonPlayer, new object[]
                 {
-                    ModMessageHelper.Instance.photonView.RPC("ClientRecieveModList", photonPlayer, new object[]
-                    {
-                            Instance.SerializeHashlessUserData()
-                    });
-                    return;
-                }
-                Instance.RequestedModLists.Add(photonPlayer);
-                ModMessageHelper.Instance.photonView.RPC("ClientRequestModList", photonPlayer, new object[] { });
+                    Instance.SerializeHashlessUserData()
+                });
             }
         }
     }

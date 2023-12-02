@@ -13,6 +13,8 @@ namespace PulsarModLoader
     {
         internal FileVersionInfo VersionInfo;
 
+        internal byte[] ModHash;
+
         /// <summary>
         /// 
         /// </summary>

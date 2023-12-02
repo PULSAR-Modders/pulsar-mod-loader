@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.IO.Compression;
 using PulsarModLoader.MPModChecks;
+using System.Security.Cryptography;
 
 namespace PulsarModLoader
 {
@@ -337,13 +338,15 @@ namespace PulsarModLoader
 
             try
             {
-                Assembly asm = Assembly.Load(File.ReadAllBytes(assemblyPath)); // load as bytes to avoid locking the file
+                byte[] FileBytes = File.ReadAllBytes(assemblyPath);
+                Assembly asm = Assembly.Load(FileBytes); // load as bytes to avoid locking the file
 				Type modType = asm.GetTypes().FirstOrDefault(t => t.IsSubclassOf(typeof(PulsarMod)));
 
                 if (modType != null)
                 {
                     PulsarMod mod = Activator.CreateInstance(modType) as PulsarMod;
 					mod.VersionInfo = FileVersionInfo.GetVersionInfo(assemblyPath);
+                    mod.ModHash = GetHash(FileBytes);
 					activeMods.Add(mod.Name, mod);
                     OnModSuccessfullyLoaded?.Invoke(mod.Name, mod);
 
@@ -366,6 +369,14 @@ namespace PulsarModLoader
                 Logger.Info($"Failed to load mod: {Path.GetFileName(assemblyPath)}\n{e}");
 
                 return null;
+            }
+        }
+
+        public static byte[] GetHash(byte[] DataForHashing)
+        {
+            using (SHA256 Hasher = SHA256.Create())
+            {
+                return Hasher.ComputeHash(DataForHashing);
             }
         }
 

@@ -228,23 +228,17 @@ namespace PulsarModLoader.MPModChecks
             stopwatch.Start();
             List<PulsarMod> UnprocessedMods = GetMPModList();
             MPModDataBlock[] ProcessedMods = new MPModDataBlock[UnprocessedMods.Count];
-            using (SHA256 MyHasher = SHA256.Create())
-            {
                 for (int i = 0; i < UnprocessedMods.Count; i++)
                 {
                     PulsarMod currentMod = UnprocessedMods[i];
-                    using (FileStream MyStream = File.OpenRead(currentMod.VersionInfo.FileName))
-                    {
-                        MyStream.Position = 0;
-                        byte[] Hash = MyHasher.ComputeHash(MyStream);
-                        ProcessedMods[i] = new MPModDataBlock(currentMod.HarmonyIdentifier(), currentMod.Name, currentMod.Version, (MPRequirement)currentMod.MPRequirements, currentMod.VersionLink, Hash);
-                    }
-                }
+                ProcessedMods[i] = new MPModDataBlock(currentMod.HarmonyIdentifier(), currentMod.Name, currentMod.Version, (MPRequirement)currentMod.MPRequirements, currentMod.VersionLink, currentMod.ModHash);
             }
             MyModList = ProcessedMods;
             stopwatch.Stop();
             Logger.Info("Finished Building MyModList, time elapsted: " + stopwatch.ElapsedMilliseconds.ToString());
         }
+
+
 
         /// <summary>
         /// Serilizes user data into a byte array for network transfer. Does not contain a hash

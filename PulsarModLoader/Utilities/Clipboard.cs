@@ -1,8 +1,10 @@
 ﻿using UnityEngine;
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 namespace PulsarModLoader.Utilities
 {
+    /// <summary>
+    /// Acesses clipboard copy and paste
+    /// </summary>
     public static class Clipboard
     {
         public static void Copy(string text)
@@ -16,4 +18,3 @@ namespace PulsarModLoader.Utilities
         }
     }
 }
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member

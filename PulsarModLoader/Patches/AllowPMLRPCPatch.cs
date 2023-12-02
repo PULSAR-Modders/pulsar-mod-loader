@@ -1,9 +1,8 @@
 ﻿using HarmonyLib;
-using PulsarModLoader.Patches;
 using System.Collections.Generic;
 using System.Reflection.Emit;
 
-namespace PulsarModLoader.ModMessages
+namespace PulsarModLoader.Patches
 {
     [HarmonyPatch(typeof(NetworkingPeer), "ExecuteRpc")]
     class AllowPMLRPCPatch

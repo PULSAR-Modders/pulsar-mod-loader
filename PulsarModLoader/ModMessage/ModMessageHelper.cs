@@ -143,15 +143,10 @@ namespace PulsarModLoader
             MPUserDataBlock userDataBlock = MPModCheckManager.DeserializeHashlessMPUserData(recievedData);
             Logger.Info($"recieved modlist from user with the following info:\nPMLVersion: {userDataBlock.PMLVersion}\nModlist:{MPModCheckManager.GetModListAsString(userDataBlock.ModData)}");
 
-            //Check if client modlist already exists, then update or add modlist.
-            if (MPModCheckManager.Instance.GetNetworkedPeerModlistExists(pmi.sender))
-            {
-                MPModCheckManager.Instance.NetworkedPeersModLists[pmi.sender] = userDataBlock;
-            }
-            else
-            {
-                MPModCheckManager.Instance.AddNetworkedPeerMods(pmi.sender, userDataBlock);
-            }
+
+            MPModCheckManager.Instance.AddNetworkedPeerMods(pmi.sender, userDataBlock);
+
+            Events.Instance.CallClientModlistRecievedEvent(pmi.sender);
         }
 
         /// <summary>

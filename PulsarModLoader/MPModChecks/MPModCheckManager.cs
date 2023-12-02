@@ -88,32 +88,6 @@ namespace PulsarModLoader.MPModChecks
 
         private MPModDataBlock[] MyModList = null;
 
-        /// <summary>
-        /// Called after all mod checks finished HostSide
-        /// </summary>
-        public delegate void ModChecksFinishedHost(PhotonPlayer JoiningPhotonPlayer);
-
-        /// <summary>
-        /// Called after all mod checks finished HostSide
-        /// </summary>
-        public event ModChecksFinishedHost OnModChecksFinishedHost;
-
-        /*
-        /// <summary>
-        /// Called after all mod checks finished ClientSide
-        /// </summary>
-        //public delegate void ModChecksFinishedClient();
-
-        /// <summary>
-        /// Called after all mod checks finished ClientSide
-        /// </summary>
-        //public event ModChecksFinishedClient OnModChecksFinishedClient;*/
-
-        /// <summary>
-        /// List of clients that have requested mod lists of other clients.
-        /// </summary>
-        public List<PhotonPlayer> RequestedModLists = new List<PhotonPlayer>();
-
         internal Dictionary<PhotonPlayer, MPUserDataBlock> NetworkedPeersModLists = new Dictionary<PhotonPlayer, MPUserDataBlock>();
 
         private int HighestLevelOfMPMods = 0;
@@ -122,7 +96,7 @@ namespace PulsarModLoader.MPModChecks
         /// Gets full mod list of Networked Peer.
         /// </summary>
         /// <param name="Photonplayer"></param>
-        /// <returns></returns>
+        /// <returns>MPUserDataBlock of NetworkedPeer. Returns null if no modlist found.</returns>
         public MPUserDataBlock GetNetworkedPeerMods(PhotonPlayer Photonplayer)
         {
             if (NetworkedPeersModLists.TryGetValue(Photonplayer, out MPUserDataBlock value))
@@ -138,7 +112,7 @@ namespace PulsarModLoader.MPModChecks
         /// <summary>
         /// Checks if given player has mod, checked by HarmonyID
         /// </summary>
-        /// <param name="player"></param>
+        /// <param name="Player"></param>
         /// <param name="HarmonyIdentifier"></param>
         /// <returns>Returns true if player has mod</returns>
         public bool NetworkedPeerHasMod(PhotonPlayer Player, string HarmonyIdentifier)
@@ -402,7 +376,7 @@ namespace PulsarModLoader.MPModChecks
                 }
                 catch
                 {
-
+                    Logger.Info("Failed to Deserialize host mod list. Could be an older version of PML");
                 }
             }
             return new MPUserDataBlock();
@@ -657,7 +631,6 @@ namespace PulsarModLoader.MPModChecks
                 }
                 else
                 {
-                    OnModChecksFinishedHost?.Invoke(Player);
                     Logger.Info("Modcheck passed, proceding onwards");
                 }
             }
@@ -681,6 +654,7 @@ namespace PulsarModLoader.MPModChecks
         {
             static bool Prefix(RoomInfo room)
             {
+
                 return Instance.ClientClickJoinRoom(room);
             }
         }

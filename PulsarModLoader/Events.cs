@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using PulsarModLoader.Chat.Extensions;
+using PulsarModLoader.MPModChecks;
 using PulsarModLoader.Patches;
 
 namespace PulsarModLoader
@@ -17,82 +18,85 @@ namespace PulsarModLoader
         /// <summary>
         /// creates PulsarModLoader.Events Instance. Additionally adds PML events
         /// </summary>
-        public Events()
+        internal Events()
         {
             Instance = this;
         }
 
         /// <summary>
-        /// Called by Event EnterNewGame
+        /// used by EnterNewGameEvent
         /// </summary>
-        public delegate void EnterNewGameEvent();
+        public delegate void EnterNewGameDelegate();
 
         /// <summary>
         /// Postfixes PLGlobal.EnterNewGame(). Called by PLNetworkManager.ClientWaitForHubIDAndLoadLevel and PLNetworkManager.ServerWaitForHubIDAndLoadLevel.
         /// </summary>
-        public event EnterNewGameEvent EnterNewGame;
+        public event EnterNewGameDelegate EnterNewGameEvent;
 
         [HarmonyPatch(typeof(PLGlobal), "EnterNewGame")]
         class EnterNewGamePatch
         {
             static void Postfix()
             {
-                Events.Instance.EnterNewGame?.Invoke();
+                //Clear NetworkedPeers on game enter
+                MPModCheckManager.Instance.NetworkedPeersModLists.Clear();
+
+                Events.Instance.EnterNewGameEvent?.Invoke();
             }
         }
 
         /// <summary>
-        /// Called by Event OnLeaveGame
+        /// Used by OnLeaveGameEvent
         /// </summary>
-        public delegate void OnLeaveGameEvent();
+        public delegate void OnLeaveGameDelegate();
 
         /// <summary>
         /// Prefixes PLNetworkManager.OnLeaveGame(bool). Called by a variety of methods centered around intentionally and unintentionally leaving a game.
         /// </summary>
-        public event OnLeaveGameEvent OnLeaveGame;
+        public event OnLeaveGameDelegate OnLeaveGameEvent;
 
         [HarmonyPatch(typeof(PLNetworkManager), "OnLeaveGame")]
         class OnLeaveGamePatch
         {
             static void Prefix()
             {
-                Events.Instance.OnLeaveGame?.Invoke();
+                Events.Instance.OnLeaveGameEvent?.Invoke();
             }
         }
 
 
         /// <summary>
-        /// Called By Event GameOver
+        /// Used By GameOverEvent
         /// </summary>
         /// <param name="backToMainMenu"></param>
-        public delegate void GameOverEvent(bool backToMainMenu);
+        public delegate void GameOverDelegate(bool backToMainMenu);
 
         /// <summary>
         /// Prefixes PLNetworkManager.GameOver(Bool), Called by PLNetworkManager.OnLoeavGame, PLServer.SendGameOver, PLServer.ServerWaitForClientsToLeaveGame
         /// </summary>
-        public event GameOverEvent GameOver;
+        public event GameOverDelegate GameOverEvent;
 
         [HarmonyPatch(typeof(PLNetworkManager), "GameOver")]
         class GameOverPatch
         {
             static void Prefix(bool backToMainMenu)
             {
-                Events.Instance.GameOver?.Invoke(backToMainMenu);
+                Events.Instance.GameOverEvent?.Invoke(backToMainMenu);
             }
         }
 
 
         /// <summary>
-        /// Called by Event SpawnNewPlayer
+        /// Used by SpawnNewPlayerEvent
         /// </summary>
         /// <param name="newPhotonPlayer"></param>
         /// <param name="inPlayerName"></param>
-        public delegate void SpawnNewPlayerEvent(PhotonPlayer newPhotonPlayer, string inPlayerName);
+        public delegate void SpawnNewPlayerDelegate(PhotonPlayer newPhotonPlayer, string inPlayerName);
 
         /// <summary>
         /// Postfixes PLServer.SpawnNewPlayer(PhotonPlayer, String) Called By PLServer.LoginMessage. Onle called for players connecting.
         /// </summary>
-        public event SpawnNewPlayerEvent SpawnNewPlayer;
+        public event SpawnNewPlayerDelegate SpawnNewPlayerEvent;
 
         [HarmonyPatch(typeof(PLServer), "SpawnNewPlayer")]
         class SpawnNewPlayerPatch
@@ -102,21 +106,21 @@ namespace PulsarModLoader
                 //Updates PlayerList on Player Added.
                 PhotonProperties.UpdatePlayerList();
 
-                Events.Instance.SpawnNewPlayer?.Invoke(newPhotonPlayer, inPlayerName);
+                Events.Instance.SpawnNewPlayerEvent?.Invoke(newPhotonPlayer, inPlayerName);
             }
         }
 
 
         /// <summary>
-        /// Called by Event RemovePlayer
+        /// Used by RemovePlayerEvent
         /// </summary>
         /// <param name="player"></param>
-        public delegate void RemovePlayerEvent(PLPlayer player);
+        public delegate void RemovePlayerDelegate(PLPlayer player);
 
         /// <summary>
         /// Prefixes PLServer.RemovePlayer(PLPlayer) Called by PLNetworkManager.OnPhotonPlayerDisconnected, PLServer.ServerRemoveBot, PLServer.ServerRemoveCrewBotPlayer
         /// </summary>
-        public event RemovePlayerEvent RemovePlayer;
+        public event RemovePlayerDelegate RemovePlayerEvent;
 
         [HarmonyPatch(typeof(PLServer), "RemovePlayer")]
         class RemovePlayerPatch
@@ -126,20 +130,20 @@ namespace PulsarModLoader
                 //Updates PlayerList on Player Added
                 PhotonProperties.UpdatePlayerList();
 
-                Events.Instance.RemovePlayer?.Invoke(inPlayer);
+                Events.Instance.RemovePlayerEvent?.Invoke(inPlayer);
             }
         }
 
 
         /// <summary>
-        /// Called by Event ServerStart
+        /// Used by ServerStartEvent
         /// </summary>
-        public delegate void ServerStartEvent(PLServer instance);
+        public delegate void ServerStartDelegate(PLServer instance);
 
         /// <summary>
         /// Postfixes PLServer.Start(). Called by Unity after creation of a server instance.
         /// </summary>
-        public event ServerStartEvent ServerStart;
+        public event ServerStartDelegate ServerStartEvent;
 
         [HarmonyPatch(typeof(PLServer), "Start")]
         class ServerStartPatch
@@ -150,7 +154,45 @@ namespace PulsarModLoader
                 ChatHelper.publicCached = false;
                 HandlePublicCommands.RequestPublicCommands();
 
-                Events.Instance.ServerStart?.Invoke(__instance);
+                Events.Instance.ServerStartEvent?.Invoke(__instance);
+            }
+        }
+
+        /// <summary>
+        /// Used by ClientModlistRecievedEvent
+        /// </summary>
+        /// <param name="IncomingPlayer"></param>
+        public delegate void ClientModlistRecievedDelegate(PhotonPlayer IncomingPlayer);
+
+
+        /// <summary>
+        /// Called after a client modlist has been recieved by the MPModCheckManager instance.
+        /// </summary>
+        public event ClientModlistRecievedDelegate ClientModlistRecievedEvent;
+
+        internal void CallClientModlistRecievedEvent(PhotonPlayer IncomingPlayer)
+        {
+            ClientModlistRecievedEvent?.Invoke(IncomingPlayer);
+        }
+
+
+        /// <summary>
+        /// Used by ServerOnClientVerifiedEvent
+        /// </summary>
+        /// <param name="JoiningPhotonPlayer"></param>
+        public delegate void ServerOnClientVerifiedDelegate(PhotonPlayer JoiningPhotonPlayer);
+
+        /// <summary>
+        /// Called after a client is succesfully verified, as a postfix to PLServer.ServerOnClientVerified(PhotonPlayer). 
+        /// </summary>
+        public ServerOnClientVerifiedDelegate ServerOnClientVerifiedEvent;
+
+        [HarmonyPatch(typeof(PLServer), "ServerOnClientVerified")]
+        class ServerOnClientVerifiedPatch
+        {
+            static void Postfix(PhotonPlayer client)
+            {
+                Events.Instance.ServerOnClientVerifiedEvent?.Invoke(client);
             }
         }
     }

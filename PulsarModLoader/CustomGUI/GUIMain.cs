@@ -20,32 +20,52 @@ namespace PulsarModLoader.CustomGUI
         Dictionary<string, string> Readme = new Dictionary<string, string>();
         readonly CultureInfo ci;
         public static GUIMain Instance = null;
+        GameObject Background;
+        UnityEngine.UI.Image Image;
         public bool GUIActive = false;
-        static float Height = .40f;
-        static float Width = .40f;
-        Rect Window = new Rect((Screen.width * .5f - ((Screen.width * Width)/2)), Screen.height * .5f - ((Screen.height * Height)/2), Screen.width * Width, Screen.height * Height);
+        internal static SaveValue<float> Height = new SaveValue<float>("ModManagerHight", .40f);
+        internal static SaveValue<float> Width = new SaveValue<float>("ModManagerWidth", .40f);
+        internal static SaveValue<float> ModlistWidth = new SaveValue<float>("ModManagerModlistWidth", .30f);
+        Rect Window;
         byte Tab = 0;
         
         List<PulsarMod> mods = new List<PulsarMod>(8);
         ushort selectedMod = ushort.MaxValue;
-        
-        readonly Rect ModListArea = new Rect(6, 43, 150, Screen.height * Height - 45);
+
+        Rect ModListArea;
         Vector2 ModListScroll = Vector2.zero;
-        
-        readonly Rect ModInfoArea = new Rect(155, 43, Screen.width * Width - 161, Screen.height * Height - 45);
+
+        Rect ModInfoArea;
         Vector2 ModInfoScroll = Vector2.zero;
 
-        readonly Rect ModSettingsArea = new Rect(6, 43, Screen.width * Width - 12, Screen.height * Height - 45);
+        Rect ModSettingsArea;
         Vector2 ModSettingsScroll = Vector2.zero;
         List<ModSettingsMenu> settings = new List<ModSettingsMenu>(3);
         ushort selectedSettings = ushort.MaxValue;
 
+        internal void updateWindowSize()
+        {
+            Window = new Rect((Screen.width * .5f - ((Screen.width * Width) / 2)), Screen.height * .5f - ((Screen.height * Height) / 2), Screen.width * Width, Screen.height * Height);
+            ModListArea = new Rect(6, 43, Window.width * ModlistWidth, Screen.height * Height - 45);
+            ModInfoArea = new Rect(ModListArea.width + 15, 43, Screen.width * Width - (ModListArea.width + 11), Screen.height * Height - 45);
+            ModSettingsArea = new Rect(6, 43, Screen.width * Width - 12, Screen.height * Height - 45);
+        }
+
         internal GUIMain()
         {
             Instance = this;
+            updateWindowSize();
             settings.Add(new PMLSettings());
             ModManager.Instance.OnModUnloaded += UpdateOnModRemoved;
             ModManager.Instance.OnModSuccessfullyLoaded += UpdateOnModLoaded;
+
+            //Background image to block mouse clicks passing IMGUI
+            Background = new GameObject("GUIMainBG");
+            Image = Background.AddComponent<UnityEngine.UI.Image>();
+            Image.color = Color.clear;
+            Background.transform.SetParent(PLUIMainMenu.Instance.gameObject.transform);
+            UnityEngine.Object.DontDestroyOnLoad(Background);
+            Background.SetActive(false);
         }
 
         void Awake()
@@ -58,17 +78,36 @@ namespace PulsarModLoader.CustomGUI
         {
             if (Input.GetKeyDown(KeyCode.F5))
             {
-                if(GUIActive && selectedSettings != ushort.MaxValue) //Menu Closing and MM Selected
-                {
-                    settings[selectedSettings].OnClose();
-                }
-                else if(!GUIActive && selectedSettings != ushort.MaxValue) //Menu Opening and MM selected
-                {
-                    settings[selectedSettings].OnOpen();
-                }
                 GUIActive = !GUIActive;
-
+                if(GUIActive)
+                {
+                    GUIOpen();
+                }
+                else
+                {
+                    GUIClose();
+                }
             }
+        }
+
+        void GUIOpen()
+        {
+            if (selectedSettings != ushort.MaxValue) //Menu Opening and MM selected
+            {
+                settings[selectedSettings].OnOpen();
+            }
+
+            Background.SetActive(true);
+        }
+
+        void GUIClose()
+        {
+            if (selectedSettings != ushort.MaxValue) //Menu Closing and MM Selected
+            {
+                settings[selectedSettings].OnClose();
+            }
+
+            Background.SetActive(false);
         }
         
         void OnGUI()
@@ -77,6 +116,10 @@ namespace PulsarModLoader.CustomGUI
             {
                 GUI.skin = ChangeSkin();
                 Window = GUI.Window(999910, Window, WindowFunction, "ModManager");
+
+                //float y = Window.center.y * 2 * -1;
+                Image.rectTransform.position = new Vector3(Window.center.x, (Window.center.y * - 1) + Screen.height, 0);
+                Image.rectTransform.sizeDelta = Window.size;
             }
         }
 

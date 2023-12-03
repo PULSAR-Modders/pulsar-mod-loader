@@ -266,6 +266,7 @@
     <Compile Include="MPModChecks\MPUserDataBlock.cs" />
     <Compile Include="Patches\DebugReadout.cs" />
     <Compile Include="Patches\GameVersion.cs" />
+    <Compile Include="Patches\GUIUnlockCursorPatches.cs" />
     <Compile Include="Patches\ModdedLobbyTag.cs" />
     <Compile Include="Patches\PLGlobalStart.cs" />
     <Compile Include="Patches\PhotonProperties.cs" />

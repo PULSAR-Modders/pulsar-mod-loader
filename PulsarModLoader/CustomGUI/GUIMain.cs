@@ -26,6 +26,7 @@ namespace PulsarModLoader.CustomGUI
         internal static SaveValue<float> Height = new SaveValue<float>("ModManagerHight", .40f);
         internal static SaveValue<float> Width = new SaveValue<float>("ModManagerWidth", .40f);
         internal static SaveValue<float> ModlistWidth = new SaveValue<float>("ModManagerModlistWidth", .30f);
+        internal static SaveValue<bool> UnlockCursorWhileOpen = new SaveValue<bool>("UnlockCursorWhileOpen", true);
         Rect Window;
         byte Tab = 0;
         
@@ -42,6 +43,11 @@ namespace PulsarModLoader.CustomGUI
         Vector2 ModSettingsScroll = Vector2.zero;
         List<ModSettingsMenu> settings = new List<ModSettingsMenu>(3);
         ushort selectedSettings = ushort.MaxValue;
+
+        public bool ShouldUnlockCursor()
+        {
+            return UnlockCursorWhileOpen && GUIActive;
+        }
 
         internal void updateWindowSize()
         {

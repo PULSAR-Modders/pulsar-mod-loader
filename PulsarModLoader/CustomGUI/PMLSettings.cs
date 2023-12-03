@@ -68,6 +68,7 @@ namespace PulsarModLoader.CustomGUI
             Label("Modlist Scrollbar Width:");
             ModListSizeX = TextField(ModListSizeX);
             EndHorizontal();
+
             UnityEngine.GUI.skin.label.alignment = TextAnchor.MiddleCenter;
 
             if (SizeErrString != string.Empty)
@@ -96,6 +97,13 @@ namespace PulsarModLoader.CustomGUI
                         GUIMain.Instance.updateWindowSize();
                     }
                 }
+            }
+
+            //Cursor Unlock Toggle
+            HorizontalSlider(0, 100, 100);
+            if (Button($"Unlock Cursor While Open: {(GUIMain.UnlockCursorWhileOpen.Value ? "Enabled" : "Disabled")}"))
+            {
+                GUIMain.UnlockCursorWhileOpen.Value = !GUIMain.UnlockCursorWhileOpen.Value;
             }
 
 

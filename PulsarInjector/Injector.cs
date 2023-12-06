@@ -1,10 +1,10 @@
 ﻿using Microsoft.Win32;
-using PulsarModLoader.Injections;
 using PulsarModLoader.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -17,6 +17,22 @@ namespace PulsarInjector
         static bool QuietMode = false;
         [STAThread] //Required for file dialog to work
         static void Main(string[] args)
+        {
+            try
+            {
+                Run(args);
+            }
+            catch (Exception e)
+            {
+                Logger.Info("Installer Crash!\n" + e);
+
+                Logger.Info("Press any key to close...");
+                Console.ReadKey();
+            }
+
+        }
+
+        static void Run(string[] args)
         {
             string targetAssemblyPath = null;
 
@@ -214,13 +230,15 @@ namespace PulsarInjector
 
         static void InstallModLoader(string targetAssemblyPath)
         {
-            Logger.Info("=== Backups ===");
+            /*Logger.Info("=== Backups ===");
             string backupPath = Path.ChangeExtension(targetAssemblyPath, "bak");
             if (InjectionTools.IsModified(targetAssemblyPath))
             {
                 if (File.Exists(backupPath))
                 {
                     //Load from backup
+                    Logger.Info("Assembly already modified from old installation...");
+                    Logger.Info("Backup file exists, removing older installation.");
                     File.Copy(backupPath, targetAssemblyPath, true);
                 }
                 else
@@ -232,13 +250,13 @@ namespace PulsarInjector
 
                     return;
                 }
-            }
-            else
+            }*/
+            /*else
             {
-                //Create backup
+                Create backup
                 Logger.Info("Making backup of hopefully clean assembly.");
                 File.Copy(targetAssemblyPath, backupPath, true);
-            }
+            }*/
 
             Logger.Info("=== Creating directories ===");
             string Modsdir = Path.Combine(Directory.GetParent(Path.GetDirectoryName(targetAssemblyPath)).Parent.FullName, "Mods");
@@ -248,14 +266,14 @@ namespace PulsarInjector
                 Directory.CreateDirectory(Modsdir);
             }
 
-            Logger.Info("=== Anti-Cheat ===");
-            AntiCheatBypass.Inject(targetAssemblyPath);
+            //Logger.Info("=== Anti-Cheat ===");
+            //AntiCheatBypass.Inject(targetAssemblyPath);
 
-            Logger.Info("=== Logging Modifications ===");
-            InjectionTools.PatchMethod(targetAssemblyPath, "PLGlobal", "Start", typeof(LoggingInjections), "LoggingCleanup");
+            //Logger.Info("=== Logging Modifications ===");
+            //InjectionTools.PatchMethod(targetAssemblyPath, "PLGlobal", "Start", typeof(LoggingInjections), "LoggingCleanup");
 
-            Logger.Info("=== Injecting Harmony Initialization ===");
-            InjectionTools.PatchMethod(targetAssemblyPath, "PLGlobal", "Awake", typeof(HarmonyInjector), "InitializeHarmony");
+            //Logger.Info("=== Injecting Harmony Initialization ===");
+            //InjectionTools.PatchMethod(targetAssemblyPath, "PLGlobal", "Awake", typeof(HarmonyInjector), "InitializeHarmony");
 
             //CopyAssemblies. Has loggers in method.
             CopyAssemblies(Path.GetDirectoryName(targetAssemblyPath));
@@ -277,27 +295,32 @@ namespace PulsarInjector
             string PulsarModLoaderDll = CheckForUpdates(typeof(PulsarModLoader.PulsarMod).Assembly.Location);
 
             Logger.Info("=== Copying Assemblies ===");
-            /* Copy important assemblies to target assembly's directory */
+            // Copy important assemblies to target assembly's directory
             string sourceDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string[] copyables = new string[] {
-                PulsarModLoaderDll,
-                Path.Combine(sourceDir, "0Harmony.dll")
-            };
+            string targetEXEDir = (Directory.GetParent(targetAssemblyDir)).Parent.FullName;
 
-            foreach (string sourcePath in copyables)
+            CopyFileToDir(sourceDir, targetAssemblyDir, PulsarModLoaderDll);
+            CopyFileToDir(sourceDir, targetAssemblyDir, "0Harmony.dll");
+            CopyFileToDir(sourceDir, targetEXEDir, "winhttp.dll");
+            CopyFileToDir(sourceDir, targetEXEDir, "doorstop_config.ini");
+        }
+
+        static void CopyFileToDir(string sourceDir, string destinationDir, string fileName)
+        {
+            string sourcePath = Path.Combine(sourceDir, fileName);
+            string destPath = Path.Combine(destinationDir, Path.GetFileName(fileName.Replace("_updated.dll", ".dll")));
+            Logger.Info($"Copying {fileName} to {Path.GetDirectoryName(destPath)}");
+            try
             {
-                string destPath = Path.Combine(targetAssemblyDir, Path.GetFileName(sourcePath).Replace("_updated.dll", ".dll"));
-                Logger.Info($"Copying {Path.GetFileName(destPath)} to {Path.GetDirectoryName(destPath)}");
-                try
-                {
-                    File.Copy(sourcePath, destPath, overwrite: true);
-                }
-                catch (IOException)
-                {
-                    Logger.Info("Copying failed!  Close the game and try again.");
-                    Environment.Exit(0);
-                }
-            };
+                File.Copy(sourcePath, destPath, overwrite: true);
+            }
+            catch (IOException e)
+            {
+                Logger.Info("Copying failed! Ensure the game isn't running.\n" + e);
+                Logger.Info("Press any key to close..");
+                Console.ReadKey();
+                Environment.Exit(0);
+            }
         }
 
         static string CheckForUpdates(string CurrentPMLDll)
@@ -313,7 +336,7 @@ namespace PulsarInjector
             if (File.Exists(CurrentPMLDll.Replace(".dll", "_updated.dll")))
             {
                 string UpdatedPMLDll = CurrentPMLDll.Replace(".dll", "_updated.dll");
-                string UpdatedVersion = System.Diagnostics.FileVersionInfo.GetVersionInfo(UpdatedPMLDll).FileVersion;
+                string UpdatedVersion = FileVersionInfo.GetVersionInfo(UpdatedPMLDll).FileVersion;
                 short[] versionAsNum = version.Split('.').Select(s => short.Parse(s)).ToArray();
                 short[] UpdatedVersionAsNum = UpdatedVersion.Split('.').Select(s => short.Parse(s)).ToArray();
 
@@ -365,16 +388,10 @@ namespace PulsarInjector
 
                 string newDllPath = useOtherDll ? CurrentPMLDll : CurrentPMLDll.Replace(".dll", "_updated.dll");
 
-                using (var zipfile = Pathfinding.Ionic.Zip.ZipFile.Read(zipPath))
+                using (ZipArchive zipfile = ZipFile.OpenRead(zipPath))
                 {
-                    var dll = zipfile.First(z => z.FileName.EndsWith("PulsarModLoader.dll"));
-                    List<byte> bytes = new List<byte>();
-                    using (var reader = dll.OpenReader())
-                    {
-                        while (reader.Position != reader.Length)
-                            bytes.Add((byte)reader.ReadByte());
-                    }
-                    File.WriteAllBytes(newDllPath, bytes.ToArray());
+                    ZipArchiveEntry dll = zipfile.Entries.First(z => z.Name.EndsWith("PulsarModLoader.dll"));
+                    dll.ExtractToFile(newDllPath, true);
                 }
 
                 File.Delete(zipPath);

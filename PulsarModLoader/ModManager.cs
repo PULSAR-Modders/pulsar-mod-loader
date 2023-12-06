@@ -19,6 +19,11 @@ namespace PulsarModLoader
     public class ModManager
     {
         /// <summary>
+        /// Not sure if this needs to be tracked, but it is :D
+        /// </summary>
+        internal static Harmony Harmony;
+
+        /// <summary>
         /// Not Implemented.
         /// </summary>
         public static bool IsOldVersion;

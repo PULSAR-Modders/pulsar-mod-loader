@@ -1,18 +1,24 @@
-﻿using HarmonyLib;
-using System.IO;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace PulsarModLoader.Patches
 {
-    [HarmonyPatch(typeof(PLGlobal), "Start")]
+    //Called by Entrypoint
+    //[HarmonyPatch(typeof(PLGlobal), "Start")]
     class PLGlobalStart
     {
         private static bool modsLoaded = false;
 
-        static void Prefix()
+        internal static void Prefix()
         {
             if (!modsLoaded)
             {
+                //Logging adjustments
+                Application.SetStackTraceLogType(LogType.Log, StackTraceLogType.None);
+                Application.SetStackTraceLogType(LogType.Warning, StackTraceLogType.None);
+
+                //Patch Everything
+                ModManager.Harmony.PatchAll();
+
                 //Events Init
                 new PulsarModLoader.Events();
 

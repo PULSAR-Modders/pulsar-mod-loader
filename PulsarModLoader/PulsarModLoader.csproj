@@ -61,22 +61,6 @@
       <HintPath>..\lib\com.rlabrecque.steamworks.net.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Mono.Cecil, Version=0.11.3.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
-      <HintPath>..\packages\Mono.Cecil.0.11.3\lib\net40\Mono.Cecil.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Mono.Cecil.Mdb, Version=0.11.3.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
-      <HintPath>..\packages\Mono.Cecil.0.11.3\lib\net40\Mono.Cecil.Mdb.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Mono.Cecil.Pdb, Version=0.11.3.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
-      <HintPath>..\packages\Mono.Cecil.0.11.3\lib\net40\Mono.Cecil.Pdb.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Mono.Cecil.Rocks, Version=0.11.3.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
-      <HintPath>..\packages\Mono.Cecil.0.11.3\lib\net40\Mono.Cecil.Rocks.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Pathfinding.Ionic.Zip.Reduced">
       <HintPath>..\lib\Pathfinding.Ionic.Zip.Reduced.dll</HintPath>
       <Private>False</Private>
@@ -248,6 +232,7 @@
     <Compile Include="CustomGUI\GUIMain.cs" />
     <Compile Include="CustomGUI\ModSettingsMenu.cs" />
     <Compile Include="CustomGUI\PMLSettings.cs" />
+    <Compile Include="DoorstopEntrypoint.cs" />
     <Compile Include="Events.cs" />
     <Compile Include="Keybinds\IKeybind.cs" />
     <Compile Include="Keybinds\KeybindManager.cs" />
@@ -258,10 +243,7 @@
     <Compile Include="ModMessage\ModMessageHelper.cs" />
     <Compile Include="MPModChecks\MPModCheckManager.cs" />
     <Compile Include="MPModChecks\MPRequirement.cs" />
-    <Compile Include="Injections\AntiCheatBypass.cs" />
-    <Compile Include="Injections\HarmonyInjector.cs" />
-    <Compile Include="Injections\InjectionTools.cs" />
-    <Compile Include="Injections\LoggingInjections.cs" />
+    <Compile Include="Patches\AntiCheatBypass.cs" />
     <Compile Include="MPModChecks\MPModDataBlock.cs" />
     <Compile Include="MPModChecks\MPUserDataBlock.cs" />
     <Compile Include="Patches\DebugReadout.cs" />

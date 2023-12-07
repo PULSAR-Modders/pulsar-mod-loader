@@ -1,5 +1,4 @@
 ﻿using Microsoft.Win32;
-using PulsarModLoader.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,9 +9,9 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-namespace PulsarInjector
+namespace PMLInstaller
 {
-    class Injector
+    class Installer
     {
         static bool QuietMode = false;
         [STAThread] //Required for file dialog to work
@@ -24,9 +23,10 @@ namespace PulsarInjector
             }
             catch (Exception e)
             {
-                Logger.Info("Installer Crash!\n" + e);
+                PMLWriteLine("Installer Crash!\n" + e);
 
-                Logger.Info("Press any key to close...");
+                Console.ForegroundColor = ConsoleColor.White;
+                PMLWriteLine("Press any key to close...");
                 Console.ReadKey();
             }
 
@@ -34,8 +34,6 @@ namespace PulsarInjector
 
         static void Run(string[] args)
         {
-            string targetAssemblyPath = null;
-
             foreach (string arg in args)
             {
                 if (arg.ToLower().Contains("-q") && !arg.Contains(Path.DirectorySeparatorChar))
@@ -45,6 +43,7 @@ namespace PulsarInjector
                 }
             }
 
+            string targetAssemblyPath;
             //Attempt install to argument path
             if (args.Length > 0)
             {
@@ -56,11 +55,11 @@ namespace PulsarInjector
             }
 
             //Attempt install to steam
-            Logger.Info("Searching for Steam installation.");
+            PMLWriteLine("Searching for Steam installation.");
             string steamPath = FindSteam();
             if (steamPath != null)
             {
-                Logger.Info("Found Steam at " + steamPath);
+                PMLWriteLine("Found Steam at " + steamPath);
                 targetAssemblyPath = GetPulsarPathFromSteam(steamPath); 
                 //^^^ writes it's own lines to the console.
                 //If found:
@@ -73,8 +72,10 @@ namespace PulsarInjector
                         return;
                     }
 
-                    Logger.Info("Install the mod loader here?");
-                    Logger.Info("(Y/N)");
+                    Console.ForegroundColor = ConsoleColor.White;
+                    PMLWriteLine("Install the mod loader here?");
+                    PMLWriteLine("(Y/N)");
+                    Console.ForegroundColor = ConsoleColor.Gray;
                     string answer = Console.ReadLine();
                     if (answer.ToLower().StartsWith("y") && AttemptInstallModLoader(targetAssemblyPath))
                     {
@@ -84,13 +85,13 @@ namespace PulsarInjector
             }
             else
             {
-                Logger.Info("Steam Installation not found.");
+                PMLWriteLine("Steam Installation not found.");
             }
 
             //Attempt install from windows OFD
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                Logger.Info("Setting up OFD for windows. Please select a pulsar directory.");
+                PMLWriteLine("Setting up OFD for windows. Please select a pulsar directory.");
                 OpenFileDialog ofd = new OpenFileDialog
                 {
                     InitialDirectory = "c:\\",
@@ -100,7 +101,7 @@ namespace PulsarInjector
                 if (ofd.ShowDialog() == DialogResult.OK)
                 {
                     targetAssemblyPath = ofd.FileName;
-                    Logger.Info("Selected " + targetAssemblyPath);
+                    PMLWriteLine("Selected " + targetAssemblyPath);
                     if (AttemptInstallModLoader(targetAssemblyPath))
                     {
                         return;
@@ -108,21 +109,21 @@ namespace PulsarInjector
                 }
                 else
                 {
-                    Logger.Info("OFD failed.");
+                    PMLWriteLine("OFD failed.");
                 }
             }
 
             //Previous install attempts unsuccessfull, finishing dialogue.
 
             Console.ForegroundColor = ConsoleColor.Red;
-            Logger.Info("Unable to find file.");
+            PMLWriteLine("Unable to find file.");
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Logger.Info("Please specify an assembly to inject (e.g., PULSARLostColony/PULSAR_LostColony_Data/Managed/Assembly-CSharp.dll)");
-            Logger.Info("Ensure you have a mono branch copy of Pulsar: Lost Colony.");
-            Logger.Info("Steam Users: Library > Pulsar: Lost Colony > Properties > Betas > 'mono - Mono branch'");
-            Console.ForegroundColor = ConsoleColor.Gray;
+            PMLWriteLine("Please specify an assembly to inject (e.g., PULSARLostColony/PULSAR_LostColony_Data/Managed/Assembly-CSharp.dll)");
+            PMLWriteLine("Ensure you have a mono branch copy of Pulsar: Lost Colony.");
+            PMLWriteLine("Steam Users: Library > Pulsar: Lost Colony > Properties > Betas > 'mono - Mono branch'");
 
-            Logger.Info("Press any key to continue...");
+            Console.ForegroundColor = ConsoleColor.White;
+            PMLWriteLine("Press any key to continue...");
             Console.ReadKey();
         }
 
@@ -157,7 +158,7 @@ namespace PulsarInjector
             {
                 return null;
             }
-            Logger.Info("Reading " + libraryFolders);
+            PMLWriteLine("Reading " + libraryFolders);
             string fileContents = File.ReadAllText(libraryFolders);
             List<string> paths = new List<string>();
             paths.Add(steamDir);
@@ -174,25 +175,25 @@ namespace PulsarInjector
             foreach (string path in paths)
             {
                 pulsarPath = path + Path.DirectorySeparatorChar + "steamapps" + Path.DirectorySeparatorChar + "common" + Path.DirectorySeparatorChar + "PULSARLostColony";
-                Logger.Info("Checking " + pulsarPath);
+                PMLWriteLine("Checking " + pulsarPath);
                 if (Directory.Exists(pulsarPath))
                 {
-                    Logger.Info("Found Pulsar: Lost Colony Installation at " + pulsarPath);
+                    PMLWriteLine("Found Pulsar: Lost Colony Installation at " + pulsarPath);
                     return pulsarPath + Path.DirectorySeparatorChar + "PULSAR_LostColony_Data" + Path.DirectorySeparatorChar + "Managed" + Path.DirectorySeparatorChar + "Assembly-CSharp.dll";
                 }
             }
-            Logger.Info("Could not find Pulsar: Lost Colony installation in steam");
+            PMLWriteLine("Could not find Pulsar: Lost Colony installation in steam");
             return null;
         }
 
         static bool AttemptInstallModLoader(string inputDir)
         {
-            Logger.Info("Checking file at " + inputDir);
+            PMLWriteLine("Checking file at " + inputDir);
             if (!inputDir.EndsWith("Assembly-CSharp.dll") && inputDir.Contains("PULSARLostColony"))
             {
                 Console.ForegroundColor = ConsoleColor.Yellow;
-                Logger.Info("Path contains game directory, but isn't pointing to 'Assembly-CSharp.dll'");
-                Logger.Info("Attempting to fix path.");
+                PMLWriteLine("Path contains game directory, but isn't pointing to 'Assembly-CSharp.dll'");
+                PMLWriteLine("Attempting to fix path.");
                 Console.ForegroundColor = ConsoleColor.Gray;
 
                 if (inputDir.Contains("PULSAR_LostColony_Data"))
@@ -210,7 +211,7 @@ namespace PulsarInjector
             }
             if (inputDir.EndsWith("Assembly-CSharp.dll") && File.Exists(inputDir))
             {
-                Logger.Info("File valid, Attempting installation at " + inputDir);
+                PMLWriteLine("File valid, Attempting installation at " + inputDir);
                 InstallModLoader(inputDir);
                 return true;
             }
@@ -218,75 +219,40 @@ namespace PulsarInjector
             if (!File.Exists(inputDir) && inputDir.Contains("PULSARLostColony"))
             {
                 Console.ForegroundColor = ConsoleColor.Yellow;
-                Logger.Info("A Pulsar: Lost Colony installation was detected but doesn't contain Mono branch files.");
+                PMLWriteLine("A Pulsar: Lost Colony installation was detected but doesn't contain Mono branch files.");
                 Console.ForegroundColor = ConsoleColor.Gray;
             }
 
             Console.ForegroundColor = ConsoleColor.Red;
-            Logger.Info("File not valid.");
+            PMLWriteLine("File not valid.");
             Console.ForegroundColor = ConsoleColor.Gray;
             return false;
         }
 
         static void InstallModLoader(string targetAssemblyPath)
         {
-            /*Logger.Info("=== Backups ===");
-            string backupPath = Path.ChangeExtension(targetAssemblyPath, "bak");
-            if (InjectionTools.IsModified(targetAssemblyPath))
-            {
-                if (File.Exists(backupPath))
-                {
-                    //Load from backup
-                    Logger.Info("Assembly already modified from old installation...");
-                    Logger.Info("Backup file exists, removing older installation.");
-                    File.Copy(backupPath, targetAssemblyPath, true);
-                }
-                else
-                {
-                    Logger.Info("The assembly is already modified, and a backup could not be found.");
 
-                    Logger.Info("Press any key to continue...");
-                    Console.ReadKey();
-
-                    return;
-                }
-            }*/
-            /*else
-            {
-                Create backup
-                Logger.Info("Making backup of hopefully clean assembly.");
-                File.Copy(targetAssemblyPath, backupPath, true);
-            }*/
-
-            Logger.Info("=== Creating directories ===");
+            PMLWriteLine("=== Creating directories ===");
             string Modsdir = Path.Combine(Directory.GetParent(Path.GetDirectoryName(targetAssemblyPath)).Parent.FullName, "Mods");
             if (!Directory.Exists(Modsdir))
             {
-                Logger.Info("Creating Mods Directory");
+                PMLWriteLine("Creating Mods Directory");
                 Directory.CreateDirectory(Modsdir);
             }
-
-            //Logger.Info("=== Anti-Cheat ===");
-            //AntiCheatBypass.Inject(targetAssemblyPath);
-
-            //Logger.Info("=== Logging Modifications ===");
-            //InjectionTools.PatchMethod(targetAssemblyPath, "PLGlobal", "Start", typeof(LoggingInjections), "LoggingCleanup");
-
-            //Logger.Info("=== Injecting Harmony Initialization ===");
-            //InjectionTools.PatchMethod(targetAssemblyPath, "PLGlobal", "Awake", typeof(HarmonyInjector), "InitializeHarmony");
 
             //CopyAssemblies. Has loggers in method.
             CopyAssemblies(Path.GetDirectoryName(targetAssemblyPath));
 
-            Logger.Info("Success!  You may now run the game normally.");
+            PMLWriteLine("Success!  You may now run the game normally.");
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                Logger.Info("The mods folder is being opened.");
+                PMLWriteLine("The mods folder is being opened.");
                 Process.Start("explorer.exe", Modsdir);
             }
 
-            Logger.Info("Press any key to continue...");
+            Console.ForegroundColor = ConsoleColor.White;
+            PMLWriteLine("Press any key to continue...");
             Console.ReadKey();
         }
 
@@ -294,7 +260,7 @@ namespace PulsarInjector
         {
             string PulsarModLoaderDll = CheckForUpdates(typeof(PulsarModLoader.PulsarMod).Assembly.Location);
 
-            Logger.Info("=== Copying Assemblies ===");
+            PMLWriteLine("=== Copying Assemblies ===");
             // Copy important assemblies to target assembly's directory
             string sourceDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             string targetEXEDir = (Directory.GetParent(targetAssemblyDir)).Parent.FullName;
@@ -309,15 +275,16 @@ namespace PulsarInjector
         {
             string sourcePath = Path.Combine(sourceDir, fileName);
             string destPath = Path.Combine(destinationDir, Path.GetFileName(fileName.Replace("_updated.dll", ".dll")));
-            Logger.Info($"Copying {fileName} to {Path.GetDirectoryName(destPath)}");
+            PMLWriteLine($"Copying {fileName} to {Path.GetDirectoryName(destPath)}");
             try
             {
                 File.Copy(sourcePath, destPath, overwrite: true);
             }
             catch (IOException e)
             {
-                Logger.Info("Copying failed! Ensure the game isn't running.\n" + e);
-                Logger.Info("Press any key to close..");
+                PMLWriteLine("Copying failed! Ensure the game isn't running.\n" + e);
+                Console.ForegroundColor = ConsoleColor.White;
+                PMLWriteLine("Press any key to close..");
                 Console.ReadKey();
                 Environment.Exit(0);
             }
@@ -356,12 +323,8 @@ namespace PulsarInjector
                 }
             }
 
-            Logger.Info("=== Updates ===");
-            Logger.Info("Checking for a newer version of PML...");
-            //Logger.Info("(Y/N)");
-            //
-            //if (Console.ReadLine().ToUpper() == "N")
-            //    return CurrentPMLDll;
+            PMLWriteLine("=== Updates ===");
+            PMLWriteLine("Checking for a newer version of PML...");
 
             using (var web = new System.Net.WebClient())
             {
@@ -375,9 +338,10 @@ namespace PulsarInjector
                 if (version.StartsWith(versionFromInfo))
                     return CurrentPMLDll;
 
-                Logger.Info($"New update available! Download {versionFromInfo}? (Current Verson: {version})");
-                Logger.Info("(Y/N)");
-
+                Console.ForegroundColor = ConsoleColor.White;
+                PMLWriteLine($"New update available! Download {versionFromInfo}? (Current Verson: {version})");
+                PMLWriteLine("(Y/N)");
+                Console.ForegroundColor = ConsoleColor.Gray;
                 if (Console.ReadLine().ToUpper() == "N")
                     return CurrentPMLDll;
 
@@ -396,10 +360,15 @@ namespace PulsarInjector
 
                 File.Delete(zipPath);
 
-                Logger.Info("Successfully updated!");
+                PMLWriteLine("Successfully updated!");
 
                 return newDllPath;
             }
+        }
+
+        static void PMLWriteLine(string text)
+        {
+            Console.WriteLine("[PMLInstaller]>" + text);
         }
     }
 }

@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{F15E6EFA-3584-4503-98E0-17D3E87900F5}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>PulsarInjector</RootNamespace>
+    <RootNamespace>PMLInstaller</RootNamespace>
     <AssemblyName>PulsarModLoaderInstaller</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -70,17 +70,9 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="UnityEngine.TextRenderingModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\UnityEngine.TextRenderingModule.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Valve.Newtonsoft.Json">
-      <HintPath>..\lib\Valve.Newtonsoft.Json.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Injector.cs" />
+    <Compile Include="Installer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

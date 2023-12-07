@@ -53,7 +53,7 @@ namespace PulsarModLoader.CustomGUI
         {
             Window = new Rect((Screen.width * .5f - ((Screen.width * Width) / 2)), Screen.height * .5f - ((Screen.height * Height) / 2), Screen.width * Width, Screen.height * Height);
             ModListArea = new Rect(6, 43, Window.width * ModlistWidth, Screen.height * Height - 45);
-            ModInfoArea = new Rect(ModListArea.width + 15, 43, Screen.width * Width - (ModListArea.width + 11), Screen.height * Height - 45);
+            ModInfoArea = new Rect(ModListArea.width + 15, 43, (Screen.width * Width - (ModListArea.width + 11)) - 10, Screen.height * Height - 45);
             ModSettingsArea = new Rect(6, 43, Screen.width * Width - 12, Screen.height * Height - 45);
         }
 

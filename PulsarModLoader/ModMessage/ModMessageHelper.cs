@@ -140,6 +140,13 @@ namespace PulsarModLoader
         [PunRPC]
         public void ClientRecieveModList(byte[] recievedData, PhotonMessageInfo pmi)
         {
+            //Send local modlist to client other client
+            if(!pmi.sender.IsMasterClient && !MPModCheckManager.Instance.SentModLists.Contains(pmi.sender))
+            {
+                MPModCheckManager.Instance.SendModlistToClient(pmi.sender);
+                MPModCheckManager.Instance.SentModLists.Add(pmi.sender);
+            }
+
             MPUserDataBlock userDataBlock = MPModCheckManager.DeserializeHashlessMPUserData(recievedData);
             Logger.Info($"recieved modlist from user with the following info:\nPMLVersion: {userDataBlock.PMLVersion}\nModlist:{MPModCheckManager.GetModListAsString(userDataBlock.ModData)}");
 

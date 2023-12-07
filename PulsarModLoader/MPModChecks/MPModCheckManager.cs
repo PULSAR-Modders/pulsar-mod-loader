@@ -26,6 +26,14 @@ namespace PulsarModLoader.MPModChecks
             ModManager.Instance.OnModUnloaded += RefreshData;
             ModManager.Instance.OnModSuccessfullyLoaded += RefreshData;
             ModManager.Instance.OnAllModsLoaded += RefreshData;
+
+            Events.Instance.OnLeaveGameEvent += OnLeaveGame;
+        }
+
+        internal void OnLeaveGame()
+        {
+            SentModLists.Clear();
+            NetworkedPeersModLists.Clear();
         }
 
         /// <summary>
@@ -46,6 +54,11 @@ namespace PulsarModLoader.MPModChecks
             HoldRefreshUntilAllModsLoaded = true;
             UpdateMyModList();
             UpdateLobbyModList();
+
+            foreach(PhotonPlayer photonPlayer in SentModLists)
+            {
+                Instance.SendModlistToClient(photonPlayer);
+            }
         }
 
         /// <summary>
@@ -88,9 +101,19 @@ namespace PulsarModLoader.MPModChecks
 
         private MPModDataBlock[] MyModList = null;
 
+        internal List<PhotonPlayer> SentModLists = new List<PhotonPlayer>();
+
         internal Dictionary<PhotonPlayer, MPUserDataBlock> NetworkedPeersModLists = new Dictionary<PhotonPlayer, MPUserDataBlock>();
 
         private int HighestLevelOfMPMods = 0;
+
+        internal void SendModlistToClient(PhotonPlayer photonPlayer)
+        {
+            ModMessageHelper.Instance.photonView.RPC("ClientRecieveModList", photonPlayer, new object[]
+            {
+                Instance.SerializeHashlessUserData()
+            });
+        }
 
         /// <summary>
         /// Gets full mod list of Networked Peer.
@@ -678,6 +701,7 @@ namespace PulsarModLoader.MPModChecks
                 {
                     Instance.SerializeHashfullUserData()
                 });
+                Instance.SentModLists.Add(PhotonNetwork.masterClient);
             }
             static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
             {
@@ -699,6 +723,7 @@ namespace PulsarModLoader.MPModChecks
             static void Postfix(PhotonPlayer photonPlayer)
             {
                 Instance.RemoveNetworkedPeerMods(photonPlayer);
+                Instance.SentModLists.Remove(photonPlayer);
             }
         }
 
@@ -707,10 +732,7 @@ namespace PulsarModLoader.MPModChecks
         {
             static void Postfix(PhotonPlayer photonPlayer)
             {
-                ModMessageHelper.Instance.photonView.RPC("ClientRecieveModList", photonPlayer, new object[]
-                {
-                    Instance.SerializeHashlessUserData()
-                });
+                Instance.SendModlistToClient(photonPlayer);
             }
         }
     }

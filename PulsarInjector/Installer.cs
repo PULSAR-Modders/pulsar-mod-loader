@@ -60,14 +60,14 @@ namespace PMLInstaller
             if (steamPath != null)
             {
                 PMLWriteLine("Found Steam at " + steamPath);
-                targetAssemblyPath = GetPulsarPathFromSteam(steamPath); 
+                targetAssemblyPath = GetPulsarPathFromSteam(steamPath);
                 //^^^ writes it's own lines to the console.
                 //If found:
                 //Logger.Info("Found Pulsar: Lost Colony Installation at " + pulsarPath);
 
                 if (targetAssemblyPath != null)
                 {
-                    if(QuietMode && AttemptInstallModLoader(targetAssemblyPath))
+                    if (QuietMode && AttemptInstallModLoader(targetAssemblyPath))
                     {
                         return;
                     }
@@ -231,6 +231,59 @@ namespace PMLInstaller
 
         static void InstallModLoader(string targetAssemblyPath)
         {
+            PMLWriteLine("=== Checking for older installations ===");
+            string backupPath = Path.ChangeExtension(targetAssemblyPath, "bak");
+            if (File.Exists(backupPath))
+            {
+                //Load from backup
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                PMLWriteLine("Assembly backup detected.");
+                PMLWriteLine("Assembly is probably modified from old installation, which will cause installation issues.");
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+                PMLWriteLine("Please delete 'Assembly-CSharp.dll' and 'Assembly-CSharp.bak' from 'PULSARLostColony\\PULSAR_LostColony_Data\\Managed' then use steam to verify file integrity");
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                PMLWriteLine("Steam > Library > Pulsar: Lost Colony > Properties > Installed Files > Verify integrity of game files");
+
+                Console.ForegroundColor = ConsoleColor.White;
+                PMLWriteLine("Would you like the installer to delete the files for you?");
+                PMLWriteLine("(Y/N)");
+                string delete = Console.ReadLine();
+                if (delete.ToLower().StartsWith("y"))
+                {
+                    try
+                    {
+                        File.Delete(targetAssemblyPath);
+                        File.Delete(backupPath);
+                    }
+                    catch (IOException e)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        PMLWriteLine("Deletion failed! Ensure the game isn't running.");
+                        Console.ForegroundColor = ConsoleColor.Gray;
+                        PMLWriteLine(e.ToString());
+                        Console.ForegroundColor = ConsoleColor.White;
+                        PMLWriteLine("Press any key to close..");
+                        Console.ReadKey();
+                        Environment.Exit(0);
+                    }
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    PMLWriteLine("The assembly folder is being opened.");
+                    Process.Start("explorer.exe", Path.GetDirectoryName(targetAssemblyPath));
+                }
+
+                Console.ForegroundColor = ConsoleColor.White;
+                PMLWriteLine("Continue installation?");
+                PMLWriteLine("(Y/N)");
+                string answer = Console.ReadLine();
+                Console.ForegroundColor = ConsoleColor.Gray;
+                if (!answer.ToLower().StartsWith("y"))
+                {
+                    return;
+                }
+            }
 
             PMLWriteLine("=== Creating directories ===");
             string Modsdir = Path.Combine(Directory.GetParent(Path.GetDirectoryName(targetAssemblyPath)).Parent.FullName, "Mods");
@@ -251,6 +304,12 @@ namespace PMLInstaller
                 Process.Start("explorer.exe", Modsdir);
             }
 
+            if(!File.Exists(targetAssemblyPath))
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                PMLWriteLine("Assembly-CSharp.dll was deleted during install! Please ensure you verify file integrity to get it back!");
+            }
+
             Console.ForegroundColor = ConsoleColor.White;
             PMLWriteLine("Press any key to continue...");
             Console.ReadKey();
@@ -263,7 +322,7 @@ namespace PMLInstaller
             PMLWriteLine("=== Copying Assemblies ===");
             // Copy important assemblies to target assembly's directory
             string sourceDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string targetEXEDir = (Directory.GetParent(targetAssemblyDir)).Parent.FullName;
+            string targetEXEDir = Directory.GetParent(targetAssemblyDir).Parent.FullName;
 
             CopyFileToDir(sourceDir, targetAssemblyDir, PulsarModLoaderDll);
             CopyFileToDir(sourceDir, targetAssemblyDir, "0Harmony.dll");
@@ -282,7 +341,10 @@ namespace PMLInstaller
             }
             catch (IOException e)
             {
-                PMLWriteLine("Copying failed! Ensure the game isn't running.\n" + e);
+                Console.ForegroundColor = ConsoleColor.Red;
+                PMLWriteLine("Copying failed! Ensure the game isn't running.");
+                Console.ForegroundColor = ConsoleColor.Gray;
+                PMLWriteLine(e.ToString());
                 Console.ForegroundColor = ConsoleColor.White;
                 PMLWriteLine("Press any key to close..");
                 Console.ReadKey();
@@ -292,7 +354,7 @@ namespace PMLInstaller
 
         static string CheckForUpdates(string CurrentPMLDll)
         {
-            if(QuietMode)
+            if (QuietMode)
             {
                 return CurrentPMLDll;
             }

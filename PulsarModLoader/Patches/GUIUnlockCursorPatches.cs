@@ -34,6 +34,8 @@ namespace PulsarModLoader.Patches
     {
         static bool PatchMethod()
         {
+            if (CustomGUI.GUIMain.Instance == null) return false;
+
             return !PLInput.Instance.GetButton(PLInputBase.EInputActionName.unlock_mouse) && CustomGUI.GUIMain.Instance.ShouldUnlockCursor();
         }
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)

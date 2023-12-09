@@ -38,10 +38,7 @@ namespace PulsarModLoader
         {
             static void Postfix()
             {
-                //Clear NetworkedPeers on game enter
-                MPModCheckManager.Instance.NetworkedPeersModLists.Clear();
-
-                Events.Instance.EnterNewGameEvent?.Invoke();
+                Instance.EnterNewGameEvent?.Invoke();
             }
         }
 
@@ -158,21 +155,21 @@ namespace PulsarModLoader
             }
         }
 
+
         /// <summary>
         /// Used by ClientModlistRecievedEvent
         /// </summary>
-        /// <param name="IncomingPlayer"></param>
-        public delegate void ClientModlistRecievedDelegate(PhotonPlayer IncomingPlayer);
-
+        /// <param name="DataSender"></param>
+        public delegate void ClientModlistRecievedDelegate(PhotonPlayer DataSender);
 
         /// <summary>
         /// Called after a client modlist has been recieved by the MPModCheckManager instance.
         /// </summary>
         public event ClientModlistRecievedDelegate ClientModlistRecievedEvent;
 
-        internal void CallClientModlistRecievedEvent(PhotonPlayer IncomingPlayer)
+        internal void CallClientModlistRecievedEvent(PhotonPlayer DataSender)
         {
-            ClientModlistRecievedEvent?.Invoke(IncomingPlayer);
+            ClientModlistRecievedEvent?.Invoke(DataSender);
         }
 
 

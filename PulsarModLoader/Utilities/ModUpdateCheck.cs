@@ -1,12 +1,6 @@
-﻿using PulsarModLoader.Chat.Commands;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using Valve.Newtonsoft.Json;
 
 namespace PulsarModLoader.Utilities

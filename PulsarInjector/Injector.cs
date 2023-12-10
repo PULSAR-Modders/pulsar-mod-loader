@@ -410,7 +410,7 @@ namespace PulsarInjector
             }
         }
 
-        static void PMLWriteLine(string text)
+        internal static void PMLWriteLine(string text)
         {
             Console.WriteLine("[PMLInstaller]>" + text);
         }

@@ -1,6 +1,5 @@
 ﻿using Mono.Cecil;
 using Mono.Cecil.Cil;
-using PulsarModLoader.Utilities;
 using System;
 using System.IO;
 using System.Linq;
@@ -34,7 +33,7 @@ namespace PulsarInjector.Injections
 
         public static void ShortCircuitMethod(string targetAssemblyPath, string targetClassName, string targetMethodName)
         {
-            Logger.Info($"Attempting to short circuit method in {targetAssemblyPath}@{targetClassName}::{targetMethodName}");
+            Injector.PMLWriteLine($"Attempting to short circuit method in {targetAssemblyPath}@{targetClassName}::{targetMethodName}");
 
             /* Load the assemblies */
             AssemblyDefinition targetAssembly = LoadAssembly(targetAssemblyPath, null);
@@ -47,7 +46,7 @@ namespace PulsarInjector.Injections
                 throw new ArgumentNullException("Couldn't find method in target assembly!");
             }
 
-            Logger.Info("Loaded relevant assemblies.  Short circuiting method...");
+            Injector.PMLWriteLine("Loaded relevant assemblies.  Short circuiting method...");
 
             // Inject return at start of target method
             ILProcessor targetProcessor = targetMethod.Body.GetILProcessor();
@@ -58,8 +57,8 @@ namespace PulsarInjector.Injections
 
         public static bool IsModified(string targetAssemblyPath)
         {
-            string targetClassName = "PLGameStatic";
-            string targetMethodName = "OnInjectionCheatDetected";
+            string targetClassName = "PLGlobal";
+            string targetMethodName = "Awake";
 
             // Load the assemblies
             AssemblyDefinition targetAssembly = LoadAssembly(targetAssemblyPath, null);
@@ -72,7 +71,7 @@ namespace PulsarInjector.Injections
                 throw new ArgumentNullException("Couldn't find method in target assembly!");
             }
 
-            if (targetMethod.Body.Instructions[0].OpCode == OpCodes.Ret)
+            if (targetMethod.Body.Instructions[0].OpCode == OpCodes.Call)
             {
                 return true;
             }
@@ -81,7 +80,7 @@ namespace PulsarInjector.Injections
 
         public static void PatchMethod(string targetAssemblyPath, string targetClassName, string targetMethodName, Type sourceClassType, string sourceMethodName)
         {
-            Logger.Info($"Attempting to hook {targetAssemblyPath}");
+            Injector.PMLWriteLine($"Attempting to hook {targetAssemblyPath}");
 
             // Load the assemblies
             AssemblyDefinition targetAssembly = LoadAssembly(targetAssemblyPath, null);
@@ -95,7 +94,7 @@ namespace PulsarInjector.Injections
                 throw new ArgumentNullException("Couldn't find method in target assembly!");
             }
 
-            Logger.Info("Loaded relevant assemblies.  Injecting hook...");
+            Injector.PMLWriteLine("Loaded relevant assemblies.  Injecting hook...");
 
             // Inject source method into front of target method
             ILProcessor targetProcessor = targetMethod.Body.GetILProcessor();
@@ -133,14 +132,14 @@ namespace PulsarInjector.Injections
 
         private static void SaveAssembly(AssemblyDefinition assembly, string assemblyPath)
         {
-            Logger.Info($"Writing hooked {Path.GetFileName(assemblyPath)} to disk...");
+            Injector.PMLWriteLine($"Writing hooked {Path.GetFileName(assemblyPath)} to disk...");
             try
             {
                 assembly.Write(assemblyPath);
             }
             catch (Exception e) when (e is BadImageFormatException)
             {
-                Logger.Info("Failed to modify corrupted assembly.  Try again with a clean assembly (e.g., verify files on Steam)");
+                Injector.PMLWriteLine("Failed to modify corrupted assembly.  Try again with a clean assembly (e.g., verify files on Steam)");
             }
         }
     }

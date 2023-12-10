@@ -5,7 +5,7 @@ using System;
 using System.IO;
 using System.Linq;
 
-namespace PulsarModLoader.Injections
+namespace PulsarInjector.Injections
 {
     public static class InjectionTools
     {
@@ -49,7 +49,7 @@ namespace PulsarModLoader.Injections
 
             Logger.Info("Loaded relevant assemblies.  Short circuiting method...");
 
-            /* Inject return at start of target method */
+            // Inject return at start of target method
             ILProcessor targetProcessor = targetMethod.Body.GetILProcessor();
             targetProcessor.InsertBefore(targetMethod.Body.Instructions[0], targetProcessor.Create(OpCodes.Ret));
 
@@ -61,10 +61,10 @@ namespace PulsarModLoader.Injections
             string targetClassName = "PLGameStatic";
             string targetMethodName = "OnInjectionCheatDetected";
 
-            /* Load the assemblies */
+            // Load the assemblies
             AssemblyDefinition targetAssembly = LoadAssembly(targetAssemblyPath, null);
 
-            /* Find the methods involved */
+            // Find the methods involved
             MethodDefinition targetMethod = targetAssembly.MainModule.GetType(targetClassName).Methods.First(m => m.Name == targetMethodName);
 
             if (targetMethod == null)
@@ -83,10 +83,10 @@ namespace PulsarModLoader.Injections
         {
             Logger.Info($"Attempting to hook {targetAssemblyPath}");
 
-            /* Load the assemblies */
+            // Load the assemblies
             AssemblyDefinition targetAssembly = LoadAssembly(targetAssemblyPath, null);
 
-            /* Find the methods involved */
+            // Find the methods involved
             MethodDefinition targetMethod = targetAssembly.MainModule.GetType(targetClassName).Methods.First(m => m.Name == targetMethodName);
             MethodReference sourceMethod = targetAssembly.MainModule.ImportReference(sourceClassType.GetMethod(sourceMethodName));
 
@@ -97,7 +97,7 @@ namespace PulsarModLoader.Injections
 
             Logger.Info("Loaded relevant assemblies.  Injecting hook...");
 
-            /* Inject source method into front of target method */
+            // Inject source method into front of target method
             ILProcessor targetProcessor = targetMethod.Body.GetILProcessor();
 
             Instruction oldFirstInstruction = targetMethod.Body.Instructions[0];
@@ -115,7 +115,7 @@ namespace PulsarModLoader.Injections
                 throw new IOException($"Couldn't find file: {assemblyPath}");
             }
 
-            /* Specify directories containing dependencies of the assemblies */
+            // Specify directories containing dependencies of the assemblies
             DefaultAssemblyResolver assemblyResolver = new DefaultAssemblyResolver();
             assemblyResolver.AddSearchDirectory(Path.GetDirectoryName(assemblyPath));
 
@@ -127,7 +127,7 @@ namespace PulsarModLoader.Injections
                 }
             }
 
-            /* Load the assembly */
+            // Load the assembly
             return AssemblyDefinition.ReadAssembly(assemblyPath, new ReaderParameters { AssemblyResolver = assemblyResolver, ReadWrite = true, InMemory = true });
         }
 

@@ -60,7 +60,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath Condition="Exists('..\PulsarModLoader\bin\Release\PulsarModLoader.dll')">..\PulsarModLoader\bin\Release\PulsarModLoader.dll</HintPath>
       <HintPath Condition="Exists('..\PulsarModLoader\bin\Debug\PulsarModLoader.dll')">..\PulsarModLoader\bin\Debug\PulsarModLoader.dll</HintPath>
-      <HintPath>..\PulsarModLoader\bin\Debug\PulsarModLoader.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

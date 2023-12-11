@@ -21,13 +21,21 @@ Injects a basic mod loader into [*PULSAR: Lost Colony*][10].
 
 [10]: http://www.pulsarthegame.com/ "PULSAR: Lost Colony"
 
-## Usage
+## Installation
+
+Before running ensure your Pulsar installation is a Mono build. On Steam you can change this by right clicking Pulsar: lost colony in your steam library and selecting [properties > betas > mono].
+
+![image](https://github.com/PULSAR-Modders/pulsar-mod-loader/assets/46509577/8aeca171-3cd7-4ffc-8805-77c8ce1400e7)
+
+
+
+On Excecution PulsarModLoaderInstaller.exe will attempt to patch the Steam version of the game in after detecting Steam from it's default install location.  To patch a PULSAR installation in another location (non-Steam version, copy of client, etc), simply specify the path to `Assembly-CSharp.dll` as shown below.
 
 ```
 .\PulsarModLoaderInstaller.exe [Path\To\Pulsar\PULSAR_LostColony_Data\Managed\Assembly-CSharp.dll]
 ```
 
-By default, PML will attempt to patch the Steam version of the game in Steam's default install location.  To patch a PULSAR installation in another location (non-Steam version, copy of client, etc), simply specify the path to `Assembly-CSharp.dll` as shown above.
+Additionally, if the steam installation is not selected/viable an OpenFileDialogue will pop up for windows users asking for the installation location.
 
 Afterwards, add mods to the `PULSARLostColony\Mods` directory and run PULSAR normally.  `PulsarModLoaderInstaller.exe` is not needed after this.
 

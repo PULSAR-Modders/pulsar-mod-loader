@@ -11,9 +11,9 @@ namespace PulsarModLoader.Content.Components.AutoTurret
     /// </summary>
     public class AutoTurretModManager
     {
-        readonly int VanillaAutoTurretMaxType = 0;
+        public readonly int VanillaAutoTurretMaxType = 0;
         private static AutoTurretModManager m_instance = null;
-        readonly List<AutoTurretMod> AutoTurretTypes = new List<AutoTurretMod>();
+        public readonly List<AutoTurretMod> AutoTurretTypes = new List<AutoTurretMod>();
 
         /// <summary>
         /// Static Manager Instance

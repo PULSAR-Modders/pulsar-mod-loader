@@ -12,9 +12,9 @@ namespace PulsarModLoader.Content.Components.CPU
     /// </summary>
     public class CPUModManager
     {
-        readonly int VanillaCPUMaxType = 0;
+        public readonly int VanillaCPUMaxType = 0;
         private static CPUModManager m_instance = null;
-        readonly List<CPUMod> CPUTypes = new List<CPUMod>();
+        public readonly List<CPUMod> CPUTypes = new List<CPUMod>();
 
         /// <summary>
         /// Static Manager Instance

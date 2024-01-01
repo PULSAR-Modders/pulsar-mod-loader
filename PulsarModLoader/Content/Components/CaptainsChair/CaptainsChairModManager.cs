@@ -12,9 +12,9 @@ namespace PulsarModLoader.Content.Components.CaptainsChair
     /// </summary>
     public class CaptainsChairModManager
     {
-        readonly int VanillaCaptainsChairMaxType = 0;
+        public readonly int VanillaCaptainsChairMaxType = 0;
         private static CaptainsChairModManager m_instance = null;
-        readonly List<CaptainsChairMod> CaptainsChairTypes = new List<CaptainsChairMod>();
+        public readonly List<CaptainsChairMod> CaptainsChairTypes = new List<CaptainsChairMod>();
 
         /// <summary>
         /// Static Manager Instance.

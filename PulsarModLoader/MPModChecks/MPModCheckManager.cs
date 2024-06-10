@@ -269,8 +269,9 @@ namespace PulsarModLoader.MPModChecks
                     writer.Write(dataBlock.ModID);              //string ModID
                 }
             }
-
-			return dataStream.ToArray();
+            byte[] data = dataStream.ToArray();
+            dataStream.Dispose();
+            return data;
         }
         
         /// <summary>
@@ -296,7 +297,9 @@ namespace PulsarModLoader.MPModChecks
                     writer.Write(dataBlock.Hash);               //byte[] Hash
                 }
             }
-            return dataStream.ToArray();
+            byte[] data = dataStream.ToArray();
+            dataStream.Dispose();
+            return data;
         }
 
         /// <summary>
@@ -325,6 +328,7 @@ namespace PulsarModLoader.MPModChecks
                         string ModID = reader.ReadString();
                         ModList[i] = new MPModDataBlock(HarmonyIdent, modname, ModVersion, MPRequirements, ModID);
                     }
+                    memoryStream.Dispose();
                     return new MPUserDataBlock(PMLVersion, ModList);
 
                 }
@@ -332,6 +336,7 @@ namespace PulsarModLoader.MPModChecks
             catch (Exception ex)
             {
                 Logger.Info($"Failed to read mod list from Hashless MPUserData, returning null.\n{ex.Message}");
+                memoryStream.Dispose();
                 return null;
             }
         }
@@ -363,12 +368,14 @@ namespace PulsarModLoader.MPModChecks
                         byte[] Hash = reader.ReadBytes(32);
                         ModList[i] = new MPModDataBlock(HarmonyIdent, modname, ModVersion, MPRequirements, ModID, Hash);
                     }
+                    memoryStream.Dispose();
                     return new MPUserDataBlock(PMLVersion, ModList);
                 }
             }
             catch (Exception ex)
             {
                 Logger.Info($"Failed to read mod list from Hashfull MPUserData, returning null.\n{ex.Message}");
+                memoryStream.Dispose();
                 return null;
             }
 

@@ -94,7 +94,7 @@ namespace PulsarModLoader.CustomGUI
                         GUIMain.Width.Value= X;
                         GUIMain.ModlistWidth.Value = MLx;
                         SizeErrString = string.Empty;
-                        GUIMain.Instance.updateWindowSize();
+                        GUIMain.Instance.UpdateWindowSize();
                     }
                 }
             }

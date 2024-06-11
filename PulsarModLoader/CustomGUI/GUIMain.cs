@@ -1,17 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
-using HarmonyLib;
+﻿using HarmonyLib;
+using PulsarModLoader.MPModChecks;
 using PulsarModLoader.Utilities;
-using UnityEngine;
-using static UnityEngine.GUILayout;
-using System.Net.Http;
+using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
+using System.Net.Http;
+using System.Reflection;
 using System.Threading;
+using UnityEngine;
+using static UnityEngine.GUILayout;
 
 namespace PulsarModLoader.CustomGUI
 {
@@ -23,15 +23,16 @@ namespace PulsarModLoader.CustomGUI
         GameObject Background;
         UnityEngine.UI.Image Image;
         public bool GUIActive = false;
-        internal static SaveValue<float> Height = new SaveValue<float>("ModManagerHight", .40f);
-        internal static SaveValue<float> Width = new SaveValue<float>("ModManagerWidth", .40f);
+        internal static SaveValue<float> Height = new SaveValue<float>("ModManagerHight", .50f);
+        internal static SaveValue<float> Width = new SaveValue<float>("ModManagerWidth", .50f);
         internal static SaveValue<float> ModlistWidth = new SaveValue<float>("ModManagerModlistWidth", .30f);
+        internal static SaveValue<float> PlayerlistWidth = new SaveValue<float>("ModManagerModlistWidth", .30f);
         internal static SaveValue<bool> UnlockCursorWhileOpen = new SaveValue<bool>("UnlockCursorWhileOpen", true);
         Rect Window;
         byte Tab = 0;
-        
+
         List<PulsarMod> mods = new List<PulsarMod>(8);
-        ushort selectedMod = ushort.MaxValue;
+        PulsarMod selectedMod;
 
         Rect ModListArea;
         Vector2 ModListScroll = Vector2.zero;
@@ -39,28 +40,38 @@ namespace PulsarModLoader.CustomGUI
         Rect ModInfoArea;
         Vector2 ModInfoScroll = Vector2.zero;
 
+        Rect PlayerListArea;
+        Vector2 PlayerListScroll = Vector2.zero;
+        PhotonPlayer selectedPlayer;
+
+        Rect PlayerModInfoArea;
+        Vector2 PlayerModInfoScroll = Vector2.zero;
+
+
         Rect ModSettingsArea;
         Vector2 ModSettingsScroll = Vector2.zero;
         List<ModSettingsMenu> settings = new List<ModSettingsMenu>(3);
-        ushort selectedSettings = ushort.MaxValue;
+        ModSettingsMenu selectedSettings;
 
         public bool ShouldUnlockCursor()
         {
             return UnlockCursorWhileOpen && GUIActive;
         }
 
-        internal void updateWindowSize()
+        internal void UpdateWindowSize()
         {
             Window = new Rect((Screen.width * .5f - ((Screen.width * Width) / 2)), Screen.height * .5f - ((Screen.height * Height) / 2), Screen.width * Width, Screen.height * Height);
             ModListArea = new Rect(6, 43, Window.width * ModlistWidth, Screen.height * Height - 45);
             ModInfoArea = new Rect(ModListArea.width + 15, 43, (Screen.width * Width - (ModListArea.width + 11)) - 10, Screen.height * Height - 45);
+            PlayerListArea = new Rect(6, 43, Window.width * PlayerlistWidth, Screen.height * Height - 45);
+            PlayerModInfoArea = new Rect(PlayerListArea.width + 15, 43, (Screen.width * Width - (PlayerListArea.width + 11)) - 10, Screen.height * Height - 45);
             ModSettingsArea = new Rect(6, 43, Screen.width * Width - 12, Screen.height * Height - 45);
         }
 
         internal GUIMain()
         {
             Instance = this;
-            updateWindowSize();
+            UpdateWindowSize();
             settings.Add(new PMLSettings());
             ModManager.Instance.OnModUnloaded += UpdateOnModRemoved;
             ModManager.Instance.OnModSuccessfullyLoaded += UpdateOnModLoaded;
@@ -74,18 +85,20 @@ namespace PulsarModLoader.CustomGUI
             Background.SetActive(false);
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "<Pending>")]
         void Awake()
         {
             Application.SetStackTraceLogType(LogType.Log, StackTraceLogType.None);
             Application.SetStackTraceLogType(LogType.Warning, StackTraceLogType.None);
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "<Pending>")]
         void Update()
         {
             if (Input.GetKeyDown(KeyCode.F5))
             {
                 GUIActive = !GUIActive;
-                if(GUIActive)
+                if (GUIActive)
                 {
                     GUIOpen();
                 }
@@ -98,24 +111,19 @@ namespace PulsarModLoader.CustomGUI
 
         void GUIOpen()
         {
-            if (selectedSettings != ushort.MaxValue) //Menu Opening and MM selected
-            {
-                settings[selectedSettings].OnOpen();
-            }
+            selectedSettings?.OnOpen(); //Menu Opening and MM selected
 
             Background.SetActive(true);
         }
 
         void GUIClose()
         {
-            if (selectedSettings != ushort.MaxValue) //Menu Closing and MM Selected
-            {
-                settings[selectedSettings].OnClose();
-            }
+            selectedSettings?.OnClose(); //Menu Closing and MM Selected
 
             Background.SetActive(false);
         }
-        
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "<Pending>")]
         void OnGUI()
         {
             if (GUIActive)
@@ -124,7 +132,7 @@ namespace PulsarModLoader.CustomGUI
                 Window = GUI.Window(999910, Window, WindowFunction, "ModManager");
 
                 //float y = Window.center.y * 2 * -1;
-                Image.rectTransform.position = new Vector3(Window.center.x, (Window.center.y * - 1) + Screen.height, 0);
+                Image.rectTransform.position = new Vector3(Window.center.x, (Window.center.y * -1) + Screen.height, 0);
                 Image.rectTransform.sizeDelta = Window.size;
             }
         }
@@ -190,14 +198,14 @@ namespace PulsarModLoader.CustomGUI
 
         void WindowFunction(int WindowID)
         {
-            
+
             BeginHorizontal(); // TAB Start
             {
-                if (Button("Mod Info"))
+                if (DrawButtonSelected("Mod Info", Tab == 0))
                     Tab = 0;
-                if (Button("Mod Settings"))
+                if (DrawButtonSelected("Mod Settings", Tab == 1))
                     Tab = 1;
-                if (Button("About"))
+                if (DrawButtonSelected("Player List", Tab == 2))
                     Tab = 2;
             }
             EndHorizontal(); // TAB End
@@ -210,76 +218,90 @@ namespace PulsarModLoader.CustomGUI
                     {
                         ModListScroll = BeginScrollView(ModListScroll);
                         {
-                            for (ushort p = 0; p < mods.Count; p++)
+                            if (DrawButtonSelected("Pulsar Mod Loader", selectedMod == null))
                             {
-                                var mod = mods[p];
-                                var name = mods[p].Name;
-                                if (ModManager.Instance.UpdatesAviable.Any(m => m.Mod == mod))
-                                    name = "(!) " + name;
-								if (Button(name))
-									selectedMod = p;
-							}
+                                selectedMod = null;
+                            }
+                            foreach (PulsarMod mod in mods)
+                            {
+                                DrawModListModButton(mod);
+                            }
                         }
                         EndScrollView();
                     }
                     EndArea();
                     BeginArea(ModInfoArea);
                     {
-                        if (selectedMod != ushort.MaxValue)
+                        ModInfoScroll = BeginScrollView(ModInfoScroll);
                         {
-                            ModInfoScroll = BeginScrollView(ModInfoScroll);
+                            if (selectedMod != null)
                             {
-                                PulsarMod mod = mods[selectedMod];
                                 BeginHorizontal();
                                 {
                                     if (Button("Unload"))
-                                        mod.Unload();
+                                        selectedMod.Unload();
                                 }
                                 EndHorizontal();
-                                Label($"Author: {mod.Author}");
-                                Label($"Name: {mod.Name}");
-                                Label($"Version: {mod.Version}");
-                                Label($"License: {mod.License}");
-                                if(!string.IsNullOrEmpty(mod.SourceURL))
+                                Label($"Author: {selectedMod.Author}");
+                                Label($"Name: {selectedMod.Name}");
+                                Label($"Version: {selectedMod.Version}");
+                                Label($"License: {selectedMod.License}");
+                                if (!string.IsNullOrEmpty(selectedMod.SourceURL))
                                 {
-                                    Label($"SourceURL: {mod.SourceURL}");
+                                    Label($"SourceURL: {selectedMod.SourceURL}");
                                 }
-                                if (mod.ShortDescription != string.Empty)
-                                    Label($"Short Description: {mod.ShortDescription}");
-                                if (mod.LongDescription != string.Empty)
-                                    Label($"Long Description: {mod.LongDescription}");
-                                Label($"MPRequirement: {((MPModChecks.MPRequirement)mod.MPRequirements).ToString()}");
+                                if (selectedMod.ShortDescription != string.Empty)
+                                    Label($"Short Description: {selectedMod.ShortDescription}");
+                                if (selectedMod.LongDescription != string.Empty)
+                                    Label($"Long Description: {selectedMod.LongDescription}");
+                                Label($"MPRequirement: {(MPModChecks.MPRequirement)selectedMod.MPRequirements}");
                                 Space(1f);
-                                var result = ModManager.Instance.UpdatesAviable.FirstOrDefault(av => av.Mod == mod);
-								if (result != null)
+                                var result = ModManager.Instance.UpdatesAviable.FirstOrDefault(av => av.Mod == selectedMod);
+                                if (result != null)
                                 {
                                     if (result.IsUpdated)
                                         Label("Restart the game to apply the changes!");
-									else if(Button($"Update this mod to version {result.Data.Version}?"))
-                                            ModUpdateCheck.UpdateMod(result);
-								}
+                                    else if (Button($"Update this mod to version {result.Data.Version}?"))
+                                        ModUpdateCheck.UpdateMod(result);
+                                }
 
                                 //Get Readme from URL
-                                if (!string.IsNullOrEmpty(mod.ReadmeURL)) 
+                                if (!string.IsNullOrEmpty(selectedMod.ReadmeURL))
                                 {
-                                    bool ReadmeLocked = Readme.TryGetValue(mod.Name, out string ReadmeValue);
+                                    bool ReadmeLocked = Readme.TryGetValue(selectedMod.Name, out string ReadmeValue);
                                     bool ReadmeEmpty = string.IsNullOrEmpty(ReadmeValue);
-//                                    Logger.Info($"locked,empty:{ReadmeLocked},{ReadmeEmpty}");
+                                    //                                    Logger.Info($"locked,empty:{ReadmeLocked},{ReadmeEmpty}");
                                     if (ReadmeEmpty && !ReadmeLocked)
                                     {
                                         if (PMLConfig.AutoPullReadme.Value || Button("Load Readme"))
                                         {
-                                            new Thread(() => { GetReadme(mod.Name, mod.ReadmeURL); }).Start();
+                                            new Thread(() => { GetReadme(selectedMod.Name, selectedMod.ReadmeURL); }).Start();
                                         }
                                     }
-                                   else
-                                   {
-                                        Label($"Readme:\n\n{Readme[mod.Name]}");
-                                   }
+                                    else
+                                    {
+                                        Label($"Readme:\n\n{Readme[selectedMod.Name]}");
+                                    }
                                 }
                             }
-                            EndScrollView();
+                            else
+                            {
+                                //PML About page when no mod selected
+                                GUI.skin.label.alignment = TextAnchor.MiddleCenter;
+                                Label($"PulsarModLoader - Unofficial mod loader for PULSAR: Lost Colony.");
+                                Label($"Version: {ModManager.Instance.PMLVersionInfo.FileVersion}");
+                                Label($"\n\nDeveloped by Tom Richter, Dragon, 18107, BadRyuner");
+                                BeginHorizontal();
+                                FlexibleSpace();
+                                if (Button("Github"))
+                                    Application.OpenURL("https://github.com/PULSAR-Modders/pulsar-mod-loader");
+                                if (Button("Discord"))
+                                    Application.OpenURL("https://discord.gg/j3Pydn6");
+                                FlexibleSpace();
+                                EndHorizontal();
+                            }
                         }
+                        EndScrollView();
                     }
                     EndArea();
                     break;
@@ -291,14 +313,14 @@ namespace PulsarModLoader.CustomGUI
                     {
                         ModSettingsScroll = BeginScrollView(ModSettingsScroll);
                         {
-                            if (selectedSettings == ushort.MaxValue)
+                            if (selectedSettings == null)
                             {
-                                for (ushort msm = 0; msm < settings.Count; msm++)
+                                foreach (ModSettingsMenu msm in settings)
                                 {
-                                    if (Button(settings[msm].Name()))
+                                    if (Button(msm.Name()))
                                     {
-                                        settings[msm].OnOpen();
                                         selectedSettings = msm;
+                                        selectedSettings.OnOpen();
                                         break;
                                     }
                                 }
@@ -307,12 +329,12 @@ namespace PulsarModLoader.CustomGUI
                             {
                                 if (Button("Back"))
                                 {
-                                    settings[selectedSettings].OnClose();
-                                    selectedSettings = ushort.MaxValue;
+                                    selectedSettings.OnClose();
+                                    selectedSettings = null;
                                 }
                                 else
                                 {
-                                    settings[selectedSettings].Draw();
+                                    selectedSettings.Draw();
                                 }
                             }
                         }
@@ -321,19 +343,43 @@ namespace PulsarModLoader.CustomGUI
                     EndArea();
                     break;
                 #endregion
-                #region About
+                #region Player List
                 case 2:
-                    GUI.skin.label.alignment = TextAnchor.MiddleCenter;
-                    Label($"PulsarModLoader - Unofficial mod loader for PULSAR: Lost Colony.");
-                    Label($"Version: {ModManager.Instance.PMLVersionInfo.FileVersion}");
-                    Label($"\n\nDeveloped by Tom Richter");
-                    Label($"Contributors:\nDragonFire47\n18107\nBadRyuner");
-                    BeginHorizontal();
-                    if (Button("Github"))
-                        Process.Start("https://github.com/PULSAR-Modders/pulsar-mod-loader");
-                    if (Button("Discord"))
-                        Process.Start("https://discord.gg/j3Pydn6");
-                    EndHorizontal();
+                    GUI.skin.label.alignment = TextAnchor.MiddleLeft;
+                    if (PhotonNetwork.room == null || PLServer.Instance == null)
+                    {
+                        Label("Not in a game");
+                        break;
+                    }
+                    BeginArea(PlayerListArea);
+                    {
+                        PlayerListScroll = BeginScrollView(PlayerListScroll);
+                        {
+                            foreach (PhotonPlayer player in PhotonNetwork.playerList)
+                            {
+                                if (player.IsLocal)
+                                    continue;
+                                if (DrawButtonSelected(PLServer.GetPlayerForPhotonPlayer(player).GetPlayerName(), selectedPlayer == player))
+                                    selectedPlayer = player;
+                            }
+                        }
+                        EndScrollView();
+                    }
+                    EndArea();
+                    BeginArea(PlayerModInfoArea);
+                    {
+                        PlayerModInfoScroll = BeginScrollView(PlayerModInfoScroll);
+                        {
+                            if (selectedPlayer != null)
+                            {
+                                Label($"Player: {selectedPlayer.NickName} {(selectedPlayer.IsMasterClient ? "(Host)" : string.Empty)}");
+
+                                DrawPlayerModList(selectedPlayer);
+                            }
+                        }
+                        EndScrollView();
+                    }
+                    EndArea();
                     break;
                     #endregion
             }
@@ -341,9 +387,12 @@ namespace PulsarModLoader.CustomGUI
         }
 
         internal static GUISkin _cachedSkin;
-        private static readonly Color32 _classicMenuBackground = new Color32(32,32,32, 255);
-        private static readonly Color32 _classicButtonBackground = new Color32(40,40,40, 255);
-        private static readonly Color32 _hoverButtonFromMenu = new Color32(18,79,179, 255);
+        internal static GUIStyle _SelectedButtonStyle;
+        Texture2D _buttonBackground;
+        Texture2D _hbuttonBackground;
+        private static readonly Color32 _classicMenuBackground = new Color32(32, 32, 32, 255);
+        private static readonly Color32 _classicButtonBackground = new Color32(40, 40, 40, 255);
+        private static readonly Color32 _hoverButtonFromMenu = new Color32(18, 79, 179, 255);
         GUISkin ChangeSkin()
         {
             if (_cachedSkin is null || _cachedSkin.window.active.background is null)
@@ -358,33 +407,39 @@ namespace PulsarModLoader.CustomGUI
                 _cachedSkin.window.onHover.background = windowBackground;
                 _cachedSkin.window.normal.background = windowBackground;
                 _cachedSkin.window.onNormal.background = windowBackground;
-                
+
                 _cachedSkin.window.hover.textColor = Color.white;
                 _cachedSkin.window.onHover.textColor = Color.white;
 
                 Color32 hoverbutton = PLServer.Instance == null || PLNetworkManager.Instance?.LocalPlayer == null
-	                ? _hoverButtonFromMenu
-	                : (Color32)PLPlayer.GetClassColorFromID(PLNetworkManager.Instance.LocalPlayer.ClassID);
+                    ? _hoverButtonFromMenu
+                    : (Color32)PLPlayer.GetClassColorFromID(PLNetworkManager.Instance.LocalPlayer.ClassID);
 
-                Texture2D buttonBackground = BuildTexFrom1Color(_classicButtonBackground);
-                Texture2D hbuttonBackground = BuildTexFrom1Color(hoverbutton);
-                _cachedSkin.button.active.background = buttonBackground;
-                _cachedSkin.button.onActive.background = buttonBackground;
-                _cachedSkin.button.focused.background = buttonBackground;
-                _cachedSkin.button.onFocused.background = buttonBackground;
-                _cachedSkin.button.hover.background = hbuttonBackground;
-                _cachedSkin.button.onHover.background = hbuttonBackground;
-                _cachedSkin.button.normal.background = buttonBackground;
-                _cachedSkin.button.onNormal.background = buttonBackground;
+                _buttonBackground = BuildTexFrom1Color(_classicButtonBackground);
+                _hbuttonBackground = BuildTexFrom1Color(hoverbutton);
+                _cachedSkin.button.active.background = _buttonBackground;
+                _cachedSkin.button.onActive.background = _buttonBackground;
+                _cachedSkin.button.focused.background = _buttonBackground;
+                _cachedSkin.button.onFocused.background = _buttonBackground;
+                _cachedSkin.button.hover.background = _hbuttonBackground;
+                _cachedSkin.button.onHover.background = _hbuttonBackground;
+                _cachedSkin.button.normal.background = _buttonBackground;
+                _cachedSkin.button.onNormal.background = _buttonBackground;
+
+                _SelectedButtonStyle = new GUIStyle(_cachedSkin.button);
+                _SelectedButtonStyle.active.background = _hbuttonBackground;
+                _SelectedButtonStyle.focused.background = _hbuttonBackground;
+                _SelectedButtonStyle.normal.background = _hbuttonBackground;
 
                 _cachedSkin.horizontalSlider.active.background = PLGlobal.Instance.SliderBG;
-                _cachedSkin.horizontalSlider.onActive.background = PLGlobal.Instance.SliderBG;
                 _cachedSkin.horizontalSlider.focused.background = PLGlobal.Instance.SliderBG;
-                _cachedSkin.horizontalSlider.onFocused.background = PLGlobal.Instance.SliderBG;
                 _cachedSkin.horizontalSlider.hover.background = PLGlobal.Instance.SliderBG;
-                _cachedSkin.horizontalSlider.onHover.background = PLGlobal.Instance.SliderBG;
                 _cachedSkin.horizontalSlider.normal.background = PLGlobal.Instance.SliderBG;
+                _cachedSkin.horizontalSlider.onActive.background = PLGlobal.Instance.SliderBG;
+                _cachedSkin.horizontalSlider.onFocused.background = PLGlobal.Instance.SliderBG;
+                _cachedSkin.horizontalSlider.onHover.background = PLGlobal.Instance.SliderBG;
                 _cachedSkin.horizontalSlider.onNormal.background = PLGlobal.Instance.SliderBG;
+
 
                 _cachedSkin.horizontalSliderThumb.active.background = PLGlobal.Instance.SliderHandle;
                 _cachedSkin.horizontalSliderThumb.onActive.background = PLGlobal.Instance.SliderHandle;
@@ -412,8 +467,8 @@ namespace PulsarModLoader.CustomGUI
                 _cachedSkin.textField.onHover.textColor = hoverbutton;
 
                 UnityEngine.Object.DontDestroyOnLoad(windowBackground);
-                UnityEngine.Object.DontDestroyOnLoad(buttonBackground);
-                UnityEngine.Object.DontDestroyOnLoad(hbuttonBackground);
+                UnityEngine.Object.DontDestroyOnLoad(_buttonBackground);
+                UnityEngine.Object.DontDestroyOnLoad(_hbuttonBackground);
                 UnityEngine.Object.DontDestroyOnLoad(textfield);
                 UnityEngine.Object.DontDestroyOnLoad(_cachedSkin);
                 // TODO: Add custom skin for Toggle and other items
@@ -425,7 +480,7 @@ namespace PulsarModLoader.CustomGUI
         Texture2D BuildTexFrom1Color(Color color)
         {
             Texture2D tex = new Texture2D(1, 1);
-            tex.SetPixel(0,0, color);
+            tex.SetPixel(0, 0, color);
             tex.Apply();
             return tex;
         }
@@ -438,13 +493,101 @@ namespace PulsarModLoader.CustomGUI
             return tex;
         }
 
+        static string GetColorTextForMPType(MPRequirement mptype)
+        {
+            switch (mptype)
+            {
+                //case MPRequirement.Client:
+                //    return "green";
+                //case MPRequirement.Unspecified:
+                //    return "#FFFF99";
+                case MPRequirement.All:
+                    return "#FF3333";
+                default:
+                    return string.Empty;
+            }
+        }
+
+        static string GetColoredMPTypeText(MPRequirement mptype)
+        {
+            switch (mptype)
+            {
+                case MPRequirement.None:
+                    return "<color=#00CC00>Client</color>";
+                case MPRequirement.Host:
+                    return "<color=#00CC00>Host</color>";
+                //case MPRequirement.Unspecified:
+                //    return "<color=#FFFF99>Unspecified</color>";
+                case MPRequirement.All:
+                    return "<color=#FF3333>All</color>";
+                default:
+                    return mptype.ToString();
+            }
+        }
+
+        void DrawModListModButton(PulsarMod pulsarMod)
+        {
+            bool UpdateAvailable = ModManager.Instance.UpdatesAviable.Any(m => m.Mod == pulsarMod);
+            string ModName = UpdateAvailable ? $"(!) {pulsarMod.Name}" : pulsarMod.Name;
+
+            if (pulsarMod.MPRequirements > (int)MPRequirement.Host)
+            {
+                if (DrawButtonSelected($"<color={GetColorTextForMPType((MPRequirement)pulsarMod.MPRequirements)}>{ModName}</color>", selectedMod == pulsarMod)) //FFFF99
+                    selectedMod = pulsarMod;
+            }
+            else
+            {
+                if (DrawButtonSelected(ModName, selectedMod == pulsarMod))
+                    selectedMod = pulsarMod;
+            }
+        }
+
+        public static bool DrawButtonSelected(string text, bool selected)
+        {
+            if (selected)
+            {
+                bool returnvalue = Button(text, _SelectedButtonStyle);
+                return returnvalue;
+            }
+            else
+            {
+                return Button(text);
+            }
+        }
+
+        void DrawPlayerModList(PhotonPlayer player)
+        {
+            MPUserDataBlock userData = MPModCheckManager.Instance.GetNetworkedPeerMods(player);
+            if (userData != null)
+            {
+                Label($"User PML version: {userData.PMLVersion}");
+                Label("ModList:");
+                string ModListText = string.Empty;
+                bool first = true;
+                foreach (MPModDataBlock modData in userData.ModData)
+                {
+                    if (first)
+                        first = false;
+                    else
+                        ModListText += "\n";
+
+                    ModListText += $"- {modData.ModName} v{modData.Version}, MPType: {GetColoredMPTypeText(modData.MPRequirement)}";
+                }
+                Label(ModListText);
+            }
+            else
+            {
+                Label("No Mod data.");
+            }
+        }
+
         void UpdateOnModRemoved(PulsarMod mod)
         {
-            selectedMod = ushort.MaxValue;
+            selectedMod = null;
             mods.Remove(mod);
             List<ModSettingsMenu> settingsToRemove = new List<ModSettingsMenu>();
             Assembly asm = mod.GetType().Assembly;
-            settings.AsParallel().ForAll((arg) => { if (arg.GetType().Assembly == asm) settingsToRemove.Add(arg);});
+            settings.AsParallel().ForAll((arg) => { if (arg.GetType().Assembly == asm) settingsToRemove.Add(arg); });
             for (byte s = 0; s < settingsToRemove.Count; s++)
                 settings.Remove(settingsToRemove[s]);
             settingsToRemove = null;
@@ -458,9 +601,9 @@ namespace PulsarModLoader.CustomGUI
             {
                 if (modsettingstype.IsAssignableFrom(type))
                 {
-                    #if DEBUG
-                    Utilities.Logger.Info($"Loaded new settings! {type.FullName}"); 
-                    #endif
+#if DEBUG
+                    Utilities.Logger.Info($"Loaded new settings! {type.FullName}");
+#endif
                     settings.Add(Activator.CreateInstance(type) as ModSettingsMenu);
                 }
             });
@@ -470,6 +613,6 @@ namespace PulsarModLoader.CustomGUI
     [HarmonyPatch(typeof(PLPlayer), nameof(PLPlayer.SetClassID))]
     static class UpdateGUIColorOnClassChanged
     {
-	    static void Postfix() => GUIMain._cachedSkin = null;
+        static void Postfix() => GUIMain._cachedSkin = null;
     }
 }

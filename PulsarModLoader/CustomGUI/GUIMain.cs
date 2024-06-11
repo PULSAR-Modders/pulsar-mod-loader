@@ -283,6 +283,15 @@ namespace PulsarModLoader.CustomGUI
                                         Label($"Readme:\n\n{Readme[selectedMod.Name]}");
                                     }
                                 }
+
+                                Label("\nSettings menus:");
+                                foreach (ModSettingsMenu MSM in settings)
+                                {
+                                    if (MSM.MyMod == selectedMod && Button(MSM.Name()))
+                                    {
+                                        OpenSettingsMenu(MSM);
+                                    }
+                                }
                             }
                             else
                             {
@@ -319,8 +328,7 @@ namespace PulsarModLoader.CustomGUI
                                 {
                                     if (Button(msm.Name()))
                                     {
-                                        selectedSettings = msm;
-                                        selectedSettings.OnOpen();
+                                        OpenSettingsMenu(msm);
                                         break;
                                     }
                                 }
@@ -579,6 +587,16 @@ namespace PulsarModLoader.CustomGUI
             {
                 Label("No Mod data.");
             }
+        }
+
+        public void OpenSettingsMenu(ModSettingsMenu menu)
+        {
+            if (Tab != 1)
+                Tab = 1;
+            else selectedSettings?.OnClose();
+
+            selectedSettings = menu;
+            selectedSettings.OnOpen();
         }
 
         void UpdateOnModRemoved(PulsarMod mod)

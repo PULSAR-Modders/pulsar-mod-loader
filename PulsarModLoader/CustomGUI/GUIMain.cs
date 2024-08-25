@@ -226,6 +226,7 @@ namespace PulsarModLoader.CustomGUI
                             {
                                 DrawModListModButton(mod);
                             }
+                            Label("Overall MPType: " + GetColoredMPTypeText(MPModCheckManager.Instance.HighestLevelOfMPMods));
                         }
                         EndScrollView();
                     }

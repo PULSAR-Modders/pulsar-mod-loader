@@ -366,9 +366,10 @@ namespace PulsarModLoader.CustomGUI
                         {
                             foreach (PhotonPlayer player in PhotonNetwork.playerList)
                             {
-                                if (player.IsLocal)
+                                PLPlayer plplayer = PLServer.GetPlayerForPhotonPlayer(player);
+                                if (player.IsLocal || plplayer == null)
                                     continue;
-                                if (DrawButtonSelected(PLServer.GetPlayerForPhotonPlayer(player).GetPlayerName(), selectedPlayer == player))
+                                if (DrawButtonSelected(plplayer.GetPlayerName(), selectedPlayer == player))
                                     selectedPlayer = player;
                             }
                         }

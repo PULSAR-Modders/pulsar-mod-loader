@@ -129,7 +129,7 @@ namespace PulsarModLoader.CustomGUI
             if (GUIActive)
             {
                 GUI.skin = ChangeSkin();
-                Window = GUI.Window(999910, Window, WindowFunction, "ModManager");
+                Window = GUI.Window(999910, Window, WindowFunction, "PML F5 Menu");
 
                 //float y = Window.center.y * 2 * -1;
                 Image.rectTransform.position = new Vector3(Window.center.x, (Window.center.y * -1) + Screen.height, 0);

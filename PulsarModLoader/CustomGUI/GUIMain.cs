@@ -624,7 +624,9 @@ namespace PulsarModLoader.CustomGUI
 #if DEBUG
                     Utilities.Logger.Info($"Loaded new settings! {type.FullName}");
 #endif
-                    settings.Add(Activator.CreateInstance(type) as ModSettingsMenu);
+                    var MSMInstance = Activator.CreateInstance(type) as ModSettingsMenu;
+                    MSMInstance.MyMod = mod;
+                    settings.Add(MSMInstance);
                 }
             });
         }

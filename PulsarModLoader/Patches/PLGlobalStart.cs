@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using System.IO;
+using System.Reflection;
 using UnityEngine;
 
 namespace PulsarModLoader.Patches
@@ -13,6 +14,10 @@ namespace PulsarModLoader.Patches
         {
             if (!modsLoaded)
             {
+
+                var harmony = new Harmony("wiki.pulsar.pml");
+                harmony.PatchAll(Assembly.GetExecutingAssembly());
+
                 //Events Init
                 new PulsarModLoader.Events();
 

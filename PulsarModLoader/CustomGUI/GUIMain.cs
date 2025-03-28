@@ -300,6 +300,7 @@ namespace PulsarModLoader.CustomGUI
                                 GUI.skin.label.alignment = TextAnchor.MiddleCenter;
                                 Label($"PulsarModLoader - Unofficial mod loader for PULSAR: Lost Colony.");
                                 Label($"Version: {ModManager.Instance.PMLVersionInfo.FileVersion}");
+                                Label("<color=yellow><b>BepInEx Varient</b></color>");
                                 Label($"\n\nDeveloped by Tom Richter, Dragon, 18107, BadRyuner");
                                 BeginHorizontal();
                                 FlexibleSpace();

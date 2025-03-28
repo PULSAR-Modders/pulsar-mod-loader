@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 
 namespace PulsarModLoader.Patches
@@ -13,6 +14,27 @@ namespace PulsarModLoader.Patches
     /// </summary>
     public static class HarmonyHelpers
     {
+        /// <summary>
+        /// For some reason the HarmonyX team decided to convert the short opcodes to full opcodes.
+        /// </summary>
+        private static readonly Dictionary<OpCode, OpCode> ShortToLongMap = new Dictionary<OpCode, OpCode>()
+        {
+            [OpCodes.Beq_S] = OpCodes.Beq,
+            [OpCodes.Bge_S] = OpCodes.Bge,
+            [OpCodes.Bge_Un_S] = OpCodes.Bge_Un,
+            [OpCodes.Bgt_S] = OpCodes.Bgt,
+            [OpCodes.Bgt_Un_S] = OpCodes.Bgt_Un,
+            [OpCodes.Ble_S] = OpCodes.Ble,
+            [OpCodes.Ble_Un_S] = OpCodes.Ble_Un,
+            [OpCodes.Blt_S] = OpCodes.Blt,
+            [OpCodes.Blt_Un_S] = OpCodes.Blt_Un,
+            [OpCodes.Bne_Un_S] = OpCodes.Bne_Un,
+            [OpCodes.Brfalse_S] = OpCodes.Brfalse,
+            [OpCodes.Brtrue_S] = OpCodes.Brtrue,
+            [OpCodes.Br_S] = OpCodes.Br,
+            [OpCodes.Leave_S] = OpCodes.Leave
+        };
+
         /// <summary>
         /// Modifies instructions targetSequence with patchSequence based on input PatchMode and CheckMode.
         /// </summary>
@@ -26,7 +48,19 @@ namespace PulsarModLoader.Patches
         /// <exception cref="ArgumentException"></exception>
         public static IEnumerable<CodeInstruction> PatchBySequence(IEnumerable<CodeInstruction> instructions, IEnumerable<CodeInstruction> targetSequence, IEnumerable<CodeInstruction> patchSequence, PatchMode patchMode = PatchMode.AFTER, CheckMode checkMode = CheckMode.ALWAYS, bool showDebugOutput = false)
         {
-            List<CodeInstruction> Instructions = instructions.ToList(); //create new list to be modified and returned.
+            List<CodeInstruction> Instructions = instructions.ToList();
+
+            foreach (var ins in targetSequence)
+            {
+                if (ShortToLongMap.TryGetValue(ins.opcode, out var longOpCode))
+                {
+                    ins.opcode = longOpCode;
+                    if (showDebugOutput)
+                    {
+                        Logger.Info($"Converting the opcode {longOpCode}_s into {longOpCode} because HarmonyX normalises this way");
+                    }
+                }
+            }
 
             CodeInstruction targetStart = targetSequence.ElementAt(0);
             int targetSize = targetSequence.Count();

@@ -14,13 +14,16 @@ namespace PulsarModLoader.Patches
         {
             if (!modsLoaded)
             {
-                //Logging adjustments
-                Application.SetStackTraceLogType(LogType.Log, StackTraceLogType.None);
-                Application.SetStackTraceLogType(LogType.Warning, StackTraceLogType.None);
+                if (BepinPlugin.instance != null)
+                {
+                    //Logging adjustments
+                    Application.SetStackTraceLogType(LogType.Log, StackTraceLogType.None);
+                    Application.SetStackTraceLogType(LogType.Warning, StackTraceLogType.None);
 
-                //Patch Everything
-                var harmony = new Harmony("wiki.pulsar.pml");
-                harmony.PatchAll(Assembly.GetExecutingAssembly());
+                    //Patch Everything
+                    var harmony = new Harmony("wiki.pulsar.pml");
+                    harmony.PatchAll(Assembly.GetExecutingAssembly());
+                }
 
                 //Events Init
                 new PulsarModLoader.Events();

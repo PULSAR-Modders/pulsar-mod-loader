@@ -383,7 +383,7 @@ namespace PulsarModLoader
         internal void UnloadMod(PulsarMod mod, ref Harmony harmony)
         {
             activeMods.Remove(mod.Name); // Removes selected mod from activeMods
-            harmony.UnpatchAll(mod.HarmonyIdentifier()); // Removes all patches from selected mod
+            //harmony.UnpatchAll(mod.HarmonyIdentifier()); // Removes all patches from selected mod
             OnModUnloaded?.Invoke(mod);
             Logger.Info($"Unloaded mod: {mod.Name} Version {mod.Version} Author: {mod.Author}");
             GC.Collect();

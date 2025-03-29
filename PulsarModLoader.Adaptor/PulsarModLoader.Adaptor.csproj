@@ -47,9 +47,8 @@
       <HintPath>..\packages\Talespire.BepInEx.5.4.22\lib\BepInEx.Preloader.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Mono.Cecil">
-      <HintPath>D:\SteamLibrary\steamapps\common\PULSARLostColony - Modded\PULSAR_LostColony_Data\Managed\Mono.Cecil.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="Mono.Cecil, Version=0.11.5.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Mono.Cecil.0.11.5\lib\net40\Mono.Cecil.dll</HintPath>
     </Reference>
     <Reference Include="PulsarModLoader">
       <HintPath>..\PulsarModLoader\bin\Debug\PulsarModLoader.dll</HintPath>

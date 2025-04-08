@@ -43,571 +43,574 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Accessibility, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\Accessibility.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\Accessibility.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ACTk.Examples.Genuine.Runtime, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\ACTk.Examples.Genuine.Runtime.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\ACTk.Examples.Genuine.Runtime.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ACTk.Examples.Runtime, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\ACTk.Examples.Runtime.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\ACTk.Examples.Runtime.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ACTk.Runtime, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\ACTk.Runtime.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\ACTk.Runtime.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp-firstpass, Version=1.4.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\Assembly-CSharp-firstpass.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\Assembly-CSharp-firstpass.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="AstarPathfindingProject, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\AstarPathfindingProject.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\AstarPathfindingProject.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Behave.Unity.Assets, Version=0.0.0.0, Culture=neutral, PublicKeyToken=e615ca22040f207c, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\Behave.Unity.Assets.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\Behave.Unity.Assets.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Behave.Unity.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=e615ca22040f207c, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\Behave.Unity.Runtime.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\Behave.Unity.Runtime.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Cinemachine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\Cinemachine.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\Cinemachine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="com.rlabrecque.steamworks.net, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\com.rlabrecque.steamworks.net.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\com.rlabrecque.steamworks.net.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="CrewAILibraryBuild, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\CrewAILibraryBuild.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\CrewAILibraryBuild.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="DecalSystem.Runtime, Version=1.4.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\DecalSystem.Runtime.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\DecalSystem.Runtime.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="HOTween, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\HOTween.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\HOTween.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Mono.Data.Sqlite, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\Mono.Data.Sqlite.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\Mono.Data.Sqlite.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Mono.Posix, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\Mono.Posix.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\Mono.Posix.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Mono.Security, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\Mono.Security.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\Mono.Security.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Mono.WebBrowser, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\Mono.WebBrowser.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\Mono.WebBrowser.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="netstandard, Version=2.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\netstandard.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\netstandard.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\Newtonsoft.Json.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Novell.Directory.Ldap, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\Novell.Directory.Ldap.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\Novell.Directory.Ldap.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Oculus.Platform, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\Oculus.Platform.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\Oculus.Platform.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Oculus.VR, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\Oculus.VR.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\Oculus.VR.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Pathfinding.ClipperLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\Pathfinding.ClipperLib.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\Pathfinding.ClipperLib.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Pathfinding.Ionic.Zip.Reduced, Version=1.9.1.9000, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\Pathfinding.Ionic.Zip.Reduced.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\Pathfinding.Ionic.Zip.Reduced.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Pathfinding.Poly2Tri, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\Pathfinding.Poly2Tri.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\Pathfinding.Poly2Tri.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Photon3Unity3D, Version=4.1.6.10, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\Photon3Unity3D.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\Photon3Unity3D.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="PilotAIBuild, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\PilotAIBuild.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\PilotAIBuild.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="PLInputBase, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\PLInputBase.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\PLInputBase.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="protobuf-net, Version=2.0.0.668, Culture=neutral, PublicKeyToken=257b51d87d2e4d67, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\protobuf-net.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\protobuf-net.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="RestSharp, Version=104.4.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\RestSharp.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\RestSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="SteamVR, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\SteamVR.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\SteamVR.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="SteamVR_Actions, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\SteamVR_Actions.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\SteamVR_Actions.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\System.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\System.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.ComponentModel.Composition, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\System.ComponentModel.Composition.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\System.ComponentModel.Composition.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.ComponentModel.DataAnnotations, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\System.ComponentModel.DataAnnotations.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\System.ComponentModel.DataAnnotations.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Configuration, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\System.Configuration.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\System.Configuration.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\System.Data.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\System.Data.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\System.Design.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\System.Design.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Diagnostics.StackTrace, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\System.Diagnostics.StackTrace.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\System.Diagnostics.StackTrace.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.DirectoryServices, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\System.DirectoryServices.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\System.DirectoryServices.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\System.Drawing.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\System.Drawing.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Drawing.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\System.Drawing.Design.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\System.Drawing.Design.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.EnterpriseServices, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\System.EnterpriseServices.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\System.EnterpriseServices.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Globalization.Extensions, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\System.Globalization.Extensions.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\System.Globalization.Extensions.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.IO.Compression, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\System.IO.Compression.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\System.IO.Compression.dll</HintPath>
       <Private>False</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System.IO.Compression.FileSystem, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\System.IO.Compression.FileSystem.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\System.IO.Compression.FileSystem.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Net.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\System.Net.Http.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\System.Net.Http.dll</HintPath>
       <Private>False</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System.Numerics, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\System.Numerics.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\System.Numerics.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Runtime.Serialization, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\System.Runtime.Serialization.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\System.Runtime.Serialization.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Runtime.Serialization.Formatters.Soap, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\System.Runtime.Serialization.Formatters.Soap.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\System.Runtime.Serialization.Formatters.Soap.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Runtime.Serialization.Xml, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\System.Runtime.Serialization.Xml.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\System.Runtime.Serialization.Xml.dll</HintPath>
       <Private>False</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System.Security, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\System.Security.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\System.Security.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.ServiceModel.Internals, Version=0.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\System.ServiceModel.Internals.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\System.ServiceModel.Internals.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Transactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\System.Transactions.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\System.Transactions.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Web, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\System.Web.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\System.Web.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Web.ApplicationServices, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\System.Web.ApplicationServices.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\System.Web.ApplicationServices.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Web.Services, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\System.Web.Services.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\System.Web.Services.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\System.Windows.Forms.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\System.Windows.Forms.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Xml, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\System.Xml.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\System.Xml.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Xml.Linq, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\System.Xml.Linq.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\System.Xml.Linq.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Xml.XPath.XDocument, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\System.Xml.XPath.XDocument.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\System.Xml.XPath.XDocument.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.Analytics.DataPrivacy, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\Unity.Analytics.DataPrivacy.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\Unity.Analytics.DataPrivacy.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.InputSystem, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\Unity.InputSystem.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\Unity.InputSystem.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.Recorder, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\Unity.Recorder.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\Unity.Recorder.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.Recorder.Base, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\Unity.Recorder.Base.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\Unity.Recorder.Base.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.Subsystem.Registration, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\Unity.Subsystem.Registration.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\Unity.Subsystem.Registration.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.TerrainTools, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\Unity.TerrainTools.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\Unity.TerrainTools.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\Unity.TextMeshPro.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\Unity.TextMeshPro.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.Timeline, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\Unity.Timeline.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\Unity.Timeline.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.XR.Management, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\Unity.XR.Management.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\Unity.XR.Management.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.XR.OpenVR, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\Unity.XR.OpenVR.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\Unity.XR.OpenVR.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.AccessibilityModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.AccessibilityModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.AccessibilityModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.AIModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.AIModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.AIModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.AndroidJNIModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.AndroidJNIModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.AndroidJNIModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.AnimationModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.AnimationModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.AnimationModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.ARModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.ARModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.ARModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.AssetBundleModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.AssetBundleModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.AssetBundleModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.AudioModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.AudioModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.AudioModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.ClothModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.ClothModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.ClothModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.ClusterInputModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.ClusterInputModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.ClusterInputModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.ClusterRendererModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.ClusterRendererModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.ClusterRendererModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.CoreModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.CrashReportingModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.CrashReportingModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.CrashReportingModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.DirectorModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.DirectorModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.DirectorModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.DSPGraphModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.DSPGraphModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.DSPGraphModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.GameCenterModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.GameCenterModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.GameCenterModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.GIModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.GIModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.GIModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.GridModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.GridModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.GridModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.HotReloadModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.HotReloadModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.HotReloadModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.ImageConversionModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.ImageConversionModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.ImageConversionModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.IMGUIModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.IMGUIModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.IMGUIModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.InputLegacyModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.InputLegacyModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.InputLegacyModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.InputModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.InputModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.InputModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.JSONSerializeModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.JSONSerializeModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.JSONSerializeModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.LocalizationModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.LocalizationModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.LocalizationModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.ParticleSystemModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.ParticleSystemModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.ParticleSystemModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.PerformanceReportingModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.PerformanceReportingModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.PerformanceReportingModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.Physics2DModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.Physics2DModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.Physics2DModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.PhysicsModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.PhysicsModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.PhysicsModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.ProfilerModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.ProfilerModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.ProfilerModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.RuntimeInitializeOnLoadManagerInitializerModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.RuntimeInitializeOnLoadManagerInitializerModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.RuntimeInitializeOnLoadManagerInitializerModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.ScreenCaptureModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.ScreenCaptureModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.ScreenCaptureModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.SharedInternalsModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.SharedInternalsModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.SharedInternalsModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.SpatialTracking, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.SpatialTracking.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.SpatialTracking.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.SpriteMaskModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.SpriteMaskModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.SpriteMaskModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.SpriteShapeModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.SpriteShapeModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.SpriteShapeModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.StreamingModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.StreamingModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.StreamingModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.SubstanceModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.SubstanceModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.SubstanceModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.SubsystemsModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.SubsystemsModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.SubsystemsModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.TerrainModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.TerrainModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.TerrainModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.TerrainPhysicsModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.TerrainPhysicsModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.TerrainPhysicsModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.TextCoreModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.TextCoreModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.TextCoreModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.TextRenderingModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.TextRenderingModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.TextRenderingModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.TilemapModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.TilemapModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.TilemapModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.TLSModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.TLSModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.TLSModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.UI.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.UI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UIElementsModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.UIElementsModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.UIElementsModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UIElementsNativeModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.UIElementsNativeModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.UIElementsNativeModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UIModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.UIModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.UIModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UmbraModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.UmbraModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.UmbraModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UNETModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.UNETModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.UNETModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UnityAnalyticsModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.UnityAnalyticsModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.UnityAnalyticsModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UnityConnectModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.UnityConnectModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.UnityConnectModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UnityCurlModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.UnityCurlModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.UnityCurlModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UnityTestProtocolModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.UnityTestProtocolModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.UnityTestProtocolModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UnityWebRequestAssetBundleModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.UnityWebRequestAssetBundleModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.UnityWebRequestAssetBundleModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UnityWebRequestAudioModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.UnityWebRequestAudioModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.UnityWebRequestAudioModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UnityWebRequestModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.UnityWebRequestModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.UnityWebRequestModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UnityWebRequestTextureModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.UnityWebRequestTextureModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.UnityWebRequestTextureModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UnityWebRequestWWWModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.UnityWebRequestWWWModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.UnityWebRequestWWWModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.VehiclesModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.VehiclesModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.VehiclesModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.VFXModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.VFXModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.VFXModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.VideoModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.VideoModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.VideoModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.VirtualTexturingModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.VirtualTexturingModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.VirtualTexturingModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.VRModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.VRModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.VRModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.WindModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.WindModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.WindModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.XR.LegacyInputHelpers, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.XR.LegacyInputHelpers.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.XR.LegacyInputHelpers.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.XRModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\UnityEngine.XRModule.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\UnityEngine.XRModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Valve.Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\Valve.Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\Valve.Newtonsoft.Json.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="websocket-sharp, Version=1.0.2.59611, Culture=neutral, PublicKeyToken=5660b08a1845a91e, processorArchitecture=MSIL">
-      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7\lib\websocket-sharp.dll</HintPath>
+      <HintPath>..\packages\PulsarLostColony.GameLibs.1.2.7.1\lib\websocket-sharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>

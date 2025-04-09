@@ -19,7 +19,7 @@ namespace PulsarModLoader
     /// <summary>
     /// Manages ModMessages as well as PML RPCs.
     /// </summary>
-    public class ModMessageHelper : PLMonoBehaviour
+    public class ModMessageHelper : Photon.MonoBehaviour
     {
         /// <summary>
         /// Static instance var
@@ -65,11 +65,6 @@ namespace PulsarModLoader
             }
             ModMessage publicCommands = new Chat.Extensions.HandlePublicCommands();
             modMessageHandlers.Add("#" + publicCommands.GetIdentifier(), publicCommands);
-        }
-        /// <inheritdoc/>
-        protected override void Awake() //gameobject startup script
-        {
-            base.Awake();
             Instance = this;
         }
 

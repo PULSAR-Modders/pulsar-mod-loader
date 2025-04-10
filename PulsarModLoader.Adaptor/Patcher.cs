@@ -22,6 +22,7 @@ namespace PulsarModLoader.Adaptor
         public static void Initialize()
         {
             NoTranspilerNormalization();
+            CopyAcrossPML();
         }
 
         internal static void NoTranspilerNormalization()
@@ -46,7 +47,7 @@ namespace PulsarModLoader.Adaptor
                     // Clear the dictionary
                     Log.LogDebug($"ShortToLongMap has length {shortToLongMap.Count}");
                     shortToLongMap.Clear();
-                    Log.LogInfo($"Transpiler ShortToLongMap cleared. (Used for Transpiler Normalization).");
+                    Log.LogInfo($"Transpiler ShortToLongMap cleared (Used for Transpiler Normalization).");
                 }
                 else
                 {
@@ -59,12 +60,34 @@ namespace PulsarModLoader.Adaptor
             }
         }
 
+        internal static void CopyAcrossPML()
+        {
+            string harmonyPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "PulsarModLoader.dll");
+            string managedPath = Path.Combine(Paths.ManagedPath, "PulsarModLoader.dll");
+            if (!File.Exists(managedPath))
+            {
+                if (File.Exists(harmonyPath))
+                {
+                    File.Copy(harmonyPath, managedPath, true);
+                    Log.LogInfo("Copied PulsarModLoader.dll into Managed folder.");
+                }
+                else
+                {
+                    Log.LogError("PulsarModLoader.dll could not be found anywhere! Ensure you have a copy in the BepInEx Patchers folder!");
+                }
+            }
+            else
+            {
+                Log.LogInfo("PulsarModLoader.dll already exists in Managed folder.");
+            }
+        }
+
 
         public static void Patch(AssemblyDefinition assembly)
         { // The following code is the regular Injector patch. It is temporary and the IsModified is used so that regular injector still runs.
             if (IsModified(assembly))
             {
-                Log.LogInfo("The assembly is already modified, and a backup could not be found.");
+                Log.LogInfo("The assembly is already modified.");
                 return;
             }
 

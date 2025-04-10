@@ -21,6 +21,11 @@ namespace PulsarModLoader.Adaptor
 
         public static void Initialize()
         {
+            NoTranspilerNormalization();
+        }
+
+        internal static void NoTranspilerNormalization()
+        { // The following code is to clear the ShortToLong map (Dictionary used to convert BR_S into BR) of HarmonyX
             Assembly harmonyAssembly = Assembly.GetAssembly(typeof(HarmonyLib.Harmony));
             Type ilManipulatorType = harmonyAssembly.GetType("HarmonyLib.Internal.Patching.ILManipulator");
 
@@ -41,7 +46,7 @@ namespace PulsarModLoader.Adaptor
                     // Clear the dictionary
                     Log.LogDebug($"ShortToLongMap has length {shortToLongMap.Count}");
                     shortToLongMap.Clear();
-                    Log.LogDebug("ShortToLongMap has been cleared.");
+                    Log.LogInfo($"Transpiler ShortToLongMap cleared. (Used for Transpiler Normalization).");
                 }
                 else
                 {
@@ -54,8 +59,9 @@ namespace PulsarModLoader.Adaptor
             }
         }
 
+
         public static void Patch(AssemblyDefinition assembly)
-        {
+        { // The following code is the regular Injector patch. It is temporary and the IsModified is used so that regular injector still runs.
             if (IsModified(assembly))
             {
                 Log.LogInfo("The assembly is already modified, and a backup could not be found.");
@@ -67,7 +73,7 @@ namespace PulsarModLoader.Adaptor
 
         }
 
-        public static bool IsModified(AssemblyDefinition targetAssembly)
+        internal static bool IsModified(AssemblyDefinition targetAssembly)
         {
             string targetClassName = "PLGlobal";
             string targetMethodName = "Awake";
@@ -87,19 +93,26 @@ namespace PulsarModLoader.Adaptor
             return false;
         }
 
-        public static void PatchMethod(AssemblyDefinition targetAssembly, string targetClassName, string targetMethodName, Type sourceClassType, string sourceMethodName)
+        internal static void PatchMethod(AssemblyDefinition targetAssembly, string targetClassName, string targetMethodName, Type sourceClassType, string sourceMethodName)
         {
-            Log.LogInfo($"Attempting {sourceClassType.ToString()} Injection");
+            Log.LogDebug($"Attempting {sourceClassType.ToString()} injection");
+
             // Find the methods involved
             MethodDefinition targetMethod = targetAssembly.MainModule.GetType(targetClassName).Methods.First(m => m.Name == targetMethodName);
             MethodReference sourceMethod = targetAssembly.MainModule.ImportReference(sourceClassType.GetMethod(sourceMethodName));
 
-            if (targetMethod == null || sourceMethod == null)
+            if (targetMethod == null)
             {
-                throw new ArgumentNullException("Couldn't find method in target assembly!");
+                Log.LogError($"Failed {sourceClassType.ToString()} injection - Couldn't find method in target assembly!");
+                return;
+            }
+            if (sourceMethod == null)
+            {
+                Log.LogError($"Failed {sourceClassType.ToString()} injection - Couldn't find method in source assembly!");
+                return;
             }
 
-            Log.LogInfo("Found relevant method.  Injecting hook...");
+            Log.LogDebug("Found relevant methods.  Injecting hook...");
 
             // Inject source method into front of target method
             ILProcessor targetProcessor = targetMethod.Body.GetILProcessor();
@@ -108,6 +121,7 @@ namespace PulsarModLoader.Adaptor
             Instruction callToInjectedMethod = targetProcessor.Create(OpCodes.Call, sourceMethod);
 
             targetProcessor.InsertBefore(oldFirstInstruction, callToInjectedMethod);
+            Log.LogInfo($"Injected {sourceClassType.ToString()} successfully.");
         }
     }
 }

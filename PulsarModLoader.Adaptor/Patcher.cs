@@ -1,12 +1,15 @@
-﻿using BepInEx.Logging;
+﻿using BepInEx;
+using BepInEx.Logging;
 using HarmonyLib;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using PulsarModLoader.Injections;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 
 namespace PulsarModLoader.Adaptor
 {
@@ -15,6 +18,41 @@ namespace PulsarModLoader.Adaptor
 
         public static IEnumerable<string> TargetDLLs { get; } = new[] { "Assembly-CSharp.dll" };
         internal static readonly ManualLogSource Log = Logger.CreateLogSource("PML-Adaptor");
+
+        public static void Initialize()
+        {
+            Assembly harmonyAssembly = Assembly.GetAssembly(typeof(HarmonyLib.Harmony));
+            Type ilManipulatorType = harmonyAssembly.GetType("HarmonyLib.Internal.Patching.ILManipulator");
+
+            if (ilManipulatorType == null)
+            {
+                Log.LogError("ILManipulator type not found.");
+                return;
+            }
+
+            FieldInfo fieldInfo = ilManipulatorType.GetField("ShortToLongMap", BindingFlags.NonPublic | BindingFlags.Static);
+
+            if (fieldInfo != null)
+            {
+                var shortToLongMap = fieldInfo.GetValue(null) as Dictionary<global::System.Reflection.Emit.OpCode, global::System.Reflection.Emit.OpCode>;
+
+                if (shortToLongMap != null)
+                {
+                    // Clear the dictionary
+                    Log.LogDebug($"ShortToLongMap has length {shortToLongMap.Count}");
+                    shortToLongMap.Clear();
+                    Log.LogDebug("ShortToLongMap has been cleared.");
+                }
+                else
+                {
+                    Log.LogWarning("The ShortToLongMap is null. Transpiler short patches will be converted as standard with HarmonyX.");
+                }
+            }
+            else
+            {
+                Log.LogWarning("Field ShortToLongMap not found. Transpiler short patches will be converted as standard with HarmonyX.");
+            }
+        }
 
         public static void Patch(AssemblyDefinition assembly)
         {

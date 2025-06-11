@@ -1,17 +1,10 @@
-﻿using CodeStage.AntiCheat.ObscuredTypes;
-using HarmonyLib;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using PulsarModLoader.Utilities;
+﻿using HarmonyLib;
 
 namespace PulsarModLoader.Content.Components.Extractor
 {
-    public class ExtractorModManager
+    public class ExtractorModManager : ComponentModManager<ExtractorMod, EExtractorType>
     {
-        public readonly int VanillaExtractorMaxType = 0;
         private static ExtractorModManager m_instance = null;
-        public readonly List<ExtractorMod> ExtractorTypes = new List<ExtractorMod>();
         public static ExtractorModManager Instance
         {
             get
@@ -24,59 +17,18 @@ namespace PulsarModLoader.Content.Components.Extractor
             }
         }
 
-        ExtractorModManager()
-        {
-            VanillaExtractorMaxType = Enum.GetValues(typeof(EExtractorType)).Length;
-            Logger.Info($"MaxTypeint = {VanillaExtractorMaxType - 1}");
-            foreach (PulsarMod mod in ModManager.Instance.GetAllMods())
-            {
-                Assembly asm = mod.GetType().Assembly;
-                Type ExtractorMod = typeof(ExtractorMod);
-                foreach (Type t in asm.GetTypes())
-                {
-                    if (ExtractorMod.IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract)
-                    {
-                        Logger.Info("Loading Extractor from assembly");
-                        ExtractorMod ExtractorModHandler = (ExtractorMod)Activator.CreateInstance(t);
-                        if (GetExtractorIDFromName(ExtractorModHandler.Name) == -1)
-                        {
-                            ExtractorTypes.Add(ExtractorModHandler);
-                            Logger.Info($"Added Extractor: '{ExtractorModHandler.Name}' with ID '{GetExtractorIDFromName(ExtractorModHandler.Name)}'");
-                        }
-                        else
-                        {
-                            Logger.Info($"Could not add Extractor from {mod.Name} with the duplicate name of '{ExtractorModHandler.Name}'");
-                        }
-                    }
-                }
-            }
-        }
-        /// <summary>
-        /// Finds Extractor type equivilent to given name and returns Subtype ID needed to spawn. Returns -1 if couldn't find Extractor.
-        /// </summary>
-        /// <param name="ExtractorName">Name of Component</param>
-        /// <returns>Subtype ID of component</returns>
-        public int GetExtractorIDFromName(string ExtractorName)
-        {
-            for (int i = 0; i < ExtractorTypes.Count; i++)
-            {
-                if (ExtractorTypes[i].Name == ExtractorName)
-                {
-                    return i + VanillaExtractorMaxType;
-                }
-            }
-            return -1;
-        }
+        ExtractorModManager() {}
+
         public static PLExtractor CreateExtractor(int Subtype, int level)
         {
             PLExtractor InExtractor;
-            if (Subtype >= Instance.VanillaExtractorMaxType)
+            if (Subtype >= Instance.VanillaMaxType)
             {
                 InExtractor = new PLExtractor(EExtractorType.E_MAX, level);
-                int subtypeformodded = Subtype - Instance.VanillaExtractorMaxType;
-                if (subtypeformodded <= Instance.ExtractorTypes.Count && subtypeformodded > -1)
+                int subtypeformodded = Subtype - Instance.VanillaMaxType;
+                if (subtypeformodded <= Instance.types.Count && subtypeformodded > -1)
                 {
-                    ExtractorMod ExtractorType = Instance.ExtractorTypes[Subtype - Instance.VanillaExtractorMaxType];
+                    ExtractorMod ExtractorType = Instance.types[Subtype - Instance.VanillaMaxType];
                     InExtractor.SubType = Subtype;
                     InExtractor.Name = ExtractorType.Name;
                     InExtractor.Desc = ExtractorType.Description;
@@ -113,10 +65,10 @@ namespace PulsarModLoader.Content.Components.Extractor
     {
         static void Postfix(PLExtractor __instance, ref string __result)
         {
-            int subtypeformodded = __instance.SubType - ExtractorModManager.Instance.VanillaExtractorMaxType;
-            if (subtypeformodded > -1 && subtypeformodded < ExtractorModManager.Instance.ExtractorTypes.Count && __instance.ShipStats != null)
+            int subtypeformodded = __instance.SubType - ExtractorModManager.Instance.VanillaMaxType;
+            if (subtypeformodded > -1 && subtypeformodded < ExtractorModManager.Instance.types.Count && __instance.ShipStats != null)
             {
-                __result = ExtractorModManager.Instance.ExtractorTypes[subtypeformodded].GetStatLineLeft(__instance);
+                __result = ExtractorModManager.Instance.types[subtypeformodded].GetStatLineLeft(__instance);
             }
         }
     }
@@ -125,10 +77,10 @@ namespace PulsarModLoader.Content.Components.Extractor
     {
         static void Postfix(PLExtractor __instance, ref string __result)
         {
-            int subtypeformodded = __instance.SubType - ExtractorModManager.Instance.VanillaExtractorMaxType;
-            if (subtypeformodded > -1 && subtypeformodded < ExtractorModManager.Instance.ExtractorTypes.Count && __instance.ShipStats != null)
+            int subtypeformodded = __instance.SubType - ExtractorModManager.Instance.VanillaMaxType;
+            if (subtypeformodded > -1 && subtypeformodded < ExtractorModManager.Instance.types.Count && __instance.ShipStats != null)
             {
-                __result = ExtractorModManager.Instance.ExtractorTypes[subtypeformodded].GetStatLineRight(__instance);
+                __result = ExtractorModManager.Instance.types[subtypeformodded].GetStatLineRight(__instance);
             }
         }
     }

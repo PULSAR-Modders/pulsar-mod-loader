@@ -1,17 +1,10 @@
-﻿using CodeStage.AntiCheat.ObscuredTypes;
-using HarmonyLib;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using PulsarModLoader.Utilities;
+﻿using HarmonyLib;
 
 namespace PulsarModLoader.Content.Components.Thruster
 {
-    public class ThrusterModManager
+    public class ThrusterModManager : ComponentModManager<ThrusterMod, EThrusterType>
     {
-        public readonly int VanillaThrusterMaxType = 0;
         private static ThrusterModManager m_instance = null;
-        public readonly List<ThrusterMod> ThrusterTypes = new List<ThrusterMod>();
         public static ThrusterModManager Instance
         {
             get
@@ -24,59 +17,18 @@ namespace PulsarModLoader.Content.Components.Thruster
             }
         }
 
-        ThrusterModManager()
-        {
-            VanillaThrusterMaxType = Enum.GetValues(typeof(EThrusterType)).Length;
-            Logger.Info($"MaxTypeint = {VanillaThrusterMaxType - 1}");
-            foreach (PulsarMod mod in ModManager.Instance.GetAllMods())
-            {
-                Assembly asm = mod.GetType().Assembly;
-                Type ThrusterMod = typeof(ThrusterMod);
-                foreach (Type t in asm.GetTypes())
-                {
-                    if (ThrusterMod.IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract)
-                    {
-                        Logger.Info("Loading Thruster from assembly");
-                        ThrusterMod ThrusterModHandler = (ThrusterMod)Activator.CreateInstance(t);
-                        if (GetThrusterIDFromName(ThrusterModHandler.Name) == -1)
-                        {
-                            ThrusterTypes.Add(ThrusterModHandler);
-                            Logger.Info($"Added Thruster: '{ThrusterModHandler.Name}' with ID '{GetThrusterIDFromName(ThrusterModHandler.Name)}'");
-                        }
-                        else
-                        {
-                            Logger.Info($"Could not add Thruster from {mod.Name} with the duplicate name of '{ThrusterModHandler.Name}'");
-                        }
-                    }
-                }
-            }
-        }
-        /// <summary>
-        /// Finds Thruster type equivilent to given name and returns Subtype ID needed to spawn. Returns -1 if couldn't find Thruster.
-        /// </summary>
-        /// <param name="ThrusterName">Name of Component</param>
-        /// <returns>Subtype ID of component</returns>
-        public int GetThrusterIDFromName(string ThrusterName)
-        {
-            for (int i = 0; i < ThrusterTypes.Count; i++)
-            {
-                if (ThrusterTypes[i].Name == ThrusterName)
-                {
-                    return i + VanillaThrusterMaxType;
-                }
-            }
-            return -1;
-        }
+        ThrusterModManager() {}
+        
         public static PLThruster CreateThruster(int Subtype, int level)
         {
             PLThruster InThruster;
-            if (Subtype >= Instance.VanillaThrusterMaxType)
+            if (Subtype >= Instance.VanillaMaxType)
             {
                 InThruster = new PLThruster(EThrusterType.MAX, level);
-                int subtypeformodded = Subtype - Instance.VanillaThrusterMaxType;
-                if (subtypeformodded <= Instance.ThrusterTypes.Count && subtypeformodded > -1)
+                int subtypeformodded = Subtype - Instance.VanillaMaxType;
+                if (subtypeformodded <= Instance.types.Count && subtypeformodded > -1)
                 {
-                    ThrusterMod ThrusterType = Instance.ThrusterTypes[Subtype - Instance.VanillaThrusterMaxType];
+                    ThrusterMod ThrusterType = Instance.types[Subtype - Instance.VanillaMaxType];
                     InThruster.SubType = Subtype;
                     InThruster.Name = ThrusterType.Name;
                     InThruster.Desc = ThrusterType.Description;
@@ -116,10 +68,10 @@ namespace PulsarModLoader.Content.Components.Thruster
     {
         static void Postfix(PLThruster __instance)
         {
-            int subtypeformodded = __instance.SubType - ThrusterModManager.Instance.VanillaThrusterMaxType;
-            if (subtypeformodded > -1 && subtypeformodded < ThrusterModManager.Instance.ThrusterTypes.Count && __instance.ShipStats != null)
+            int subtypeformodded = __instance.SubType - ThrusterModManager.Instance.VanillaMaxType;
+            if (subtypeformodded > -1 && subtypeformodded < ThrusterModManager.Instance.types.Count && __instance.ShipStats != null)
             {
-                ThrusterModManager.Instance.ThrusterTypes[subtypeformodded].Tick(__instance);
+                ThrusterModManager.Instance.types[subtypeformodded].Tick(__instance);
             }
         }
     }
@@ -128,10 +80,10 @@ namespace PulsarModLoader.Content.Components.Thruster
     {
         static void Postfix(PLThruster __instance, ref string __result)
         {
-            int subtypeformodded = __instance.SubType - ThrusterModManager.Instance.VanillaThrusterMaxType;
-            if (subtypeformodded > -1 && subtypeformodded < ThrusterModManager.Instance.ThrusterTypes.Count && __instance.ShipStats != null)
+            int subtypeformodded = __instance.SubType - ThrusterModManager.Instance.VanillaMaxType;
+            if (subtypeformodded > -1 && subtypeformodded < ThrusterModManager.Instance.types.Count && __instance.ShipStats != null)
             {
-                __result = ThrusterModManager.Instance.ThrusterTypes[subtypeformodded].GetStatLineLeft(__instance);
+                __result = ThrusterModManager.Instance.types[subtypeformodded].GetStatLineLeft(__instance);
             }
         }
     }
@@ -140,10 +92,10 @@ namespace PulsarModLoader.Content.Components.Thruster
     {
         static void Postfix(PLThruster __instance, ref string __result)
         {
-            int subtypeformodded = __instance.SubType - ThrusterModManager.Instance.VanillaThrusterMaxType;
-            if (subtypeformodded > -1 && subtypeformodded < ThrusterModManager.Instance.ThrusterTypes.Count && __instance.ShipStats != null)
+            int subtypeformodded = __instance.SubType - ThrusterModManager.Instance.VanillaMaxType;
+            if (subtypeformodded > -1 && subtypeformodded < ThrusterModManager.Instance.types.Count && __instance.ShipStats != null)
             {
-                __result = ThrusterModManager.Instance.ThrusterTypes[subtypeformodded].GetStatLineRight(__instance);
+                __result = ThrusterModManager.Instance.types[subtypeformodded].GetStatLineRight(__instance);
             }
         }
     }

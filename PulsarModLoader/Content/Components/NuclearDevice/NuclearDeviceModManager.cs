@@ -1,17 +1,10 @@
-﻿using CodeStage.AntiCheat.ObscuredTypes;
-using HarmonyLib;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using PulsarModLoader.Utilities;
+﻿using HarmonyLib;
 
 namespace PulsarModLoader.Content.Components.NuclearDevice
 {
-    public class NuclearDeviceModManager
+    public class NuclearDeviceModManager : ComponentModManager<NuclearDeviceMod, ENuclearDeviceType>
     {
-        public readonly int VanillaNuclearDeviceMaxType = 0;
         private static NuclearDeviceModManager m_instance = null;
-        public readonly List<NuclearDeviceMod> NuclearDeviceTypes = new List<NuclearDeviceMod>();
         public static NuclearDeviceModManager Instance
         {
             get
@@ -24,59 +17,18 @@ namespace PulsarModLoader.Content.Components.NuclearDevice
             }
         }
 
-        NuclearDeviceModManager()
-        {
-            VanillaNuclearDeviceMaxType = Enum.GetValues(typeof(ENuclearDeviceType)).Length;
-            Logger.Info($"MaxTypeint = {VanillaNuclearDeviceMaxType - 1}");
-            foreach (PulsarMod mod in ModManager.Instance.GetAllMods())
-            {
-                Assembly asm = mod.GetType().Assembly;
-                Type NuclearDeviceMod = typeof(NuclearDeviceMod);
-                foreach (Type t in asm.GetTypes())
-                {
-                    if (NuclearDeviceMod.IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract)
-                    {
-                        Logger.Info("Loading NuclearDevice from assembly");
-                        NuclearDeviceMod NuclearDeviceModHandler = (NuclearDeviceMod)Activator.CreateInstance(t);
-                        if (GetNuclearDeviceIDFromName(NuclearDeviceModHandler.Name) == -1)
-                        {
-                            NuclearDeviceTypes.Add(NuclearDeviceModHandler);
-                            Logger.Info($"Added NuclearDevice: '{NuclearDeviceModHandler.Name}' with ID '{GetNuclearDeviceIDFromName(NuclearDeviceModHandler.Name)}'");
-                        }
-                        else
-                        {
-                            Logger.Info($"Could not add NuclearDevice from {mod.Name} with the duplicate name of '{NuclearDeviceModHandler.Name}'");
-                        }
-                    }
-                }
-            }
-        }
-        /// <summary>
-        /// Finds NuclearDevice type equivilent to given name and returns Subtype ID needed to spawn. Returns -1 if couldn't find NuclearDevice.
-        /// </summary>
-        /// <param name="NuclearDeviceName">Name of Component</param>
-        /// <returns>Subtype ID of component</returns>
-        public int GetNuclearDeviceIDFromName(string NuclearDeviceName)
-        {
-            for (int i = 0; i < NuclearDeviceTypes.Count; i++)
-            {
-                if (NuclearDeviceTypes[i].Name == NuclearDeviceName)
-                {
-                    return i + VanillaNuclearDeviceMaxType;
-                }
-            }
-            return -1;
-        }
+        NuclearDeviceModManager() { }
+
         public static PLNuclearDevice CreateNuclearDevice(int Subtype, int level)
         {
             PLNuclearDevice InNuclearDevice;
-            if (Subtype >= Instance.VanillaNuclearDeviceMaxType)
+            if (Subtype >= Instance.VanillaMaxType)
             {
                 InNuclearDevice = new PLNuclearDevice(ENuclearDeviceType.MAX, level);
-                int subtypeformodded = Subtype - Instance.VanillaNuclearDeviceMaxType;
-                if (subtypeformodded <= Instance.NuclearDeviceTypes.Count && subtypeformodded > -1)
+                int subtypeformodded = Subtype - Instance.VanillaMaxType;
+                if (subtypeformodded <= Instance.types.Count && subtypeformodded > -1)
                 {
-                    NuclearDeviceMod NuclearDeviceType = Instance.NuclearDeviceTypes[Subtype - Instance.VanillaNuclearDeviceMaxType];
+                    NuclearDeviceMod NuclearDeviceType = Instance.types[Subtype - Instance.VanillaMaxType];
                     InNuclearDevice.SubType = Subtype;
                     InNuclearDevice.Name = NuclearDeviceType.Name;
                     InNuclearDevice.Desc = NuclearDeviceType.Description;
@@ -103,38 +55,39 @@ namespace PulsarModLoader.Content.Components.NuclearDevice
             }
             return InNuclearDevice;
         }
-    }
-    //Converts hashes to NuclearDevices.
-    [HarmonyPatch(typeof(PLNuclearDevice), "CreateNuclearDeviceFromHash")]
-    class NuclearDeviceHashFix
-    {
-        static bool Prefix(int inSubType, int inLevel, ref PLShipComponent __result)
+
+        //Converts hashes to NuclearDevices.
+        [HarmonyPatch(typeof(PLNuclearDevice), "CreateNuclearDeviceFromHash")]
+        class NuclearDeviceHashFix
         {
-            __result = NuclearDeviceModManager.CreateNuclearDevice(inSubType, inLevel);
-            return false;
-        }
-    }
-    [HarmonyPatch(typeof(PLNuclearDevice), "GetStatLineLeft")]
-    class LeftDescFix
-    {
-        static void Postfix(PLNuclearDevice __instance, ref string __result)
-        {
-            int subtypeformodded = __instance.SubType - NuclearDeviceModManager.Instance.VanillaNuclearDeviceMaxType;
-            if (subtypeformodded > -1 && subtypeformodded < NuclearDeviceModManager.Instance.NuclearDeviceTypes.Count && __instance.ShipStats != null)
+            static bool Prefix(int inSubType, int inLevel, ref PLShipComponent __result)
             {
-                __result = NuclearDeviceModManager.Instance.NuclearDeviceTypes[subtypeformodded].GetStatLineLeft(__instance);
+                __result = NuclearDeviceModManager.CreateNuclearDevice(inSubType, inLevel);
+                return false;
             }
         }
-    }
-    [HarmonyPatch(typeof(PLNuclearDevice), "GetStatLineRight")]
-    class RightDescFix
-    {
-        static void Postfix(PLNuclearDevice __instance, ref string __result)
+        [HarmonyPatch(typeof(PLNuclearDevice), "GetStatLineLeft")]
+        class LeftDescFix
         {
-            int subtypeformodded = __instance.SubType - NuclearDeviceModManager.Instance.VanillaNuclearDeviceMaxType;
-            if (subtypeformodded > -1 && subtypeformodded < NuclearDeviceModManager.Instance.NuclearDeviceTypes.Count && __instance.ShipStats != null)
+            static void Postfix(PLNuclearDevice __instance, ref string __result)
             {
-                __result = NuclearDeviceModManager.Instance.NuclearDeviceTypes[subtypeformodded].GetStatLineRight(__instance);
+                int subtypeformodded = __instance.SubType - NuclearDeviceModManager.Instance.VanillaMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < NuclearDeviceModManager.Instance.types.Count && __instance.ShipStats != null)
+                {
+                    __result = NuclearDeviceModManager.Instance.types[subtypeformodded].GetStatLineLeft(__instance);
+                }
+            }
+        }
+        [HarmonyPatch(typeof(PLNuclearDevice), "GetStatLineRight")]
+        class RightDescFix
+        {
+            static void Postfix(PLNuclearDevice __instance, ref string __result)
+            {
+                int subtypeformodded = __instance.SubType - NuclearDeviceModManager.Instance.VanillaMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < NuclearDeviceModManager.Instance.types.Count && __instance.ShipStats != null)
+                {
+                    __result = NuclearDeviceModManager.Instance.types[subtypeformodded].GetStatLineRight(__instance);
+                }
             }
         }
     }

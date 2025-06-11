@@ -1,20 +1,13 @@
-﻿using CodeStage.AntiCheat.ObscuredTypes;
-using HarmonyLib;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using PulsarModLoader.Utilities;
+﻿using HarmonyLib;
 
 namespace PulsarModLoader.Content.Components.CaptainsChair
 {
     /// <summary>
     /// Manages Modded Captains Chairs
     /// </summary>
-    public class CaptainsChairModManager
+    public class CaptainsChairModManager : ComponentModManager<CaptainsChairMod, ECaptainsChairType>
     {
-        public readonly int VanillaCaptainsChairMaxType = 0;
         private static CaptainsChairModManager m_instance = null;
-        public readonly List<CaptainsChairMod> CaptainsChairTypes = new List<CaptainsChairMod>();
 
         /// <summary>
         /// Static Manager Instance.
@@ -31,59 +24,18 @@ namespace PulsarModLoader.Content.Components.CaptainsChair
             }
         }
 
-        CaptainsChairModManager()
-        {
-            VanillaCaptainsChairMaxType = Enum.GetValues(typeof(ECaptainsChairType)).Length;
-            Logger.Info($"MaxTypeint = {VanillaCaptainsChairMaxType - 1}");
-            foreach (PulsarMod mod in ModManager.Instance.GetAllMods())
-            {
-                Assembly asm = mod.GetType().Assembly;
-                Type CaptainsChairMod = typeof(CaptainsChairMod);
-                foreach (Type t in asm.GetTypes())
-                {
-                    if (CaptainsChairMod.IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract)
-                    {
-                        Logger.Info("Loading CaptainsChair from assembly");
-                        CaptainsChairMod CaptainsChairModHandler = (CaptainsChairMod)Activator.CreateInstance(t);
-                        if (GetCaptainsChairIDFromName(CaptainsChairModHandler.Name) == -1)
-                        {
-                            CaptainsChairTypes.Add(CaptainsChairModHandler);
-                            Logger.Info($"Added CaptainsChair: '{CaptainsChairModHandler.Name}' with ID '{GetCaptainsChairIDFromName(CaptainsChairModHandler.Name)}'");
-                        }
-                        else
-                        {
-                            Logger.Info($"Could not add CaptainsChair from {mod.Name} with the duplicate name of '{CaptainsChairModHandler.Name}'");
-                        }
-                    }
-                }
-            }
-        }
-        /// <summary>
-        /// Finds CaptainsChair type equivilent to given name and returns Subtype ID needed to spawn. Returns -1 if couldn't find CaptainsChair.
-        /// </summary>
-        /// <param name="CaptainsChairName">Name of Component</param>
-        /// <returns>Subtype ID of component</returns>
-        public int GetCaptainsChairIDFromName(string CaptainsChairName)
-        {
-            for (int i = 0; i < CaptainsChairTypes.Count; i++)
-            {
-                if (CaptainsChairTypes[i].Name == CaptainsChairName)
-                {
-                    return i + VanillaCaptainsChairMaxType;
-                }
-            }
-            return -1;
-        }
+        CaptainsChairModManager() {}
+
         public static PLCaptainsChair CreateCaptainsChair(int Subtype, int level)
         {
             PLCaptainsChair InCaptainsChair;
-            if (Subtype >= Instance.VanillaCaptainsChairMaxType)
+            if (Subtype >= Instance.VanillaMaxType)
             {
                 InCaptainsChair = new PLCaptainsChair(ECaptainsChairType.E_MAX, level);
-                int subtypeformodded = Subtype - Instance.VanillaCaptainsChairMaxType;
-                if (subtypeformodded <= Instance.CaptainsChairTypes.Count && subtypeformodded > -1)
+                int subtypeformodded = Subtype - Instance.VanillaMaxType;
+                if (subtypeformodded <= Instance.types.Count && subtypeformodded > -1)
                 {
-                    CaptainsChairMod CaptainsChairType = Instance.CaptainsChairTypes[Subtype - Instance.VanillaCaptainsChairMaxType];
+                    CaptainsChairMod CaptainsChairType = Instance.types[Subtype - Instance.VanillaMaxType];
                     InCaptainsChair.SubType = Subtype;
                     InCaptainsChair.Name = CaptainsChairType.Name;
                     InCaptainsChair.Desc = CaptainsChairType.Description;
@@ -119,10 +71,10 @@ namespace PulsarModLoader.Content.Components.CaptainsChair
         {
             static void Postfix(PLShipStats inStats, PLCaptainsChair __instance)
             {
-                int subtypeformodded = __instance.SubType - CaptainsChairModManager.Instance.VanillaCaptainsChairMaxType;
-                if (subtypeformodded > -1 && subtypeformodded < CaptainsChairModManager.Instance.CaptainsChairTypes.Count && inStats != null)
+                int subtypeformodded = __instance.SubType - CaptainsChairModManager.Instance.VanillaMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < CaptainsChairModManager.Instance.types.Count && inStats != null)
                 {
-                    CaptainsChairModManager.Instance.CaptainsChairTypes[subtypeformodded].LateAddStats(__instance);
+                    CaptainsChairModManager.Instance.types[subtypeformodded].LateAddStats(__instance);
                 }
             }
         }

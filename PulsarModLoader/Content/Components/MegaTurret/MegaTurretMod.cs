@@ -1,6 +1,6 @@
 ﻿namespace PulsarModLoader.Content.Components.MegaTurret
 {
-    public abstract class MegaTurretMod
+    public abstract class MegaTurretMod : ComponentModBase
     {
         public MegaTurretMod()
         {

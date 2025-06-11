@@ -1,20 +1,13 @@
-﻿using CodeStage.AntiCheat.ObscuredTypes;
-using HarmonyLib;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using PulsarModLoader.Utilities;
+﻿using HarmonyLib;
 
 namespace PulsarModLoader.Content.Components.CPU
 {
     /// <summary>
     /// Manages Modded CPUs
     /// </summary>
-    public class CPUModManager
+    public class CPUModManager : ComponentModManager<CPUMod, ECPUClass>
     {
-        public readonly int VanillaCPUMaxType = 0;
         private static CPUModManager m_instance = null;
-        public readonly List<CPUMod> CPUTypes = new List<CPUMod>();
 
         /// <summary>
         /// Static Manager Instance
@@ -31,49 +24,7 @@ namespace PulsarModLoader.Content.Components.CPU
             }
         }
 
-        CPUModManager()
-        {
-            VanillaCPUMaxType = Enum.GetValues(typeof(ECPUClass)).Length;
-            Logger.Info($"MaxTypeint = {VanillaCPUMaxType - 1}");
-            foreach (PulsarMod mod in ModManager.Instance.GetAllMods())
-            {
-                Assembly asm = mod.GetType().Assembly;
-                Type CPUMod = typeof(CPUMod);
-                foreach (Type t in asm.GetTypes())
-                {
-                    if (CPUMod.IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract)
-                    {
-                        Logger.Info("Loading CPU from assembly");
-                        CPUMod CPUModHandler = (CPUMod)Activator.CreateInstance(t);
-                        if (GetCPUIDFromName(CPUModHandler.Name) == -1)
-                        {
-                            CPUTypes.Add(CPUModHandler);
-                            Logger.Info($"Added CPU: '{CPUModHandler.Name}' with ID '{GetCPUIDFromName(CPUModHandler.Name)}'");
-                        }
-                        else
-                        {
-                            Logger.Info($"Could not add CPU from {mod.Name} with the duplicate name of '{CPUModHandler.Name}'");
-                        }
-                    }
-                }
-            }
-        }
-        /// <summary>
-        /// Finds CPU type equivilent to given name and returns Subtype ID needed to spawn. Returns -1 if couldn't find CPU.
-        /// </summary>
-        /// <param name="CPUName">Name of Component</param>
-        /// <returns>Subtype ID of component</returns>
-        public int GetCPUIDFromName(string CPUName)
-        {
-            for (int i = 0; i < CPUTypes.Count; i++)
-            {
-                if (CPUTypes[i].Name == CPUName)
-                {
-                    return i + VanillaCPUMaxType;
-                }
-            }
-            return -1;
-        }
+        CPUModManager() {}
 
         /// <summary>
         /// Creates a CPU based on input parameters.
@@ -84,13 +35,13 @@ namespace PulsarModLoader.Content.Components.CPU
         public static PLCPU CreateCPU(int Subtype, int level)
         {
             PLCPU InCPU;
-            if (Subtype >= Instance.VanillaCPUMaxType)
+            if (Subtype >= Instance.VanillaMaxType)
             {
                 InCPU = new PLCPU(ECPUClass.E_MAX, level);
-                int subtypeformodded = Subtype - Instance.VanillaCPUMaxType;
-                if (subtypeformodded <= Instance.CPUTypes.Count && subtypeformodded > -1)
+                int subtypeformodded = Subtype - Instance.VanillaMaxType;
+                if (subtypeformodded <= Instance.types.Count && subtypeformodded > -1)
                 {
-                    CPUMod CPUType = Instance.CPUTypes[Subtype - Instance.VanillaCPUMaxType];
+                    CPUMod CPUType = Instance.types[Subtype - Instance.VanillaMaxType];
                     InCPU.SubType = Subtype;
                     InCPU.Name = CPUType.Name;
                     InCPU.Desc = CPUType.Description;
@@ -131,10 +82,10 @@ namespace PulsarModLoader.Content.Components.CPU
         {
             static void Postfix(PLCPU __instance)
             {
-                int subtypeformodded = __instance.SubType - CPUModManager.Instance.VanillaCPUMaxType;
-                if (subtypeformodded > -1 && subtypeformodded < CPUModManager.Instance.CPUTypes.Count)
+                int subtypeformodded = __instance.SubType - CPUModManager.Instance.VanillaMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < CPUModManager.Instance.types.Count)
                 {
-                    CPUModManager.Instance.CPUTypes[subtypeformodded].FinalLateAddStats(__instance);
+                    CPUModManager.Instance.types[subtypeformodded].FinalLateAddStats(__instance);
                 }
             }
         }
@@ -143,10 +94,10 @@ namespace PulsarModLoader.Content.Components.CPU
         {
             static void Postfix(PLWarpDriveProgram inProgram, PLCPU __instance)
             {
-                int subtypeformodded = __instance.SubType - CPUModManager.Instance.VanillaCPUMaxType;
-                if (subtypeformodded > -1 && subtypeformodded < CPUModManager.Instance.CPUTypes.Count && inProgram != null)
+                int subtypeformodded = __instance.SubType - CPUModManager.Instance.VanillaMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < CPUModManager.Instance.types.Count && inProgram != null)
                 {
-                    CPUModManager.Instance.CPUTypes[subtypeformodded].WhenProgramIsRun(inProgram);
+                    CPUModManager.Instance.types[subtypeformodded].WhenProgramIsRun(inProgram);
                 }
             }
         }
@@ -155,10 +106,10 @@ namespace PulsarModLoader.Content.Components.CPU
         {
             static void Postfix(PLCPU __instance)
             {
-                int subtypeformodded = __instance.SubType - CPUModManager.Instance.VanillaCPUMaxType;
-                if (subtypeformodded > -1 && subtypeformodded < CPUModManager.Instance.CPUTypes.Count)
+                int subtypeformodded = __instance.SubType - CPUModManager.Instance.VanillaMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < CPUModManager.Instance.types.Count)
                 {
-                    CPUModManager.Instance.CPUTypes[subtypeformodded].AddStats(__instance);
+                    CPUModManager.Instance.types[subtypeformodded].AddStats(__instance);
                 }
             }
         }
@@ -167,10 +118,10 @@ namespace PulsarModLoader.Content.Components.CPU
         {
             static void Postfix(PLCPU __instance)
             {
-                int subtypeformodded = __instance.SubType - CPUModManager.Instance.VanillaCPUMaxType;
-                if (subtypeformodded > -1 && subtypeformodded < CPUModManager.Instance.CPUTypes.Count)
+                int subtypeformodded = __instance.SubType - CPUModManager.Instance.VanillaMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < CPUModManager.Instance.types.Count)
                 {
-                    CPUModManager.Instance.CPUTypes[subtypeformodded].Tick(__instance);
+                    CPUModManager.Instance.types[subtypeformodded].Tick(__instance);
                 }
             }
         }
@@ -179,10 +130,10 @@ namespace PulsarModLoader.Content.Components.CPU
         {
             static void Postfix(PLCPU __instance, ref string __result)
             {
-                int subtypeformodded = __instance.SubType - CPUModManager.Instance.VanillaCPUMaxType;
-                if (subtypeformodded > -1 && subtypeformodded < CPUModManager.Instance.CPUTypes.Count)
+                int subtypeformodded = __instance.SubType - CPUModManager.Instance.VanillaMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < CPUModManager.Instance.types.Count)
                 {
-                    __result = CPUModManager.Instance.CPUTypes[subtypeformodded].GetStatLineRight(__instance);
+                    __result = CPUModManager.Instance.types[subtypeformodded].GetStatLineRight(__instance);
                 }
             }
         }
@@ -191,10 +142,10 @@ namespace PulsarModLoader.Content.Components.CPU
         {
             static void Postfix(PLCPU __instance, ref string __result)
             {
-                int subtypeformodded = __instance.SubType - CPUModManager.Instance.VanillaCPUMaxType;
-                if (subtypeformodded > -1 && subtypeformodded < CPUModManager.Instance.CPUTypes.Count)
+                int subtypeformodded = __instance.SubType - CPUModManager.Instance.VanillaMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < CPUModManager.Instance.types.Count)
                 {
-                    __result = CPUModManager.Instance.CPUTypes[subtypeformodded].GetStatLineLeft(__instance);
+                    __result = CPUModManager.Instance.types[subtypeformodded].GetStatLineLeft(__instance);
                 }
             }
         }

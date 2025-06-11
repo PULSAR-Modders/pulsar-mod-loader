@@ -1,17 +1,11 @@
-﻿using CodeStage.AntiCheat.ObscuredTypes;
-using HarmonyLib;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using PulsarModLoader.Utilities;
+﻿using HarmonyLib;
 
 namespace PulsarModLoader.Content.Components.Missile
 {
-    public class MissileModManager
+    public class MissileModManager : ComponentModManager<MissileMod, ETrackerMissileType>
     {
-        public readonly int VanillaMissileMaxType = 0;
         private static MissileModManager m_instance = null;
-        public readonly List<MissileMod> MissileTypes = new List<MissileMod>();
+
         public static MissileModManager Instance
         {
             get
@@ -24,59 +18,18 @@ namespace PulsarModLoader.Content.Components.Missile
             }
         }
 
-        MissileModManager()
-        {
-            VanillaMissileMaxType = Enum.GetValues(typeof(ETrackerMissileType)).Length;
-            Logger.Info($"MaxTypeint = {VanillaMissileMaxType - 1}");
-            foreach (PulsarMod mod in ModManager.Instance.GetAllMods())
-            {
-                Assembly asm = mod.GetType().Assembly;
-                Type MissileMod = typeof(MissileMod);
-                foreach (Type t in asm.GetTypes())
-                {
-                    if (MissileMod.IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract)
-                    {
-                        Logger.Info("Loading Missile from assembly");
-                        MissileMod MissileModHandler = (MissileMod)Activator.CreateInstance(t);
-                        if (GetMissileIDFromName(MissileModHandler.Name) == -1)
-                        {
-                            MissileTypes.Add(MissileModHandler);
-                            Logger.Info($"Added Missile: '{MissileModHandler.Name}' with ID '{GetMissileIDFromName(MissileModHandler.Name)}'");
-                        }
-                        else
-                        {
-                            Logger.Info($"Could not add Missile from {mod.Name} with the duplicate name of '{MissileModHandler.Name}'");
-                        }
-                    }
-                }
-            }
-        }
-        /// <summary>
-        /// Finds Missile type equivilent to given name and returns Subtype ID needed to spawn. Returns -1 if couldn't find Missile.
-        /// </summary>
-        /// <param name="MissileName">Name of Component</param>
-        /// <returns>Subtype ID of component</returns>
-        public int GetMissileIDFromName(string MissileName)
-        {
-            for (int i = 0; i < MissileTypes.Count; i++)
-            {
-                if (MissileTypes[i].Name == MissileName)
-                {
-                    return i + VanillaMissileMaxType;
-                }
-            }
-            return -1;
-        }
+        MissileModManager() {}
+        
         public static PLTrackerMissile CreateMissile(int Subtype, int level, int inSubTypeData = 0)
         {
             PLTrackerMissile InMissile;
-            if (Subtype >= Instance.VanillaMissileMaxType)
+            if (Subtype >= Instance.VanillaMaxType)
             {
                 InMissile = new PLTrackerMissile(ETrackerMissileType.MAX, level, inSubTypeData);
-                int subtypeformodded = Subtype - Instance.VanillaMissileMaxType;
-                if (subtypeformodded <= Instance.MissileTypes.Count && subtypeformodded > -1)
+                int subtypeformodded = Subtype - Instance.VanillaMaxType;
+                if (subtypeformodded <= Instance.types.Count && subtypeformodded > -1)
                 {
-                    MissileMod MissileType = Instance.MissileTypes[Subtype - Instance.VanillaMissileMaxType];
+                    MissileMod MissileType = Instance.types[Subtype - Instance.VanillaMaxType];
                     InMissile.SubType = Subtype;
                     InMissile.Name = MissileType.Name;
                     InMissile.Desc = MissileType.Description;

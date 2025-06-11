@@ -1,9 +1,7 @@
-﻿using CodeStage.AntiCheat.ObscuredTypes;
-using HarmonyLib;
+﻿using HarmonyLib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Reflection.Emit;
 using UnityEngine;
 using static PulsarModLoader.Patches.HarmonyHelpers;
@@ -11,11 +9,9 @@ using Logger = PulsarModLoader.Utilities.Logger;
 
 namespace PulsarModLoader.Content.Components.FBRecipeModule
 {
-    public class FBRecipeModuleModManager
+    public class FBRecipeModuleModManager : ComponentModManager<FBRecipeModuleMod, FBRecipe>
     {
-        public readonly int VanillaFBRecipeModuleMaxType = 0;
         private static FBRecipeModuleModManager m_instance = null;
-        public readonly List<FBRecipeModuleMod> FBRecipeModuleTypes = new List<FBRecipeModuleMod>();
         public static FBRecipeModuleModManager Instance
         {
             get
@@ -28,66 +24,20 @@ namespace PulsarModLoader.Content.Components.FBRecipeModule
             }
         }
 
-        FBRecipeModuleModManager()
-        {
-            VanillaFBRecipeModuleMaxType = Enum.GetValues(typeof(FBRecipe)).Length;
-            Logger.Info($"MaxTypeint = {VanillaFBRecipeModuleMaxType - 1}");
-            foreach (PulsarMod mod in ModManager.Instance.GetAllMods())
-            {
-                Assembly asm = mod.GetType().Assembly;
-                Type FBRecipeModuleMod = typeof(FBRecipeModuleMod);
-                foreach (Type t in asm.GetTypes())
-                {
-                    if (FBRecipeModuleMod.IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract)
-                    {
-                        Logger.Info("Loading FBRecipeModule from assembly");
-                        FBRecipeModuleMod FBRecipeModuleModHandler = (FBRecipeModuleMod)Activator.CreateInstance(t);
-                        if (FBRecipeModuleModHandler.ItemTypeToProduce.Length < 2)
-                        {
-                            Logger.Info($"FBRecipeModule '{FBRecipeModuleModHandler.Name}' from {mod.Name} does not have enough objects in the ItemTypeToProduce field, must have 2.");
-                            continue;
-                        }
-                        if (GetFBRecipeModuleIDFromName(FBRecipeModuleModHandler.Name) == -1)
-                        {
-                            FBRecipeModuleTypes.Add(FBRecipeModuleModHandler);
-                            Logger.Info($"Added FBRecipeModule: '{FBRecipeModuleModHandler.Name}' with ID '{GetFBRecipeModuleIDFromName(FBRecipeModuleModHandler.Name)}'");
-                        }
-                        else
-                        {
-                            Logger.Info($"Could not add FBRecipeModule from {mod.Name} with the duplicate name of '{FBRecipeModuleModHandler.Name}'");
-                        }
-                    }
-                }
-            }
-        }
-        /// <summary>
-        /// Finds FBRecipeModule type equivilent to given name and returns Subtype ID needed to spawn. Returns -1 if couldn't find FBRecipeModule.
-        /// </summary>
-        /// <param name="FBRecipeModuleName">Name of Component</param>
-        /// <returns>Subtype ID of component</returns>
-        public int GetFBRecipeModuleIDFromName(string FBRecipeModuleName)
-        {
-            for (int i = 0; i < FBRecipeModuleTypes.Count; i++)
-            {
-                if (FBRecipeModuleTypes[i].Name == FBRecipeModuleName)
-                {
-                    return i + VanillaFBRecipeModuleMaxType;
-                }
-            }
-            return -1;
-        }
+        FBRecipeModuleModManager() { }
+
         public static PLFBRecipeModule CreateFBRecipeModule(int Subtype, int level)
         {
             PLFBRecipeModule InFBRecipeModule;
-            if (Subtype >= Instance.VanillaFBRecipeModuleMaxType)
+            if (Subtype >= Instance.VanillaMaxType)
             {
                 InFBRecipeModule = new PLFBRecipeModule(FBRecipe.E_MAX, level);
-                int subtypeformodded = Subtype - Instance.VanillaFBRecipeModuleMaxType;
+                int subtypeformodded = Subtype - Instance.VanillaMaxType;
                 Logger.Info($"Subtype for modded is {subtypeformodded}");
-                if (subtypeformodded <= Instance.FBRecipeModuleTypes.Count && subtypeformodded > -1)
+                if (subtypeformodded <= Instance.types.Count && subtypeformodded > -1)
                 {
                     Logger.Info("Creating FBModule from list info");
-                    FBRecipeModuleMod FBRecipeModuleType = Instance.FBRecipeModuleTypes[Subtype - Instance.VanillaFBRecipeModuleMaxType];
+                    FBRecipeModuleMod FBRecipeModuleType = Instance.types[Subtype - Instance.VanillaMaxType];
                     InFBRecipeModule.SubType = Subtype;
                     InFBRecipeModule.Name = FBRecipeModuleType.Name;
                     InFBRecipeModule.Desc = FBRecipeModuleType.Description;
@@ -114,23 +64,23 @@ namespace PulsarModLoader.Content.Components.FBRecipeModule
             }
             return InFBRecipeModule;
         }
-    }
-    //Converts hashes to FBRecipeModules.
-    [HarmonyPatch(typeof(PLFBRecipeModule), "CreateRecipeFromHash")]
-    class FBRecipeModuleHashFix
-    {
-        static bool Prefix(int inSubType, int inLevel, ref PLShipComponent __result)
+
+        //Converts hashes to FBRecipeModules.
+        [HarmonyPatch(typeof(PLFBRecipeModule), "CreateRecipeFromHash")]
+        class FBRecipeModuleHashFix
         {
-            __result = FBRecipeModuleModManager.CreateFBRecipeModule(inSubType, inLevel);
-            return false;
+            static bool Prefix(int inSubType, int inLevel, ref PLShipComponent __result)
+            {
+                __result = FBRecipeModuleModManager.CreateFBRecipeModule(inSubType, inLevel);
+                return false;
+            }
         }
-    }
-    [HarmonyPatch(typeof(PLFluffyOven), "CreateElementForRecipe")]
-    class RecipeDisplayIconPatch
-    {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        [HarmonyPatch(typeof(PLFluffyOven), "CreateElementForRecipe")]
+        class RecipeDisplayIconPatch
         {
-            List<CodeInstruction> targetSequence = new List<CodeInstruction>()
+            static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+            {
+                List<CodeInstruction> targetSequence = new List<CodeInstruction>()
             {
                 new CodeInstruction(OpCodes.Ldloc_3),
                 new CodeInstruction(OpCodes.Ldloc_0),
@@ -139,9 +89,9 @@ namespace PulsarModLoader.Content.Components.FBRecipeModule
                 new CodeInstruction(OpCodes.Call),
 
             };
-            int LabelIndex = FindSequence(instructions, targetSequence, CheckMode.NONNULL) -3;
-            object fieldRef = instructions.ToList()[LabelIndex].operand;
-            List<CodeInstruction> injectedSequence = new List<CodeInstruction>()
+                int LabelIndex = FindSequence(instructions, targetSequence, CheckMode.NONNULL) - 3;
+                object fieldRef = instructions.ToList()[LabelIndex].operand;
+                List<CodeInstruction> injectedSequence = new List<CodeInstruction>()
             {
                 new CodeInstruction(OpCodes.Ldloc_3),
                 new CodeInstruction(OpCodes.Ldloc_0),
@@ -149,33 +99,33 @@ namespace PulsarModLoader.Content.Components.FBRecipeModule
                 new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(RecipeDisplayIconPatch), "GetSprite")),
             };
 
-            return PatchBySequence(instructions, targetSequence, injectedSequence, patchMode: PatchMode.REPLACE, checkMode: CheckMode.NONNULL);
-        }
-        static Sprite GetSprite(PLFBRecipeModule recipeModule)
-        {
-            if(recipeModule == null)
-            {
-                throw new Exception("Module Null");
+                return PatchBySequence(instructions, targetSequence, injectedSequence, patchMode: PatchMode.REPLACE, checkMode: CheckMode.NONNULL);
             }
-            string inpath = recipeModule.IconResourcePath;
-            if(inpath == string.Empty)
+            static Sprite GetSprite(PLFBRecipeModule recipeModule)
             {
-                int subtypeformodded = recipeModule.SubType - FBRecipeModuleModManager.Instance.VanillaFBRecipeModuleMaxType;
-                if (subtypeformodded > -1 && subtypeformodded < FBRecipeModuleModManager.Instance.FBRecipeModuleTypes.Count)
+                if (recipeModule == null)
                 {
-                    return FBRecipeModuleModManager.Instance.FBRecipeModuleTypes[subtypeformodded].OvenIcon;
+                    throw new Exception("Module Null");
                 }
-                throw new Exception("PulsarModLoader.Content.FBModuleModManager.RecipeDisplayIconPatch - Recipe Module not found");
+                string inpath = recipeModule.IconResourcePath;
+                if (inpath == string.Empty)
+                {
+                    int subtypeformodded = recipeModule.SubType - FBRecipeModuleModManager.Instance.VanillaMaxType;
+                    if (subtypeformodded > -1 && subtypeformodded < FBRecipeModuleModManager.Instance.types.Count)
+                    {
+                        return FBRecipeModuleModManager.Instance.types[subtypeformodded].OvenIcon;
+                    }
+                    throw new Exception("PulsarModLoader.Content.FBModuleModManager.RecipeDisplayIconPatch - Recipe Module not found");
+                }
+                return Resources.Load<Sprite>(inpath);
             }
-            return Resources.Load<Sprite>(inpath);
         }
-    }
-    [HarmonyPatch(typeof(PLFluffyOven), "ServerTakeBiscuit")]
-    class ServerTakeBiscuitPatch
-    {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        [HarmonyPatch(typeof(PLFluffyOven), "ServerTakeBiscuit")]
+        class ServerTakeBiscuitPatch
         {
-            List<CodeInstruction> targetSequence = new List<CodeInstruction>()
+            static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+            {
+                List<CodeInstruction> targetSequence = new List<CodeInstruction>()
             {
                 new CodeInstruction(OpCodes.Ldloc_0),   // pawninvidcounter
                 new CodeInstruction(OpCodes.Ldc_I4_5),  // 5
@@ -186,8 +136,8 @@ namespace PulsarModLoader.Content.Components.FBRecipeModule
                 new CodeInstruction(OpCodes.Ldc_I4_M1), // -1
 
             };
-            int arrayindex = generator.DeclareLocal(typeof(int[])).LocalIndex;
-            List<CodeInstruction> injectedSequence = new List<CodeInstruction>()
+                int arrayindex = generator.DeclareLocal(typeof(int[])).LocalIndex;
+                List<CodeInstruction> injectedSequence = new List<CodeInstruction>()
             {
                 //grab current CurrentProducingModule, grab item type to produce, feed type and subtype to UpdateItem
                 new CodeInstruction(OpCodes.Ldarg_0),
@@ -203,35 +153,35 @@ namespace PulsarModLoader.Content.Components.FBRecipeModule
                 new CodeInstruction(OpCodes.Ldarg_2),             //-biscuitlevel
                 new CodeInstruction(OpCodes.Ldc_I4_M1),           //-1
             };
-            return PatchBySequence(instructions, targetSequence, injectedSequence, patchMode: PatchMode.REPLACE, checkMode: CheckMode.NONNULL);
-        }
-        static int[] PatchMethod(PLFluffyOven instance)
-        {
-            PLFBRecipeModule module = instance.CurrentProducingModule;
-            if (module.GetBiscuitTypeToProduce() == EFoodType.MAX)
+                return PatchBySequence(instructions, targetSequence, injectedSequence, patchMode: PatchMode.REPLACE, checkMode: CheckMode.NONNULL);
+            }
+            static int[] PatchMethod(PLFluffyOven instance)
             {
-                int subtypeformodded = module.SubType - FBRecipeModuleModManager.Instance.VanillaFBRecipeModuleMaxType;
-                if (subtypeformodded > -1 && subtypeformodded < FBRecipeModuleModManager.Instance.FBRecipeModuleTypes.Count)
+                PLFBRecipeModule module = instance.CurrentProducingModule;
+                if (module.GetBiscuitTypeToProduce() == EFoodType.MAX)
                 {
-                    return FBRecipeModuleModManager.Instance.FBRecipeModuleTypes[subtypeformodded].ItemTypeToProduce;
+                    int subtypeformodded = module.SubType - FBRecipeModuleModManager.Instance.VanillaMaxType;
+                    if (subtypeformodded > -1 && subtypeformodded < FBRecipeModuleModManager.Instance.types.Count)
+                    {
+                        return FBRecipeModuleModManager.Instance.types[subtypeformodded].ItemTypeToProduce;
+                    }
+                    else
+                    {
+                        throw new Exception("PulsarModLoader.Content.FBModuleModManager.ServerTakeBiscuitPatch - Foodtype max with no module found");
+                    }
                 }
                 else
                 {
-                    throw new Exception("PulsarModLoader.Content.FBModuleModManager.ServerTakeBiscuitPatch - Foodtype max with no module found");
+                    return new int[] { 5, (int)module.GetBiscuitTypeToProduce() };
                 }
             }
-            else
-            {
-                return new int[] { 5, (int)module.GetBiscuitTypeToProduce() };
-            }
         }
-    }
-    [HarmonyPatch(typeof(PLFluffyOven), "Update")]
-    class FluffyOvenUpdatePatch
-    {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        [HarmonyPatch(typeof(PLFluffyOven), "Update")]
+        class FluffyOvenUpdatePatch
         {
-            List<CodeInstruction> targetSequence = new List<CodeInstruction>()
+            static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+            {
+                List<CodeInstruction> targetSequence = new List<CodeInstruction>()
             {
                 new CodeInstruction(OpCodes.Ldarg_0),
                 new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(PLFluffyOven), "InternalBiscuitVisualInfo")),
@@ -240,12 +190,12 @@ namespace PulsarModLoader.Content.Components.FBRecipeModule
                 new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(PLFluffyOven), "CurrentProducingModule")),
                 new CodeInstruction(OpCodes.Callvirt, AccessTools.Method(typeof(PLFBRecipeModule), "GetBiscuitTypeToProduce")),
             };
-            int LabelIndex = FindSequence(instructions, targetSequence, CheckMode.NONNULL);
-            Label thing = (Label)instructions.ToList()[LabelIndex].operand;
-            int PatchMethodArrayindex = generator.DeclareLocal(typeof(int[])).LocalIndex;
-            int outSubTypeindex = generator.DeclareLocal(typeof(int)).LocalIndex;
-            int outMainTypeindex = generator.DeclareLocal(typeof(int)).LocalIndex;
-            List<CodeInstruction> injectedSequence = new List<CodeInstruction>()
+                int LabelIndex = FindSequence(instructions, targetSequence, CheckMode.NONNULL);
+                Label thing = (Label)instructions.ToList()[LabelIndex].operand;
+                int PatchMethodArrayindex = generator.DeclareLocal(typeof(int[])).LocalIndex;
+                int outSubTypeindex = generator.DeclareLocal(typeof(int)).LocalIndex;
+                int outMainTypeindex = generator.DeclareLocal(typeof(int)).LocalIndex;
+                List<CodeInstruction> injectedSequence = new List<CodeInstruction>()
             {
                 new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Items.ItemModManager), "get_Instance")),
                 new CodeInstruction(OpCodes.Ldarg_0),
@@ -267,8 +217,8 @@ namespace PulsarModLoader.Content.Components.FBRecipeModule
                 new CodeInstruction(OpCodes.Ldloc_S, outSubTypeindex),
             };
 
-            IEnumerable<CodeInstruction> firstModified = PatchBySequence(instructions, targetSequence, injectedSequence, patchMode: PatchMode.REPLACE, checkMode: CheckMode.NONNULL);
-            List<CodeInstruction> targetSequence2 = new List<CodeInstruction>()
+                IEnumerable<CodeInstruction> firstModified = PatchBySequence(instructions, targetSequence, injectedSequence, patchMode: PatchMode.REPLACE, checkMode: CheckMode.NONNULL);
+                List<CodeInstruction> targetSequence2 = new List<CodeInstruction>()
             {
                 new CodeInstruction(OpCodes.Ldarg_0),
                 new CodeInstruction(OpCodes.Ldc_I4_5),
@@ -279,8 +229,8 @@ namespace PulsarModLoader.Content.Components.FBRecipeModule
                 new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(PLPawnItem), "CreateFromInfo")),
                 new CodeInstruction(OpCodes.Isinst)
             };
-            PatchMethodArrayindex = generator.DeclareLocal(typeof(int[])).LocalIndex;
-            List<CodeInstruction> injectedSequence2 = new List<CodeInstruction>()
+                PatchMethodArrayindex = generator.DeclareLocal(typeof(int[])).LocalIndex;
+                List<CodeInstruction> injectedSequence2 = new List<CodeInstruction>()
             {
                 new CodeInstruction(OpCodes.Ldarg_0),
                 new CodeInstruction(OpCodes.Ldarg_0),
@@ -296,7 +246,8 @@ namespace PulsarModLoader.Content.Components.FBRecipeModule
                 new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Items.ItemModManager), "CreatePawnItem"))
             };
 
-            return PatchBySequence(firstModified, targetSequence2, injectedSequence2, patchMode: PatchMode.REPLACE, checkMode: CheckMode.NONNULL);
+                return PatchBySequence(firstModified, targetSequence2, injectedSequence2, patchMode: PatchMode.REPLACE, checkMode: CheckMode.NONNULL);
+            }
         }
     }
 }

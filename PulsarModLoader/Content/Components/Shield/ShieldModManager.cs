@@ -1,18 +1,11 @@
-﻿using CodeStage.AntiCheat.ObscuredTypes;
-using HarmonyLib;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
+﻿using HarmonyLib;
 using UnityEngine;
-using Logger = PulsarModLoader.Utilities.Logger;
 
 namespace PulsarModLoader.Content.Components.Shield
 {
-    public class ShieldModManager
+    public class ShieldModManager : ComponentModManager<ShieldMod, EShieldGeneratorType>
     {
-        public readonly int VanillaShieldMaxType = 0;
         private static ShieldModManager m_instance = null;
-        public readonly List<ShieldMod> ShieldTypes = new List<ShieldMod>();
         public static ShieldModManager Instance
         {
             get
@@ -25,59 +18,18 @@ namespace PulsarModLoader.Content.Components.Shield
             }
         }
 
-        ShieldModManager()
-        {
-            VanillaShieldMaxType = Enum.GetValues(typeof(EShieldGeneratorType)).Length;
-            Logger.Info($"MaxTypeint = {VanillaShieldMaxType - 1}");
-            foreach (PulsarMod mod in ModManager.Instance.GetAllMods())
-            {
-                Assembly asm = mod.GetType().Assembly;
-                Type ShieldMod = typeof(ShieldMod);
-                foreach (Type t in asm.GetTypes())
-                {
-                    if (ShieldMod.IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract)
-                    {
-                        Logger.Info("Loading Shield from assembly");
-                        ShieldMod ShieldModHandler = (ShieldMod)Activator.CreateInstance(t);
-                        if (GetShieldIDFromName(ShieldModHandler.Name) == -1)
-                        {
-                            ShieldTypes.Add(ShieldModHandler);
-                            Logger.Info($"Added Shield: '{ShieldModHandler.Name}' with ID '{GetShieldIDFromName(ShieldModHandler.Name)}'");
-                        }
-                        else
-                        {
-                            Logger.Info($"Could not add Shield from {mod.Name} with the duplicate name of '{ShieldModHandler.Name}'");
-                        }
-                    }
-                }
-            }
-        }
-        /// <summary>
-        /// Finds Shield type equivilent to given name and returns Subtype ID needed to spawn. Returns -1 if couldn't find Shield.
-        /// </summary>
-        /// <param name="ShieldName">Name of Component</param>
-        /// <returns>Subtype ID of component</returns>
-        public int GetShieldIDFromName(string ShieldName)
-        {
-            for (int i = 0; i < ShieldTypes.Count; i++)
-            {
-                if (ShieldTypes[i].Name == ShieldName)
-                {
-                    return i + VanillaShieldMaxType;
-                }
-            }
-            return -1;
-        }
+        ShieldModManager() { }
+
         public static PLShieldGenerator CreateShield(int Subtype, int level)
         {
             PLShieldGenerator InShield;
-            if (Subtype >= Instance.VanillaShieldMaxType)
+            if (Subtype >= Instance.VanillaMaxType)
             {
                 InShield = new PLShieldGenerator(EShieldGeneratorType.E_SG_ID_MAX, level);
-                int subtypeformodded = Subtype - Instance.VanillaShieldMaxType;
-                if (subtypeformodded <= Instance.ShieldTypes.Count && subtypeformodded > -1)
+                int subtypeformodded = Subtype - Instance.VanillaMaxType;
+                if (subtypeformodded <= Instance.types.Count && subtypeformodded > -1)
                 {
-                    ShieldMod ShieldType = Instance.ShieldTypes[Subtype - Instance.VanillaShieldMaxType];
+                    ShieldMod ShieldType = Instance.types[Subtype - Instance.VanillaMaxType];
                     InShield.SubType = Subtype;
                     InShield.Name = ShieldType.Name;
                     InShield.Desc = ShieldType.Description;
@@ -111,51 +63,52 @@ namespace PulsarModLoader.Content.Components.Shield
             }
             return InShield;
         }
-    }
-    //Converts hashes to Shields.
-    [HarmonyPatch(typeof(PLShieldGenerator), "CreateShieldGeneratorFromHash")]
-    class ShieldHashFix
-    {
-        static bool Prefix(int inSubType, int inLevel, ref PLShipComponent __result)
+
+        //Converts hashes to Shields.
+        [HarmonyPatch(typeof(PLShieldGenerator), "CreateShieldGeneratorFromHash")]
+        class ShieldHashFix
         {
-            __result = ShieldModManager.CreateShield(inSubType, inLevel);
-            return false;
-        }
-    }
-    //Applies the Tick of the modded shields
-    [HarmonyPatch(typeof(PLShieldGenerator), "Tick")]
-    class TickPatch
-    {
-        static void Postfix(PLShieldGenerator __instance)
-        {
-            int subtypeformodded = __instance.SubType - ShieldModManager.Instance.VanillaShieldMaxType;
-            if (subtypeformodded > -1 && subtypeformodded < ShieldModManager.Instance.ShieldTypes.Count && __instance.ShipStats != null)
+            static bool Prefix(int inSubType, int inLevel, ref PLShipComponent __result)
             {
-                ShieldModManager.Instance.ShieldTypes[subtypeformodded].Tick(__instance);
+                __result = ShieldModManager.CreateShield(inSubType, inLevel);
+                return false;
             }
         }
-    }
-    [HarmonyPatch(typeof(PLShieldGenerator), "GetStatLineLeft")]
-    class LeftDescFix
-    {
-        static void Postfix(PLShieldGenerator __instance, ref string __result)
+        //Applies the Tick of the modded shields
+        [HarmonyPatch(typeof(PLShieldGenerator), "Tick")]
+        class TickPatch
         {
-            int subtypeformodded = __instance.SubType - ShieldModManager.Instance.VanillaShieldMaxType;
-            if (subtypeformodded > -1 && subtypeformodded < ShieldModManager.Instance.ShieldTypes.Count && __instance.ShipStats != null)
+            static void Postfix(PLShieldGenerator __instance)
             {
-                __result = ShieldModManager.Instance.ShieldTypes[subtypeformodded].GetStatLineLeft(__instance);
+                int subtypeformodded = __instance.SubType - ShieldModManager.Instance.VanillaMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < ShieldModManager.Instance.types.Count && __instance.ShipStats != null)
+                {
+                    ShieldModManager.Instance.types[subtypeformodded].Tick(__instance);
+                }
             }
         }
-    }
-    [HarmonyPatch(typeof(PLShieldGenerator), "GetStatLineRight")]
-    class RightDescFix
-    {
-        static void Postfix(PLShieldGenerator __instance, ref string __result)
+        [HarmonyPatch(typeof(PLShieldGenerator), "GetStatLineLeft")]
+        class LeftDescFix
         {
-            int subtypeformodded = __instance.SubType - ShieldModManager.Instance.VanillaShieldMaxType;
-            if (subtypeformodded > -1 && subtypeformodded < ShieldModManager.Instance.ShieldTypes.Count && __instance.ShipStats != null)
+            static void Postfix(PLShieldGenerator __instance, ref string __result)
             {
-                __result = ShieldModManager.Instance.ShieldTypes[subtypeformodded].GetStatLineRight(__instance);
+                int subtypeformodded = __instance.SubType - ShieldModManager.Instance.VanillaMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < ShieldModManager.Instance.types.Count && __instance.ShipStats != null)
+                {
+                    __result = ShieldModManager.Instance.types[subtypeformodded].GetStatLineLeft(__instance);
+                }
+            }
+        }
+        [HarmonyPatch(typeof(PLShieldGenerator), "GetStatLineRight")]
+        class RightDescFix
+        {
+            static void Postfix(PLShieldGenerator __instance, ref string __result)
+            {
+                int subtypeformodded = __instance.SubType - ShieldModManager.Instance.VanillaMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < ShieldModManager.Instance.types.Count && __instance.ShipStats != null)
+                {
+                    __result = ShieldModManager.Instance.types[subtypeformodded].GetStatLineRight(__instance);
+                }
             }
         }
     }

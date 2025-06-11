@@ -1,6 +1,6 @@
 ﻿namespace PulsarModLoader.Content.Components.HullPlating
 {
-    public abstract class HullPlatingMod
+    public abstract class HullPlatingMod : ComponentModBase
     {
         public HullPlatingMod()
         {

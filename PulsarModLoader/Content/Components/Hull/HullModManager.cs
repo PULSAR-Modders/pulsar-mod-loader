@@ -1,17 +1,10 @@
-﻿using CodeStage.AntiCheat.ObscuredTypes;
-using HarmonyLib;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using PulsarModLoader.Utilities;
+﻿using HarmonyLib;
 
 namespace PulsarModLoader.Content.Components.Hull
 {
-    public class HullModManager
+    public class HullModManager : ComponentModManager<HullMod, EHullType>
     {
-        public readonly int VanillaHullMaxType = 0;
         private static HullModManager m_instance = null;
-        public readonly List<HullMod> HullTypes = new List<HullMod>();
         public static HullModManager Instance
         {
             get
@@ -24,59 +17,18 @@ namespace PulsarModLoader.Content.Components.Hull
             }
         }
 
-        HullModManager()
-        {
-            VanillaHullMaxType = Enum.GetValues(typeof(EHullType)).Length;
-            Logger.Info($"MaxTypeint = {VanillaHullMaxType - 1}");
-            foreach (PulsarMod mod in ModManager.Instance.GetAllMods())
-            {
-                Assembly asm = mod.GetType().Assembly;
-                Type HullMod = typeof(HullMod);
-                foreach (Type t in asm.GetTypes())
-                {
-                    if (HullMod.IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract)
-                    {
-                        Logger.Info("Loading Hull from assembly");
-                        HullMod HullModHandler = (HullMod)Activator.CreateInstance(t);
-                        if (GetHullIDFromName(HullModHandler.Name) == -1)
-                        {
-                            HullTypes.Add(HullModHandler);
-                            Logger.Info($"Added Hull: '{HullModHandler.Name}' with ID '{GetHullIDFromName(HullModHandler.Name)}'");
-                        }
-                        else
-                        {
-                            Logger.Info($"Could not add Hull from {mod.Name} with the duplicate name of '{HullModHandler.Name}'");
-                        }
-                    }
-                }
-            }
-        }
-        /// <summary>
-        /// Finds Hull type equivilent to given name and returns Subtype ID needed to spawn. Returns -1 if couldn't find Hull.
-        /// </summary>
-        /// <param name="HullName">Name of Component</param>
-        /// <returns>Subtype ID of component</returns>
-        public int GetHullIDFromName(string HullName)
-        {
-            for (int i = 0; i < HullTypes.Count; i++)
-            {
-                if (HullTypes[i].Name == HullName)
-                {
-                    return i + VanillaHullMaxType;
-                }
-            }
-            return -1;
-        }
+        HullModManager() { }
+
         public static PLHull CreateHull(int Subtype, int level)
         {
             PLHull InHull;
-            if (Subtype >= Instance.VanillaHullMaxType)
+            if (Subtype >= Instance.VanillaMaxType)
             {
                 InHull = new PLHull(EHullType.E_MAX, level);
-                int subtypeformodded = Subtype - Instance.VanillaHullMaxType;
-                if (subtypeformodded <= Instance.HullTypes.Count && subtypeformodded > -1)
+                int subtypeformodded = Subtype - Instance.VanillaMaxType;
+                if (subtypeformodded <= Instance.types.Count && subtypeformodded > -1)
                 {
-                    HullMod HullType = Instance.HullTypes[Subtype - Instance.VanillaHullMaxType];
+                    HullMod HullType = Instance.types[Subtype - Instance.VanillaMaxType];
                     InHull.SubType = Subtype;
                     InHull.Name = HullType.Name;
                     InHull.Desc = HullType.Description;
@@ -101,50 +53,51 @@ namespace PulsarModLoader.Content.Components.Hull
             }
             return InHull;
         }
-    }
-    //Converts hashes to Hulls.
-    [HarmonyPatch(typeof(PLHull), "CreateHullFromHash")]
-    class HullHashFix
-    {
-        static bool Prefix(int inSubType, int inLevel, ref PLShipComponent __result)
+
+        //Converts hashes to Hulls.
+        [HarmonyPatch(typeof(PLHull), "CreateHullFromHash")]
+        class HullHashFix
         {
-            __result = HullModManager.CreateHull(inSubType, inLevel);
-            return false;
-        }
-    }
-    [HarmonyPatch(typeof(PLHull), "Tick")]
-    class TickPatch
-    {
-        static void Postfix(PLHull __instance)
-        {
-            int subtypeformodded = __instance.SubType - HullModManager.Instance.VanillaHullMaxType;
-            if (subtypeformodded > -1 && subtypeformodded < HullModManager.Instance.HullTypes.Count && __instance.ShipStats != null)
+            static bool Prefix(int inSubType, int inLevel, ref PLShipComponent __result)
             {
-                HullModManager.Instance.HullTypes[subtypeformodded].Tick(__instance);
+                __result = HullModManager.CreateHull(inSubType, inLevel);
+                return false;
             }
         }
-    }
-    [HarmonyPatch(typeof(PLHull), "GetStatLineLeft")]
-    class LeftDescFix 
-    {
-        static void Postfix(PLHull __instance, ref string __result) 
+        [HarmonyPatch(typeof(PLHull), "Tick")]
+        class TickPatch
         {
-            int subtypeformodded = __instance.SubType - HullModManager.Instance.VanillaHullMaxType;
-            if (subtypeformodded > -1 && subtypeformodded < HullModManager.Instance.HullTypes.Count && __instance.ShipStats != null)
+            static void Postfix(PLHull __instance)
             {
-                __result = HullModManager.Instance.HullTypes[subtypeformodded].GetStatLineLeft(__instance);
+                int subtypeformodded = __instance.SubType - HullModManager.Instance.VanillaMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < HullModManager.Instance.types.Count && __instance.ShipStats != null)
+                {
+                    HullModManager.Instance.types[subtypeformodded].Tick(__instance);
+                }
             }
         }
-    }
-    [HarmonyPatch(typeof(PLHull), "GetStatLineRight")]
-    class RightDescFix
-    {
-        static void Postfix(PLHull __instance, ref string __result)
+        [HarmonyPatch(typeof(PLHull), "GetStatLineLeft")]
+        class LeftDescFix
         {
-            int subtypeformodded = __instance.SubType - HullModManager.Instance.VanillaHullMaxType;
-            if (subtypeformodded > -1 && subtypeformodded < HullModManager.Instance.HullTypes.Count && __instance.ShipStats != null)
+            static void Postfix(PLHull __instance, ref string __result)
             {
-                __result = HullModManager.Instance.HullTypes[subtypeformodded].GetStatLineRight(__instance);
+                int subtypeformodded = __instance.SubType - HullModManager.Instance.VanillaMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < HullModManager.Instance.types.Count && __instance.ShipStats != null)
+                {
+                    __result = HullModManager.Instance.types[subtypeformodded].GetStatLineLeft(__instance);
+                }
+            }
+        }
+        [HarmonyPatch(typeof(PLHull), "GetStatLineRight")]
+        class RightDescFix
+        {
+            static void Postfix(PLHull __instance, ref string __result)
+            {
+                int subtypeformodded = __instance.SubType - HullModManager.Instance.VanillaMaxType;
+                if (subtypeformodded > -1 && subtypeformodded < HullModManager.Instance.types.Count && __instance.ShipStats != null)
+                {
+                    __result = HullModManager.Instance.types[subtypeformodded].GetStatLineRight(__instance);
+                }
             }
         }
     }

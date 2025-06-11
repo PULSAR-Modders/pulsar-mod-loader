@@ -3,7 +3,7 @@
     /// <summary>
     /// Implements an AutoTurret to be loaded.
     /// </summary>
-    public abstract class AutoTurretMod
+    public abstract class AutoTurretMod : ComponentModBase
     {
         public AutoTurretMod()
         {

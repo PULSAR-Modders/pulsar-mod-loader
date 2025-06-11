@@ -2,16 +2,10 @@
 
 namespace PulsarModLoader.Content.Components.AutoTurret
 {
-    /// <summary>
-    /// Manages Modded AutoTurrets
-    /// </summary>
     public class AutoTurretModManager : ComponentModManager<AutoTurretMod, EAutoTurretType>
     {
         private static AutoTurretModManager m_instance = null;
 
-        /// <summary>
-        /// Static Manager Instance
-        /// </summary>
         public static AutoTurretModManager Instance
         {
             get
@@ -24,7 +18,7 @@ namespace PulsarModLoader.Content.Components.AutoTurret
             }
         }
 
-        AutoTurretModManager() {}
+        AutoTurretModManager() : base(1) {}
 
         //Converts hashes to AutoTurrets.
         [HarmonyPatch(typeof(PLAutoTurret), "CreateAutoTurretFromHash")]

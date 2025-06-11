@@ -5,13 +5,6 @@
         public HullPlatingMod()
         {
         }
-        public virtual string Name
-        {
-            get
-            {
-                { return ""; }
-            }
-        }
         public virtual PLShipComponent PLHullPlating
         {
             get

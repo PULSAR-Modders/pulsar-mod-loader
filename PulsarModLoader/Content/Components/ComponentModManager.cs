@@ -5,14 +5,16 @@ using System.Reflection;
 
 namespace PulsarModLoader.Content.Components
 {
+    public enum Empty { } // Empty reference for when Enum doesnt exist
     public abstract class ComponentModManager<TMod, TEnum> where TMod : ComponentModBase
     {
         public readonly int VanillaMaxType;
         public readonly List<TMod> types = new List<TMod>();
 
-        protected ComponentModManager()
+        protected ComponentModManager(int vanillaMaxType = -1) // Override for Enum count being wrong
         {
-            VanillaMaxType = Enum.GetValues(typeof(TEnum)).Length;
+            VanillaMaxType = vanillaMaxType;
+            if (VanillaMaxType == -1) VanillaMaxType = Enum.GetValues(typeof(TEnum)).Length;
             Logger.Info($"{typeof(TMod).Name} MaxTypeint: {VanillaMaxType - 1}");
 
             foreach (PulsarMod mod in ModManager.Instance.GetAllMods())

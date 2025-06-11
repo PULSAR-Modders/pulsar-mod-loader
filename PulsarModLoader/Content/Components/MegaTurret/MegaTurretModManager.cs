@@ -3,15 +3,9 @@ using System.Collections.Generic;
 
 namespace PulsarModLoader.Content.Components.MegaTurret
 {
-    public enum EMegaTurretType
+    public class MegaTurretModManager : ComponentModManager<MegaTurretMod, Empty>
     {
-        max = 8
-    }
-    public class MegaTurretModManager : ComponentModManager<MegaTurretMod, EMegaTurretType>
-    {
-        public readonly int VanillaMegaTurretMaxType = 0;
         private static MegaTurretModManager m_instance = null;
-        public readonly List<MegaTurretMod> MegaTurretTypes = new List<MegaTurretMod>();
         public static MegaTurretModManager Instance
         {
             get
@@ -23,7 +17,7 @@ namespace PulsarModLoader.Content.Components.MegaTurret
                 return m_instance;
             }
         }
-        MegaTurretModManager() { }
+        MegaTurretModManager() : base(8) {}
 
         //Converts hashes to MegaTurrets.
         [HarmonyPatch(typeof(PLMegaTurret), "CreateMainTurretFromHash")]
@@ -31,11 +25,11 @@ namespace PulsarModLoader.Content.Components.MegaTurret
         {
             static bool Prefix(int inSubType, int inLevel, ref PLShipComponent __result)
             {
-                int subtypeformodded = inSubType - MegaTurretModManager.Instance.VanillaMegaTurretMaxType;
-                if (subtypeformodded <= MegaTurretModManager.Instance.MegaTurretTypes.Count && subtypeformodded > -1)
+                int subtypeformodded = inSubType - MegaTurretModManager.Instance.VanillaMaxType;
+                if (subtypeformodded <= MegaTurretModManager.Instance.types.Count && subtypeformodded > -1)
                 {
                     //Logger.Info("Creating MegaTurret from list info");
-                    __result = MegaTurretModManager.Instance.MegaTurretTypes[subtypeformodded].PLMegaTurret;
+                    __result = MegaTurretModManager.Instance.types[subtypeformodded].PLMegaTurret;
                     __result.SubType = inSubType;
                     __result.Level = inLevel;
                     return false;

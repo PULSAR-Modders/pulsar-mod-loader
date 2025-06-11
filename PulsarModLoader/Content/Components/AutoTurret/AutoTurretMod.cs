@@ -8,13 +8,6 @@
         public AutoTurretMod()
         {
         }
-        public virtual string Name
-        {
-            get
-            {
-                { return ""; }
-            }
-        }
         public virtual PLShipComponent PLAutoTurret
         {
             get

@@ -17,7 +17,7 @@ namespace PulsarModLoader.Content.Components.PolytechModule
             }
         }
 
-        PolytechModuleModManager() { }
+        PolytechModuleModManager() {}
 
         public static PLPolytechModule CreatePolytechModule(int Subtype, int level)
         {

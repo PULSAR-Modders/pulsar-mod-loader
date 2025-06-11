@@ -17,7 +17,7 @@ namespace PulsarModLoader.Content.Components.InertiaThruster
             }
         }
 
-        InertiaThrusterModManager() { }
+        InertiaThrusterModManager() {}
 
         public static PLInertiaThruster CreateInertiaThruster(int Subtype, int level)
         {

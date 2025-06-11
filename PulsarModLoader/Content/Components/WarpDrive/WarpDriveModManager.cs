@@ -17,7 +17,7 @@ namespace PulsarModLoader.Content.Components.WarpDrive
             }
         }
 
-        WarpDriveModManager() { }
+        WarpDriveModManager() {}
 
         public static PLWarpDrive CreateWarpDrive(int Subtype, int level, short SubTypeData)
         {

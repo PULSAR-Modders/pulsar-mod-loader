@@ -18,7 +18,7 @@ namespace PulsarModLoader.Content.Components.Shield
             }
         }
 
-        ShieldModManager() { }
+        ShieldModManager() {}
 
         public static PLShieldGenerator CreateShield(int Subtype, int level)
         {

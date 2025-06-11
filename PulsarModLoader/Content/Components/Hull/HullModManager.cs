@@ -17,7 +17,7 @@ namespace PulsarModLoader.Content.Components.Hull
             }
         }
 
-        HullModManager() { }
+        HullModManager() {}
 
         public static PLHull CreateHull(int Subtype, int level)
         {

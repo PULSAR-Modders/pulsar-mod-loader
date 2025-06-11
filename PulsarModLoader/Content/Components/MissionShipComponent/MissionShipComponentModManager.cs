@@ -2,11 +2,7 @@
 
 namespace PulsarModLoader.Content.Components.MissionShipComponent
 {
-    public enum EMissionShipComponent
-    {
-        max = 13
-    }
-    public class MissionShipComponentModManager : ComponentModManager<MissionShipComponentMod, EMissionShipComponent>
+    public class MissionShipComponentModManager : ComponentModManager<MissionShipComponentMod, Empty>
     {
         private static MissionShipComponentModManager m_instance = null;
         public static MissionShipComponentModManager Instance
@@ -21,7 +17,7 @@ namespace PulsarModLoader.Content.Components.MissionShipComponent
             }
         }
 
-        MissionShipComponentModManager() { }
+        MissionShipComponentModManager() : base(13) {}
 
         public static PLMissionShipComponent CreateMissionShipComponent(int Subtype, int level)
         {

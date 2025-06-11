@@ -17,7 +17,7 @@ namespace PulsarModLoader.Content.Components.ManeuverThruster
             }
         }
 
-        ManeuverThrusterModManager() { }
+        ManeuverThrusterModManager() {}
 
         public static PLManeuverThruster CreateManeuverThruster(int Subtype, int level)
         {

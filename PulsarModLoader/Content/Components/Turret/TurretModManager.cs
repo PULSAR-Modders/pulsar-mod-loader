@@ -18,7 +18,7 @@ namespace PulsarModLoader.Content.Components.Turret
             }
         }
 
-        TurretModManager() { }
+        TurretModManager() {}
 
 
         //Converts hashes to Turrets.

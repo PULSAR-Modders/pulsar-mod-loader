@@ -5,13 +5,6 @@
         public MegaTurretMod()
         {
         }
-        public virtual string Name
-        {
-            get
-            {
-                { return ""; }
-            }
-        }
         public virtual PLShipComponent PLMegaTurret
         {
             get

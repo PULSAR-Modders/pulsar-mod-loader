@@ -24,7 +24,7 @@ namespace PulsarModLoader.Content.Components.FBRecipeModule
             }
         }
 
-        FBRecipeModuleModManager() { }
+        FBRecipeModuleModManager() {}
 
         public static PLFBRecipeModule CreateFBRecipeModule(int Subtype, int level)
         {

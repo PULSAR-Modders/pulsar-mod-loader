@@ -17,7 +17,7 @@ namespace PulsarModLoader.Content.Components.Virus
             }
         }
 
-        VirusModManager() { }
+        VirusModManager() : base(20) {}
 
         public static PLVirus CreateVirus(int Subtype, int level)
         {

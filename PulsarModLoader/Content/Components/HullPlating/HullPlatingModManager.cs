@@ -17,7 +17,7 @@ namespace PulsarModLoader.Content.Components.HullPlating
             }
         }
 
-        HullPlatingModManager() { }
+        HullPlatingModManager() : base(12) {}
 
         //Converts hashes to HullPlatings.
         [HarmonyPatch(typeof(PLHullPlating), "CreateHullPlatingFromHash")]

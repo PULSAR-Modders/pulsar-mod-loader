@@ -17,7 +17,7 @@ namespace PulsarModLoader.Content.Components.NuclearDevice
             }
         }
 
-        NuclearDeviceModManager() { }
+        NuclearDeviceModManager() {}
 
         public static PLNuclearDevice CreateNuclearDevice(int Subtype, int level)
         {

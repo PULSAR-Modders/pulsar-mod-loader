@@ -17,7 +17,7 @@ namespace PulsarModLoader.Content.Components.Reactor
             }
         }
 
-        ReactorModManager() { }
+        ReactorModManager() {}
 
         public static PLReactor CreateReactor(int Subtype, int level)
         {

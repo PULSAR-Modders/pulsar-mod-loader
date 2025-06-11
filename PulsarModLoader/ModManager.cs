@@ -303,6 +303,7 @@ namespace PulsarModLoader
             _ = PulsarModLoader.Content.Components.Virus.VirusModManager.Instance;
             _ = PulsarModLoader.Content.Components.WarpDrive.WarpDriveModManager.Instance;
             _ = PulsarModLoader.Content.Components.WarpDriveProgram.WarpDriveProgramModManager.Instance;
+            _ = PulsarModLoader.Content.Talents.TalentModManager.Instance;
 
             OnAllModsLoaded?.Invoke();
         }

@@ -36,9 +36,6 @@
   <ItemGroup>
     <Compile Remove="Chat\Commands\BugReportCommand.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Content\Talents\" />
-  </ItemGroup>
   <Target Name="CopyMarkdownFiles" AfterTargets="AfterBuild">
     <CreateItem Include="$(SolutionDir)\*.md">
       <Output TaskParameter="Include" ItemName="MarkdownFiles" />

@@ -35,6 +35,8 @@ namespace PulsarModLoader.CustomGUI
                 }
             }
 
+            HideResearchableTalentsFromTab.Value = GUILayout.Toggle(HideResearchableTalentsFromTab.Value, "Hide Non-Researched Talents from Tab Menu");
+
             GUI.skin.label.alignment = TextAnchor.UpperLeft;
             BeginHorizontal();
             {
@@ -157,5 +159,6 @@ namespace PulsarModLoader.CustomGUI
                 PMLConfig.AutoPullReadme.Value = !PMLConfig.AutoPullReadme.Value;
             }
         }
+        public static SaveValue<bool> HideResearchableTalentsFromTab = new SaveValue<bool>("HideResearchableTalentsFromTab", false);
     }
 }

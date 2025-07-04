@@ -142,12 +142,12 @@ namespace PulsarModLoader.Content.Talents
         }
     }
 
-    [HarmonyPatch(typeof(PLUIPlayMenu), "Enter")]
+    [HarmonyPatch(typeof(PLServer), "Start")]
     class ResetPatch
     {
         static void Prefix()
         {
-            SaveTalentsData.HasLoadedElements = false;
+            PMLSaveTalents.HasLoadedElements = false;
         }
     }
 
@@ -156,7 +156,7 @@ namespace PulsarModLoader.Content.Talents
     {
         static void Postfix()
         {
-            if (SaveTalentsData.HasLoadedElements) return;
+            if (PMLSaveTalents.HasLoadedElements) return;
             for (int i = 0; i < TalentModManager.Instance.extraTalentLockedStatus.Count; i++)
             {
                 TalentModManager.Instance.extraTalentLockedStatus[i] = 0L;
@@ -176,75 +176,6 @@ namespace PulsarModLoader.Content.Talents
         }
     }
     #endregion
-
-    // Saving and syncing of extended talents data such as: Locked status, Hidden status
-    #region TalentsDataHandling
-    // Implements saving
-    class SaveTalentsData : PMLSaveData
-    {
-        public static bool HasLoadedElements = false;
-        public override string Identifier()
-        {
-            return "TalentsSaveData";
-        }
-
-        public override void LoadData(byte[] Data, uint VersionID)
-        {
-            var dict = new Dictionary<int, ObscuredLong>();
-            using (MemoryStream ms = new MemoryStream(Data))
-            using (BinaryReader reader = new BinaryReader(ms))
-            {
-                int count = reader.ReadInt32();
-                for (int i = 0; i < count; i++)
-                {
-                    int key = reader.ReadInt32();
-                    long value = reader.ReadInt64();
-                    if (!dict.ContainsKey(key)) dict.Add(key, value);
-                    else
-                    {
-                        dict[key] = value;
-                    }
-                }
-                TalentModManager.Instance.extraTalentLockedStatus = dict;
-                count = reader.ReadInt32();
-                for (int i = 0; i < count; i++)
-                {
-                    int key = reader.ReadInt32();
-                    long value = reader.ReadInt64();
-                    if (!dict.ContainsKey(key)) dict.Add(key, value);
-                    else
-                    {
-                        dict[key] = value;
-                    }
-                }
-                TalentModManager.Instance.extraTalentLockedStatus = dict;
-            }
-            HasLoadedElements = true;
-        }
-
-        public override byte[] SaveData()
-        {
-            using (MemoryStream ms = new MemoryStream())
-            using (BinaryWriter writer = new BinaryWriter(ms))
-            {
-                Dictionary<int, ObscuredLong> dict = TalentModManager.Instance.extraTalentLockedStatus;
-                writer.Write(dict.Count);
-                foreach (var kvp in dict)
-                {
-                    writer.Write(kvp.Key);
-                    writer.Write((long)kvp.Value);
-                }
-                dict = TalentModManager.Instance.hiddenTalentStatus;
-                writer.Write(dict.Count);
-                foreach (var kvp in dict)
-                {
-                    writer.Write(kvp.Key);
-                    writer.Write((long)kvp.Value);
-                }
-                return ms.ToArray();
-            }
-        }
-    }
 
     // Patches PLServer Serialze to add syncing
     [HarmonyPatch(typeof(PLServer), "OnPhotonSerializeView")]
@@ -362,8 +293,6 @@ namespace PulsarModLoader.Content.Talents
             TalentModManager.Instance.hiddenTalentStatus = newDict;
         }
     }
-    #endregion
-    // Saving currently doesnt work due to PML Implementation
 
     // Could be useful to have Talents as a purchaseable or reward item. This implements the Hide/Unhide system using the same logic as the Researchable/Not system
     #region Hidden/Not Talents

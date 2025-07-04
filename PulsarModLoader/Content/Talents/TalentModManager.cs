@@ -4,6 +4,8 @@ using System.Reflection;
 using PulsarModLoader.Utilities;
 using CodeStage.AntiCheat.ObscuredTypes;
 using PulsarModLoader.SaveData;
+using System.IO;
+using System.Linq;
 
 namespace PulsarModLoader.Content.Talents
 {
@@ -160,7 +162,6 @@ namespace PulsarModLoader.Content.Talents
 
             long mask = 1L << bitPosition;
             hiddenTalentStatus[index] |= mask; // Set bit to 1 (locked)
-
         }
 
         /// <summary>
@@ -174,6 +175,71 @@ namespace PulsarModLoader.Content.Talents
 
             long mask = 1L << bitPosition;
             hiddenTalentStatus[index] &= ~mask; // Set bit to 0 (unlocked)
+        }
+    }
+    public class PMLSaveTalents : PMLSaveData
+    {
+        public static bool HasLoadedElements = false;
+        public PMLSaveTalents() { }
+        public override string Identifier() => "Talents";
+
+        public override void LoadData(byte[] Data, uint VersionID)
+        {
+            var dict = new Dictionary<int, ObscuredLong>();
+            using (MemoryStream ms = new MemoryStream(Data))
+            using (BinaryReader reader = new BinaryReader(ms))
+            {
+                int count = reader.ReadInt32();
+                for (int i = 0; i < count; i++)
+                {
+                    int key = reader.ReadInt32();
+                    long value = reader.ReadInt64();
+                    if (!dict.ContainsKey(key)) dict.Add(key, value);
+                    else
+                    {
+                        dict[key] = value;
+                    }
+                }
+                if (!HasLoadedElements) TalentModManager.Instance.extraTalentLockedStatus = dict;
+                else TalentModManager.Instance.extraTalentLockedStatus.Concat(dict);
+                count = reader.ReadInt32();
+                for (int i = 0; i < count; i++)
+                {
+                    int key = reader.ReadInt32();
+                    long value = reader.ReadInt64();
+                    if (!dict.ContainsKey(key)) dict.Add(key, value);
+                    else
+                    {
+                        dict[key] = value;
+                    }
+                }
+                if (!HasLoadedElements) TalentModManager.Instance.hiddenTalentStatus = dict;
+                else TalentModManager.Instance.hiddenTalentStatus.Concat(dict);
+            }
+            HasLoadedElements = true;
+        }
+
+        public override byte[] SaveData()
+        {
+            using (MemoryStream ms = new MemoryStream())
+            using (BinaryWriter writer = new BinaryWriter(ms))
+            {
+                Dictionary<int, ObscuredLong> dict = TalentModManager.Instance.extraTalentLockedStatus;
+                writer.Write(dict.Count);
+                foreach (var kvp in dict)
+                {
+                    writer.Write(kvp.Key);
+                    writer.Write((long)kvp.Value);
+                }
+                dict = TalentModManager.Instance.hiddenTalentStatus;
+                writer.Write(dict.Count);
+                foreach (var kvp in dict)
+                {
+                    writer.Write(kvp.Key);
+                    writer.Write((long)kvp.Value);
+                }
+                return ms.ToArray();
+            }
         }
     }
 }

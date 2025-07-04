@@ -26,7 +26,7 @@
         /// </summary>
         /// <returns></returns>
         public abstract byte[] SaveData();
-        
+
         /// <summary>
         /// Loads data from savegame files.
         /// </summary>

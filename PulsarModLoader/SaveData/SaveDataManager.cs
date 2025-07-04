@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using PulsarModLoader.Content.Talents;
 using PulsarModLoader.Patches;
 using PulsarModLoader.Utilities;
 using System;
@@ -30,6 +31,7 @@ namespace PulsarModLoader.SaveData
 
         void OnModLoaded(string modName, PulsarMod mod)
         {
+            bool hasTalentMod = false;
             mod.GetType().Assembly.GetTypes().AsParallel().ForAll((type) =>
             {
                 if (typeof(PMLSaveData).IsAssignableFrom(type) && !type.IsAbstract)
@@ -39,7 +41,19 @@ namespace PulsarModLoader.SaveData
                     SaveConfigs.Add(SaveData);
                     SaveCount = SaveConfigs.Count;
                 }
+                if (typeof(TalentMod).IsAssignableFrom(type) && !type.IsAbstract)
+                {
+                    hasTalentMod = true;
+                }
             });
+
+            if (hasTalentMod)
+            {
+                PMLSaveTalents saveData = (PMLSaveTalents)Activator.CreateInstance(typeof(PMLSaveTalents));
+                saveData.MyMod = mod;
+                SaveConfigs.Add(saveData);
+                SaveCount = SaveConfigs.Count;
+            }
         }
 
         void OnModRemoved(PulsarMod mod)

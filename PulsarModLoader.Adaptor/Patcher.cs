@@ -25,7 +25,7 @@ namespace PulsarModLoader.Adaptor
 
         public static void InjectAssemblies(string AssemblyName)
         {
-            /// Load local .dll Assembly (In BepInEx patches directory)
+            // Load local .dll Assembly (In BepInEx patches directory)
             if (!AppDomain.CurrentDomain.GetAssemblies().Any(a => a.GetName().Name == AssemblyName))
             {
                 int location = Assembly.GetExecutingAssembly().Location.LastIndexOf('\\');

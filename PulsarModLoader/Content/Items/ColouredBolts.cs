@@ -7,9 +7,8 @@ using UnityEngine;
 
 namespace PulsarModLoader.Content.Items
 {
-    /// <summary>
-    /// Code to add colourable bolts.
-    /// Implemented with the following:
+    // Code to add colourable bolts.
+    // Implemented with the following:
     /*
        protected override GameObject CreateBoltGO()
        {
@@ -18,7 +17,6 @@ namespace PulsarModLoader.Content.Items
            return Bolt;
        }
     */
-    /// </summary>
     [Serializable]
     public class BoltColourData
     {
@@ -90,6 +88,7 @@ namespace PulsarModLoader.Content.Items
         [HarmonyPatch("CreateBoltHitGO")]
         public static void CreateBoltHitGO(PLBolt __instance, ref GameObject __result)
         {
+#pragma warning disable CS0618 // Type or member is obsolete
             BoltColourData Data = __instance.GetAdditionalData();
             if (Data == null) return;
             Color32 c = Data._colour;
@@ -116,6 +115,7 @@ namespace PulsarModLoader.Content.Items
                 componentsInChildren[i].startColor = color;
             }
             __result.GetComponentInChildren<Light>().color = color;
+#pragma warning restore CS0618 // Type or member is obsolete
         }
     }
 }

@@ -228,8 +228,8 @@ namespace PulsarModLoader.SaveData
     {
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
-            /// BepInEx fails to do the `foreach (PLPersistantDialogueActor plpersistantDialogueActor in PLServer.Instance.AllPDAs)` `continue` despite reaching it.
-            /// The following replaces the whole foreach with a functional replacement.
+            // BepInEx fails to do the `foreach (PLPersistantDialogueActor plpersistantDialogueActor in PLServer.Instance.AllPDAs)` `continue` despite reaching it.
+            // The following replaces the whole foreach with a functional replacement.
             List<CodeInstruction> codeInstructions = instructions.ToList();
             List<CodeInstruction> targetsequence = new List<CodeInstruction>()
             {
@@ -257,7 +257,7 @@ namespace PulsarModLoader.SaveData
             };
             instructions = HarmonyHelpers.PatchBySequence(instructions, targetsequence, injectedsequence, HarmonyHelpers.PatchMode.REPLACE);
 
-            /// Mod Loader add save data
+            // Mod Loader add save data
             targetsequence = new List<CodeInstruction>()
             {
                 new CodeInstruction(OpCodes.Ldloc_3),

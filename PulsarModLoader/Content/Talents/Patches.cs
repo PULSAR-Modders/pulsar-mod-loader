@@ -214,7 +214,7 @@ namespace PulsarModLoader.Content.Talents
         }
         public static void PatchSend(PhotonStream stream)
         {
-            /// Send extraTalentLockedStatus
+            // Send extraTalentLockedStatus
             Dictionary<int, ObscuredLong> newDict = TalentModManager.Instance.extraTalentLockedStatus;
             stream.SendNext(newDict.Count);
             foreach (var kvp in newDict)
@@ -223,7 +223,7 @@ namespace PulsarModLoader.Content.Talents
                 stream.SendNext((long)kvp.Value);
             }
 
-            /// Send hiddenTalentStatus
+            // Send hiddenTalentStatus
             newDict = TalentModManager.Instance.hiddenTalentStatus;
             stream.SendNext(newDict.Count);
             foreach (var kvp in newDict)
@@ -266,7 +266,7 @@ namespace PulsarModLoader.Content.Talents
         }
         public static void PatchReceive(PhotonStream stream)
         {
-            /// Receive extraTalentLockedStatus
+            // Receive extraTalentLockedStatus
             int count = (int)stream.ReceiveNext();
             var newDict = new Dictionary<int, ObscuredLong>();
 
@@ -279,7 +279,7 @@ namespace PulsarModLoader.Content.Talents
 
             TalentModManager.Instance.extraTalentLockedStatus = newDict;
 
-            /// Receive hiddenTalentStatus
+            // Receive hiddenTalentStatus
             count = (int)stream.ReceiveNext();
             newDict = new Dictionary<int, ObscuredLong>();
 

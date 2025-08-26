@@ -67,11 +67,13 @@ namespace PulsarModLoader.Utilities
 
 		internal struct VersionFile
 		{
-			public string Version;
+#pragma warning disable CS0649 // Type or member never assigned to
+            public string Version;
 			public string DownloadLink;
-		}
+#pragma warning restore CS0649 // Type or member never assigned to
+        }
 
-		internal class UpdateModInfo
+        internal class UpdateModInfo
 		{
 			public PulsarMod Mod;
 			public VersionFile Data;

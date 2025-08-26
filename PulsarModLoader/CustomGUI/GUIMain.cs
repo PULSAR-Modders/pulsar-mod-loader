@@ -18,7 +18,9 @@ namespace PulsarModLoader.CustomGUI
     internal class GUIMain : MonoBehaviour
     {
         Dictionary<string, string> Readme = new Dictionary<string, string>();
+#pragma warning disable CS0649 // Type or member never assigned to
         readonly CultureInfo ci;
+#pragma warning restore CS0649 // Type or member never assigned to
         public static GUIMain Instance = null;
         GameObject Background;
         UnityEngine.UI.Image Image;

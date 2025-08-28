@@ -178,7 +178,7 @@ namespace PulsarModLoader.Content.Talents
         }
     }
     public class PMLSaveTalents : PMLSaveData
-    {
+    {   //todo: individualise the talent dictionaries based on mod (Need to implement order system for that)
         public static bool HasLoadedElements = false;
         public PMLSaveTalents() { }
         public override string Identifier() => "Talents";
@@ -200,8 +200,22 @@ namespace PulsarModLoader.Content.Talents
                         dict[key] = value;
                     }
                 }
-                if (!HasLoadedElements) TalentModManager.Instance.extraTalentLockedStatus = dict;
-                else TalentModManager.Instance.extraTalentLockedStatus.Concat(dict);
+                if (!HasLoadedElements) TalentModManager.Instance.extraTalentLockedStatus = new Dictionary<int, ObscuredLong>(dict);
+                else
+                {
+                    foreach (var kvp in dict)
+                    {
+                        if (!TalentModManager.Instance.extraTalentLockedStatus.ContainsKey(kvp.Key))
+                        {
+                            TalentModManager.Instance.extraTalentLockedStatus.Add(kvp.Key, kvp.Value);
+                        }
+                        else
+                        {
+                            // Update existing key with the new value
+                            TalentModManager.Instance.extraTalentLockedStatus[kvp.Key] = kvp.Value;
+                        }
+                    }
+                }
                 count = reader.ReadInt32();
                 for (int i = 0; i < count; i++)
                 {
@@ -213,8 +227,22 @@ namespace PulsarModLoader.Content.Talents
                         dict[key] = value;
                     }
                 }
-                if (!HasLoadedElements) TalentModManager.Instance.hiddenTalentStatus = dict;
-                else TalentModManager.Instance.hiddenTalentStatus.Concat(dict);
+                if (!HasLoadedElements) TalentModManager.Instance.hiddenTalentStatus = new Dictionary<int, ObscuredLong>(dict);
+                else
+                {
+                    foreach (var kvp in dict)
+                    {
+                        if (!TalentModManager.Instance.hiddenTalentStatus.ContainsKey(kvp.Key))
+                        {
+                            TalentModManager.Instance.hiddenTalentStatus.Add(kvp.Key, kvp.Value);
+                        }
+                        else
+                        {
+                            // Update existing key with the new value
+                            TalentModManager.Instance.hiddenTalentStatus[kvp.Key] = kvp.Value;
+                        }
+                    }
+                }
             }
             HasLoadedElements = true;
         }

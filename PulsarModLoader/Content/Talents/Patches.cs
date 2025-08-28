@@ -142,8 +142,16 @@ namespace PulsarModLoader.Content.Talents
         }
     }
 
-    [HarmonyPatch(typeof(PLServer), "Start")]
+    [HarmonyPatch(typeof(PLCameraMode_MainMenu), "BeginMode")]
     class ResetPatch
+    {
+        static void Prefix()
+        {
+            PMLSaveTalents.HasLoadedElements = false;
+        }
+    }
+    [HarmonyPatch(typeof(PLGameOverScreen), "OnEnter")]
+    class ResetPatch2
     {
         static void Prefix()
         {
